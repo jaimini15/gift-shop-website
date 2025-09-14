@@ -20,6 +20,7 @@
     $pincode = $_POST['pincode'];
 
     $sql = "INSERT INTO user_details (Fname,Email,`Password`,`Address line 1`,`Adsress line 2`,City,Pincode) VALUES ('$fname','$email','$password','$adrs1','$adrs2','$city','$pincode')";
+<<<<<<< HEAD
     
     if($conn->query($sql) === TRUE)
     {
@@ -29,5 +30,8 @@
     {
         echo "Error";
     }
+=======
+    if()
+>>>>>>> 0892cd668abca20e68fccf5f1edf9fc370be7756
 
 ?>
