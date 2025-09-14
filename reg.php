@@ -20,6 +20,6 @@
     $pincode = $_POST['pincode'];
 
     $sql = "INSERT INTO user_details (Fname,Email,`Password`,`Address line 1`,`Adsress line 2`,City,Pincode) VALUES ('$fname','$email','$password','$adrs1','$adrs2','$city','$pincode')";
-    
+    if()
 
 ?>
