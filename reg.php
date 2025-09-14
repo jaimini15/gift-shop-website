@@ -19,16 +19,16 @@
     $city = $_POST['city'];
     $pincode = $_POST['pincode'];
 
-    $sql = "INSERT INTO user_details (Fname,Email,`Password`,`Address line 1`,`Adsress line 2`,City,Pincode) VALUES ('$fname','$email','$password','$adrs1','$adrs2','$city','$pincode')";
+    $sql = "INSERT INTO user_details (Fname,Email,`Password`,`Address line 1`,`Address line 2`,City,Pincode) VALUES ('$fname','$email','$password','$adrs1','$adrs2','$city','$pincode')";
     
     if($conn->query($sql) === TRUE)
     {
-        header("referesh:2; url=login.html");
+        header( "refresh:2; url=login.html");
     }
     else
     {
         echo "Error";
     }
 
-
+    $conn->close();
 ?>
