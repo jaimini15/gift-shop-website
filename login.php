@@ -16,7 +16,7 @@ if($_SERVER["REQUEST_METHOD"]=="POST")
     $username = $_POST['username'];
     $password = $_POST['password'];
 
-    $sql = "SELECT * FROM user_details WHERE username = '$username' AND password='$password'";
+    $sql = "SELECT * FROM user_details WHERE Email = '$username' AND `Password`='$password'";
     $result = $conn->query($sql);
 
     if($result->num_rows ==1)
