@@ -1,7 +1,7 @@
 <?php
 $host="localhost";
 $user="root";
-$password="Prerna@2004";
+$password="Jaimini@2005";
 $dbname="gift_shop";
 
 $conn = new mysqli($host,$user,$password,$dbname);
@@ -16,7 +16,7 @@ if($_SERVER["REQUEST_METHOD"]=="POST")
     $username = $_POST['username'];
     $password = $_POST['password'];
 
-    $sql = "SELECT * FROM user_details WHERE username = '$username' AND password='$password'";
+    $sql = "SELECT * FROM user_details WHERE Email = '$username' AND `Password`='$password'";
     $result = $conn->query($sql);
 
     if($result->num_rows ==1)
