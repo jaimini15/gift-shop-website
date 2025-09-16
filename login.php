@@ -11,7 +11,7 @@ if($conn->connect_error)
     die("Connection failed");
 }
 
-if($_SERVER["REQUEST_METHOD"]=="POST")
+if($_SERVER["REQUEST_METHOD"] == "POST")
 {
     $username = $_POST['username'];
     $password = $_POST['password'];
@@ -19,13 +19,13 @@ if($_SERVER["REQUEST_METHOD"]=="POST")
     $sql = "SELECT * FROM user_details WHERE Email = '$username' AND `Password`='$password'";
     $result = $conn->query($sql);
 
-    if($result->num_rows ==1)
+    if($result->num_rows == 1 )
     {
         echo "Login Successful";
     }
     else
     {
-        echo "Invalid <a href='index.html'>Try again </a>;
+        echo "Invalid <a href='index.html'>Try again </a>";
     }
 }
 
