@@ -59,6 +59,68 @@
 </section>
 <!--home about section ends here-->
 
+
+<!--home package section strats here-->
+
+<section class="home-package">
+
+    <h1 class="heading-title">our packages</h1>
+
+    <div class="box-container">
+
+        <div class="box">
+            <div class="image">
+                <img src="home_category_mug.jpg">
+            </div>
+            <div class="content">
+                <h3>Tajmahal</h3>
+                <p>Price : &#8377; 5000/person</p>
+                <p>Duration : 3 days/2 nights</p>
+                <a href="contact_us.html" class="btn">Book now</a>
+            </div>
+        </div>
+
+        <div class="box">
+            <div class="image">
+                <img src="home_category_mobile.jpg">
+            </div>
+            <div class="content">
+                <h3>Dalhousie</h3>
+                <p>Price : &#8377; 10500/person</p>
+                <p>Duration : 13 days/12 nights</p>
+                <a href="contact_us.html" class="btn">Book now</a>
+            </div>
+        </div>
+
+        <div class="box">
+            <div class="image">
+                <img src="home_category_frame.jpg">
+            </div>
+            <div class="content">
+                <h3>Masuri</h3>
+                <p>Price : &#8377; 8500/person</p>
+                <p>Duration : 8 days/7 nights</p>
+                <a href="contact_us.html" class="btn">Book now</a>
+            </div>
+        </div>
+
+         <div class="box">
+            <div class="image">
+                <img src="home_category_book.jpg">
+            </div>
+            <div class="content">
+                <h3>Masuri</h3>
+                <p>Price : &#8377; 8500/person</p>
+                <p>Duration : 8 days/7 nights</p>
+                <a href="contact_us.html" class="btn">Book now</a>
+            </div>
+        </div>
+
+    </div>
+    <div class="load-more"><a href="package.html" class="btn">Load more</a></div>
+</section>
+
+<!--home package section ends here-->
   <!-- Font Awesome -->
   <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </body>
