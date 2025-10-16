@@ -832,7 +832,7 @@ body {
 /* our mission section starts */
 /* Our Mission Section */
 .mission-section {
-  background: #f9f7ef; /* soft beige tone */
+  background:var(--main-color); /* soft beige tone */
   padding: 60px 20px;
   display: flex;
   justify-content: center;
@@ -843,7 +843,7 @@ body {
 .mission-container {
   display: flex;
   align-items: center;
-  background: #fff;
+  background: var(--white);
   border-radius: 10px;
   box-shadow: 0 4px 15px rgba(0,0,0,0.1);
   padding: 40px 60px;
@@ -879,7 +879,7 @@ body {
 .mission-content p {
   font-size: 1.1rem;
   line-height: 1.8;
-  color: #333;
+  color:var(--grey);
   max-width: 700px;
 }
 
