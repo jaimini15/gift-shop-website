@@ -4,8 +4,8 @@
     <nav>
       <ul>
         <li><a href="#" class="active">Home</a></li> |
-        <li><a href="#">Shop</a></li> | 
-        <li><a href="#">About us</a></li> |
+        <li><a href="#">About us</a></li> | 
+        <li><a href="#">Shop</a></li> |
         <li><a href="#">Contact</a></li>
       </ul>
     </nav>
