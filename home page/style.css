@@ -1,0 +1,165 @@
+/* RESET & BASE STYLES */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+body {
+  background-color: #fff;
+  color: #222;
+}
+
+/* HEADER */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 80px;
+  border-bottom: 1px solid #eee;
+}
+
+.logo {
+  font-size: 26px;
+  font-weight: 700;
+}
+.logo span {
+  color: #444;
+}
+
+nav ul {
+  display: flex;
+  gap: 30px;
+  list-style: none;
+}
+
+nav ul li a {
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+}
+nav ul li a.active {
+  font-weight: 700;
+}
+
+.icons a {
+  text-decoration: none;
+  color: #333;
+  margin-left: 20px;
+  font-size: 14px;
+}
+
+/* HERO SECTION */
+.hero {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /*height: 100vh;  Full viewport height */
+  background-color: #f8f3ee; /* Your requested background color */
+  padding: 0;
+}
+
+.hero-left,
+.hero-content {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.hero-content {
+  flex: 1.5;
+  flex-direction: column;
+  text-align: left;
+  padding: 0 40px;
+}
+
+.hero-right {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* RIGHT IMAGE — full width and height of its section */
+.hero-right .hero-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 0; /* No border radius for edge-to-edge */
+}
+
+/* LEFT IMAGE — remains normal */
+.hero-left .hero-img {
+  width: 80%;
+  max-width: 350px;
+  border-radius: 20px;
+  object-fit: cover;
+}
+
+/* HERO CONTENT TEXT */
+.hero-content .collection {
+  color: #e86c1a;
+  font-weight: 600;
+}
+
+.hero-content h1 {
+  font-size: 36px;
+  font-weight: 700;
+  margin: 10px 0;
+}
+
+.hero-content .subtitle {
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.shop-btn {
+  background: none;
+  border: 2px solid #000;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.shop-btn:hover {
+  background-color: #000;
+  color: #fff;
+}
+
+/* FEATURES SECTION */
+.features {
+  text-align: center;
+  padding: 60px 80px;
+  background-color: #fff;
+}
+
+.features h2 {
+  font-size: 20px;
+  margin-bottom: 30px;
+  display: inline-block;
+  border-bottom: 1px solid #000;
+}
+
+.feature-container {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  margin-top: 30px;
+}
+
+.feature {
+  max-width: 300px;
+}
+
+.feature h3 {
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.feature p {
+  color: #666;
+  font-size: 14px;
+}
