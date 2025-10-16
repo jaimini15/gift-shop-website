@@ -9,14 +9,15 @@
    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 </head>
 <body>
-    <?php include 'navbar.php'; ?> 
+    <?php require_once 'navbar.php'; ?> 
   <section class="hero">
     <div class="hero-left">
       <img src="homephoto2.jpg" alt="Decor Image" class="hero-img">
     </div>
     <div class="hero-content">
-      <p class="collection">New Collection</p>
-      <h1>Afforable and quanlity products</h1>
+      <p class="collection">The Perfect Gift, Designed by You</p>
+      <h1>From frames to mugs make it personal, <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;make it special.</h1>
       <p class="subtitle">Supporting local makers since 2025</p>
       <button class="shop-btn">SHOP NOW</button>
     </div>
@@ -64,7 +65,7 @@
 
 <section class="home-package">
 
-    <h1 class="heading-title">our packages</h1>
+    <h1 class="heading-title">Our Categories</h1>
 
     <div class="box-container">
 
@@ -73,10 +74,8 @@
                 <img src="home_category_mug.jpg">
             </div>
             <div class="content">
-                <h3>Tajmahal</h3>
-                <p>Price : &#8377; 5000/person</p>
-                <p>Duration : 3 days/2 nights</p>
-                <a href="contact_us.html" class="btn">Book now</a>
+                <h3>Mug</h3>
+                <a href="contact_us.html" class="btn">Explore</a>
             </div>
         </div>
 
@@ -85,10 +84,8 @@
                 <img src="home_category_mobile.jpg">
             </div>
             <div class="content">
-                <h3>Dalhousie</h3>
-                <p>Price : &#8377; 10500/person</p>
-                <p>Duration : 13 days/12 nights</p>
-                <a href="contact_us.html" class="btn">Book now</a>
+                <h3>Mobile Cover</h3>
+                <a href="contact_us.html" class="btn">Explore</a>
             </div>
         </div>
 
@@ -97,10 +94,8 @@
                 <img src="home_category_frame.jpg">
             </div>
             <div class="content">
-                <h3>Masuri</h3>
-                <p>Price : &#8377; 8500/person</p>
-                <p>Duration : 8 days/7 nights</p>
-                <a href="contact_us.html" class="btn">Book now</a>
+                <h3>Photo Frame</h3>
+                <a href="contact_us.html" class="btn">Explore</a>
             </div>
         </div>
 
@@ -109,18 +104,31 @@
                 <img src="home_category_book.jpg">
             </div>
             <div class="content">
-                <h3>Masuri</h3>
-                <p>Price : &#8377; 8500/person</p>
-                <p>Duration : 8 days/7 nights</p>
-                <a href="contact_us.html" class="btn">Book now</a>
+                <h3>Dairies</h3>
+                <a href="contact_us.html" class="btn">Explore</a>
             </div>
         </div>
 
     </div>
-    <div class="load-more"><a href="package.html" class="btn">Load more</a></div>
 </section>
 
 <!--home package section ends here-->
+
+<!--home offer section starts here-->
+
+<section class="home-offer">
+    <div class="content">
+        <h3>Upto 50% off</h3>
+        <p>Celebrate love, laughter, and memories with custom-made treasures.<br>
+Shop today and save up to 50% on your perfect gift!</p>
+        <a href="contact_us.html" class="btn">Shop now</a>
+    </div>
+</section>
+
+
+<!--home offer section ends here-->
+
+<?php require_once 'footer.php' ?>
   <!-- Font Awesome -->
   <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </body>
