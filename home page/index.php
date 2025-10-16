@@ -30,19 +30,34 @@
     <h2>Our Amazing Feature</h2>
     <div class="feature-container">
       <div class="feature">
-        <h3>100k Satisfied Customers</h3>
-        <p>Nam liber tempor cum soluta nobis eleifend option congue.</p>
+        <h3>Live Previews</h3>
+        <p>See exactly how your custom gift will look before you buy.</p>
       </div>
       <div class="feature">
-        <h3>Expert Customer Service</h3>
-        <p>Nam liber tempor cum soluta nobis eleifend option congue.</p>
+        <h3>Gift Wrapping & Personalized Cards</h3>
+        <p>Make it extra special with beautiful wrapping and heartfelt cards.</p>
       </div>
       <div class="feature">
-        <h3>Fast & Free Shipping</h3>
-        <p>Nam liber tempor cum soluta nobis eleifend option congue.</p>
+        <h3>Free Hampers</h3>
+        <p>Add 3 or more products to your cart and unlock our curated hamper option all in one.</p>
       </div>
     </div>
   </section>
+
+  <!--home about section starts here-->
+<section class="home-about">
+
+    <div class="image">
+        <img src="home_about_mobile1.jpg">
+    </div>
+
+    <div class="content">
+        <h3>About Us</h3>
+        <p>FlyAway makes travel planning effortless by offering seamless itineraries tailored to your preferences. Whether you seek adventure, culture, or luxury, we customize every trip to suit your style...</p>
+        <a href="about.html" class="btn">read more</a>
+    </div>
+</section>
+<!--home about section ends here-->
 
   <!-- Font Awesome -->
   <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
