@@ -5,6 +5,10 @@
     --white:#fff;
     --main-color:#f8f3ee;
     --grey:#333;
+    --btn-hover:#000;
+    --black:#222;
+     --border:.1rem solid var(--black);
+     --box-shadow:0 0.5rem 1rem rgba(0,0,0,.1);
 }
 
 /* HEADER */
@@ -135,13 +139,13 @@ body {
 
 .shop-btn {
   background: none;
-  border: 2px solid #000;
+  border: 2px solid var(--btn-hover);
   padding: 10px 20px;
   cursor: pointer;
   transition: 0.3s;
 }
 .shop-btn:hover {
-  background-color: #000;
+  background-color: var(--btn-hover);
   color:var(--white);
 }
 
@@ -156,7 +160,7 @@ body {
   font-size: 20px;
   margin-bottom: 30px;
   display: inline-block;
-  border-bottom: 1px solid #000;
+  border-bottom: 1px solid var(--btn-hover);
 }
 
 .feature-container {
@@ -181,9 +185,135 @@ body {
 }
 /* Feature section ends */
 /* about section starts */
+
+/* ABOUT SECTION */
 .home-about {
-section{
-    padding:5rem 10%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding: 80px 100px;
+  background-color: var(--white);
+  gap: 40px;
 }
+
+.home-about .image {
+  flex: 1 1 40%;
+  max-width: 400px;
+  aspect-ratio: 1 / 1; /* 👈 Makes image square */
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+   padding: 0px;
 }
+
+.home-about .image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+ 
+}
+
+.home-about .content {
+  flex: 1 1 50%;
+  background-color: var(--main-color);
+  padding: 40px 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 300px; /* 👈 Makes it more like a rectangle box */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05); /* Optional: soft shadow */
+}
+
+.home-about .content h3 {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--btn-hover);
+  margin-bottom: 15px;
+}
+
+.home-about .content p {
+  font-size: 15px;
+  color: #333;
+  line-height: 1.7;
+  margin-bottom: 35px;
+
+}
+
+.home-about .btn {
+  background-color: var(--btn-hover);
+  color: var(--white);
+  padding: 8px 16px; /* 👈 Smaller button like FlyAway */
+  font-size: 14px;
+  text-decoration: none;
+  font-weight: 500;
+  display: inline-block;
+  border-radius: 4px;
+  transition: background 0.3s;
+  width: fit-content;
+}
+
+.home-about .btn:hover {
+  background-color: #222;
+}
+
 /* about section ends */
+
+
+
+/* Package section starts */
+
+.home-package{
+    background: var(--main-color);
+ 
+}
+
+.home-package .box-container .box{
+    border: var(--border);
+    box-shadow: var(--box-shadow);
+    background: var(--white);
+}
+.home-package .box-container{
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(30rem,1fr));
+    gap: 2rem;
+}
+
+.home-package .box-container .image{
+    height: 25rem;
+    overflow: hidden;
+    
+}
+
+.home-package .box-container .box .image img{
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    transition: .2s linear;
+}
+
+.home-package .box-container .box .content{
+    padding:2rem;
+    text-align: center;
+}
+
+
+.home-package .box-container .box .content h3{
+    font-size: 2.5rem;
+    color:var(--black);
+}
+
+.home-package .box-container .box .content p{
+    font-size: 1.5rem;
+    color:var(--black);
+    line-height: 2;
+    padding: 1rem 0;
+}
+
+.home-package .load-more{
+    text-align: center;
+    margin-top: 2rem;
+}
+/* Package section ends */
