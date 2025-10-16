@@ -111,7 +111,7 @@ Perfect for celebrations, corporate gifting, or festive occasions</p>
       <p>
         "Traveling has never been this easy! The FlyAway team understood exactly what I was looking for and planned an itinerary full of incredible experiences. Every detail was handled professionally, and the price was unbeatable.
       </p>
-      <h3>Joe Root</h3>
+      <h3>Riya Rathod</h3>
       <span>Traveler</span>
       <img src="about_our_team_riya.jpg" alt="Client Joe Root">
     </div>
@@ -120,7 +120,7 @@ Perfect for celebrations, corporate gifting, or festive occasions</p>
       <p>
         "I was skeptical at first, but FlyAway exceeded my expectations! Their recommendations were spot-on, and the booking process was smooth. I got great discounts on flights and hotels, and everything was hassle-free. A fantastic service!"
       </p>
-      <h3>Smith Alice</h3>
+      <h3>Jaimini Shah</h3>
       <span>Traveler</span>
       <img src="about_our_team_jaimini.jpg" alt="Client Smith Alice">
     </div>
@@ -129,7 +129,7 @@ Perfect for celebrations, corporate gifting, or festive occasions</p>
       <p>
         "FlyAway truly cares about its customers. From the moment I booked, I felt supported. They even helped me with last-minute travel changes without extra charges. It’s rare to find such a reliable and customer-friendly travel service."
       </p>
-      <h3>Smith Sofia</h3>
+      <h3>Prerna Nankani</h3>
       <span>Traveler</span>
       <img src="about_our_team_prerna.jpg" alt="Client Smith Sofia">
     </div>
