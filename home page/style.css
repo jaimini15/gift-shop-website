@@ -9,6 +9,7 @@
     --black:#222;
      --border:.1rem solid var(--black);
      --box-shadow:0 0.5rem 1rem rgba(0,0,0,.1);
+     --btn-color:#7e2626d5;
 }
 
 /* HEADER */
@@ -23,9 +24,10 @@ header {
 .logo {
   font-size: 26px;
   font-weight: 700;
+  color:var(--btn-color)
 }
 .logo span {
-  color: #444;
+  color:var(--btn-color);
 }
 
 nav ul {
@@ -67,7 +69,76 @@ body {
   color: #222;
 }
 
+/* Dropdown styling */
+.dropdown-content {
+  display: none; /* hidden by default */
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: #fff;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  border-radius: 5px;
+  min-width: 160px;
+  padding: 0;
+  margin: 0;
+  z-index: 10;
+}
 
+/* Dropdown container */
+.dropdown {
+  position: relative;
+}
+
+/* Hide dropdown by default */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: #fff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  min-width: 160px;
+  padding: 0;
+  margin: 0;
+  z-index: 10;
+}
+
+/* Dropdown section start */
+
+/* Make dropdown items vertical */
+.dropdown-content li {
+  list-style: none;
+  border-bottom: 1px solid #eee;
+}
+
+.dropdown-content li:last-child {
+  border-bottom: none;
+}
+
+/* Style links inside dropdown */
+.dropdown-content li a {
+  display: block;
+  padding: 0.8rem 1.2rem;
+  color:var(--btn-color);
+  font-size: 1rem;
+  text-decoration: none;
+  transition: background 0.2s, color 0.2s;
+}
+
+/* Hover effect for dropdown links */
+.dropdown-content li a:hover {
+  background: #f8f8f8;
+  color:var(--black);
+}
+
+/* Show dropdown on hover */
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+
+/* Dropdown section ends */
 
 /* HERO SECTION */
 .hero {
@@ -123,11 +194,12 @@ body {
 /* HERO CONTENT TEXT */
 .hero-content .collection {
   color: #e86c1a;
-  font-weight: 600;
+  font-weight: 800;
+  font-size:2rem;
 }
 
 .hero-content h1 {
-  font-size: 32px;
+  font-size: 1.4rem;
   font-weight: 700;
   margin: 10px 0;
 }
@@ -138,14 +210,21 @@ body {
 }
 
 .shop-btn {
-  background: none;
-  border: 2px solid var(--btn-hover);
-  padding: 10px 20px;
-  cursor: pointer;
-  transition: 0.3s;
+  background-color:var(--btn-color);
+  color: var(--white);
+  padding: 15px 24px; /* 👈 Smaller button like FlyAway */
+  font-size: 1.2rem;
+  text-decoration: none;
+  font-weight: 500;
+  display: inline-block;
+  border-radius: 6px;
+  transition: background 0.3s;
+  width: fit-content;
+  border:none;
+
 }
 .shop-btn:hover {
-  background-color: var(--btn-hover);
+  background-color: var(--black);
   color:var(--white);
 }
 
@@ -243,7 +322,7 @@ body {
 }
 
 .home-about .btn {
-  background-color: var(--btn-hover);
+  background-color:var(--btn-color);
   color: var(--white);
   padding: 8px 16px; /* 👈 Smaller button like FlyAway */
   font-size: 14px;
@@ -261,59 +340,193 @@ body {
 
 /* about section ends */
 
-
-
 /* Package section starts */
 
-.home-package{
+.home-package {
     background: var(--main-color);
- 
+    padding: 4rem 6rem;
 }
 
-.home-package .box-container .box{
-    border: var(--border);
-    box-shadow: var(--box-shadow);
-    background: var(--white);
+.home-package .heading-title {
+    text-align: center;
+    font-size: 3rem;
+    font-weight: 700;
+    color: #222;
+    margin-bottom: 3rem;
+    text-transform: capitalize;
 }
-.home-package .box-container{
+
+.home-package .box-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit,minmax(30rem,1fr));
+    grid-template-columns: repeat(4, 1fr);
     gap: 2rem;
+    justify-content: center;
+    align-items: stretch;
 }
 
-.home-package .box-container .image{
-    height: 25rem;
+.home-package .box {
+    background: #fff;
+    border-radius: 1rem;
+    box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.1);
     overflow: hidden;
-    
-}
-
-.home-package .box-container .box .image img{
-    height: 100%;
-    width: 100%;
-    object-fit: cover;
-    transition: .2s linear;
-}
-
-.home-package .box-container .box .content{
-    padding:2rem;
+    transition: all 0.3s ease;
     text-align: center;
 }
 
-
-.home-package .box-container .box .content h3{
-    font-size: 2.5rem;
-    color:var(--black);
+.home-package .box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 1rem 2rem rgba(0,0,0,0.15);
 }
 
-.home-package .box-container .box .content p{
-    font-size: 1.5rem;
-    color:var(--black);
+.home-package .image {
+    width: 100%;
+    height: 20rem;
+    overflow: hidden;
+}
+
+.home-package .image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.home-package .box:hover .image img {
+    transform: scale(1.05);
+}
+
+.home-package .content {
+    padding: 2rem;
+}
+
+.home-package .content h3 {
+    font-size: 2rem;
+    color: #222;
+    margin-bottom: 1rem;
+}
+
+.home-package .content p {
+    font-size: 1.4rem;
+    color: #555;
+    margin-bottom: 0.5rem;
+}
+
+.home-package .content .btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.8rem 2rem;
+    background:var(--btn-color);
+    color: #fff;
+    border-radius: 0.5rem;
+    font-size: 1.4rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: background 0.3s ease;
+}
+
+.home-package .content .btn:hover {
+    background: #333;
+}
+
+.box .content a{
+  text-decoration: none;
+}
+
+/* Package section ends */
+
+/* Offer section starts */
+.home-offer{
+    text-align:center;
+    padding-top:60px;
+    padding-bottom: 60px;
+}
+
+.home-offer .content{
+    max-width: 70rem;
+    margin:0 auto;
+}
+.home-offer .content h3{
+    text-transform: uppercase;
+    font-size: 2rem;
+    color: var(--black);
+}
+
+.home-offer .content p{
+    font-size: 1rem;
+    color: var(--light-black);
     line-height: 2;
     padding: 1rem 0;
 }
 
-.home-package .load-more{
-    text-align: center;
-    margin-top: 2rem;
+.home-offer .content .btn {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.8rem 2rem;
+    background:var(--btn-color);
+    color: #fff;
+    border-radius: 0.5rem;
+    font-size: 1.4rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: background 0.3s ease;
 }
-/* Package section ends */
+.home-offer .content a{
+  text-decoration: none;
+}
+/* Offer section ends */
+
+/* footer section starts */
+
+.footer {
+    background:var(--main-color);  /* dark background */
+    padding: 4rem 8%;
+    color:var(--black);
+}
+
+.footer .box-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 3rem;
+}
+
+.footer .box h3 {
+    font-size: 2rem;
+    color: var(--grey);
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+}
+
+.footer .box a {
+    display: block;
+    font-size: 1rem;
+    color:var(--btn-color);
+    text-decoration: none;
+    margin-bottom: 1rem;
+    transition: color 0.3s ease, padding-left 0.3s ease;
+}
+
+.footer .box a i {
+    color: var(--black); /* purple accent */
+    margin-right: 0.5rem;
+}
+
+.footer .box a:hover {
+    color: var(--black);
+    padding-left: 0.5rem;
+}
+
+.footer .credit {
+    text-align: center;
+    border-top: 1px solid #333;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    font-size: 1.2rem;
+    color:var(--black);
+}
+
+.footer .credit span {
+    color:var(--btn-color); /* purple highlight */
+    font-weight: 800;
+}
+
+/* footer section ends */
