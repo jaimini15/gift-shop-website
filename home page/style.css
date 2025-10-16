@@ -57,7 +57,7 @@ nav ul li a.active {
   align-items: center;
   /*height: 100vh;  Full viewport height */
   background-color: #f8f3ee; /* Your requested background color */
-  padding: 0 60px;
+  padding: 0;
 }
 
 .hero-left,
