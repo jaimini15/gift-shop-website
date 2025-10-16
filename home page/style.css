@@ -1,14 +1,10 @@
-/* RESET & BASE STYLES */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: "Poppins", sans-serif;
-}
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
-body {
-  background-color: #fff;
-  color: #222;
+
+:root{
+    --white:#fff;
+    --main-color:#f8f3ee;
+    --grey:#333;
 }
 
 /* HEADER */
@@ -36,7 +32,7 @@ nav ul {
 
 nav ul li a {
   text-decoration: none;
-  color: #333;
+  color:var(--grey);
   font-weight: 500;
 }
 nav ul li a.active {
@@ -45,10 +41,29 @@ nav ul li a.active {
 
 .icons a {
   text-decoration: none;
-  color: #333;
+  color:var(--grey);
   margin-left: 20px;
   font-size: 14px;
+
 }
+i {
+  font-size:26px;
+}
+
+/* RESET & BASE STYLES */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+body {
+  background-color:var(--white);
+  color: #222;
+}
+
+
 
 /* HERO SECTION */
 .hero {
@@ -56,8 +71,9 @@ nav ul li a.active {
   justify-content: center;
   align-items: center;
   /*height: 100vh;  Full viewport height */
-  background-color: #f8f3ee; /* Your requested background color */
-  padding: 0;
+  background-color:var(--main-color); /* Your requested background color */
+  padding-left: 100px;   /*Keep padding on the left */
+  padding-right: 0;
 }
 
 .hero-left,
@@ -67,6 +83,7 @@ nav ul li a.active {
   align-items: center;
   justify-content: center;
   height: 100%;
+   padding-left: 60px;
 }
 
 .hero-content {
@@ -79,22 +96,21 @@ nav ul li a.active {
 .hero-right {
   flex: 1;
   height: 100%;
+  width: 100%;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-end;
 }
-
-/* RIGHT IMAGE — full width and height of its section */
 .hero-right .hero-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 0; /* No border radius for edge-to-edge */
+  border-radius: 0;
 }
 
 /* LEFT IMAGE — remains normal */
 .hero-left .hero-img {
-  width: 80%;
+  width: 100%;
   max-width: 350px;
   border-radius: 20px;
   object-fit: cover;
@@ -107,7 +123,7 @@ nav ul li a.active {
 }
 
 .hero-content h1 {
-  font-size: 36px;
+  font-size: 32px;
   font-weight: 700;
   margin: 10px 0;
 }
@@ -126,14 +142,14 @@ nav ul li a.active {
 }
 .shop-btn:hover {
   background-color: #000;
-  color: #fff;
+  color:var(--white);
 }
 
 /* FEATURES SECTION */
 .features {
   text-align: center;
   padding: 60px 80px;
-  background-color: #fff;
+  background-color: var(--white);
 }
 
 .features h2 {
@@ -163,3 +179,11 @@ nav ul li a.active {
   color: #666;
   font-size: 14px;
 }
+/* Feature section ends */
+/* about section starts */
+.home-about {
+section{
+    padding:5rem 10%;
+}
+}
+/* about section ends */
