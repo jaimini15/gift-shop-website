@@ -3,8 +3,8 @@
     <div class="logo">GiftShop</div>
     <nav>
       <ul>
-        <li><a href="#" class="active">Home</a></li> |
-        <li><a href="#">About us</a></li> | 
+        <li><a href="index.php" class="active">Home</a></li> |
+        <li><a href="about.php">About us</a></li> | 
         <li class="dropdown">
         <a href="#">Shop</a>
         <ul class="dropdown-content">
@@ -23,5 +23,5 @@
     </div>
   </header>
 
-  <!-- HERO SECTION -->
+  <!-- HEADER SECTION ENDS HERE-->
    
