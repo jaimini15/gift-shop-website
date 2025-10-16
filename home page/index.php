@@ -9,22 +9,57 @@
    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 </head>
 <body>
-    <?php require_once 'navbar.php'; ?> 
-  <section class="hero">
+    <?php require_once 'navbar.php'; ?>
+    <!-- HERO SLIDER SECTION -->
+<section class="hero-slider">
+
+  <div class="slide active">
     <div class="hero-left">
       <img src="homephoto2.jpg" alt="Decor Image" class="hero-img">
     </div>
     <div class="hero-content">
       <p class="collection">The Perfect Gift, Designed by You</p>
-      <h1>From frames to mugs make it personal, <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;make it special.</h1>
+      <h1>From frames to mugs make it personal, make it special.</h1>
       <p class="subtitle">Supporting local makers since 2025</p>
       <button class="shop-btn">SHOP NOW</button>
     </div>
     <div class="hero-right">
       <img src="homephoto1.jpg" alt="Decor Image" class="hero-img">
     </div>
-  </section>
+  </div>
+
+  <div class="slide">
+    <div class="hero-left">
+      <img src="slide2_left.jpg" alt="Decor Image" class="hero-img">
+    </div>
+    <div class="hero-content">
+      <p class="collection">Make Memories Last Forever</p>
+      <h1>Customize photo frames that tell your story.</h1>
+      <p class="subtitle">Crafted with love and care</p>
+      <button class="shop-btn">SHOP NOW</button>
+    </div>
+    <div class="hero-right">
+      <img src="slide2_right.jpg" alt="Decor Image" class="hero-img">
+    </div>
+  </div>
+
+  <div class="slide">
+    <div class="hero-left">
+      <img src="slide3_left.jpg" alt="Decor Image" class="hero-img">
+    </div>
+    <div class="hero-content">
+      <p class="collection">A Gift for Every Occasion</p>
+      <h1>From birthdays to anniversaries, make every moment special.</h1>
+      <p class="subtitle">Find your perfect personalized surprise</p>
+      <button class="shop-btn">SHOP NOW</button>
+    </div>
+    <div class="hero-right">
+      <img src="slide3_right.jpg" alt="Decor Image" class="hero-img">
+    </div>
+  </div>
+
+</section>
+
 
   <!-- FEATURES SECTION -->
   <section class="features">
@@ -131,5 +166,8 @@ Shop today and save up to 50% on your perfect gift!</p>
 <?php require_once 'footer.php' ?>
   <!-- Font Awesome -->
   <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+  <!-- JavaScript link -->
+   <script src="script.js"></script>
 </body>
 </html>
