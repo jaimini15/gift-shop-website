@@ -55,7 +55,7 @@
     <div class="content">
         <h3>About Us</h3>
         <p>FlyAway makes travel planning effortless by offering seamless itineraries tailored to your preferences. Whether you seek adventure, culture, or luxury, we customize every trip to suit your style...</p>
-        <a href="about.html" class="btn">read more</a>
+        <a href="about.php" class="btn">read more</a>
     </div>
 </section>
 <!--home about section ends here-->
