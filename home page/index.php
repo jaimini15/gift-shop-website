@@ -11,8 +11,7 @@
 <body>
     <?php require_once 'navbar.php'; ?>
     <!-- HERO SLIDER SECTION -->
-    <section class="hero"> <div class="hero-left"> <img src="homephoto2.jpg" alt="Decor Image" class="hero-img"> </div> <div class="hero-content"> <p class="collection">The Perfect Gift, Designed by You</p> 
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<h1>From frames to mugs make it personal, 
+    <section class="hero"> <div class="hero-left"> <img src="homephoto2.jpg" alt="Decor Image" class="hero-img"> </div> <div class="hero-content"> <p class="collection">The Perfect Gift, Designed by You</p> <h1 >From frames to mugs make it personal, 
 <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;make it special.</h1> <p class="subtitle">Supporting local makers since 2025</p> <button class="shop-btn">SHOP NOW</button> </div> <div class="hero-right"> <img src="homephoto1.jpg" alt="Decor Image" class="hero-img"> </div> </section>
 
 
