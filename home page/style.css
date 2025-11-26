@@ -156,7 +156,7 @@ body {
 
 /* Dropdown section ends */
 
-/* HERO SECTION */
+/*HERO SECTION*/
 .hero {
   display: flex;
   justify-content: center;
@@ -239,9 +239,39 @@ body {
   border:none;
 
 }
-.shop-btn:hover {
+/* .shop-btn:hover {
   background-color: var(--black);
   color:var(--white);
+} */
+/* ============================
+   CAROUSEL – UNIFORM SLIDE SIZE
+   ============================ */
+
+#carouselExampleCaptions {
+  width: 100%;
+}
+
+.carousel-item {
+  height: 500px;              /* FIXED HEIGHT FOR ALL SLIDES */
+  position: relative;
+}
+
+.carousel-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;          /* Fills entire slide, no distortion */
+  object-position: center;
+}
+
+/* Optional: Caption styling for cleaner UI */
+.carousel-caption {
+  bottom: 40px;
+}
+
+.carousel-indicators button {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
 }
 
 /* FEATURES SECTION */
@@ -715,10 +745,6 @@ body {
 /*  section ends */
 
 
-
-
-
-
 /* services section starts */
 
 .about-services {
@@ -901,4 +927,7 @@ body {
 
 /* our mission section ends */
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 6583a9a1e083aae0b2240aac4c66088634212e37
