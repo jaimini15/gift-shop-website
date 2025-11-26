@@ -39,10 +39,10 @@ make it special.</h1> <p class="subtitle">Supporting local makers since 2025</p>
           </div>
 
           <div class="hero-content">
-            <p class="collection">Customize Everything</p>
-            <h1>Give your mobile cover<br>a personal touch.</h1>
-            <p class="subtitle">Premium quality • Trendy designs</p>
-            <button class="shop-btn">CUSTOMIZE NOW</button>
+            <p class="collection">The Perfect Gift, Designed by You</p>
+            <h1>From frames to mugs make it personal,<br>make it special.</h1>
+            <p class="subtitle">Supporting local makers since 2025</p>
+            <button class="shop-btn">SHOP NOW</button>
           </div>
 
           <div class="hero-right">
@@ -57,7 +57,7 @@ make it special.</h1> <p class="subtitle">Supporting local makers since 2025</p>
       <div class="hero-slide">
         <section class="hero">
           <div class="hero-left">
-            <img src="home_category_mug.jpg" class="hero-img">
+            <img src="homepage_slide2_img1.jpg" class="hero-img">
           </div>
 
           <div class="hero-content">
