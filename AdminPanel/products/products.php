@@ -9,7 +9,7 @@
 <body style="margin-left:260px; padding:20px;">
 <h2 class="fw-bold">Manage Products</h2>
 
-<a href="add_product.php" class="btn btn-primary mt-3 mb-3">+ Add Product</a>
+<a href="add_products.php" class="btn btn-primary mt-3 mb-3">+ Add Product</a>
 
 <?php
 $query = "
@@ -45,8 +45,11 @@ if(mysqli_num_rows($result) == 0){
     <td><?= $row['Price'] ?></td>
     <td><?= $row['Status'] ?></td>
     <td>
-        <a href="edit_product.php?id=<?= $row['Product_Id'] ?>" class="btn btn-warning btn-sm">Edit</a>
-        <a href="delete_product.php?id=<?= $row['Product_Id'] ?>" class="btn btn-danger btn-sm">Delete</a>
+        <a href="edit_products.php?id=<?= $row['Product_Id'] ?>" class="btn btn-sm btn-primary">Edit</a>
+
+<a href="delete_products.php?id=<?= $row['Product_Id'] ?>" 
+   class="btn btn-sm btn-danger"
+   onclick="return confirm('Delete this product?')">Delete</a>
     </td>
 </tr>
 <?php } ?>
