@@ -20,12 +20,13 @@ make it special.</h1> <p class="subtitle">Supporting local makers since 2025</p>
 <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel">
 
   <!-- ========== INDICATORS (DOTS) ========== -->
-  <div class="carousel-indicators">
-    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active" aria-current="true"></button>
-    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1"></button>
-    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2"></button>
-    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="3"></button>
-  </div>
+ <div class="carousel-indicators">
+    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active" aria-current="true" style="background-color: black;"></button>
+    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1" style="background-color: black;"></button>
+    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2" style="background-color: black;"></button>
+    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="3" style="background-color: black;"></button>
+</div>
+
 
   <div class="carousel-inner">
 
@@ -34,18 +35,18 @@ make it special.</h1> <p class="subtitle">Supporting local makers since 2025</p>
       <div class="hero-slide">
         <section class="hero">
           <div class="hero-left">
-            <img src="homephoto2.jpg" class="hero-img">
+            <img src="home_category_mug.jpg" class="hero-img">
           </div>
 
           <div class="hero-content">
             <p class="collection">The Perfect Gift, Designed by You</p>
-            <h1>From frames to mugs make it personal,make it special.</h1>
+            <h1>From frames to mugs make it personal,<br>make it special.</h1>
             <p class="subtitle">Supporting local makers since 2025</p>
             <button class="shop-btn">SHOP NOW</button>
           </div>
 
           <div class="hero-right">
-            <img src="homephoto1.jpg" class="hero-img">
+            <img src="homemug1.jpg" class="hero-img">
           </div>
         </section>
       </div>
@@ -60,18 +61,19 @@ make it special.</h1> <p class="subtitle">Supporting local makers since 2025</p>
           </div>
 
           <div class="hero-content">
-            <p class="collection">Create Memories</p>
-            <h1>Beautiful custom mugs made<br>just for you.</h1>
-            <p class="subtitle">Your design • Your style • Your gift</p>
-            <button class="shop-btn">EXPLORE</button>
+            <p class="collection">Customize Everything</p>
+            <h1>Give your mobile cover<br>a personal touch.</h1>
+            <p class="subtitle">Premium quality • Trendy designs</p>
+            <button class="shop-btn">CUSTOMIZE NOW</button>
           </div>
 
           <div class="hero-right">
-            <img src="home_category_frame.jpg" class="hero-img">
+            <img src="homemug1.jpg" class="hero-img">
           </div>
         </section>
       </div>
     </div>
+
 
     <!-- ========== SLIDE 3 ========== -->
     <div class="carousel-item">
