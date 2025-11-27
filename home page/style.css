@@ -650,47 +650,39 @@ body {
 
 
 
-/* services section starts */
-
 .home-package {
     background: var(--main-color);
-    padding: 3rem 5rem;
+    padding: 1rem 2rem; /* reduced padding */
 }
 
 .home-package .heading-title {
     text-align: center;
-    font-size: 1.5rem;
+    font-size: 1rem; /* slightly smaller */
     font-weight: 700;
     color: #222;
-    margin-bottom: 3rem;
-    text-transform: capitalize;
+    margin-bottom: 1rem; /* reduced space */
 }
 
 .home-package .box-container {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 2rem;
+    gap: 1rem; /* reduced gap */
     justify-content: center;
     align-items: stretch;
 }
 
 .home-package .box {
     background: #fff;
-    border-radius: 1rem;
-    box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.1);
+    border-radius: 0.8rem; /* slightly smaller radius */
+    box-shadow: 0 0.4rem 0.8rem rgba(0,0,0,0.1);
     overflow: hidden;
     transition: all 0.3s ease;
     text-align: center;
 }
 
-.home-package .box:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 1rem 2rem rgba(0,0,0,0.15);
-}
-
 .home-package .image {
     width: 100%;
-    height: 20rem;
+    height: 14rem; /* reduced image height */
     overflow: hidden;
 }
 
@@ -706,29 +698,29 @@ body {
 }
 
 .home-package .content {
-    padding: 2rem;
+    padding: 1.5rem; /* reduced padding */
 }
 
 .home-package .content h3 {
-    font-size: 0.5rem;
+    font-size: 1rem; /* corrected from 0.5rem which was very small */
     color: #222;
-    margin-bottom: 1rem;
+    margin-bottom: 0.8rem;
 }
 
 .home-package .content p {
-    font-size: 1rem;
+    font-size: 0.9rem;
     color: #555;
     margin-bottom: 0.5rem;
 }
 
 .home-package .content .btn {
     display: inline-block;
-    margin-top: 1rem;
-    padding: 0.8rem 2rem;
-    background:var(--btn-color);
+    margin-top: 0.8rem;
+    padding: 0.6rem 1.5rem; /* smaller button */
+    background: var(--btn-color);
     color: #fff;
-    border-radius: 0.5rem;
-    font-size: 1rem;
+    border-radius: 0.4rem;
+    font-size: 0.9rem;
     text-transform: uppercase;
     letter-spacing: 1px;
     transition: background 0.3s ease;
@@ -741,8 +733,6 @@ body {
 .box .content a{
   text-decoration: none;
 }
-
-/*  section ends */
 
 
 /* services section starts */
