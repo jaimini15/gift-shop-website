@@ -64,14 +64,6 @@ i {
 }
 
 
-
-
-}
-
-
-
-
-
 /* RESET & BASE STYLES */
 * {
   margin: 0;
@@ -156,7 +148,7 @@ body {
 
 /* Dropdown section ends */
 
-/*HERO SECTION*/
+/* HERO SECTION */
 .hero {
   display: flex;
   justify-content: center;
@@ -239,39 +231,9 @@ body {
   border:none;
 
 }
-/* .shop-btn:hover {
+.shop-btn:hover {
   background-color: var(--black);
   color:var(--white);
-} */
-/* ============================
-   CAROUSEL – UNIFORM SLIDE SIZE
-   ============================ */
-
-#carouselExampleCaptions {
-  width: 100%;
-}
-
-.carousel-item {
-  height: 500px;              /* FIXED HEIGHT FOR ALL SLIDES */
-  position: relative;
-}
-
-.carousel-item img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;          /* Fills entire slide, no distortion */
-  object-position: center;
-}
-
-/* Optional: Caption styling for cleaner UI */
-.carousel-caption {
-  bottom: 40px;
-}
-
-.carousel-indicators button {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
 }
 
 /* FEATURES SECTION */
@@ -395,7 +357,7 @@ body {
 
 .home-package .heading-title {
     text-align: center;
-    font-size: 3rem;
+    font-size: 2rem;
     font-weight: 700;
     color: #222;
     margin-bottom: 3rem;
@@ -442,17 +404,17 @@ body {
 }
 
 .home-package .content {
-    padding: 2rem;
+    padding: 1.5rem;
 }
 
 .home-package .content h3 {
-    font-size: 2rem;
+    font-size: 0.2rem;
     color: #222;
     margin-bottom: 1rem;
 }
 
 .home-package .content p {
-    font-size: 1.4rem;
+    font-size: 0.5rem;
     color: #555;
     margin-bottom: 0.5rem;
 }
@@ -464,7 +426,7 @@ body {
     background:var(--btn-color);
     color: #fff;
     border-radius: 0.5rem;
-    font-size: 1.4rem;
+    font-size: 1rem;
     text-transform: uppercase;
     letter-spacing: 1px;
     transition: background 0.3s ease;
@@ -650,39 +612,47 @@ body {
 
 
 
+/* services section starts */
+
 .home-package {
     background: var(--main-color);
-    padding: 1rem 2rem; /* reduced padding */
+    padding: 4rem 6rem;
 }
 
 .home-package .heading-title {
     text-align: center;
-    font-size: 1rem; /* slightly smaller */
+    font-size: 3rem;
     font-weight: 700;
     color: #222;
-    margin-bottom: 1rem; /* reduced space */
+    margin-bottom: 3rem;
+    text-transform: capitalize;
 }
 
 .home-package .box-container {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 1rem; /* reduced gap */
+    gap: 2rem;
     justify-content: center;
     align-items: stretch;
 }
 
 .home-package .box {
     background: #fff;
-    border-radius: 0.5rem; /* slightly smaller radius */
-    box-shadow: 0 0.4rem 0.8rem rgba(0,0,0,0.1);
+    border-radius: 1rem;
+    box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.1);
     overflow: hidden;
     transition: all 0.3s ease;
     text-align: center;
 }
 
+.home-package .box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 1rem 2rem rgba(0,0,0,0.15);
+}
+
 .home-package .image {
     width: 100%;
-    height: 10rem; /* reduced image height */
+    height: 20rem;
     overflow: hidden;
 }
 
@@ -698,29 +668,29 @@ body {
 }
 
 .home-package .content {
-    padding: 1rem; /* reduced padding */
+    padding: 2rem;
 }
 
 .home-package .content h3 {
-    font-size: 0.5rem; /* corrected from 0.5rem which was very small */
+    font-size: 2rem;
     color: #222;
-    margin-bottom: 0.8rem;
+    margin-bottom: 1rem;
 }
 
 .home-package .content p {
-    font-size: 0.9rem;
+    font-size: 1.4rem;
     color: #555;
     margin-bottom: 0.5rem;
 }
 
 .home-package .content .btn {
     display: inline-block;
-    margin-top: 0.8rem;
-    padding: 0.4rem 1.3rem; /* smaller button */
-    background: var(--btn-color);
+    margin-top: 1rem;
+    padding: 0.8rem 2rem;
+    background:var(--btn-color);
     color: #fff;
-    border-radius: 0.4rem;
-    font-size: 0.9rem;
+    border-radius: 0.5rem;
+    font-size: 1.4rem;
     text-transform: uppercase;
     letter-spacing: 1px;
     transition: background 0.3s ease;
@@ -733,6 +703,12 @@ body {
 .box .content a{
   text-decoration: none;
 }
+
+/*  section ends */
+
+
+
+
 
 
 /* services section starts */
@@ -917,7 +893,4 @@ body {
 
 /* our mission section ends */
 
-<<<<<<< HEAD
 
-=======
->>>>>>> 6583a9a1e083aae0b2240aac4c66088634212e37
