@@ -35,7 +35,7 @@ make it special.</h1> <p class="subtitle">Supporting local makers since 2025</p>
       <div class="hero-slide">
         <section class="hero">
           <div class="hero-left">
-            <img src="home_category_mug.jpg" class="hero-img">
+            <img src="homepagephoto1_slide1.jpg" class="hero-img">
           </div>
 
           <div class="hero-content">
@@ -46,7 +46,7 @@ make it special.</h1> <p class="subtitle">Supporting local makers since 2025</p>
           </div>
 
           <div class="hero-right">
-            <img src="homemug1.jpg" class="hero-img">
+            <img src="homephoto2.jpg" class="hero-img">
           </div>
         </section>
       </div>
@@ -68,7 +68,7 @@ make it special.</h1> <p class="subtitle">Supporting local makers since 2025</p>
           </div>
 
           <div class="hero-right">
-            <img src="homemug1.jpg" class="hero-img">
+            <img src="homepagemug_silde2.jpg" class="hero-img">
           </div>
         </section>
       </div>
@@ -91,7 +91,7 @@ make it special.</h1> <p class="subtitle">Supporting local makers since 2025</p>
           </div>
 
           <div class="hero-right">
-            <img src="home_category_book.jpg" class="hero-img">
+            <img src="homepagemobile_silde3.jpg" class="hero-img">
           </div>
         </section>
       </div>
@@ -102,7 +102,7 @@ make it special.</h1> <p class="subtitle">Supporting local makers since 2025</p>
       <div class="hero-slide">
         <section class="hero">
           <div class="hero-left">
-            <img src="home_about_mobile1.jpg" class="hero-img">
+            <img src="homepagebook_silde4.jpg" class="hero-img">
           </div>
 
           <div class="hero-content">
@@ -113,7 +113,7 @@ make it special.</h1> <p class="subtitle">Supporting local makers since 2025</p>
           </div>
 
           <div class="hero-right">
-            <img src="homephoto2.jpg" class="hero-img">
+            <img src="home_category_book.jpg" class="hero-img">
           </div>
         </section>
       </div>
