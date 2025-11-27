@@ -55,6 +55,13 @@ nav ul li a.active {
 i {
   font-size:26px;
 }
+.hero-slide {
+    width: 100%;
+    height: 520px; /* adjust as you like */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
 /* RESET & BASE STYLES */
 * {
