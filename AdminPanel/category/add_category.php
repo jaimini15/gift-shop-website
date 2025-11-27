@@ -4,9 +4,10 @@
 if(isset($_POST['submit'])){
     $name = $_POST['name'];
     $desc = $_POST['description'];
+    $status = $_POST['status']; // NEW
 
     $query = "INSERT INTO Category_Details (Category_Name, Description, Status) 
-              VALUES ('$name', '$desc', 'Enabled')";
+              VALUES ('$name', '$desc', '$status')";
 
     mysqli_query($connection, $query);
 
@@ -35,7 +36,21 @@ if(isset($_POST['submit'])){
         <textarea name="description" class="form-control"></textarea>
     </div>
 
+    <!-- NEW STATUS DROPDOWN -->
+    <div class="mb-3">
+        <label class="form-label">Status</label>
+        <select name="status" class="form-select" required>
+            <option value="Enabled">Enabled</option>
+            <option value="Disabled">Disabled</option>
+        </select>
+    </div>
+
     <button type="submit" name="submit" class="btn btn-success">Add</button>
 </form>
+
 </body>
 </html>
+
+
+
+ 
