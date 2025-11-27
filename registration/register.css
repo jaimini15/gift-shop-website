@@ -1,0 +1,84 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    height: 100vh; /* full screen height */
+    background: linear-gradient(to bottom, #f8f3ee, #7e2626d5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden; /* prevent scrolling */
+}
+
+/* Form Card */
+.register-card {
+    width: 330px; /* slightly smaller so fits on any screen */
+    background: #ffffffea;
+    padding: 25px;
+    border-radius: 20px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+    text-align: center;
+
+    /* ensures form never goes out of screen height */
+    max-height: 85vh;
+    overflow: hidden;
+}
+
+@keyframes pop {
+    from { transform: scale(0.8); opacity: 0 }
+    to { transform: scale(1); opacity: 1 }
+}
+
+.register-card h2 {
+    margin-bottom: 12px;
+    font-size: 23px;
+    font-weight: 600;
+    color: #444;
+}
+
+.input-box {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.input-box input {
+    width: 100%;
+    padding: 10px;
+    background: #f1f1f1;
+    border: none;
+    border-radius: 6px;
+    font-size: 15px;
+    outline: none;
+}
+
+.register-btn {
+    width: 100%;
+    margin-top: 10px;
+    padding: 12px;
+    background: #7e2626d5;
+    border: none;
+    color: white;
+    border-radius: 50px;
+    font-size: 17px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.register-btn:hover {
+    background: #222;
+}
+
+.login-info {
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+.login-info a {
+    color: #7e2626;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.login-info a:hover {
+    text-decoration: underline;
+}
