@@ -98,7 +98,7 @@
 
   <a href="#" class="active"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
   <a href="#"><i class="fa-solid fa-users"></i> Users</a>
-  <a href="AdminPanel/categories.php"><i class="fa-solid fa-layer-group"></i> Categories</a>
+  <a href="category/categories.php"><i class="fa-solid fa-layer-group"></i> Categories</a>
   <a href="#"><i class="fa-solid fa-box"></i> Products</a>
   <a href="#"><i class="fa-solid fa-boxes-packing"></i> Stock</a>
   <a href="#"><i class="fa-solid fa-cart-shopping"></i> Orders</a>
