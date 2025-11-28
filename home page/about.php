@@ -19,10 +19,10 @@
         <li class="dropdown">
         <a href="#">Shop</a>
         <ul class="dropdown-content">
-          <li><a href="mug.html">Mug</a></li>
-          <li><a href="frame.html">Frame</a></li>
-          <li><a href="cover.html">Mobile Cover</a></li>
-          <li><a href="diary.html">Dairies</a></li>
+         <li><a href="../product_page/mug.php">Mug</a></li>
+          <li><a href="../product_page/frame.php">Frame</a></li>
+          <li><a href="../product_page/mobilecover.php">Mobile Cover</a></li>
+          <li><a href="../product_page/diaries.php">Dairies</a></li>
         </ul>
       </li> |
         <li><a href="#">Contact</a></li>
@@ -56,7 +56,7 @@ designed to make every moment special.
        Whether it's a birthday, anniversary, festival, or corporate event, our mission is to help you create 
        thoughtful and memorable gifts for your loved ones.
       </p>
-      <a href="#" class="btn">Explore Our Collection</a>
+      <a href="category_section.php" class="btn">Explore Our Collection</a>
     </div>
 
   </div>
