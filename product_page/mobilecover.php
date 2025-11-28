@@ -14,8 +14,8 @@
 
 
     <section class="hero-title">
-    <h1>Personalized Wooden Birthday Gifts</h1>
-    <p>Find the perfect birthday gift for every special someone in your life</p>
+    <h1>Make Your Phone Stand Out</h1>
+    <p>Personalized covers that match your personality.</p>
 </section>
 
 <?php require_once '../home page/footer.php' ?>
