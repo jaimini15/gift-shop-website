@@ -65,12 +65,12 @@
       background: #495057;
     }
 
-    /* CONTENT AREA */
     .content {
-      margin-left: 260px;
-      padding: 20px;
-      margin-top: 90px;
-    }
+    margin-left: 260px;
+    padding: 20px;
+    padding-top: 30px; /* smaller space below fixed header */
+}
+
 
     .card-box {
       border-radius: 12px;
@@ -114,7 +114,7 @@
 <!-- MAIN CONTENT -->
 <div class="content">
   
-  <h2 class="fw-bold mb-3">Dashboard Overview</h2>
+  <h2 class="fw-bold mb-0">Dashboard Overview</h2>
 
   <!-- Dashboard Cards -->
   <div class="row g-4">
