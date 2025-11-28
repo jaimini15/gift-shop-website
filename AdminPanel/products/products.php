@@ -45,11 +45,7 @@ if(mysqli_num_rows($result) == 0){
     <td><?= $row['Price'] ?></td>
     <td><?= $row['Status'] ?></td>
     <td>
-        <a href="edit_products.php?id=<?= $row['Product_Id'] ?>" class="btn btn-sm btn-primary">Edit</a>
-
-<a href="delete_products.php?id=<?= $row['Product_Id'] ?>" 
-   class="btn btn-sm btn-danger"
-   onclick="return confirm('Delete this product?')">Delete</a>
+        <a href="edit_products.php?id=<?= $row['Product_Id'] ?>" class="btn btn-sm btn-warning">Edit</a>
     </td>
 </tr>
 <?php } ?>
