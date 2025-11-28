@@ -36,9 +36,9 @@
             <img src="home_category_mug.jpg" class="hero-img">
           </div>
           <div class="hero-content">
-            <p class="collection">Customize Everything</p>
-            <h1>Give your mobile cover<br>a personal touch.</h1>
-            <p class="subtitle">Premium quality • Trendy designs</p>
+            <p class="collection">Sip in Style</p>
+            <h1>Design Your Mug<br>Just the Way You Imagine</h1>
+            <p class="subtitle">Premium quality • Perfect for gifts</p>
             <button class="shop-btn">CUSTOMIZE NOW</button>
           </div>
           <div class="hero-right">
