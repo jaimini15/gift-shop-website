@@ -14,15 +14,15 @@
     <div class="logo">GiftShop</div>
     <nav>
       <ul>
-        <li><a href="index.php" >Home</a></li> |
-        <li><a href="about.php" >About us</a></li> | 
+       <li><a href="../home page/index.php" >Home</a></li> |
+        <li><a href="../home page/about.php" >About us</a></li> 
         <li class="dropdown">
         <a href="#" class="active">Shop</a>
         <ul class="dropdown-content">
-          <li><a href="mug.html">Mug</a></li>
-          <li><a href="frame.html">Frame</a></li>
-          <li><a href="cover.html">Mobile Cover</a></li>
-          <li><a href="diary.html">Dairies</a></li>
+         <li><a href="mug.php">Mug</a></li>
+          <li><a href="frame.php">Frame</a></li>
+          <li><a href="mobilecover.php">Mobile Cover</a></li>
+          <li><a href="diaries.php">Dairies</a></li>
         </ul>
       </li> |
         <li><a href="#">Contact</a></li>
