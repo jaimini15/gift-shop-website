@@ -1,0 +1,104 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    height: 100vh;
+    background: linear-gradient(to bottom, #f8f3ee, #7e2626d5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+/* Login Card */
+.login-card {
+    width: 320px;
+    background: #ffffffea;
+    padding: 28px;
+    border-radius: 20px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+    text-align: center;
+}
+
+.logo img {
+    width: 85px;
+    height: 85px;
+    border-radius: 50%;
+    margin-bottom: 12px;
+    object-fit: cover;
+    border: 3px solid #7e2626;
+}
+
+.login-card h2 {
+    margin-bottom: 15px;
+    font-size: 24px;
+    color: #444;
+}
+
+.input-box {
+    width: 100%;
+    margin-bottom: 12px;
+}
+
+.input-box input {
+    width: 100%;
+    padding: 12px;
+    background: #f1f1f1;
+    border: none;
+    border-radius: 6px;
+    font-size: 15px;
+    outline: none;
+}
+
+/* Remember + Forgot Row */
+.row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.remember {
+    font-size: 14px;
+    color: #444;
+}
+
+.forgot-link {
+    font-size: 14px;
+    text-decoration: none;
+    color: #7e2626;
+}
+
+.login-btn {
+    width: 100%;
+    margin-top: 12px;
+    padding: 12px;
+    background: #7e2626d5;
+    border: none;
+    color: white;
+    border-radius: 50px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.login-btn:hover {
+    background: #14a978;
+}
+
+.register-link {
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+.register-link a {
+    text-decoration: none;
+    color: #7e2626;
+    font-weight: bold;
+}
+.logo i {
+    font-size: 85px;        /* size of the icon */
+    color: #7e2626;         /* color of the icon */
+    margin-bottom: 12px;
+}
+
