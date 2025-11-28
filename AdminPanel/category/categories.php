@@ -1,4 +1,5 @@
 <?php include("../db.php"); ?>
+<?php include("../layout.php")?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -79,17 +80,17 @@
 <body>
 
 <!-- HEADER -->
-<div class="header">
+<!-- <div class="header">
     <div class="logo fw-bold fs-4">
         <i class="fa-solid fa-gift text-danger"></i> GiftShop Admin
     </div>
     <div>
         <i class="fa-solid fa-user-shield"></i> Admin
     </div>
-</div>
+</div> -->
 
 <!-- SIDEBAR -->
-<div class="sidebar">
+<!-- <div class="sidebar">
     <a href="../admin.php"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
     <a href="#"><i class="fa-solid fa-users"></i> Users</a>
     <a href="categories.php" class="active"><i class="fa-solid fa-layer-group"></i> Categories</a>
@@ -100,7 +101,7 @@
     <a href="#"><i class="fa-solid fa-truck"></i> Delivery</a>
     <a href="#"><i class="fa-solid fa-comments"></i> Feedback</a>
     <a href="#"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
-</div>
+</div> -->
 
 <!-- CONTENT AREA -->
 <div class="content">
