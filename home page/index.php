@@ -39,7 +39,7 @@
             <p class="collection">Sip in Style</p>
             <h1>Design Your Mug<br>Just the Way You Imagine</h1>
             <p class="subtitle">Premium quality • Perfect for gifts</p>
-            <button class="shop-btn">CUSTOMIZE NOW</button>
+            <button class="shop-btn" onclick="location.href='#categories'">CUSTOMIZE NOW</button>
           </div>
           <div class="hero-right">
             <img src="homemug1.jpg" class="hero-img">
@@ -57,7 +57,7 @@
             <p class="collection">Customize Everything</p>
             <h1>Give your mobile cover<br>a personal touch.</h1>
             <p class="subtitle">Premium quality • Trendy designs</p>
-            <button class="shop-btn">CUSTOMIZE NOW</button>
+            <button class="shop-btn" onclick="location.href='#categories'">CUSTOMIZE NOW</button>
           </div>
           <div class="hero-right">
             <img src="homepagemobile_silde3.jpg" class="hero-img">
@@ -75,7 +75,7 @@
             <p class="collection">Customize Everything</p>
             <h1>Give your mobile cover<br>a personal touch.</h1>
             <p class="subtitle">Premium quality • Trendy designs</p>
-            <button class="shop-btn">CUSTOMIZE NOW</button>
+            <button class="shop-btn" onclick="location.href='#categories'">CUSTOMIZE NOW</button>
           </div>
           <div class="hero-right">
             <img src="homephoto2.jpg" class="hero-img">
@@ -93,7 +93,7 @@
             <p class="collection">Perfect Gifts</p>
             <h1>Photo frames, diaries, and<br>unique handmade gifts.</h1>
             <p class="subtitle">Perfect for every occasion</p>
-            <button class="shop-btn">SHOP COLLECTION</button>
+            <button class="shop-btn" onclick="location.href='#categories'">SHOP COLLECTION</button>
           </div>
           <div class="hero-right">
             <img src="home_category_book.jpg" class="hero-img">
@@ -145,47 +145,7 @@
   </section>
 
   <!-- CATEGORIES SECTION (UNCHANGED) -->
-  <section class="home-package">
-    <h1 class="heading-title">Our Categories</h1>
-    <div class="box-container">
-      <div class="box">
-        <div class="image">
-          <img src="home_category_mug.jpg">
-        </div>
-        <div class="content">
-          <h3>Mug</h3>
-          <a href="contact_us.html" class="btn">Explore</a>
-        </div>
-      </div>
-      <div class="box">
-        <div class="image">
-          <img src="home_category_mobile.jpg">
-        </div>
-        <div class="content">
-          <h3>Mobile Cover</h3>
-          <a href="contact_us.html" class="btn">Explore</a>
-        </div>
-      </div>
-      <div class="box">
-        <div class="image">
-          <img src="home_category_frame.jpg">
-        </div>
-        <div class="content">
-          <h3>Photo Frame</h3>
-          <a href="contact_us.html" class="btn">Explore</a>
-        </div>
-      </div>
-      <div class="box">
-        <div class="image">
-          <img src="home_category_book.jpg">
-        </div>
-        <div class="content">
-          <h3>Dairies</h3>
-          <a href="contact_us.html" class="btn">Explore</a>
-        </div>
-      </div>
-    </div>
-  </section>
+  <?php include 'category_section.php'; ?>
 
   <!-- OFFER SECTION -->
   <section class="home-offer">
