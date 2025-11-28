@@ -554,7 +554,7 @@ body {
   grid-template-columns: 1fr 1fr;
   align-items: center;
   background: var(--white);
-  width: 90%;
+  width: 80%;
   max-width: 1100px;
   border-radius: 12px;
   box-shadow: 0 4px 15px rgba(0,0,0,0.1);
