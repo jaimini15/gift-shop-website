@@ -21,10 +21,13 @@ make it special.</h1> <p class="subtitle">Supporting local makers since 2025</p>
 
   <!-- ========== INDICATORS (DOTS) ========== -->
   <div class="carousel-indicators">
-    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active" aria-current="true"></button>
-    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1"></button>
-    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2"></button>
-    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="3"></button>
+    <div class="carousel-indicators">
+    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active" aria-current="true" style="background-color: black;"></button>
+    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1" style="background-color: black;"></button>
+    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2" style="background-color: black;"></button>
+    <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="3" style="background-color: black;"></button>
+</div>
+
   </div>
 
   <div class="carousel-inner">
