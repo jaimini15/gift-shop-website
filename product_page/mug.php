@@ -14,8 +14,8 @@
 
 
     <section class="hero-title">
-    <h1>Personalized Wooden Birthday Gifts</h1>
-    <p>Find the perfect birthday gift for every special someone in your life</p>
+    <h1>Perfect Personalized Gifts</h1>
+    <p>Thoughtful mugs designed for every occasion.</p>
 </section>
 
 <?php require_once '../home page/footer.php' ?>
