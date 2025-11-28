@@ -40,20 +40,31 @@ $page = isset($page_files[$page_name]) ? $page_files[$page_name] : $page_files['
     }
 
     /* HEADER */
-    .header {
-        height: 70px;
-        background: #fff;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        position: fixed;
-        top: 0;
-        left: 260px;
-        right: 0;
-        display: flex;
-        align-items: center;
-        padding: 0 30px;
-        justify-content: space-between;
-        z-index: 100;
-    }
+.header {
+    position: fixed;
+    top: 0;
+    left: 260px; /* same as sidebar width */
+    right: 0;
+    height: 70px;
+    line-height: 70px; /* vertically center text */
+    padding: 0 20px;
+    z-index: 100;
+    background: #fff;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* CONTENT AREA */
+.content {
+    margin-left: 260px; /* sidebar width */
+    padding: 20px;
+    padding-top: 20px; /* instead of margin-top */
+}
+
+
+
 
     /* SIDEBAR */
     .sidebar {
@@ -63,7 +74,7 @@ $page = isset($page_files[$page_name]) ? $page_files[$page_name] : $page_files['
         position: fixed;
         top: 0;
         left: 0;
-        padding-top: 80px;
+        padding-top: 60px;
         color: #fff;
         overflow-y: auto;
     }
@@ -85,12 +96,15 @@ $page = isset($page_files[$page_name]) ? $page_files[$page_name] : $page_files['
         background: #495057;
     }
 
-    /* CONTENT AREA */
-    .content {
-        margin-left: 260px;
-        padding: 20px;
-        margin-top: 90px;
-    }
+   
+
+    /* inside dashboard.php or a specific CSS file */
+.page-container {
+    margin-top: 0;
+    padding-top: 0;
+}
+
+
 
     .card-box {
         border-radius: 12px;
