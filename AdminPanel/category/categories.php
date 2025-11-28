@@ -140,7 +140,6 @@
 
                     <td>
                         <a href="edit_category.php?id=<?= $row['Category_Id'] ?>" class="btn btn-sm btn-warning">Edit</a>
-                        <a href="delete_category.php?id=<?= $row['Category_Id'] ?>" class="btn btn-sm btn-danger">Delete</a>
                     </td>
                 </tr>
                 <?php } ?>
