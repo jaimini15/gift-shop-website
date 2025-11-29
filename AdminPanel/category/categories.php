@@ -8,16 +8,14 @@ include(__DIR__ . '/../db.php');  // Correct path to db.php
     <meta charset="UTF-8">
     <title>Categories - Admin Panel</title>
 
-    <!-- Bootstrap -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-
-    <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
     <style>
         body { background: #f4f6f9; font-family: Arial, sans-serif; }
         .content { margin-left: 120px; padding: 20px; margin-top: 30px; }
         .card-box { background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+        .cat-img { width: 70px; height: 70px; object-fit: cover; border-radius: 8px; }
     </style>
 </head>
 <body>
@@ -42,6 +40,7 @@ include(__DIR__ . '/../db.php');  // Correct path to db.php
                 <tr>
                     <th>ID</th>
                     <th>Category Name</th>
+                    <th>Image</th> <!-- NEW -->
                     <th>Description</th>
                     <th>Status</th>
                     <th>Action</th>
@@ -52,10 +51,24 @@ include(__DIR__ . '/../db.php');  // Correct path to db.php
                 <tr>
                     <td><?= $row['Category_Id'] ?></td>
                     <td><?= $row['Category_Name'] ?></td>
+
+                    <!-- SHOW IMAGE -->
+                    <td>
+                        <?php if (!empty($row['Category_Image'])) { ?>
+                            <img src="data:image/jpeg;base64,<?= base64_encode($row['Category_Image']); ?>"
+                                 class="cat-img">
+                        <?php } else { ?>
+                            <span class="text-muted">No Image</span>
+                        <?php } ?>
+                    </td>
+
                     <td><?= $row['Description'] ?></td>
                     <td><?= $row['Status'] ?></td>
+
                     <td>
-                        <a href="edit_category.php?id=<?= $row['Category_Id'] ?>" class="btn btn-sm btn-warning">Edit</a>
+                        <a href="category/edit_category.php?id=<?= $row['Category_Id'] ?>" class="btn btn-sm btn-warning">
+                            Edit
+                        </a>
                     </td>
                 </tr>
                 <?php } ?>
