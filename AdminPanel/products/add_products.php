@@ -1,28 +1,35 @@
 <?php include("../db.php"); ?>
+
 <?php
-// Fetch all categories for dropdown
+// Fetch categories for dropdown
 $cat_query = mysqli_query($connection, "SELECT * FROM Category_Details WHERE Status='Enabled'");
 
 if(isset($_POST['submit'])){
+
     $cat_id = $_POST['category_id'];
     $pname = $_POST['product_name'];
     $pdesc = $_POST['description'];
     $price = $_POST['price'];
     $status = $_POST['status'];
 
-    // Image upload
-    $image_name = $_FILES['product_image']['name'];
-    $tmp = $_FILES['product_image']['tmp_name'];
-    $path = "uploads/".$image_name;
-    move_uploaded_file($tmp, $path);
+    // -------------------------------
+    // 🔥 FIXED IMAGE UPLOAD (store as BLOB)
+    // -------------------------------
+    $imageData = file_get_contents($_FILES['product_image']['tmp_name']);
+    $imageData = mysqli_real_escape_string($connection, $imageData);
 
-    $query = "INSERT INTO Product_Details 
-    (Category_Id, Product_Name, Product_Image, Description, Price, Status)
-    VALUES ('$cat_id', '$pname', '$image_name', '$pdesc', '$price', '$status')";
+    // Insert Query
+    $query = "
+        INSERT INTO Product_Details
+        (Category_Id, Product_Name, Product_Image, Description, Price, Status)
+        VALUES
+        ('$cat_id', '$pname', '$imageData', '$pdesc', '$price', '$status')
+    ";
 
     mysqli_query($connection, $query);
 
-    header("Location: products.php?msg=added");
+    header("Location: ../layout.php?view=products&msg=added");
+    exit();
 }
 ?>
 
