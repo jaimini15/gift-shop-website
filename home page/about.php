@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GiftShop | Home</title>
   <link rel="stylesheet" href="style.css" />
+   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" 
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
   
    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 </head>
@@ -56,7 +58,8 @@ designed to make every moment special.
        Whether it's a birthday, anniversary, festival, or corporate event, our mission is to help you create 
        thoughtful and memorable gifts for your loved ones.
       </p>
-      <a href="category_section.php" class="btn">Explore Our Collection</a>
+      <a href="index.php#categories" class="btn">Explore Our Collection</a>
+
     </div>
 
   </div>
@@ -73,22 +76,20 @@ designed to make every moment special.
         <div class="box">
             <div class="content">
                 <h3>Live Previews</h3>
-                <p>See your personalized gift come to life before you buy!
-Our live preview feature lets you visualize names, photos, or messages on your chosen product instantly.
-It ensures every detail — from color to placement — is exactly how you want it.
-No surprises, just confidence in your custom creation.
-Create gifts that look perfect from the start!</p>
+                <p>Our Live Preview tool shows your design exactly as it will appear on the product. 
+                  Whether you add a photo, name, or message, you can see every update instantly. 
+                  This allows you to adjust sizes and placements with ease. 
+                  It ensures your personalized gift turns out just the way you imagined with no surprises when it arrives.</p>
             </div>
         </div>
 
         <div class="box">
             <div class="content">
                 <h3>Gift Wrapping & Personalized Cards</h3>
-                <p>Every gift deserves a beautiful presentation.
-We offer elegant gift wrapping in a range of styles and colors to match any occasion.
-Add a heartfelt message with a personalized greeting card to make your gift even more special.
-Whether it’s for a birthday, anniversary, or “just because,” your recipient will feel the love before they even open it.
-Because presentation is part of the magic.</p>
+                <p>Make your gift feel extra special with our premium wrapping and personalized message card. 
+                  With just one click, you can add these thoughtful extras to your order for a small additional cost.  
+                  We take care of the presentation for you. Neatly wrapped and paired with a heartfelt message card written by you. 
+                   We ensure the wrapping is elegant and suitable for any occasion. </p>
             </div>
         </div>
 
