@@ -72,9 +72,9 @@
             <img src="homepagephoto1_slide1.jpg " class="hero-img">
           </div>
           <div class="hero-content">
-            <p class="collection">Customize Everything</p>
-            <h1>Give your mobile cover<br>a personal touch.</h1>
-            <p class="subtitle">Premium quality • Trendy designs</p>
+            <p class="collection">Frame Your Moments</p>
+            <h1>Make your memories stand out<br> with a personalized frame.</h1>
+            <p class="subtitle">High-quality build • Beautiful finishes</p>
             <button class="shop-btn" onclick="location.href='#categories'">CUSTOMIZE NOW</button>
           </div>
           <div class="hero-right">
@@ -90,9 +90,9 @@
             <img src="homepagebook_silde4.jpg" class="hero-img">
           </div>
           <div class="hero-content">
-            <p class="collection">Perfect Gifts</p>
-            <h1>Photo frames, diaries, and<br>unique handmade gifts.</h1>
-            <p class="subtitle">Perfect for every occasion</p>
+            <p class="collection">Personal Touch, Perfect Finish</p>
+            <h1>Feature your own photo or <br>short message on the diary cover</h1>
+            <p class="subtitle">Clean look • Superior craftsmanship</p>
             <button class="shop-btn" onclick="location.href='#categories'">SHOP COLLECTION</button>
           </div>
           <div class="hero-right">
@@ -139,7 +139,9 @@
     </div>
     <div class="content">
       <h3>About Us</h3>
-      <p>FlyAway makes travel planning effortless by offering seamless itineraries tailored to your preferences. Whether you seek adventure, culture, or luxury, we customize every trip to suit your style...</p>
+      <p>GiftShop specializes in creating personalized gifts like mugs, mobile covers, photo frames, and diaries. 
+        We focus on premium quality products designed just the way you want.
+      </p>
       <a href="about.php" class="btn">read more</a>
     </div>
   </section>
