@@ -1,57 +1,35 @@
-<?php 
-include("../db.php");
+<?php include("../db.php"); ?>
 
+<?php
 $id = $_GET['id'];
+$data = mysqli_fetch_assoc(mysqli_query($connection, "SELECT * FROM Category_Details WHERE Category_Id=$id"));
 
-// Fetch current category data
-$data = mysqli_fetch_assoc(mysqli_query(
-    $connection, 
-    "SELECT * FROM Category_Details WHERE Category_Id = $id"
-));
-
-if (isset($_POST['update'])) {
-
-    $name   = $_POST['name'];
-    $desc   = $_POST['description'];
+if(isset($_POST['update'])){
+    $name = $_POST['name'];
+    $desc = $_POST['description'];
     $status = $_POST['status'];
 
-    // Check if new image uploaded
-    if (!empty($_FILES['image']['name'])) {
+    // If a new image is uploaded
+    if(!empty($_FILES['image']['tmp_name'])){
+        $image = addslashes(file_get_contents($_FILES['image']['tmp_name']));
 
-        $img = $_FILES['image']['name'];
-        $tmp = $_FILES['image']['tmp_name'];
-
-        // Upload new image
-        move_uploaded_file($tmp, "uploads/" . $img);
-
-        // Update with new image
-        $query = "
-            UPDATE Category_Details SET
-                Category_Name  = '$name',
-                Description    = '$desc',
-                Status         = '$status',
-                Category_Image = '$img'
-            WHERE Category_Id = $id
-        ";
-
+        $query = "UPDATE Category_Details 
+                  SET Category_Name='$name',
+                      Description='$desc',
+                      Status='$status',
+                      Category_Image='$image'
+                  WHERE Category_Id=$id";
     } else {
-
         // No new image → keep old one
-        $old_img = $data['Category_Image'];
-
-        $query = "
-            UPDATE Category_Details SET
-                Category_Name  = '$name',
-                Description    = '$desc',
-                Status         = '$status',
-                Category_Image = '$old_img'
-            WHERE Category_Id = $id
-        ";
+        $query = "UPDATE Category_Details 
+                  SET Category_Name='$name',
+                      Description='$desc',
+                      Status='$status'
+                  WHERE Category_Id=$id";
     }
 
     mysqli_query($connection, $query);
-    header("Location: ../layout.php?view=categories&msg=updated");
-    exit();
+    header("Location: ../layout.php?view=categories&msg=added");
 }
 ?>
 
@@ -62,7 +40,7 @@ if (isset($_POST['update'])) {
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 
     <style>
-        .preview-img {
+        .preview-img{
             width:120px;
             height:120px;
             object-fit:cover;
@@ -79,43 +57,35 @@ if (isset($_POST['update'])) {
 
 <form method="POST" enctype="multipart/form-data">
 
-    <!-- Name -->
     <div class="mb-3">
         <label class="form-label">Category Name</label>
-        <input type="text" 
-               name="name" 
-               value="<?= $data['Category_Name'] ?>" 
-               required 
-               class="form-control">
+        <input type="text" name="name" value="<?= $data['Category_Name'] ?>" required class="form-control">
     </div>
 
-    <!-- Description -->
     <div class="mb-3">
         <label class="form-label">Description</label>
         <textarea name="description" class="form-control"><?= $data['Description'] ?></textarea>
     </div>
 
-    <!-- Status -->
     <div class="mb-3">
         <label class="form-label">Status</label>
-        <select name="status" class="form-select">
-            <option value="Enabled"  <?= $data['Status'] == "Enabled" ? "selected" : "" ?>>Enabled</option>
+        <select name="status" class="form-select" required>
+            <option value="Enabled" <?= $data['Status'] == "Enabled" ? "selected" : "" ?>>Enabled</option>
             <option value="Disabled" <?= $data['Status'] == "Disabled" ? "selected" : "" ?>>Disabled</option>
         </select>
     </div>
 
-    <!-- Current Image -->
+    <!-- IMAGE FIELD -->
     <div class="mb-3">
         <label class="form-label">Current Image</label><br>
 
-        <?php if (!empty($data['Category_Image'])) { ?>
-            <img src="uploads/<?= $data['Category_Image'] ?>" class="preview-img">
+        <?php if(!empty($data['Category_Image'])) { ?>
+            <img src="data:image/jpeg;base64,<?= base64_encode($data['Category_Image']); ?>" class="preview-img">
         <?php } else { ?>
             <p class="text-muted">No image uploaded</p>
         <?php } ?>
     </div>
 
-    <!-- Upload New Image -->
     <div class="mb-3">
         <label class="form-label">Upload New Image (optional)</label>
         <input type="file" name="image" accept="image/*" class="form-control">
