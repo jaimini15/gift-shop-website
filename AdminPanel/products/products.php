@@ -1,5 +1,5 @@
 <?php
-include(__DIR__ . '/../db.php');  // Correct path to db.php
+include(__DIR__ . '/../db.php');
 ?>
 <!DOCTYPE html>
 <html>
@@ -9,12 +9,17 @@ include(__DIR__ . '/../db.php');  // Correct path to db.php
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 
 <style>
-    /* Same card style used in categories.php */
     .card-box {
         background: #fff;
         padding: 20px;
         border-radius: 12px;
         box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .product-img {
+        height: 60px;
+        width: 60px;
+        object-fit: cover;
+        border-radius: 6px;
     }
 </style>
 
@@ -30,8 +35,8 @@ include(__DIR__ . '/../db.php');  // Correct path to db.php
 
     <?php
     $query = "
-    SELECT p.*, c.Category_Name 
-    FROM Product_Details p 
+    SELECT p.*, c.Category_Name
+    FROM Product_Details p
     LEFT JOIN Category_Details c 
     ON p.Category_Id = c.Category_Id";
     
@@ -47,6 +52,7 @@ include(__DIR__ . '/../db.php');  // Correct path to db.php
             <tr>
                 <th>ID</th>
                 <th>Category</th>
+                <th>Image</th>
                 <th>Product Name</th>
                 <th>Price</th>
                 <th>Status</th>
@@ -59,11 +65,24 @@ include(__DIR__ . '/../db.php');  // Correct path to db.php
             <tr>
                 <td><?= $row['Product_Id'] ?></td>
                 <td><?= $row['Category_Name'] ?></td>
+
+                <!-- IMAGE COLUMN -->
+               <td>
+                        <?php if (!empty($row['Product_Image'])) { ?>
+                            <img src="data:image/jpeg;base64,<?= base64_encode($row['Product_Image']); ?>"
+                                 class="product-img">
+                        <?php } else { ?>
+                            <span class="text-muted">No Image</span>
+                        <?php } ?>
+                </td>
+
                 <td><?= $row['Product_Name'] ?></td>
                 <td><?= $row['Price'] ?></td>
                 <td><?= $row['Status'] ?></td>
+
                 <td>
-                    <a href="edit_products.php?id=<?= $row['Product_Id'] ?>" class="btn btn-sm btn-warning">Edit</a>
+                    <a href="products/edit_products.php?id=<?= $row['Product_Id'] ?>" 
+                       class="btn btn-sm btn-warning">Edit</a>
                 </td>
             </tr>
             <?php } ?>
