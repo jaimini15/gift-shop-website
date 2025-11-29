@@ -4,15 +4,15 @@
 
                 <div class="box">
                     <h3>Quick links</h3>
-                    <a href="home.html"><i class="fas fa-angle-right"></i>Home</a>
-                    <a href="about.html"><i class="fas fa-angle-right"></i>About Us</a>
-                    <a href="package.html"><i class="fas fa-angle-right"></i>Shop</a>
-                    <a href="contact_us.html"><i class="fas fa-angle-right"></i>Contact us</a>
+                    <a href="index.php"><i class="fas fa-angle-right"></i>Home</a>
+                    <a href="about.php"><i class="fas fa-angle-right"></i>About Us</a>
+                    <a href="index.php#categories"><i class="fas fa-angle-right"></i>Shop</a>
+                    <a href="contact_us.php"><i class="fas fa-angle-right"></i>Contact us</a>
                 </div>
 
                 <div class="box">
                     <h3>Extra links</h3>
-                    <a href="#"><i class="fas fa-angle-right"></i>Ask qusetion</a>
+                    <a href="#"><i class="fas fa-angle-right"></i>Ask question</a>
                     <a href="#"><i class="fas fa-angle-right"></i>Privacy policy</a>
                     <a href="#"><i class="fas fa-angle-right"></i>Terms of use</a>
                 </div>

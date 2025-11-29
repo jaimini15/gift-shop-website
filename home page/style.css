@@ -574,6 +574,8 @@ body {
 /* Content area adjustments */
 .about-content {
   padding: 5px 25px; /* smaller padding */
+  padding-top: 20px;
+  padding-bottom: 20px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -582,7 +584,7 @@ body {
 }
 
 .about-content h2 {
-  font-size: 1.5rem;
+  font-size: 1.8rem;
   margin-bottom: 5px;
 }
 
