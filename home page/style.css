@@ -12,49 +12,100 @@
      --btn-color:#7e2626d5;
 }
 
-/* HEADER */
+/* ================= HEADER ================= */
 header {
+  background-color: #fff; /* Solid background */
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 80px;
+  padding: 15px 50px;
   border-bottom: 1px solid #eee;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05); /* subtle shadow */
 }
 
+/* Logo */
 .logo {
   font-size: 26px;
   font-weight: 700;
-  color:var(--btn-color)
-}
-.logo span {
-  color:var(--btn-color);
+  color: var(--btn-color);
 }
 
+/* Navigation */
 nav ul {
   display: flex;
   gap: 30px;
   list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 nav ul li a {
   text-decoration: none;
-  color:var(--grey);
+  color: var(--grey);
   font-weight: 500;
+  transition: color 0.3s;
 }
+
+nav ul li a:hover,
 nav ul li a.active {
   font-weight: 700;
+  color: var(--btn-color);
 }
 
+/* Dropdown */
+nav ul li.dropdown {
+  position: relative;
+}
+
+nav ul li.dropdown .dropdown-content {
+  display: none;
+  position: absolute;
+  top: 100%; /* Below the parent */
+  left: 0;
+  background-color: #fff;
+  min-width: 150px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  border-radius: 6px;
+  padding: 10px 0;
+  z-index: 1000;
+}
+
+nav ul li.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+nav ul li.dropdown .dropdown-content li {
+  padding: 8px 20px;
+}
+
+nav ul li.dropdown .dropdown-content li a {
+  font-weight: 500;
+  color: var(--grey);
+}
+
+nav ul li.dropdown .dropdown-content li a:hover {
+  color: var(--btn-color);
+}
+
+/* Icons */
 .icons a {
   text-decoration: none;
-  color:var(--grey);
+  color: var(--grey);
   margin-left: 20px;
   font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
 
+.icons a:hover {
+  color: var(--btn-color);
 }
-i {
-  font-size:26px;
+
+.icons i {
+  font-size: 20px;
 }
+
 .hero-slide {
     width: 100%;
     height: 520px; /* adjust as you like */
@@ -894,5 +945,45 @@ body {
 }
 
 /* our mission section ends */
+/* Shop css starts */
+.hero-title {
+    text-align: center;
+    padding: 40px 10px;   /* space from top & bottom */
+}
+
+.hero-title h1 {
+    font-size: 48px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.hero-title p {
+    font-size: 20px;
+    color: #555;
+}
+
+.product-content {
+    padding: 0rem 4rem;
+    padding-bottom: 2rem;
+}
+.card-price{
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+
+.product-btn{
+  border: 2px solid;
+  background-color : var(--btn-color);
+  color:#fff;
+  padding:0.5rem 2rem;
+  border-radius: 20px;
+  font-size: 20px;
+  font-weight: 500;
+}
+.product-btn:hover{
+  background-color: black;
+}
+
 
 
