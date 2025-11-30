@@ -11,32 +11,48 @@
    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 </head>
 <body>
-    <!-- HEADER -->
-  <header>
+   <!-- Navbar starts -->
+   <?php include("../AdminPanel/db.php"); ?>
+  
+<header>
     <div class="logo">GiftShop</div>
+
     <nav>
       <ul>
-        <li><a href="index.php" >Home</a></li> |
-        <li><a href="about.php" class="active">About us</a></li> | 
+        <li><a href="../home page/index.php">Home</a></li> |
+        <li><a href="../home page/about.php" class="active">About us</a></li> | 
+        
         <li class="dropdown">
-        <a href="#">Shop</a>
-        <ul class="dropdown-content">
-         <li><a href="../product_page/mug.php">Mug</a></li>
-          <li><a href="../product_page/frame.php">Frame</a></li>
-          <li><a href="../product_page/mobilecover.php">Mobile Cover</a></li>
-          <li><a href="../product_page/diaries.php">Dairies</a></li>
-        </ul>
-      </li> |
+          <a href="#">Shop</a>
+
+          <ul class="dropdown-content">
+
+            <?php  
+              $catQuery = "SELECT * FROM category_details WHERE Status='Enabled'";
+              $catResult = mysqli_query($connection, $catQuery);
+
+              while ($cat = mysqli_fetch_assoc($catResult)) {
+            ?>
+                <li>
+                  <a href="../product_page/product_list.php?category_id=<?= $cat['Category_Id'] ?>">
+                    <?= $cat['Category_Name'] ?>
+                  </a>
+                </li>
+            <?php } ?>
+
+          </ul>
+        </li> |
+
         <li><a href="contact.php">Contact</a></li>
       </ul>
     </nav>
+
     <div class="icons">
-      <a href="#"><i class="fa-solid fa-cart-shopping"></i>Cart</a>
+      <a href="#"><i class="fa-solid fa-cart-shopping"></i> Cart</a>
       <a href="#"><i class="fa-regular fa-user"></i> My Profile</a>
     </div>
-  </header>
-
-  <!-- HEADER SECTION ENDS HERE-->
+</header>
+<!-- Navbar ends -->
    
 <section class="about-section">
   <div class="about-container">
