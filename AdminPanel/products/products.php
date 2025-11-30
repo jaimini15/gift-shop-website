@@ -1,4 +1,3 @@
-
 <?php
 include(__DIR__ . '/../db.php');
 ?>
@@ -54,6 +53,9 @@ include(__DIR__ . '/../db.php');
                 <th>ID</th>
                 <th>Category</th>
                 <th>Image</th>
+                <th>Default Text</th>
+                <th>Product Photo</th>
+                <th>Product Text</th>
                 <th>Product Name</th>
                 <th>Price</th>
                 <th>Status</th>
@@ -68,14 +70,23 @@ include(__DIR__ . '/../db.php');
                 <td><?= $row['Category_Name'] ?></td>
 
                 <!-- IMAGE COLUMN -->
-               <td>
-                        <?php if (!empty($row['Product_Image'])) { ?>
-                            <img src="data:image/jpeg;base64,<?= base64_encode($row['Product_Image']); ?>"
-                                 class="product-img">
-                        <?php } else { ?>
-                            <span class="text-muted">No Image</span>
-                        <?php } ?>
+                <td>
+                    <?php if (!empty($row['Product_Image'])) { ?>
+                        <img src="data:image/jpeg;base64,<?= base64_encode($row['Product_Image']); ?>" 
+                             class="product-img">
+                    <?php } else { ?>
+                        <span class="text-muted">No Image</span>
+                    <?php } ?>
                 </td>
+
+                <!-- Default Text COLUMN -->
+                <td><?= $row['Product_Default_Text'] ?></td>
+
+                <!-- Product Photo (Yes/No) -->
+                <td><?= $row['Product_Photo'] ?></td>
+
+                <!-- Product Text (Yes/No) -->
+                <td><?= $row['Product_Text'] ?></td>
 
                 <td><?= $row['Product_Name'] ?></td>
                 <td><?= $row['Price'] ?></td>
