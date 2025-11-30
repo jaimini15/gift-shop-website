@@ -24,7 +24,11 @@
 
             <div class="content">
                 <h3><?= $row['Category_Name'] ?></h3>
-                <a href="contact_us.html" class="btn">Explore</a>
+              <a href="../product_page/product_list.php?category_id=<?php echo $row['Category_Id']; ?>" 
+   class="btn btn-primary">
+    Explore
+</a>
+
             </div>
         </div>
         <!-- BOX END -->
