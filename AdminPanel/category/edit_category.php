@@ -29,7 +29,7 @@ if(isset($_POST['update'])){
     }
 
     mysqli_query($connection, $query);
-    header("Location: ../layout.php?view=categories&msg=added");
+    header("Location: ../layout.php?view=categories&msg=updated");
 }
 ?>
 
