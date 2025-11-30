@@ -1,9 +1,5 @@
 
 
-<?php
-include "../session_protect.php";
- // Correct path of session_protect.php
-?> 
 
 <?php
 include(__DIR__ . '/../db.php');  // Correct path to db.php
