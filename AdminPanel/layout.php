@@ -121,7 +121,7 @@ $page = isset($allowed[$view]) ? $allowed[$view] : $allowed['dashboard'];
 
     <a href="layout.php?view=feedback"    class="<?= ($view=='feedback')?'active':'' ?>"><i class="fa-solid fa-comments"></i> Feedback</a>
 
-    <a href="logout.php"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+    <a href="../login/logout.php"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
 
 </div>
 
