@@ -1,30 +1,30 @@
-
 <?php include("../db.php"); ?>
 
 <?php
-// Fetch categories for dropdown
+// Fetch enabled categories
 $cat_query = mysqli_query($connection, "SELECT * FROM Category_Details WHERE Status='Enabled'");
 
-if(isset($_POST['submit'])){
+if (isset($_POST['submit'])) {
 
-    $cat_id = $_POST['category_id'];
-    $pname = $_POST['product_name'];
-    $pdesc = $_POST['description'];
-    $price = $_POST['price'];
-    $status = $_POST['status'];
+    $cat_id   = $_POST['category_id'];
+    $pname    = $_POST['product_name'];
+    $pdesc    = $_POST['description'];
+    $price    = $_POST['price'];
+    $status   = $_POST['status'];
+    $photo    = $_POST['product_photo'];        
+    $text     = $_POST['product_text'];         
+    $default  = $_POST['product_default_text']; 
 
-    // -------------------------------
-    // 🔥 FIXED IMAGE UPLOAD (store as BLOB)
-    // -------------------------------
+    // IMAGE TO BLOB
     $imageData = file_get_contents($_FILES['product_image']['tmp_name']);
     $imageData = mysqli_real_escape_string($connection, $imageData);
 
-    // Insert Query
+    // INSERT QUERY
     $query = "
         INSERT INTO Product_Details
-        (Category_Id, Product_Name, Product_Image, Description, Price, Status)
+        (Category_Id, Product_Name, Product_Image, Product_Default_Text, Product_Photo, Product_Text, Description, Price, Status)
         VALUES
-        ('$cat_id', '$pname', '$imageData', '$pdesc', '$price', '$status')
+        ('$cat_id', '$pname', '$imageData', '$default', '$photo', '$text', '$pdesc', '$price', '$status')
     ";
 
     mysqli_query($connection, $query);
@@ -47,13 +47,13 @@ if(isset($_POST['submit'])){
 
 <form method="POST" enctype="multipart/form-data">
 
-    <!-- CATEGORY DROPDOWN -->
+    <!-- CATEGORY -->
     <div class="mb-3">
         <label class="form-label">Select Category</label>
         <select name="category_id" class="form-select" required>
             <option value="">-- Select Category --</option>
 
-            <?php while($cat = mysqli_fetch_assoc($cat_query)) { ?>
+            <?php while ($cat = mysqli_fetch_assoc($cat_query)) { ?>
                 <option value="<?= $cat['Category_Id'] ?>">
                     <?= $cat['Category_Name'] ?>
                 </option>
@@ -74,6 +74,31 @@ if(isset($_POST['submit'])){
         <input type="file" name="product_image" required class="form-control">
     </div>
 
+    <!-- PRODUCT DEFAULT TEXT (MOVED BELOW IMAGE) -->
+    <div class="mb-3">
+        <label class="form-label">Product Default Text</label>
+        <textarea name="product_default_text" class="form-control" placeholder="Enter default text"></textarea>
+
+    </div>
+
+    <!-- PRODUCT PHOTO (YES/NO) -->
+    <div class="mb-3">
+        <label class="form-label">Product Photo</label>
+        <select name="product_photo" class="form-select" required>
+            <option value="Yes">Yes</option>
+            <option value="No" selected>No</option>
+        </select>
+    </div>
+
+    <!-- PRODUCT TEXT (YES/NO) -->
+    <div class="mb-3">
+        <label class="form-label">Product Text</label>
+        <select name="product_text" class="form-select" required>
+            <option value="Yes">Yes</option>
+            <option value="No" selected>No</option>
+        </select>
+    </div>
+
     <!-- DESCRIPTION -->
     <div class="mb-3">
         <label class="form-label">Description</label>
@@ -82,7 +107,7 @@ if(isset($_POST['submit'])){
 
     <!-- PRICE -->
     <div class="mb-3">
-        <label class="form-label">Price</label>
+        <label class="form-label">Price (₹)</label>
         <input type="number" name="price" required class="form-control">
     </div>
 
@@ -96,6 +121,7 @@ if(isset($_POST['submit'])){
     </div>
 
     <button type="submit" name="submit" class="btn btn-success">Add Product</button>
+
 </form>
 
 </body>
