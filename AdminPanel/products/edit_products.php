@@ -1,43 +1,65 @@
-
-<?php include("../db.php"); ?>
-
 <?php
+include("../db.php");
+
 $id = $_GET['id'];
-$data = mysqli_fetch_assoc(mysqli_query($connection, "SELECT * FROM Product_Details WHERE Product_Id=$id"));
 
-$categories = mysqli_query($connection, "SELECT * FROM Category_Details");
+// Fetch product data
+$product = mysqli_fetch_assoc(mysqli_query(
+    $connection,
+    "SELECT * FROM Product_Details WHERE Product_Id=$id"
+));
 
-if (isset($_POST['update'])) {
-    $name = $_POST['name'];
-    $desc = $_POST['description'];
-    $price = $_POST['price'];
-    $category = $_POST['category'];
-    $status = $_POST['status'];
+// Fetch categories for dropdown
+$categories = mysqli_query(
+    $connection,
+    "SELECT * FROM Category_Details WHERE Status='Enabled'"
+);
 
-    // If user uploads a new image
-    if (!empty($_FILES['image']['tmp_name'])) {
-        $image = addslashes(file_get_contents($_FILES['image']['tmp_name']));
-        $query = "UPDATE Product_Details SET
-                    Product_Name='$name',
-                    Description='$desc',
-                    Price='$price',
-                    Category_Id='$category',
-                    Status='$status',
-                    Product_Image='$image'
-                  WHERE Product_Id=$id";
+if(isset($_POST['update'])){
+
+    $cat_id  = mysqli_real_escape_string($connection, $_POST['category_id']);
+    $name    = mysqli_real_escape_string($connection, $_POST['product_name']);
+    $desc    = mysqli_real_escape_string($connection, $_POST['description']);
+    $price   = mysqli_real_escape_string($connection, $_POST['price']);
+    $status  = mysqli_real_escape_string($connection, $_POST['status']);
+
+    // New fields
+    $default_text = mysqli_real_escape_string($connection, $_POST['product_default_text']);
+    $product_photo = mysqli_real_escape_string($connection, $_POST['product_photo']);
+    $product_text  = mysqli_real_escape_string($connection, $_POST['product_text']);
+
+    // -------------------------------------------------
+    // IMAGE UPLOAD (Only update if new file uploaded)
+    // -------------------------------------------------
+    if (!empty($_FILES['product_image']['tmp_name'])) {
+        $imageData = file_get_contents($_FILES['product_image']['tmp_name']);
+        $imageData = mysqli_real_escape_string($connection, $imageData);
+        $update_image = "Product_Image='$imageData',";
     } else {
-        // No new image → keep old one
-        $query = "UPDATE Product_Details SET
-                    Product_Name='$name',
-                    Description='$desc',
-                    Price='$price',
-                    Category_Id='$category',
-                    Status='$status'
-                  WHERE Product_Id=$id";
+        $update_image = "";
     }
 
+    // ---------------------
+    // UPDATE PRODUCT
+    // ---------------------
+    $query = "
+        UPDATE Product_Details SET
+            Category_Id='$cat_id',
+            Product_Name='$name',
+            $update_image
+            Product_Default_Text='$default_text',
+            Product_Photo='$product_photo',
+            Product_Text='$product_text',
+            Description='$desc',
+            Price='$price',
+            Status='$status'
+        WHERE Product_Id=$id
+    ";
+
     mysqli_query($connection, $query);
+
     header("Location: ../layout.php?view=products&msg=updated");
+    exit();
 }
 ?>
 
@@ -46,78 +68,100 @@ if (isset($_POST['update'])) {
 <head>
     <title>Edit Product</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-
-    <style>
-        .preview-img {
-            width: 120px;
-            height: 120px;
-            object-fit: cover;
-            border-radius: 10px;
-            border: 1px solid #ccc;
-            margin-top: 10px;
-        }
-    </style>
-
 </head>
 
 <body style="margin-left:260px; padding:20px;">
 
-<h2 class="fw-bold mb-3">Edit Product</h2>
+<h2 class="fw-bold mb-4">Edit Product</h2>
 
 <form method="POST" enctype="multipart/form-data">
 
+    <!-- CATEGORY -->
     <div class="mb-3">
-        <label class="form-label">Category</label>
-        <select name="category" class="form-select">
-            <?php while ($cat = mysqli_fetch_assoc($categories)) { ?>
-                <option value="<?= $cat['Category_Id'] ?>" 
-                    <?= $cat['Category_Id'] == $data['Category_Id'] ? "selected" : "" ?>>
+        <label class="form-label">Select Category</label>
+        <select name="category_id" class="form-select" required>
+            <option value="">-- Select Category --</option>
+
+            <?php while($cat = mysqli_fetch_assoc($categories)) { ?>
+                <option value="<?= $cat['Category_Id'] ?>"
+                    <?= ($product['Category_Id'] == $cat['Category_Id']) ? 'selected' : '' ?>>
                     <?= $cat['Category_Name'] ?>
                 </option>
             <?php } ?>
+
         </select>
     </div>
 
+    <!-- PRODUCT NAME -->
     <div class="mb-3">
         <label class="form-label">Product Name</label>
-        <input type="text" name="name" value="<?= $data['Product_Name'] ?>" required class="form-control">
+        <input type="text"
+               name="product_name"
+               value="<?= $product['Product_Name'] ?>"
+               required
+               class="form-control">
     </div>
 
+    <!-- PRODUCT IMAGE -->
     <div class="mb-3">
-        <label class="form-label">Description</label>
-        <textarea name="description" class="form-control" required><?= $data['Description'] ?></textarea>
-    </div>
+        <label class="form-label">Product Image</label>
+        <input type="file" name="product_image" class="form-control">
 
-    <div class="mb-3">
-        <label class="form-label">Price (₹)</label>
-        <input type="number" name="price" value="<?= $data['Price'] ?>" required class="form-control">
-    </div>
-
-    
-
-    <div class="mb-3">
-        <label class="form-label">Status</label>
-        <select name="status" class="form-select">
-            <option value="Enabled" <?= $data['Status'] == "Enabled" ? "selected" : "" ?>>Enabled</option>
-            <option value="Disabled" <?= $data['Status'] == "Disabled" ? "selected" : "" ?>>Disabled</option>
-        </select>
-    </div>
-
-    <!-- IMAGE PREVIEW (Same Style as edit_category.php) -->
-    <div class="mb-3">
-        <label class="form-label">Current Product Image</label><br>
-
-        <?php if (!empty($data['Product_Image'])) { ?>
-            <img src="data:image/jpeg;base64,<?= base64_encode($data['Product_Image']); ?>" class="preview-img">
-        <?php } else { ?>
-            <p class="text-muted">No image uploaded</p>
+        <?php if(!empty($product['Product_Image'])) { ?>
+            <img src="data:image/jpeg;base64,<?= base64_encode($product['Product_Image']); ?>"
+                 class="mt-2"
+                 width="120"
+                 style="border:1px solid #ccc; padding:3px;">
         <?php } ?>
     </div>
 
-    <!-- UPLOAD NEW IMAGE -->
+    <!-- DEFAULT TEXT -->
     <div class="mb-3">
-        <label class="form-label">Upload New Image (optional)</label>
-        <input type="file" name="image" accept="image/*" class="form-control">
+        <label class="form-label">Default Text</label>
+        <textarea name="product_default_text" class="form-control" rows="3"><?= $product['Product_Default_Text'] ?></textarea>
+    </div>
+
+    <!-- PRODUCT PHOTO -->
+    <div class="mb-3">
+        <label class="form-label">Product Photo</label>
+        <select name="product_photo" class="form-select">
+            <option value="Yes" <?= ($product['Product_Photo']=="Yes") ? "selected" : "" ?>>Yes</option>
+            <option value="No"  <?= ($product['Product_Photo']=="No")  ? "selected" : "" ?>>No</option>
+        </select>
+    </div>
+
+    <!-- PRODUCT TEXT -->
+    <div class="mb-3">
+        <label class="form-label">Product Text</label>
+        <select name="product_text" class="form-select">
+            <option value="Yes" <?= ($product['Product_Text']=="Yes") ? "selected" : "" ?>>Yes</option>
+            <option value="No"  <?= ($product['Product_Text']=="No")  ? "selected" : "" ?>>No</option>
+        </select>
+    </div>
+
+    <!-- DESCRIPTION -->
+    <div class="mb-3">
+        <label class="form-label">Description</label>
+        <textarea name="description" class="form-control"><?= $product['Description'] ?></textarea>
+    </div>
+
+    <!-- PRICE -->
+    <div class="mb-3">
+        <label class="form-label">Price</label>
+        <input type="number"
+               name="price"
+               value="<?= $product['Price'] ?>"
+               required
+               class="form-control">
+    </div>
+
+    <!-- STATUS -->
+    <div class="mb-3">
+        <label class="form-label">Status</label>
+        <select name="status" class="form-select" required>
+            <option value="Enabled" <?= ($product['Status']=="Enabled") ? "selected" : "" ?>>Enabled</option>
+            <option value="Disabled" <?= ($product['Status']=="Disabled") ? "selected" : "" ?>>Disabled</option>
+        </select>
     </div>
 
     <button type="submit" name="update" class="btn btn-primary">Update Product</button>
