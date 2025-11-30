@@ -1,7 +1,8 @@
 
-<?php
-include("../session_protect.php");
-?>
+<?php 
+
+// include("../AdminPanel/session_protect.php");
+?> 
 
 <?php
 include(__DIR__ . '/../db.php');  // Correct path to db.php
