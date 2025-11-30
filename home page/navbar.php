@@ -4,7 +4,7 @@
 
     <nav>
       <ul>
-        <li><a href="../home page/index.php">Home</a></li> |
+        <li><a href="../home page/index.php" class="active">Home</a></li> |
         <li><a href="../home page/about.php">About us</a></li> | 
         
         <li class="dropdown">
@@ -28,7 +28,7 @@
           </ul>
         </li> |
 
-        <li><a href="../contact us/contact.php">Contact</a></li>
+        <li><a href="contact.php">Contact</a></li>
       </ul>
     </nav>
 
