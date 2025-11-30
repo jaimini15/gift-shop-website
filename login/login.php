@@ -21,7 +21,7 @@
 
     <h2>Login</h2>
 
-    <form action="login.php" method="POST">
+    <form action="login_check.php" method="POST">
 
         <div class="input-box">
             <input type="email" name="email" placeholder="Email" required>
