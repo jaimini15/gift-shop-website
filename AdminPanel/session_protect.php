@@ -1,8 +1,10 @@
 <?php
-session_start();
-
-if (!isset($_SESSION['User_Id'])) {
-    header("Location: ../../login/login.php");
-    exit;
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
 }
-?>
+
+// Check if admin logged in
+if (!isset($_SESSION['admin_logged_in'])) {
+    header("Location: ../login/login.php");
+    exit();
+}
