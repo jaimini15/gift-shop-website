@@ -1,41 +1,44 @@
+<?php include("../AdminPanel/db.php"); ?>
+
 <section class="home-package" id="categories">
     <h1 class="heading-title">Our Categories</h1>
+
     <div class="box-container">
-      <div class="box">
-        <div class="image">
-          <img src="home_category_mug.jpg">
+
+        <?php
+        // Fetch only enabled categories
+        $query = "SELECT * FROM category_details WHERE Status='Enabled'";
+        $result = mysqli_query($connection, $query);
+
+        if(mysqli_num_rows($result) > 0){
+            while($row = mysqli_fetch_assoc($result)){
+
+                $img = base64_encode($row['Category_Image']);
+        ?>
+
+        <!-- BOX START -->
+        <div class="box">
+            <div class="image">
+                <img src="data:image/jpeg;base64,<?= $img ?>" alt="<?= $row['Category_Name'] ?>">
+            </div>
+
+            <div class="content">
+                <h3><?= $row['Category_Name'] ?></h3>
+                <a href="contact_us.html" class="btn">Explore</a>
+            </div>
         </div>
-        <div class="content">
-          <h3>Mug</h3>
-          <a href="contact_us.html" class="btn">Explore</a>
-        </div>
-      </div>
-      <div class="box">
-        <div class="image">
-          <img src="home_category_mobile.jpg">
-        </div>
-        <div class="content">
-          <h3>Mobile Cover</h3>
-          <a href="contact_us.html" class="btn">Explore</a>
-        </div>
-      </div>
-      <div class="box">
-        <div class="image">
-          <img src="home_category_frame.jpg">
-        </div>
-        <div class="content">
-          <h3>Photo Frame</h3>
-          <a href="contact_us.html" class="btn">Explore</a>
-        </div>
-      </div>
-      <div class="box">
-        <div class="image">
-          <img src="home_category_book.jpg">
-        </div>
-        <div class="content">
-          <h3>Dairies</h3>
-          <a href="contact_us.html" class="btn">Explore</a>
-        </div>
-      </div>
+        <!-- BOX END -->
+
+        <?php
+            }
+        } else {
+        ?>
+
+        <p style="text-align:center; width:100%; font-size:1.2rem; color:#333;">
+            No categories available
+        </p>
+
+        <?php } ?>
+
     </div>
 </section>
