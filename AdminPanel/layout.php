@@ -1,8 +1,5 @@
 
 <?php
-include "session_protect.php";  // Correct path to db.php
-?> 
-<?php
 if (!isset($_SESSION)) session_start();
 
 $view = isset($_GET['view']) ? $_GET['view'] : 'dashboard';
