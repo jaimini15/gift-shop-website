@@ -21,10 +21,10 @@
         <li class="dropdown">
         <a href="#">Shop</a>
         <ul class="dropdown-content">
-         <li><a href="mug.php">Mug</a></li>
-          <li><a href="frame.php">Frame</a></li>
-          <li><a href="mobilecover.php">Mobile Cover</a></li>
-          <li><a href="diaries.php">Dairies</a></li>
+         <li><a href="../product_page/mug.php">Mug</a></li>
+          <li><a href="../product_page/frame.php">Frame</a></li>
+          <li><a href="../product_page/mobilecover.php">Mobile Cover</a></li>
+          <li><a href="../product_page/diaries.php">Dairies</a></li>
         </ul>
       </li> |
         <li><a href="contact.php" class="active">Contact</a></li>
