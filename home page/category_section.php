@@ -24,7 +24,8 @@
 
             <div class="content">
                 <h3><?= $row['Category_Name'] ?></h3>
-                <a href="contact_us.html" class="btn">Explore</a>
+                <a href="product_list.php?category_id=<?= $row['Category_Id'] ?>" class="btn">Explore</a>
+
             </div>
         </div>
         <!-- BOX END -->
