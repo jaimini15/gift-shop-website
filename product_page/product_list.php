@@ -1,7 +1,7 @@
 <?php
 include("../AdminPanel/db.php");
 
-// Check if category id comes
+// Get category id from URL
 if (!isset($_GET['category_id'])) {
     echo "<h2 style='text-align:center;'>Invalid Category!</h2>";
     exit;
@@ -9,12 +9,12 @@ if (!isset($_GET['category_id'])) {
 
 $category_id = $_GET['category_id'];
 
-// Fetch category information
+// Fetch category details
 $catQuery = "SELECT * FROM category_details WHERE Category_ID='$category_id'";
 $catResult = mysqli_query($connection, $catQuery);
 $category = mysqli_fetch_assoc($catResult);
 
-// If category disabled or not found
+// If category not found OR disabled
 if (!$category || $category['Status'] == 'Disabled') {
     echo "<h2 style='text-align:center;'>Category Not Available</h2>";
     exit;
@@ -70,27 +70,28 @@ $categoryName = $category['Category_Name'];
 <!-- NAVBAR -->
 <?php include '../home page/navbar.php'; ?>
 
-
 <!-- PAGE TITLE -->
 <section class="hero-title">
     <h1>Perfect Personalized <?= $categoryName ?></h1>
     <p>Thoughtful <?= strtolower($categoryName) ?> designed for every occasion.</p>
 </section>
 
-
 <!-- PRODUCT CONTENT -->
 <section class="product-content">
 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
 
 <?php
-// Fetch products for that category
-$productQuery = "SELECT * FROM product_details WHERE Category_ID='$category_id' AND Status='Enabled'";
+// Fetch products under this category
+$productQuery = "SELECT * FROM product_details 
+                 WHERE Category_ID='$category_id' 
+                 AND Status='Enabled'";
+
 $productResult = mysqli_query($connection, $productQuery);
 
 if (mysqli_num_rows($productResult) > 0) {
     while ($product = mysqli_fetch_assoc($productResult)) {
 
-        // Image from blob
+        // Convert product image blob to display
         $img = base64_encode($product['Product_Image']);
 ?>
     <div class="col">
@@ -121,9 +122,7 @@ if (mysqli_num_rows($productResult) > 0) {
 <!-- FOOTER -->
 <?php require_once '../home page/footer.php'; ?>
 
-
 <!-- SCRIPTS -->
-<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 <script src="../home page/script.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 
