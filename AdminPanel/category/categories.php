@@ -1,6 +1,11 @@
+
+<?php
+include("../session_protect.php");
+?>
+
 <?php
 include(__DIR__ . '/../db.php');  // Correct path to db.php
-?>
+?> 
 
 <!DOCTYPE html>
 <html lang="en">
