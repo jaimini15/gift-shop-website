@@ -14,7 +14,7 @@
           <li><a href="../product_page/diaries.php">Dairies</a></li>
         </ul>
       </li> |
-        <li><a href="#">Contact</a></li>
+        <li><a href="../contact us/contact.php">Contact</a></li>
       </ul>
     </nav>
     <div class="icons">
