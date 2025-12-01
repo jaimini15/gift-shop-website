@@ -55,7 +55,7 @@
         <!-- LEFT IMAGE -->
         <div class="col-md-5">
             <div class="product-image">
-                <img src="product_mug_buynow1.jpg" alt="" style="width:90%;border-radius:8px;">
+                <img src="product_mug_buynow1.jpg" alt="" style="width:100%;border-radius:8px;padding-left:40px;padding-right:40px;">
             </div>
         </div>
 
@@ -133,7 +133,7 @@
                 </table>
             </div>
 
-            <button class="btn btn-danger px-5 mt-3">BUY NOW</button>
+            <button class="btn px-5 mt-3" style="background-color:#7e2626d5;color:#fff;font-weight:500px;font-size:20px;">BUY NOW</button>
         </div>
 
     </div>
