@@ -1,6 +1,8 @@
 <?php
 session_start();
-include("../AdminPanel/db.php");
+
+// Correct include path for Option B
+include __DIR__ . "/../AdminPanel/db.php";
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
@@ -11,23 +13,25 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $result = mysqli_query($connection, $query);
 
     if ($result && mysqli_num_rows($result) === 1) {
+
+        // Fetch user data
         $user = mysqli_fetch_assoc($result);
 
-        // Password check (plain text)
+        // Plain text password match (since you said DB stores plain text)
         if ($password === $user['Password']) {
 
-            // Create session
+            // Store user session
             $_SESSION['User_Id']   = $user['User_Id'];
             $_SESSION['Email']     = $user['Email'];
             $_SESSION['User_Role'] = $user['User_Role'];
 
-            // Redirect to AdminPanel
-            header("Location: ../AdminPanel/layout.php");
+            // Redirect into dashboard inside layout
+            header("Location: ../AdminPanel/layout.php?view=dashboard");
             exit;
         }
     }
 
-    // If login failed:
+    // Login failed
     echo "<script>
             alert('Invalid Email or Password!');
             window.location.href = 'login.php';
