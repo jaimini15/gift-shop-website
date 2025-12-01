@@ -7,7 +7,7 @@
                     <a href="index.php"><i class="fas fa-angle-right"></i>Home</a>
                     <a href="about.php"><i class="fas fa-angle-right"></i>About Us</a>
                     <a href="index.php#categories"><i class="fas fa-angle-right"></i>Shop</a>
-                    <a href="../contact us/contact.php"><i class="fas fa-angle-right"></i>Contact us</a>
+                    <a href="contact.php"><i class="fas fa-angle-right"></i>Contact us</a>
                 </div>
 
                 <div class="box">
