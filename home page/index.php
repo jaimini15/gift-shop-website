@@ -36,8 +36,8 @@
             <img src="home_category_mug.jpg" class="hero-img">
           </div>
           <div class="hero-content">
-            <p class="collection">Sip in Style</p>
-            <h1>Design Your Mug<br>Just the Way You Imagine</h1>
+            <p class="collection">Mugs That Speak Your Heart</p>
+            <h1>Your ideas, your style<br>a mug that matches your vibe.</h1>
             <p class="subtitle">Premium quality • Perfect for gifts</p>
             <button class="shop-btn" onclick="location.href='#categories'">CUSTOMIZE NOW</button>
           </div>
