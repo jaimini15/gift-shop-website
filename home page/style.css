@@ -102,6 +102,9 @@ nav ul li.dropdown .dropdown-content li a:hover {
   align-items: center;
   gap: 5px;
 }
+.icons a {
+  white-space: nowrap;
+}
 
 .icons a:hover {
   color: var(--btn-color);
@@ -110,6 +113,8 @@ nav ul li.dropdown .dropdown-content li a:hover {
 .icons i {
   font-size: 20px;
 }
+
+
 
 
 .hero-slide {
@@ -990,6 +995,21 @@ body {
 .product-btn:hover{
   background-color: black;
 }
+/* Shop css ends */
 
+/* REMOVE extra space under navbar */
+header {
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+}
+
+body > *:first-child {
+    margin-top: 0 !important;
+}
+
+.hero, .hero-slide {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+}
 
 
