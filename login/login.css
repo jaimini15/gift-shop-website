@@ -61,13 +61,7 @@ body {
     outline: none;
 }
 
-/* Remember + Forgot Row */
-.row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 12px;
-}
+
 
 .remember {
     font-size: 14px;
