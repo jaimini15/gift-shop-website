@@ -88,10 +88,15 @@ nav ul li.dropdown .dropdown-content li a:hover {
 }
 
 /* Icons */
+.icons {
+  display: flex;
+  align-items: center;
+  gap: 25px;   /* spacing between items */
+}
+
 .icons a {
   text-decoration: none;
   color: var(--grey);
-  margin-left: 20px;
   font-size: 14px;
   display: flex;
   align-items: center;
@@ -105,6 +110,7 @@ nav ul li.dropdown .dropdown-content li a:hover {
 .icons i {
   font-size: 20px;
 }
+
 
 .hero-slide {
     width: 100%;
