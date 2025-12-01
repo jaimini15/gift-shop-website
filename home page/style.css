@@ -998,7 +998,7 @@ body {
 /* Shop css ends */
 
 /* REMOVE extra space under navbar */
-header {
+/* header {
     margin-bottom: 0 !important;
     padding-bottom: 0 !important;
 }
@@ -1010,6 +1010,6 @@ body > *:first-child {
 .hero, .hero-slide {
     margin-top: 0 !important;
     padding-top: 0 !important;
-}
+} */
 
 
