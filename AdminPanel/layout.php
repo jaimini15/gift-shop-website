@@ -14,6 +14,7 @@ $allowed = [
     'payments'    => 'payments/payments.php',
     'delivery'    => 'delivery/delivery.php',
     'feedback'    => 'feedback/feedback.php',
+    'admin_profile' => 'admin/admin_profile.php',
 ];
 
 $page = isset($allowed[$view]) ? $allowed[$view] : $allowed['dashboard'];
@@ -96,9 +97,22 @@ $page = isset($allowed[$view]) ? $allowed[$view] : $allowed['dashboard'];
     <div class="fw-bold fs-4">
         <i class="fa-solid fa-gift text-danger"></i> GiftShop Admin
     </div>
-    <div>
+    <div class="dropdown">
+    <a class="dropdown-toggle text-dark text-decoration-none" href="#" role="button" data-bs-toggle="dropdown">
         <i class="fa-solid fa-user-shield"></i> Admin
-    </div>
+    </a>
+
+    <ul class="dropdown-menu dropdown-menu-end shadow">
+        <li><a class="dropdown-item" href="layout.php?view=admin_profile">
+            <i class="fa-solid fa-id-badge"></i> Profile
+        </a></li>
+
+        <li><a class="dropdown-item" href="../login/logout.php">
+            <i class="fa-solid fa-right-from-bracket"></i> Logout
+        </a></li>
+    </ul>
+</div>
+
 </div>
 
 <!-- SIDEBAR -->
@@ -122,14 +136,14 @@ $page = isset($allowed[$view]) ? $allowed[$view] : $allowed['dashboard'];
 
     <a href="layout.php?view=feedback"    class="<?= ($view=='feedback')?'active':'' ?>"><i class="fa-solid fa-comments"></i> Feedback</a>
 
-    <a href="../login/logout.php"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
-
+    
 </div>
 
 <!-- PAGE CONTENT -->
 <div class="content">
     <?php include($page); ?>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>
