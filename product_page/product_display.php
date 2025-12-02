@@ -55,7 +55,7 @@
         <!-- LEFT IMAGE -->
         <div class="col-md-5">
             <div class="product-image">
-                <img src="product_mug_buynow1.jpg" alt="" style="width:90%;border-radius:8px;">
+                <img src="product_mug_buynow1.jpg" alt="" style="width:100%;border-radius:8px;padding-left:40px;padding-right:40px;">
             </div>
         </div>
 
@@ -133,7 +133,7 @@
                 </table>
             </div>
 
-            <button class="btn btn-danger px-5 mt-3">BUY NOW</button>
+            <button class="btn px-5 mt-3" style="background-color:#7e2626d5;color:#fff;font-weight:500px;font-size:20px;">BUY NOW</button>
         </div>
 
     </div>
@@ -178,6 +178,27 @@
 
     <div class="credit">created by <span>GiftShop</span> | all right reserved!</div>
 </section>
+<div id="lightboxOverlay">
+    <span class="close-btn">&times;</span>
+    <img src="" alt="Product Image" id="lightboxImage">
+</div>
+<script>
+// Get product image
+const img = document.querySelector('.product-image img');
+
+img.addEventListener('mousemove', (e) => {
+    const rect = img.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    img.style.transformOrigin = `${x}% ${y}%`;
+    img.style.transform = 'scale(2)';
+});
+
+img.addEventListener('mouseleave', () => {
+    img.style.transform = 'scale(1)';
+    img.style.transformOrigin = 'center center';
+});
+</script>
 
 <script src="../home page/script.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>

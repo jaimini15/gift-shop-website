@@ -959,11 +959,12 @@ body {
 /* Shop css starts */
 .hero-title {
     text-align: center;
-    padding: 40px 10px;   /* space from top & bottom */
+     
+    padding-top: 20px;
 }
 
 .hero-title h1 {
-    font-size: 48px;
+    font-size: 45px;
     font-weight: 600;
     color: #333;
     margin-bottom: 15px;
@@ -996,20 +997,28 @@ body {
   background-color: black;
 }
 /* Shop css ends */
-
-/* REMOVE extra space under navbar */
-/* header {
-    margin-bottom: 0 !important;
-    padding-bottom: 0 !important;
+/* product display content starts */
+.product-image {
+    overflow: hidden;
+    position: relative;
 }
 
-body > *:first-child {
-    margin-top: 0 !important;
+.product-image img {
+    transition: transform 0.3s ease;
+    cursor: zoom-in;
 }
 
-.hero, .hero-slide {
-    margin-top: 0 !important;
-    padding-top: 0 !important;
-} */
+.product-image img.zoomed {
+    transform: scale(2); /* Adjust zoom level */
+    cursor: zoom-out;
+}
+
+
+
+
+/* product display content ends */
+
+
+
 
 

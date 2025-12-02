@@ -1,4 +1,6 @@
 <?php
+session_start(); 
+
 include("../AdminPanel/db.php");
 
 // Get category id from URL
@@ -34,35 +36,7 @@ $categoryName = $category['Category_Name'];
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
-  <style>
-      .hero-title {
-          text-align:center;
-          padding:40px 0;
-      }
-      .hero-title h1 {
-          font-size:40px;
-          font-weight:700;
-      }
-      .hero-title p {
-          color:#666;
-          font-size:18px;
-          margin-top:8px;
-      }
-      .product-btn {
-          background:#a75a55;
-          color:white;
-          border:none;
-          padding:8px 18px;
-          border-radius:6px;
-      }
-      .product-btn:hover {
-          background:#8e4742;
-      }
-      .card-price {
-          font-weight:bold;
-          font-size:20px;
-      }
-  </style>
+  
 </head>
 
 <body>
@@ -81,11 +55,9 @@ $categoryName = $category['Category_Name'];
           <a href="#" class="active">Shop</a>
 
           <ul class="dropdown-content">
-
             <?php  
               $catQuery = "SELECT * FROM category_details WHERE Status='Enabled'";
               $catResult = mysqli_query($connection, $catQuery);
-
               while ($cat = mysqli_fetch_assoc($catResult)) {
             ?>
                 <li>
@@ -94,7 +66,6 @@ $categoryName = $category['Category_Name'];
                   </a>
                 </li>
             <?php } ?>
-
           </ul>
         </li> |
 
@@ -108,19 +79,17 @@ $categoryName = $category['Category_Name'];
     </div>
 </header>
 
-
 <!-- PAGE TITLE -->
 <section class="hero-title">
     <h1>Perfect Personalized <?= $categoryName ?></h1>
     <p>Thoughtful <?= strtolower($categoryName) ?> designed for every occasion.</p>
 </section>
 
-<!-- PRODUCT CONTENT -->
+<!-- PRODUCT LIST -->
 <section class="product-content">
 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
 
 <?php
-// Fetch products under this category
 $productQuery = "SELECT * FROM product_details 
                  WHERE Category_ID='$category_id' 
                  AND Status='Enabled'";
@@ -129,8 +98,6 @@ $productResult = mysqli_query($connection, $productQuery);
 
 if (mysqli_num_rows($productResult) > 0) {
     while ($product = mysqli_fetch_assoc($productResult)) {
-
-        // Convert product image blob to display
         $img = base64_encode($product['Product_Image']);
 ?>
     <div class="col">
@@ -142,10 +109,9 @@ if (mysqli_num_rows($productResult) > 0) {
 
         <div class="card-body">
           <p class="card-text"><?= $product['Description'] ?></p>
-
           <p class="card-price">₹ <?= $product['Price'] ?></p>
 
-          <button class="product-btn">Buy now</button>
+          <button class="product-btn" onclick="showLogin()">Buy now</button>
         </div>
       </div>
     </div>
@@ -159,50 +125,63 @@ if (mysqli_num_rows($productResult) > 0) {
 </section>
 
 <!-- FOOTER -->
-<!--fotter section starts here-->
-    <section class="footer">
-        <div class="box-container">
+<section class="footer">
+    <div class="box-container">
 
-                <div class="box">
-                    <h3>Quick links</h3>
-                    <a href="../home page/index.php"><i class="fas fa-angle-right"></i>Home</a>
-                    <a href="../home page/about.php"><i class="fas fa-angle-right"></i>About Us</a>
-                    <a href="../home page/index.php#categories"><i class="fas fa-angle-right"></i>Shop</a>
-                    <a href="../home page/contact.php"><i class="fas fa-angle-right"></i>Contact us</a>
-                </div>
-
-                <div class="box">
-                    <h3>Extra links</h3>
-                    <a href="#"><i class="fas fa-angle-right"></i>Ask question</a>
-                    <a href="#"><i class="fas fa-angle-right"></i>Privacy policy</a>
-                    <a href="#"><i class="fas fa-angle-right"></i>Terms of use</a>
-                </div>
-                
-                <div class="box">
-                    <h3>Contact info</h3>
-                    <a href="#"><i class="fas fa-phone"></i>+123-456-7890</a>
-                    <a href="#"><i class="fas fa-phone"></i>+222-333-4523</a>
-                    <a href="#"><i class="fas fa-envelope"></i>GiftShop@gmail.com</a>
-                    <a href="#"><i class="fas fa-map"></i>Maninagar, India - 380008</a>
-                </div>
-
-                <div class="box">
-                    <h3>Follow us</h3>
-                    <a href="#"><i class="fab fa-facebook-f"></i>Facebook</a>
-                    <a href="#"><i class="fab fa-twitter"></i>Twitter</a>
-                    <a href="#"><i class="fab fa-instagram"></i>Instagram</a>
-                    <a href="#"><i class="fab fa-linkedin"></i>Linkedin</a>
-                    
-                </div>
-                
+        <div class="box">
+            <h3>Quick links</h3>
+            <a href="../home page/index.php"><i class="fas fa-angle-right"></i>Home</a>
+            <a href="../home page/about.php"><i class="fas fa-angle-right"></i>About Us</a>
+            <a href="../home page/index.php#categories"><i class="fas fa-angle-right"></i>Shop</a>
+            <a href="../home page/contact.php"><i class="fas fa-angle-right"></i>Contact us</a>
         </div>
-        <div class="credit">created by <span>GiftShop</span> | all right reserved!</div>
-    </section>
-    <!--fotter section ends here-->
+
+        <div class="box">
+            <h3>Extra links</h3>
+            <a href="#"><i class="fas fa-angle-right"></i>Ask question</a>
+            <a href="#"><i class="fas fa-angle-right"></i>Privacy policy</a>
+            <a href="#"><i class="fas fa-angle-right"></i>Terms of use</a>
+        </div>
+
+        <div class="box">
+            <h3>Contact info</h3>
+            <a href="#"><i class="fas fa-phone"></i>+123-456-7890</a>
+            <a href="#"><i class="fas fa-phone"></i>+222-333-4523</a>
+            <a href="#"><i class="fas fa-envelope"></i>GiftShop@gmail.com</a>
+            <a href="#"><i class="fas fa-map"></i>Maninagar, India - 380008</a>
+        </div>
+
+        <div class="box">
+            <h3>Follow us</h3>
+            <a href="#"><i class="fab fa-facebook-f"></i>Facebook</a>
+            <a href="#"><i class="fab fa-twitter"></i>Twitter</a>
+            <a href="#"><i class="fab fa-instagram"></i>Instagram</a>
+            <a href="#"><i class="fab fa-linkedin"></i>Linkedin</a>
+        </div>
+
+    </div>
+    <div class="credit">created by <span>GiftShop</span> | all right reserved!</div>
+</section>
+
+<div id="blur-overlay" style="display:none;"></div>
+
+<div id="login-popup" style="display:none;">
+    <?php 
+        $embedded = true; 
+        include "../login/login.php"; 
+    ?>
+</div>
+
+
+<script>
+function showLogin() {
+    document.getElementById("blur-overlay").style.display = "block";
+    document.getElementById("login-popup").style.display = "flex";
+}
+</script>
 
 <!-- SCRIPTS -->
 <script src="../home page/script.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
-
 </body>
 </html>
