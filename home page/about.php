@@ -74,7 +74,7 @@ designed to make every moment special.
        Whether it's a birthday, anniversary, festival, or corporate event, our mission is to help you create 
        thoughtful and memorable gifts for your loved ones.
       </p>
-      <a href="index.php#categories" class="btn">Explore Our Collection</a>
+      <a href="index.php#categories" class="btn" style="color:white;" >Explore Our Collection</a>
 
     </div>
 
