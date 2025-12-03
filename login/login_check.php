@@ -1,21 +1,30 @@
 <?php
 session_start();
-include("../AdminPanel/db.php"); // ✔ keep it
+include("../AdminPanel/db.php"); // Database connection
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
+<<<<<<< Updated upstream
     $email = mysqli_real_escape_string($connection, $_POST['email']);
+=======
+    // Get user input safely
+    $email    = mysqli_real_escape_string($connection, $_POST['email']);
+>>>>>>> Stashed changes
     $password = mysqli_real_escape_string($connection, $_POST['password']);
 
-    $query = "SELECT * FROM user_details WHERE Email='$email' LIMIT 1";
+    // Fetch user record
+    $query  = "SELECT * FROM user_details WHERE Email='$email' LIMIT 1";
     $result = mysqli_query($connection, $query);
 
+    // If user exists
     if ($result && mysqli_num_rows($result) === 1) {
 
         $user = mysqli_fetch_assoc($result);
 
+        // Password match (plain text in DB)
         if ($password === $user['Password']) {
 
+<<<<<<< Updated upstream
 
 
             $_SESSION['User_Id'] = $row['User_Id'];
@@ -28,15 +37,35 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $_SESSION['Pincode'] = $row['Pincode'];
             $_SESSION['Email'] = $row['Email'];
             $_SESSION['Create_At'] = $row['Create_At'];
+=======
+            // Save session
+            $_SESSION['User_Id']   = $user['User_Id'];
+            $_SESSION['Email']     = $user['Email'];
+            $_SESSION['User_Role'] = $user['User_Role'];
+>>>>>>> Stashed changes
 
+            // Redirect user back to the page they came from
+            if (isset($_SESSION['redirect_after_login'])) {
+                $redirect = $_SESSION['redirect_after_login'];
+                unset($_SESSION['redirect_after_login']);
+
+                // Make sure file exists before redirect
+                if (file_exists("../$redirect")) {
+                    header("Location: ../$redirect");
+                    exit();
+                }
+            }
+
+            // Default redirect
             header("Location: ../AdminPanel/layout.php?view=dashboard");
             exit();
         }
     }
 
+    // If user does not exist or password wrong
     echo "<script>
-            alert('Invalid Email or Password!');
-            window.location.href = 'login.php';
+            alert('Invalid Email or Password! Please register first if you are a new user.');
+            window.location.href = '/GIFT-SHOP-WEBSITE/login/login.php';
           </script>";
     exit();
 }
