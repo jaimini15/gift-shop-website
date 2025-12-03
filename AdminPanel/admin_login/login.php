@@ -91,7 +91,7 @@
                 Remember Me
             </label>
 
-            <a href="#" class="forgot-link">Forgot Password?</a>
+            <a href="forgot_password.php" class="forgot-link">Forgot Password?</a>
         </div>
 
         <button type="submit" name="login">Login</button>
