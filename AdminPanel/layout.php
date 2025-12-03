@@ -1,4 +1,3 @@
-
 <?php
 if (!isset($_SESSION)) session_start();
 
@@ -14,7 +13,7 @@ $allowed = [
     'payments'    => 'payments/payments.php',
     'delivery'    => 'delivery/delivery.php',
     'feedback'    => 'feedback/feedback.php',
-    'admin_profile' => 'admin/admin_profile.php',
+    'admin_profile' => 'admin/admin_profile.php',  // PROFILE PAGE
 ];
 
 $page = isset($allowed[$view]) ? $allowed[$view] : $allowed['dashboard'];
@@ -36,7 +35,6 @@ $page = isset($allowed[$view]) ? $allowed[$view] : $allowed['dashboard'];
         font-family: Arial, sans-serif;
     }
 
-    /* SIDEBAR */
     .sidebar {
         width: 260px;
         height: 100vh;
@@ -44,7 +42,7 @@ $page = isset($allowed[$view]) ? $allowed[$view] : $allowed['dashboard'];
         position: fixed;
         top: 0;
         left: 0;
-        padding-top: 70px; /* pushes below header */
+        padding-top: 70px;
         color: white;
     }
 
@@ -65,14 +63,13 @@ $page = isset($allowed[$view]) ? $allowed[$view] : $allowed['dashboard'];
         margin-right: 10px;
     }
 
-    /* HEADER */
     .header {
         height: 70px;
         width: 100%;
         position: fixed;
         top: 0;
         left: 0;
-        padding-left: 260px; /* align with sidebar */
+        padding-left: 260px;
         background: #fff;
         border-bottom: 1px solid #ddd;
         display:flex;
@@ -82,10 +79,9 @@ $page = isset($allowed[$view]) ? $allowed[$view] : $allowed['dashboard'];
         z-index: 1000;
     }
 
-    /* CONTENT */
     .content {
         margin-left: 260px;
-        padding: 90px 20px 20px; /* top padding for header */
+        padding: 90px 20px 20px;
     }
 </style>
 
@@ -97,22 +93,26 @@ $page = isset($allowed[$view]) ? $allowed[$view] : $allowed['dashboard'];
     <div class="fw-bold fs-4">
         <i class="fa-solid fa-gift text-danger"></i> GiftShop Admin
     </div>
+
+    <!-- FIXED DROPDOWN -->
     <div class="dropdown">
-    <a class="dropdown-toggle text-dark text-decoration-none" href="#" role="button" data-bs-toggle="dropdown">
-        <i class="fa-solid fa-user-shield"></i> Admin
-    </a>
+        <a class="dropdown-toggle text-dark text-decoration-none" href="#" role="button" data-bs-toggle="dropdown">
+            <i class="fa-solid fa-user-shield"></i> Admin
+        </a>
 
-    <ul class="dropdown-menu dropdown-menu-end shadow">
-        <li><a class="dropdown-item" href="layout.php?view=admin_profile">
-            <i class="fa-solid fa-id-badge"></i> Profile
-        </a></li>
+        <ul class="dropdown-menu dropdown-menu-end shadow">
+            <li><a class="dropdown-item" href="layout.php?view=admin_profile">
+        <i class="fa-solid fa-id-badge"></i> Profile
+                </a>
+            </li>
 
-        <li><a class="dropdown-item" href="../login/logout.php">
-            <i class="fa-solid fa-right-from-bracket"></i> Logout
-        </a></li>
-    </ul>
-</div>
-
+            <li>
+                <a class="dropdown-item" href="../login/logout.php">
+                    <i class="fa-solid fa-right-from-bracket"></i> Logout
+                </a>
+            </li>
+        </ul>
+    </div>
 </div>
 
 <!-- SIDEBAR -->
@@ -136,13 +136,13 @@ $page = isset($allowed[$view]) ? $allowed[$view] : $allowed['dashboard'];
 
     <a href="layout.php?view=feedback"    class="<?= ($view=='feedback')?'active':'' ?>"><i class="fa-solid fa-comments"></i> Feedback</a>
 
-    
 </div>
 
 <!-- PAGE CONTENT -->
 <div class="content">
     <?php include($page); ?>
 </div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
