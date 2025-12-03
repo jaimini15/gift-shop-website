@@ -142,7 +142,7 @@
       <p>GiftShop specializes in creating personalized gifts like mugs, mobile covers, photo frames, and diaries. 
         We focus on premium quality products designed just the way you want.
       </p>
-      <a href="about.php" class="btn">read more</a>
+      <a href="about.php" class="btn" style="color:white;" >read more</a>
     </div>
   </section>
 
