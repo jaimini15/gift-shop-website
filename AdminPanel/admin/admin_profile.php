@@ -1,80 +1,108 @@
 <?php
-include("../session_protect.php");
-include("../../AdminPanel/db.php");
+if (!isset($_SESSION)) session_start();
 
-$admin_id = $_SESSION['User_Id'];
+// Only Admin allowed
+if (!isset($_SESSION['admin_id']) || $_SESSION['admin_role'] !== "ADMIN") {
+    header("Location: ../admin_login/login.php?error=Please login first");
+    exit;
+}
 
-$q = "SELECT * FROM user_details WHERE User_Id='$admin_id' LIMIT 1";
-$admin = mysqli_fetch_assoc(mysqli_query($connection, $q));
+include(__DIR__ . '/../db.php');
+
+// Get admin record from user_details table
+$admin_id = $_SESSION['admin_id'];
+
+$query = "SELECT * FROM user_details WHERE User_Id = $admin_id LIMIT 1";
+$result = mysqli_query($connection, $query);
+$admin = mysqli_fetch_assoc($result);
 ?>
 
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Admin Profile</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+<title>Admin Profile</title>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+<style>
+.card {
+    max-width: 650px;
+    margin: auto;
+    border-radius: 10px;
+}
+</style>
 </head>
+<body>
 
-<body class="bg-light">
+<div class="container mt-4">
 
-<div class="container mt-5">
+<div class="card shadow p-4">
+    <h3 class="text-center mb-3">
+        <i class="fa-solid fa-id-badge"></i> Admin Profile
+    </h3>
 
-    <div class="card shadow">
-        <div class="card-header bg-dark text-white text-center">
-            <h3>Admin Details</h3>
-        </div>
+    <table class="table table-bordered">
 
-        <div class="card-body">
+        <tr>
+            <th>User ID</th>
+            <td><?php echo $admin['User_Id']; ?></td>
+        </tr>
 
-            <div class="text-center mb-4">
-                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
-                     width="120" class="rounded-circle shadow">
-            </div>
+        <tr>
+            <th>First Name</th>
+            <td><?php echo $admin['First_Name']; ?></td>
+        </tr>
 
-            <table class="table table-bordered">
-                <tr>
-                    <th>Full Name</th>
-                    <td><?= $admin['First_Name'] . " " . $admin['Last_Name']; ?></td>
-                </tr>
+        <tr>
+            <th>Last Name</th>
+            <td><?php echo $admin['Last_Name']; ?></td>
+        </tr>
 
-                <tr>
-                    <th>Email</th>
-                    <td><?= $admin['Email']; ?></td>
-                </tr>
+        <tr>
+            <th>DOB</th>
+            <td><?php echo $admin['DOB']; ?></td>
+        </tr>
 
-                <tr>
-                    <th>Phone</th>
-                    <td><?= $admin['Phone']; ?></td>
-                </tr>
+        <tr>
+            <th>User Role</th>
+            <td><?php echo $admin['User_Role']; ?></td>
+        </tr>
 
-                <tr>
-                    <th>DOB</th>
-                    <td><?= $admin['DOB']; ?></td>
-                </tr>
+        <tr>
+            <th>Phone</th>
+            <td><?php echo $admin['Phone']; ?></td>
+        </tr>
 
-                <tr>
-                    <th>Address</th>
-                    <td><?= $admin['Address']; ?></td>
-                </tr>
+        <tr>
+            <th>Address</th>
+            <td><?php echo $admin['Address']; ?></td>
+        </tr>
 
-                <tr>
-                    <th>Pincode</th>
-                    <td><?= $admin['Pincode']; ?></td>
-                </tr>
+        <tr>
+            <th>Pincode</th>
+            <td><?php echo $admin['Pincode']; ?></td>
+        </tr>
 
-                <tr>
-                    <th>Role</th>
-                    <td><?= $admin['User_Role']; ?></td>
-                </tr>
+        <tr>
+            <th>Email</th>
+            <td><?php echo $admin['Email']; ?></td>
+        </tr>
 
-                <tr>
-                    <th>Created At</th>
-                    <td><?= $admin['Create_At']; ?></td>
-                </tr>
-            </table>
+        <tr>
+            <th>Password</th>
+            <td><?php echo $admin['Password']; ?></td>
+        </tr>
 
-        </div>
-    </div>
+        <tr>
+            <th>Created At</th>
+            <td><?php echo $admin['Create_At']; ?></td>
+        </tr>
+
+    </table>
+    <a href="admin/edit_admin_profile.php" class="btn btn-warning mb-2">Edit Profile</a>
+
+</div>
 
 </div>
 
