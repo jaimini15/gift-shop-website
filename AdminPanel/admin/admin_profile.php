@@ -132,7 +132,7 @@ $admin = mysqli_fetch_assoc(mysqli_query(
 
         <!-- BUTTON -->
         <div class="text-end">
-            <a href="edit_admin_profile.php" class="btn btn-primary">
+            <a href="admin/edit_admin_profile.php" class="btn btn-primary">
                 <i class="fa-solid fa-pen-to-square"></i> Edit Profile
             </a>
         </div>
