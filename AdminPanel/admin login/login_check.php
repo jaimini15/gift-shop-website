@@ -1,26 +1,43 @@
 <?php
 session_start();
-include("../../db.php");  // go two steps back to root db.php
+include("../db.php");   // FIXED PATH: only one level up
 
-if(isset($_POST['login'])) {
+if (isset($_POST['login'])) {
 
-    $email = mysqli_real_escape_string($connection, $_POST['email']);
+    $email    = mysqli_real_escape_string($connection, $_POST['email']);
     $password = mysqli_real_escape_string($connection, $_POST['password']);
 
-    $query = "SELECT * FROM admins WHERE email='$email' LIMIT 1";
+    // User table
+    $query = "SELECT * FROM user_details WHERE Email='$email' LIMIT 1";
     $result = mysqli_query($connection, $query);
 
-    if(mysqli_num_rows($result) == 1) {
+    if (mysqli_num_rows($result) == 1) {
 
-        $admin = mysqli_fetch_assoc($result);
+        $user = mysqli_fetch_assoc($result);
 
-        if ($password === $admin['password']) {
+        // Check role = ADMIN
+        if ($user['User_Role'] !== "ADMIN") {
+            header("Location: login.php?error=Access Denied");
+            exit();
+        }
 
-            $_SESSION['admin_logged_in'] = true;
-            $_SESSION['admin_id'] = $admin['id'];
-            $_SESSION['admin_name'] = $admin['name'];
+        // Password check (simple comparison)
+        if ($password === $user['Password']) {
 
-            header("Location: ../dashboard/dashboard.php");
+            // SESSION SET
+            $_SESSION['admin_id']   = $user['User_Id'];
+            $_SESSION['admin_name'] = $user['First_Name'];
+            $_SESSION['admin_role'] = $user['User_Role'];
+
+            // REMEMBER ME
+            if (isset($_POST['remember'])) {
+                setcookie("admin_email", $email, time() + (86400 * 30), "/");
+            } else {
+                setcookie("admin_email", "", time() - 3600, "/");
+            }
+
+            // Redirect to layout.php
+            header("Location: ../layout.php");
             exit();
         }
     }
