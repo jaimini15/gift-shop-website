@@ -99,7 +99,7 @@ $email = $_SESSION['reset_email'];
         <input type="password" name="confirmpass" placeholder="Confirm Password" required>
         <button type="submit" name="change">Change Password</button>
     </form>
-
+<br>
     <center><a href="login.php">Back to Login</a></center>
 </div>
 
