@@ -125,7 +125,8 @@ $page = isset($allowed[$view]) ? $allowed[$view] : $allowed['dashboard'];
         <a href="layout.php?view=dashboard" class="<?= ($view == 'dashboard') ? 'active' : '' ?>"><i
                 class="fa-solid fa-chart-line"></i> Dashboard</a>
 
-        <a href="layout.php?view=users" class="<?= ($view == 'users') ? 'active' : '' ?>"><i class="fa-solid fa-users"></i>
+        <a href="layout.php?view=users" class="<?= ($view == 'users') ? 'active' : '' ?>"><i
+                class="fa-solid fa-users"></i>
             Users</a>
 
         <a href="layout.php?view=categories" class="<?= ($view == 'categories') ? 'active' : '' ?>"><i
@@ -148,6 +149,13 @@ $page = isset($allowed[$view]) ? $allowed[$view] : $allowed['dashboard'];
 
         <a href="layout.php?view=feedback" class="<?= ($view == 'feedback') ? 'active' : '' ?>"><i
                 class="fa-solid fa-comments"></i> Feedback</a>
+
+      <li class="nav-item">
+    <a class="nav-link" href="layout.php?view=delivery/delivery_boys">
+        <i class="fas fa-motorcycle"></i> Delivery Boys
+    </a>
+</li>
+
 
     </div>
 
