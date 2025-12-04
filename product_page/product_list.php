@@ -204,6 +204,38 @@ function closePopups() {
 }
 </script>
 
+<script>
+function submitLoginForm() {
+    const form = document.querySelector("#login-popup form");
+    const formData = new FormData(form);
+
+    fetch("../login/login.php", {
+        method: "POST",
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+        const errorDiv = document.querySelector("#login-popup .error-msg");
+        if (data.success) {
+            alert(data.message);
+            window.location.href = data.redirect;
+        } else {
+            if (errorDiv) {
+                errorDiv.textContent = data.message;
+            } else {
+                // create error div if not exists
+                const div = document.createElement("div");
+                div.className = "error-msg";
+                div.textContent = data.message;
+                form.prepend(div);
+            }
+        }
+    })
+    .catch(err => console.error("Login AJAX error:", err));
+
+    return false; // prevent normal form submission
+}
+</script>
 
 <script src="../home page/script.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
