@@ -164,7 +164,8 @@ if(isset($_POST['update'])){
         </select>
     </div>
 
-    <button type="submit" name="update" class="btn btn-primary">Update Product</button>
+    <button type="submit" name="update" class="btn btn-success">Update Product</button>
+    <a href="../layout.php?view=products" class="btn btn-secondary">Back</a>
 
 </form>
 
