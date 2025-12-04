@@ -5,8 +5,11 @@ include("../AdminPanel/db.php"); // Database connection
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     $email = mysqli_real_escape_string($connection, $_POST['email']);
 =======
+=======
+>>>>>>> Stashed changes
     // Get user input safely
     $email    = mysqli_real_escape_string($connection, $_POST['email']);
 >>>>>>> Stashed changes
@@ -25,6 +28,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         if ($password === $user['Password']) {
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 
 
             $_SESSION['User_Id'] = $row['User_Id'];
@@ -38,6 +42,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $_SESSION['Email'] = $row['Email'];
             $_SESSION['Create_At'] = $row['Create_At'];
 =======
+=======
+>>>>>>> Stashed changes
             // Save session
             $_SESSION['User_Id']   = $user['User_Id'];
             $_SESSION['Email']     = $user['Email'];
