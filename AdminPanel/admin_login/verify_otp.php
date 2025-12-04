@@ -96,7 +96,7 @@ $email = $_SESSION['reset_email'];
         <input type="number" name="otp" placeholder="Enter OTP" required>
         <button type="submit" name="verify">Verify OTP</button>
     </form>
-
+    <br>
     <center><a href="forgot_password.php">Back</a></center>
 </div>
 
