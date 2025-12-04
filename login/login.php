@@ -116,22 +116,25 @@ h2 { margin:0 0 20px; color:#333; font-size:26px; }
             <div class="error-msg"><?= $login_error ?></div>
         <?php endif; ?>
 
-       <form action="login_check.php" method="POST" autocomplete="off">
+        <form action="" method="POST">
+            <div class="input-box">
+                <input type="email" name="email" placeholder="Email" required>
+            </div>
+            <div class="input-box">
+                <input type="password" name="password" placeholder="Password" required>
+            </div>
+            <button type="submit" class="login-btn">Login</button>
 
-    <input type="email" name="email"
-           placeholder="Email"
-           autocomplete="new-email"
-           required>
+            <div class="row-rem_for">
+                <label><input type="checkbox" name="remember"> Remember Me</label>
+                <a href="../login/forgot_password.html" class="forgot-link">Forgot Password?</a>
+            </div>
 
-    <input type="password" name="password"
-           placeholder="Password"
-           autocomplete="new-password"
-           required>
-
-    <button type="submit">Login</button>
-
-</form>
-
+            <p class="register-link">
+                Don't have an account?
+                <a href="../registration/registration.php">Register here</a>
+            </p>
+        </form>
     </div>
 </div>
 
