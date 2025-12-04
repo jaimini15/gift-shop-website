@@ -15,17 +15,19 @@ $data = mysqli_fetch_assoc($result);
 if (!$data) {
     die("Delivery Boy not found");
 }
+
 // Update Logic
 if (isset($_POST['update'])) {
 
-    $fname   = mysqli_real_escape_string($connection, $_POST['First_Name']);
-    $lname   = mysqli_real_escape_string($connection, $_POST['Last_Name']);
-    $dob     = mysqli_real_escape_string($connection, $_POST['DOB']);
-    $phone   = mysqli_real_escape_string($connection, $_POST['Phone']);
-    $address = mysqli_real_escape_string($connection, $_POST['Address']);
-    $pincode = mysqli_real_escape_string($connection, $_POST['Pincode']);
-    $email   = mysqli_real_escape_string($connection, $_POST['Email']);
-    $password= mysqli_real_escape_string($connection, $_POST['Password']);
+    $fname    = mysqli_real_escape_string($connection, $_POST['First_Name']);
+    $lname    = mysqli_real_escape_string($connection, $_POST['Last_Name']);
+    $dob      = mysqli_real_escape_string($connection, $_POST['DOB']);
+    $phone    = mysqli_real_escape_string($connection, $_POST['Phone']);
+    $address  = mysqli_real_escape_string($connection, $_POST['Address']);
+    $pincode  = mysqli_real_escape_string($connection, $_POST['Pincode']);
+    $email    = mysqli_real_escape_string($connection, $_POST['Email']);
+    $password = mysqli_real_escape_string($connection, $_POST['Password']);
+    $status   = mysqli_real_escape_string($connection, $_POST['Status']); // ADDED
 
     $update = "
         UPDATE user_details 
@@ -36,12 +38,12 @@ if (isset($_POST['update'])) {
             Address='$address',
             Pincode='$pincode',
             Email='$email',
-            Password='$password'
+            Password='$password',
+            Status='$status'
         WHERE User_Id=$id
     ";
 
     if (mysqli_query($connection, $update)) {
-        // Direct redirect
         header("Location: ../layout.php?view=delivery_boys&msg=updated");
         exit;
     } else {
@@ -121,6 +123,15 @@ if (isset($_POST['update'])) {
         <div class="mb-3">
             <label>Password</label>
             <input type="text" name="Password" class="form-control" value="<?= $data['Password'] ?>" required>
+        </div>
+
+        <!-- 🔥 ONLY NEW FIELD ADDED -->
+        <div class="mb-3">
+            <label>Status</label>
+            <select name="Status" class="form-control">
+                <option value="ENABLE"  <?= ($data['Status'] == 'ENABLE') ? 'selected' : '' ?>>ENABLE</option>
+                <option value="DISABLE" <?= ($data['Status'] == 'DISABLE') ? 'selected' : '' ?>>DISABLE</option>
+            </select>
         </div>
 
         <button type="submit" name="update" class="btn btn-success">Update</button>
