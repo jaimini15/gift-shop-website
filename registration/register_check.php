@@ -1,10 +1,9 @@
 <?php
 session_start();
-include("../AdminPanel/db.php"); // DB connection
+include("../AdminPanel/db.php");
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
-    // Collect and sanitize input
     $first_name = mysqli_real_escape_string($connection, $_POST['first_name']);
     $last_name  = mysqli_real_escape_string($connection, $_POST['last_name']);
     $dob        = mysqli_real_escape_string($connection, $_POST['dob']);
@@ -15,7 +14,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $password   = mysqli_real_escape_string($connection, $_POST['password']);
     $role       = "Customer";
 
-    // Check if email already exists
+    // Check email existence
     $checkEmail = "SELECT Email FROM user_details WHERE Email='$email' LIMIT 1";
     $emailResult = mysqli_query($connection, $checkEmail);
 
@@ -27,34 +26,26 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         exit();
     }
 
-    // Insert new user
-    $insert = "
-        INSERT INTO user_details 
-        (First_Name, Last_Name, DOB, Phone, Address, Pincode, Email, Password, User_Role, Create_At)
-        VALUES 
-        ('$first_name', '$last_name', '$dob', '$phone', '$address', '$pincode', '$email', '$password', '$role', NOW())
-    ";
+    $insert = "INSERT INTO user_details 
+               (First_Name, Last_Name, DOB, Phone, Address, Pincode, Email, Password, User_Role, Create_At)
+               VALUES 
+               ('$first_name','$last_name','$dob','$phone','$address','$pincode','$email','$password','$role',NOW())";
 
     if (mysqli_query($connection, $insert)) {
 
-        // Auto login
-        $_SESSION['Email']     = $email;
-        $_SESSION['User_Role'] = $role;
-        $_SESSION['Name']      = $first_name;
+    // Keep the redirect page for after login
+    if (!isset($_SESSION['redirect_after_login'])) {
+        $_SESSION['redirect_after_login'] = "../product_page/product_list.php?category_id=" . $_GET['category_id'];
+    }
 
-        // Redirect if user clicked Buy Now
-        if (isset($_SESSION['redirect_page']) && $_SESSION['redirect_page'] != "") {
-            $page = "../" . $_SESSION['redirect_page'];
-            unset($_SESSION['redirect_page']);
-            header("Location: $page");
-            exit;
-        }
+    echo "<script>
+            alert('Registration Successful! Please login.');
+            window.location.href='../login/login.php?popup=1';
+          </script>";
+    exit();
+}
 
-        // Default redirect
-        header("Location: ../home page/index.php");
-        exit;
-
-    } else {
+else {
         echo "<script>
                 alert('Account creation failed.');
                 window.location.href='registration.php?popup=1';
