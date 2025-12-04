@@ -4,65 +4,50 @@ include("../AdminPanel/db.php"); // Database connection
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
-
-
-    $email = mysqli_real_escape_string($connection, $_POST['email']);
-
-    // Get user input safely
+    // Secure input
     $email    = mysqli_real_escape_string($connection, $_POST['email']);
-
     $password = mysqli_real_escape_string($connection, $_POST['password']);
 
     // Fetch user record
     $query  = "SELECT * FROM user_details WHERE Email='$email' LIMIT 1";
     $result = mysqli_query($connection, $query);
 
-    // If user exists
     if ($result && mysqli_num_rows($result) === 1) {
 
         $user = mysqli_fetch_assoc($result);
 
-        // Password match (plain text in DB)
+        // Check password (plain text match)
         if ($password === $user['Password']) {
 
+            // Save user data in session
+            $_SESSION['User_Id']    = $user['User_Id'];
+            $_SESSION['First_Name'] = $user['First_Name'];
+            $_SESSION['Last_Name']  = $user['Last_Name'];
+            $_SESSION['DOB']        = $user['DOB'];
+            $_SESSION['User_Role']  = $user['User_Role'];
+            $_SESSION['Phone']      = $user['Phone'];
+            $_SESSION['Address']    = $user['Address'];
+            $_SESSION['Pincode']    = $user['Pincode'];
+            $_SESSION['Email']      = $user['Email'];
+            $_SESSION['Create_At']  = $user['Create_At'];
 
-
-            $_SESSION['User_Id'] = $row['User_Id'];
-            $_SESSION['First_Name'] = $row['First_Name'];
-            $_SESSION['Last_Name'] = $row['Last_Name'];
-            $_SESSION['DOB'] = $row['DOB'];
-            $_SESSION['User_Role'] = $row['User_Role'];
-            $_SESSION['Phone'] = $row['Phone'];
-            $_SESSION['Address'] = $row['Address'];
-            $_SESSION['Pincode'] = $row['Pincode'];
-            $_SESSION['Email'] = $row['Email'];
-            $_SESSION['Create_At'] = $row['Create_At'];
-
-            // Save session
-            $_SESSION['User_Id']   = $user['User_Id'];
-            $_SESSION['Email']     = $user['Email'];
-            $_SESSION['User_Role'] = $user['User_Role'];
-
-
-            // Redirect user back to the page they came from
+            // Redirect back to saved page after login
             if (isset($_SESSION['redirect_after_login'])) {
+
                 $redirect = $_SESSION['redirect_after_login'];
                 unset($_SESSION['redirect_after_login']);
 
-                // Make sure file exists before redirect
-                if (file_exists("../$redirect")) {
-                    header("Location: ../$redirect");
-                    exit();
-                }
+                header("Location: ../$redirect");
+                exit();
             }
 
-            // Default redirect
+            // Default redirect (if no redirect saved)
             header("Location: ../AdminPanel/layout.php?view=dashboard");
             exit();
         }
     }
 
-    // If user does not exist or password wrong
+    // Invalid login
     echo "<script>
             alert('Invalid Email or Password! Please register first if you are a new user.');
             window.location.href = '/GIFT-SHOP-WEBSITE/login/login.php';
