@@ -1,8 +1,8 @@
 <?php
 session_start();
 
-/* Detect popup mode */
-$isPopup = isset($embedded);
+/* Detect popup mode safely */
+$isPopup = isset($_GET['popup']);
 ?>
 
 <?php if (!$isPopup): ?>
@@ -56,8 +56,8 @@ $isPopup = isset($embedded);
         <?php if ($isPopup): ?>
         <div class="close-btn"
              onclick="
-                document.getElementById('register-popup').style.display='none';
-                document.getElementById('blur-overlay').style.display='none';
+                 // Close popup safely without breaking JS
+                 window.location.href = window.location.pathname;
              ">
             ✖
         </div>
@@ -65,7 +65,8 @@ $isPopup = isset($embedded);
 
         <h2>Create Account</h2>
 
-        <form action="register.php" method="POST">
+        <!-- FIXED: Correct file to process registration -->
+        <form action="register_check.php" method="POST">
 
             <div class="input-box">
                 <input type="text" name="first_name" placeholder="First Name" required>
@@ -106,11 +107,7 @@ $isPopup = isset($embedded);
 
             <p class="login-info">
                 Already have an account?
-                <a href="#"
-                   onclick="
-                        document.getElementById('register-popup').style.display='none';
-                        document.getElementById('login-popup').style.display='flex';
-                   ">
+                <a href="login.php?popup=1">
                     Login here
                 </a>
             </p>
