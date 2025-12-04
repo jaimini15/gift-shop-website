@@ -92,7 +92,8 @@ if(isset($_POST['update'])){
         <input type="file" name="image" accept="image/*" class="form-control">
     </div>
 
-    <button type="submit" name="update" class="btn btn-primary">Update</button>
+    <button type="submit" name="update" class="btn btn-success">Update</button>
+    <a href="../layout.php?view=categories" class="btn btn-secondary">Back</a>
 </form>
 
 </body>
