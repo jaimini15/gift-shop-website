@@ -121,6 +121,7 @@ if (isset($_POST['submit'])) {
     </div>
 
     <button type="submit" name="submit" class="btn btn-success">Add Product</button>
+    <a href="../layout.php?view=products" class="btn btn-secondary">Back</a>
 
 </form>
 
