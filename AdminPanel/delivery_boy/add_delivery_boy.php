@@ -20,7 +20,8 @@ if (isset($_POST['add'])) {
     $address = mysqli_real_escape_string($connection, $_POST['address']);
     $pincode = mysqli_real_escape_string($connection, $_POST['pincode']);
     $email = mysqli_real_escape_string($connection, $_POST['email']);
-    $password = mysqli_real_escape_string($connection, $_POST['password']); // Stored as TEXT
+    $password = mysqli_real_escape_string($connection, $_POST['password']); // TEXT storage
+    $status = mysqli_real_escape_string($connection, $_POST['status']); // NEW
 
     // Check if email already exists
     $check = mysqli_query($connection, "SELECT * FROM user_details WHERE Email='$email'");
@@ -30,9 +31,9 @@ if (isset($_POST['add'])) {
 
         // Insert Delivery Boy
         $query = "INSERT INTO user_details
-        (First_Name, Last_Name, DOB, User_Role, Phone, Address, Pincode, Email, Password)
+        (First_Name, Last_Name, DOB, User_Role, Phone, Address, Pincode, Email, Password, Status)
         VALUES
-        ('$first', '$last', '$dob', 'DELIVERY_BOY', '$phone', '$address', '$pincode', '$email', '$password')";
+        ('$first', '$last', '$dob', 'DELIVERY_BOY', '$phone', '$address', '$pincode', '$email', '$password', '$status')";
 
         if (mysqli_query($connection, $query)) {
             header("Location: ../layout.php?view=delivery_boys&msg=added");
@@ -100,6 +101,15 @@ if (isset($_POST['add'])) {
         <div class="mb-3">
             <label class="form-label">Password (Stored as TEXT)</label>
             <input type="text" name="password" maxlength="10" class="form-control" required>
+        </div>
+
+        <!-- ✅ NEW STATUS FIELD -->
+        <div class="mb-3">
+            <label class="form-label">Status</label>
+            <select name="status" class="form-control" required>
+                <option value="ENABLE">ENABLE</option>
+                <option value="DISABLE">DISABLE</option>
+            </select>
         </div>
 
         <button type="submit" name="add" class="btn btn-success">Add Delivery Boy</button>
