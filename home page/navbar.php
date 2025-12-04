@@ -34,6 +34,6 @@
 
     <div class="icons">
       <a href="#"><i class="fa-solid fa-cart-shopping"></i> Cart</a>
-      <a href="#"><i class="fa-regular fa-user"></i> My Profile</a>
+      <a href="../login/login.php"><i class="fa-regular fa-user"></i> My Profile</a>
     </div>
 </header>

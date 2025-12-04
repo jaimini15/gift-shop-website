@@ -2,8 +2,10 @@
 session_start();
 include("../AdminPanel/db.php");
 
-// SAVE CORRECT REDIRECT URL
+
+// Save relative URL only
 $_SESSION['redirect_after_login'] = $_SERVER['REQUEST_URI'];
+
 
 // Validate category id
 if (!isset($_GET['category_id'])) {

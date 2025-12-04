@@ -1,126 +1,64 @@
 <?php
 session_start();
+include("../AdminPanel/db.php");
 
-/* Detect popup mode */
-$isPopup = isset($embedded);
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+
+    $fname = $_POST['first_name'];
+    $lname = $_POST['last_name'];
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+
+    $query = "INSERT INTO user_details (First_Name, Last_Name, Email, Password, User_Role)
+              VALUES ('$fname', '$lname', '$email', '$password', 'CUSTOMER')";
+    mysqli_query($connection, $query);
+
+    header("Location: ../login/login.php");
+    exit();
+}
 ?>
-
-<?php if (!$isPopup): ?>
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<title>Register - Gift Shop</title>
-<link rel="stylesheet" href="register.css">
-<?php endif; ?>
-
-<style>
-<?php if ($isPopup): ?>
-/* Popup Blur Overlay */
-.overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    backdrop-filter: blur(10px);
-    background: rgba(0,0,0,0.3);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-}
-
-/* Close Button */
-.close-btn {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    font-size: 20px;
-    cursor: pointer;
-}
-<?php endif; ?>
-</style>
-
-<?php if (!$isPopup): ?>
+    
+    <title>Register</title>
+     <link rel="stylesheet" href="../home page/style.css" />
+    <style>
+        body { font-family: Arial; background: #f4f4f4; padding: 50px; }
+        .container {
+            width: 350px; margin: auto; background: #fff;
+            padding: 25px; border-radius: 10px; box-shadow: 0 0 10px #ccc;
+        }
+        input, button {
+            width: 100%; padding: 10px; margin: 10px 0;
+            border-radius: 5px; border: 1px solid #ccc;
+        }
+        button { background: #e0486c; color: white; cursor: pointer; }
+        a { color: #e0486c; text-decoration: none; }
+    </style>
 </head>
 <body>
-<?php endif; ?>
+<?php include("../home page/navbar.php"); ?>  <!-- 🔥 Navbar -->
+<div class="container">
 
+    <h2>Create Account</h2>
 
-<!-- REGISTRATION POPUP / PAGE -->
-<div class="overlay">
+    <form method="POST">
 
-    <div class="register-card">
+        <input type="text" name="first_name" placeholder="First Name" required>
 
-        <?php if ($isPopup): ?>
-        <div class="close-btn"
-             onclick="
-                document.getElementById('register-popup').style.display='none';
-                document.getElementById('blur-overlay').style.display='none';
-             ">
-            ✖
-        </div>
-        <?php endif; ?>
+        <input type="text" name="last_name" placeholder="Last Name" required>
 
-        <h2>Create Account</h2>
+        <input type="email" name="email" placeholder="Email" required>
 
-        <form action="register.php" method="POST">
+        <input type="password" name="password" placeholder="Password" required>
 
-            <div class="input-box">
-                <input type="text" name="first_name" placeholder="First Name" required>
-            </div>
+        <button type="submit">Register</button>
 
-            <div class="input-box">
-                <input type="text" name="last_name" placeholder="Last Name" required>
-            </div>
-
-            <div class="input-box">
-                <input type="date" name="dob" required>
-            </div>
-
-            <div class="input-box">
-                <input type="text" name="phone" placeholder="Phone Number" required>
-            </div>
-
-            <div class="input-box">
-                <input type="text" name="address" placeholder="Address" required>
-            </div>
-
-            <div class="input-box">
-                <input type="text" name="pincode" placeholder="Pincode" required>
-            </div>
-
-            <div class="input-box">
-                <input type="email" name="email" placeholder="Email" required>
-            </div>
-
-            <div class="input-box">
-                <input type="password" name="password" placeholder="Password" required>
-            </div>
-
-            <!-- Default role for user -->
-            <input type="hidden" name="role" value="CUSTOMER">
-
-            <button type="submit" class="register-btn">Register</button>
-
-            <p class="login-info">
-                Already have an account?
-                <a href="#"
-                   onclick="
-                        document.getElementById('register-popup').style.display='none';
-                        document.getElementById('login-popup').style.display='flex';
-                   ">
-                    Login here
-                </a>
-            </p>
-
-        </form>
-    </div>
+        <p>Already have an account? <a href="../login/login.php">Login here</a></p>
+    </form>
 
 </div>
-
-<?php if (!$isPopup): ?>
+<?php include("../home page/footer.php"); ?> <!-- 🔥 Footer -->
 </body>
 </html>
-<?php endif; ?>
