@@ -16,7 +16,9 @@ $admin = mysqli_fetch_assoc(mysqli_query(
     "SELECT * FROM user_details WHERE User_Id = $admin_id LIMIT 1"
 ));
 
-// If form submitted
+$error = "";
+
+// Update profile + password
 if (isset($_POST['update'])) {
 
     $fname   = mysqli_real_escape_string($connection, $_POST['fname']);
@@ -27,74 +29,178 @@ if (isset($_POST['update'])) {
     $pincode = mysqli_real_escape_string($connection, $_POST['pincode']);
     $email   = mysqli_real_escape_string($connection, $_POST['email']);
 
-    $update = "
-        UPDATE user_details 
-        SET 
-            First_Name='$fname',
-            Last_Name='$lname',
-            DOB='$dob',
-            Phone='$phone',
-            Address='$address',
-            Pincode='$pincode',
-            Email='$email'
-        WHERE User_Id=$admin_id
-    ";
+    // Password fields
+    $current_password = $_POST['current_password'];
+    $new_password     = $_POST['new_password'];
+    $confirm_password = $_POST['confirm_password'];
 
-    if (mysqli_query($connection, $update)) {
-        header("Location: ../layout.php?view=admin_profile&success=Profile updated successfully");
-        exit;
-    } else {
-        $error = "Error updating profile.";
+    // Get current DB password (PLAIN TEXT)
+    $db_pass = $admin['Password'];
+
+    // If user entered any password field
+    if (!empty($current_password) || !empty($new_password) || !empty($confirm_password)) {
+
+        // ❌ Plain Text Compare
+        if ($current_password !== $db_pass) {
+            $error = "Current password is incorrect!";
+        }
+        elseif ($new_password !== $confirm_password) {
+            $error = "New Password and Confirm Password do not match!";
+        }
+        else {
+            // ✔ Save new password as plain text
+            $plain_pass = mysqli_real_escape_string($connection, $new_password);
+
+            $password_update = mysqli_query(
+                $connection,
+                "UPDATE user_details SET Password='$plain_pass' WHERE User_Id=$admin_id"
+            );
+
+            if (!$password_update) {
+                $error = "Failed to update password!";
+            }
+        }
+    }
+
+    if (empty($error)) {
+
+        $update = mysqli_query(
+            $connection,
+            "UPDATE user_details SET 
+                First_Name='$fname',
+                Last_Name='$lname',
+                DOB='$dob',
+                Phone='$phone',
+                Address='$address',
+                Pincode='$pincode',
+                Email='$email'
+            WHERE User_Id=$admin_id"
+        );
+
+        if ($update) {
+            header("Location: ../layout.php?view=admin_profile&success=Profile updated successfully");
+            exit;
+        } else {
+            $error = "Error updating profile.";
+        }
     }
 }
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Edit Admin Profile</title>
+<meta charset="UTF-8">
+<title>Edit Profile</title>
+
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+<style>
+.edit-card {
+    max-width: 850px;
+    margin: auto;
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+}
+
+.form-label {
+    font-weight: 600;
+}
+
+.form-control {
+    height: 45px;
+    border-radius: 8px;
+}
+
+.btn-primary {
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 8px;
+}
+</style>
 </head>
 
 <body>
 
 <div class="container mt-4">
-    <div class="card shadow p-4" style="max-width: 650px; margin:auto;">
-        <h3 class="text-center mb-3">Edit Profile</h3>
+
+    <div class="edit-card">
+
+        <h3 class="text-center mb-4">
+            <i class="fa-solid fa-user-pen"></i> Edit Profile
+        </h3>
 
         <?php if (!empty($error)) { ?>
-        <div class="alert alert-danger"><?php echo $error; ?></div>
+            <div class="alert alert-danger text-center"><?php echo $error; ?></div>
         <?php } ?>
 
         <form method="POST">
 
-            <label>First Name</label>
-            <input type="text" name="fname" class="form-control mb-2" value="<?php echo $admin['First_Name']; ?>" required>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">First Name</label>
+                    <input type="text" name="fname" class="form-control" value="<?php echo $admin['First_Name']; ?>" required>
+                </div>
 
-            <label>Last Name</label>
-            <input type="text" name="lname" class="form-control mb-2" value="<?php echo $admin['Last_Name']; ?>" required>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Last Name</label>
+                    <input type="text" name="lname" class="form-control" value="<?php echo $admin['Last_Name']; ?>" required>
+                </div>
 
-            <label>Date of Birth</label>
-            <input type="date" name="dob" class="form-control mb-2" value="<?php echo $admin['DOB']; ?>">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Date of Birth</label>
+                    <input type="date" name="dob" class="form-control" value="<?php echo $admin['DOB']; ?>">
+                </div>
 
-            <label>Phone</label>
-            <input type="text" name="phone" class="form-control mb-2" value="<?php echo $admin['Phone']; ?>">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Phone</label>
+                    <input type="text" name="phone" class="form-control" value="<?php echo $admin['Phone']; ?>">
+                </div>
 
-            <label>Address</label>
-            <input type="text" name="address" class="form-control mb-2" value="<?php echo $admin['Address']; ?>">
+                <div class="col-md-12 mb-3">
+                    <label class="form-label">Address</label>
+                    <input type="text" name="address" class="form-control" value="<?php echo $admin['Address']; ?>">
+                </div>
 
-            <label>Pincode</label>
-            <input type="text" name="pincode" class="form-control mb-2" value="<?php echo $admin['Pincode']; ?>">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Pincode</label>
+                    <input type="text" name="pincode" class="form-control" value="<?php echo $admin['Pincode']; ?>">
+                </div>
 
-            <label>Email</label>
-            <input type="email" name="email" class="form-control mb-3" value="<?php echo $admin['Email']; ?>" required>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Email</label>
+                    <input type="email" name="email" class="form-control" value="<?php echo $admin['Email']; ?>" required>
+                </div>
+            </div>
 
-            <button type="submit" name="update" class="btn btn-primary w-100">
-                Update Profile
+            <hr>
+            <h5 class="mt-3">Change Password</h5>
+
+            <div class="col-md-12 mb-3">
+                <label class="form-label">Current Password</label>
+                <input type="password" name="current_password" class="form-control">
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label class="form-label">New Password</label>
+                <input type="password" name="new_password" class="form-control">
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Confirm New Password</label>
+                <input type="password" name="confirm_password" class="form-control">
+            </div>
+
+            <button type="submit" name="update" class="btn btn-primary">
+                <i class="fa-solid fa-check"></i> Save Changes
             </button>
 
         </form>
     </div>
+
 </div>
 
 </body>
