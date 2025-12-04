@@ -1,9 +1,8 @@
 <?php
-session_start(); 
-
+session_start();
 include("../AdminPanel/db.php");
 
-// Get category id from URL
+// Validate category id
 if (!isset($_GET['category_id'])) {
     echo "<h2 style='text-align:center;'>Invalid Category!</h2>";
     exit;
@@ -11,13 +10,13 @@ if (!isset($_GET['category_id'])) {
 
 $category_id = $_GET['category_id'];
 
-// Fetch category details
-$catQuery = "SELECT * FROM category_details WHERE Category_ID='$category_id'";
+// Fetch category info
+$catQuery  = "SELECT * FROM category_details WHERE Category_ID='$category_id'";
 $catResult = mysqli_query($connection, $catQuery);
-$category = mysqli_fetch_assoc($catResult);
+$category  = mysqli_fetch_assoc($catResult);
 
-// If category not found OR disabled
-if (!$category || $category['Status'] == 'Disabled') {
+// If not found or disabled
+if (!$category || $category['Status'] === 'Disabled') {
     echo "<h2 style='text-align:center;'>Category Not Available</h2>";
     exit;
 }
@@ -28,45 +27,41 @@ $categoryName = $category['Category_Name'];
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title><?= $categoryName ?> | GiftShop</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title><?= $categoryName ?> | GiftShop</title>
 
-  <link rel="stylesheet" href="../home page/style.css" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-
-  
+<link rel="stylesheet" href="../home page/style.css">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 </head>
 
 <body>
 
 <!-- NAVBAR -->
-<?php include("../AdminPanel/db.php"); ?>
 <header>
     <div class="logo">GiftShop</div>
 
     <nav>
       <ul>
         <li><a href="../home page/index.php">Home</a></li> |
-        <li><a href="../home page/about.php">About us</a></li> | 
+        <li><a href="../home page/about.php">About us</a></li> |
         
         <li class="dropdown">
-          <a href="#" class="active">Shop</a>
-
-          <ul class="dropdown-content">
-            <?php  
-              $catQuery = "SELECT * FROM category_details WHERE Status='Enabled'";
-              $catResult = mysqli_query($connection, $catQuery);
-              while ($cat = mysqli_fetch_assoc($catResult)) {
-            ?>
-                <li>
-                  <a href="../product_page/product_list.php?category_id=<?= $cat['Category_Id'] ?>">
-                    <?= $cat['Category_Name'] ?>
-                  </a>
-                </li>
-            <?php } ?>
-          </ul>
+            <a href="#" class="active">Shop</a>
+            <ul class="dropdown-content">
+                <?php  
+                $catQuery = "SELECT * FROM category_details WHERE Status='Enabled'";
+                $catResult = mysqli_query($connection, $catQuery);
+                while ($cat = mysqli_fetch_assoc($catResult)) {
+                ?>
+                    <li>
+                        <a href="../product_page/product_list.php?category_id=<?= $cat['Category_ID'] ?>">
+                            <?= $cat['Category_Name'] ?>
+                        </a>
+                    </li>
+                <?php } ?>
+            </ul>
         </li> |
 
         <li><a href="../home page/contact.php">Contact</a></li>
@@ -74,25 +69,26 @@ $categoryName = $category['Category_Name'];
     </nav>
 
     <div class="icons">
-      <a href="#"><i class="fa-solid fa-cart-shopping"></i> Cart</a>
-      <a href="#"><i class="fa-regular fa-user"></i> My Profile</a>
+        <a href="#"><i class="fa-solid fa-cart-shopping"></i> Cart</a>
+        <a href="#"><i class="fa-regular fa-user"></i> My Profile</a>
     </div>
 </header>
 
-<!-- PAGE TITLE -->
+<!-- PAGE BANNER -->
 <section class="hero-title">
     <h1>Perfect Personalized <?= $categoryName ?></h1>
     <p>Thoughtful <?= strtolower($categoryName) ?> designed for every occasion.</p>
 </section>
 
-<!-- PRODUCT LIST -->
+<!-- PRODUCT GRID -->
 <section class="product-content">
 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
 
 <?php
-$productQuery = "SELECT * FROM product_details 
-                 WHERE Category_ID='$category_id' 
-                 AND Status='Enabled'";
+$productQuery = "
+    SELECT * FROM product_details
+    WHERE Category_ID='$category_id' AND Status='Enabled'
+";
 
 $productResult = mysqli_query($connection, $productQuery);
 
@@ -101,21 +97,25 @@ if (mysqli_num_rows($productResult) > 0) {
         $img = base64_encode($product['Product_Image']);
 ?>
     <div class="col">
-      <div class="card shadow-sm">
+        <div class="card shadow-sm">
 
-        <img class="card-img-top"
-            src="data:image/jpeg;base64,<?= $img ?>"
-            style="width:100%; height:225px; object-fit:cover;">
+            <img src="data:image/jpeg;base64,<?= $img ?>"
+                 class="card-img-top"
+                 style="width: 100%; height: 225px; object-fit: cover;">
 
-        <div class="card-body">
-          <p class="card-text"><?= $product['Description'] ?></p>
-          <p class="card-price">₹ <?= $product['Price'] ?></p>
+            <div class="card-body">
+                <p class="card-text"><?= $product['Description'] ?></p>
+                <p class="card-price">₹ <?= $product['Price'] ?></p>
 
-          <button class="product-btn" onclick="showLogin()">Buy now</button>
+                <button class="product-btn"
+                        onclick="showLogin('product_page/product_list.php?category_id=<?= $category_id ?>')">
+                    Buy now
+                </button>
+            </div>
         </div>
-      </div>
     </div>
-<?php 
+
+<?php
     }
 } else {
     echo "<h3 style='text-align:center;'>No products found.</h3>";
@@ -163,24 +163,51 @@ if (mysqli_num_rows($productResult) > 0) {
     <div class="credit">created by <span>GiftShop</span> | all right reserved!</div>
 </section>
 
-<div id="blur-overlay" style="display:none;"></div>
+<!-- BLUR BACKGROUND -->
+<div id="blur-overlay"
+     style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+            background:rgba(0,0,0,0.35); backdrop-filter:blur(8px); z-index:999;">
+</div>
 
-<div id="login-popup" style="display:none;">
-    <?php 
-        $embedded = true; 
-        include "../login/login.php"; 
-    ?>
+<!-- LOGIN POPUP -->
+<div id="blur-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.35); backdrop-filter:blur(8px); z-index:999;"></div>
+
+<div id="login-popup" style="display:none; z-index:1000;">
+    <?php $embedded = true; include("../login/login.php"); ?>
 </div>
 
 
+<!-- REGISTER POPUP -->
+<div id="register-popup" style="display:none; z-index:1000;">
+    <?php 
+        $embedded = true;
+        include("../login/registration.php");
+    ?>
+</div>
+
 <script>
-function showLogin() {
+function showLogin(page) {
+    // Save redirect page
+    fetch("../login/save_redirect.php?page=" + encodeURIComponent(page));
+
     document.getElementById("blur-overlay").style.display = "block";
     document.getElementById("login-popup").style.display = "flex";
+    document.getElementById("register-popup").style.display = "none";
+}
+
+function showRegister() {
+    document.getElementById("login-popup").style.display = "none";
+    document.getElementById("register-popup").style.display = "flex";
+}
+
+function closePopups() {
+    document.getElementById("login-popup").style.display = "none";
+    document.getElementById("register-popup").style.display = "none";
+    document.getElementById("blur-overlay").style.display = "none";
 }
 </script>
 
-<!-- SCRIPTS -->
+
 <script src="../home page/script.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
