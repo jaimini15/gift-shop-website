@@ -63,6 +63,7 @@ if(isset($_POST['submit'])){
     </div>
 
     <button type="submit" name="submit" class="btn btn-success">Add</button>
+    <a href="../layout.php?view=categories" class="btn btn-secondary">Back</a>
 </form>
 
 </body>
