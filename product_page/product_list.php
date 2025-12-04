@@ -11,7 +11,7 @@ if (!isset($_GET['category_id'])) {
 $category_id = $_GET['category_id'];
 
 // Fetch category info
-$catQuery  = "SELECT * FROM category_details WHERE Category_ID='$category_id'";
+$catQuery  = "SELECT * FROM category_details WHERE Category_Id='$category_id'";
 $catResult = mysqli_query($connection, $catQuery);
 $category  = mysqli_fetch_assoc($catResult);
 
@@ -56,7 +56,7 @@ $categoryName = $category['Category_Name'];
                 while ($cat = mysqli_fetch_assoc($catResult)) {
                 ?>
                     <li>
-                        <a href="../product_page/product_list.php?category_id=<?= $cat['Category_ID'] ?>">
+                        <a href="../product_page/product_list.php?category_id=<?= $cat['Category_Id'] ?>">
                             <?= $cat['Category_Name'] ?>
                         </a>
                     </li>
@@ -87,7 +87,7 @@ $categoryName = $category['Category_Name'];
 <?php
 $productQuery = "
     SELECT * FROM product_details
-    WHERE Category_ID='$category_id' AND Status='Enabled'
+    WHERE Category_Id='$category_id' AND Status='Enabled'
 ";
 
 $productResult = mysqli_query($connection, $productQuery);
@@ -168,9 +168,6 @@ if (mysqli_num_rows($productResult) > 0) {
      style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
             background:rgba(0,0,0,0.35); backdrop-filter:blur(8px); z-index:999;">
 </div>
-
-<!-- LOGIN POPUP -->
-<div id="blur-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.35); backdrop-filter:blur(8px); z-index:999;"></div>
 
 <div id="login-popup" style="display:none; z-index:1000;">
     <?php $embedded = true; include("../login/login.php"); ?>
