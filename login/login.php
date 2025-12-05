@@ -1,227 +1,85 @@
-
 <?php
 session_start();
-include("../AdminPanel/db.php"); // Database connection
+include("../AdminPanel/db.php");
 
-
-// Detect popup login
-$isPopup = isset($embedded) ? true : false;
-
-// Handle login form
-$login_error = "";
-
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
-
-    $email    = mysqli_real_escape_string($connection, $_POST['email']);
-    $password = mysqli_real_escape_string($connection, $_POST['password']);
-
-    $query  = "SELECT * FROM user_details WHERE Email='$email' LIMIT 1";
-    $result = mysqli_query($connection, $query);
-
-    if ($result && mysqli_num_rows($result) === 1) {
-
-        $user = mysqli_fetch_assoc($result);
-
-        // Plain text password check (use hashing in production)
-        if ($password === $user['Password']) {
-
-            // Store session values
-            $_SESSION['User_Id']   = $user['User_Id'];
-            $_SESSION['Email']     = $user['Email'];
-            $_SESSION['User_Role'] = $user['User_Role'];
-
-            // Redirect user after login
-if (isset($_SESSION['redirect_after_login'])) {
-    $redirect = $_SESSION['redirect_after_login'];
-    unset($_SESSION['redirect_after_login']);
-
-    // Redirect using relative path (no double base)
-    header("Location: $redirect");
+// If already logged in redirect
+if (isset($_SESSION['User_Id'])) {
+    header("Location: ../home page/index.php");
     exit();
 }
 
+$error = "";
 
-}
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $email = $_POST['email'];
+    $pass = $_POST['password'];
 
+    $sql = "SELECT * FROM user_details WHERE Email='$email' LIMIT 1";
+    $result = mysqli_query($connection, $sql);
+
+    if ($result && mysqli_num_rows($result) === 1) {
+        $row = mysqli_fetch_assoc($result);
+
+        if ($pass === $row['Password']) {
+            $_SESSION['User_Id'] = $row['User_Id'];
+            $_SESSION['Email']   = $row['Email'];
+
+            header("Location: ../home page/index.php");
+            exit();
+        }
     }
-
-    // If we reach here = invalid login
-    $login_error = "Invalid Email or Password! Please register first if you are a new user.";
+    $error = "Invalid Email or Password!";
 }
 ?>
-
-<?php if (!$isPopup): ?>
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Login - Gift Shop</title>
-
-<link rel="stylesheet" href="../home page/style.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-<?php endif; ?>
-
-<style>
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-}
-.overlay {
-    position: <?= $isPopup ? "fixed" : "relative" ?>;
-    top:0; left:0;
-    width:100%; height:100%;
-    <?= $isPopup ? "backdrop-filter: blur(10px); background: rgba(0,0,0,0.3);" : "" ?>;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    z-index: 9999;
-}
-.login-card {
-    width: 380px;
-    padding: 35px 30px;
-    background: #fff;
-    border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
-    text-align:center;
-    position:relative;
-}
-
-.logo-login {
-    font-size: 70px;
-    color: #d36b5e;
-    margin-bottom: 10px;
-}
-h2 {
-    margin: 0 0 20px;
-    color: #333;
-    font-size: 26px;
-}
-.input-box {
-    margin: 15px 0;
-}
-.input-box input {
-    width: 96%;
-    padding: 12px 14px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    background: #f2f2f2;
-    font-size: 16px;
-    outline: none;
-}
-.input-box input:focus {
-    background: #ececec;
-    border-color: #cfcfcf;
-}
-.login-btn {
-    width: 100%;
-    padding: 12px;
-    border: none;
-    border-radius: 8px;
-    background: #b35d52;
-    color: #fff;
-    font-size: 18px;
-    font-weight: bold;
-    margin-top: 10px;
-    cursor: pointer;
-}
-.login-btn:hover {
-    background: #9e4f45;
-}
-.row-rem_for {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 15px;
-    font-size: 14px;
-}
-.forgot-link {
-    color: #b35d52;
-    text-decoration: none;
-}
-.forgot-link:hover {
-    text-decoration: underline;
-}
-.register-link {
-    margin-top: 20px;
-    font-size: 14px;
-}
-.register-link a {
-    color: #b35d52;
-    font-weight: bold;
-    text-decoration: none;
-}
-.register-link a:hover {
-    text-decoration: underline;
-}
-.error-msg {
-    color: red;
-    margin-bottom: 10px;
-    font-size: 14px;
-}
-
-<?php if($isPopup): ?>
-.close-btn {
-    position:absolute;
-    top:12px;
-    right:12px;
-    font-size:20px;
-    cursor:pointer;
-    color:#444;
-}
-<?php endif; ?>
-</style>
-
-<?php if (!$isPopup): ?>
+    <title>Login</title>
+    <style>
+        body { font-family: Arial; background: #f7f7f7; margin:0; }
+        .form-box {
+            width: 350px; margin: 60px auto; padding: 25px;
+            background: #fff; border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        input {
+            width: 100%; padding: 10px; margin: 10px 0;
+            border: 1px solid #ccc; border-radius: 5px;
+        }
+        .btn {
+            width: 100%; padding: 12px; background: brown; 
+            color: #fff; border: none; border-radius: 5px;
+            cursor: pointer;
+        }
+        .btn:hover { background: #8b3e3e; }
+        .error { color: red; margin-bottom: 10px; }
+        a { color: brown; }
+    </style>
 </head>
 <body>
-<?php endif; ?>
 
-<div class="overlay">
-    <div class="login-card">
+<?php include("../home page/navbar.php"); ?>  <!-- 🔥 Navbar -->
 
-        <?php if($isPopup): ?>
-        <div class="close-btn" onclick="
-            document.getElementById('login-popup').style.display='none';
-            document.getElementById('blur-overlay').style.display='none';
-        ">✖</div>
-        <?php endif; ?>
+<div class="form-box">
+    <h2>Login</h2>
 
-        <div class="logo-login">
-            <i class="fa-solid fa-user-circle"></i>
-        </div>
+    <?php if ($error): ?>
+        <div class="error"><?= $error ?></div>
+    <?php endif; ?>
 
-        <h2>Login</h2>
+    <form method="POST">
+        <input type="email" name="email" placeholder="Email" required>
+        <input type="password" name="password" placeholder="Password" required>
+        <button class="btn">Login</button>
+    </form>
 
-        <?php if (!empty($login_error)): ?>
-            <div class="error-msg"><?= $login_error ?></div>
-        <?php endif; ?>
-
-        <form action="" method="POST">
-            <div class="input-box">
-                <input type="email" name="email" placeholder="Email" required>
-            </div>
-
-            <div class="input-box">
-                <input type="password" name="password" placeholder="Password" required>
-            </div>
-
-            <button type="submit" class="login-btn">Login</button>
-
-            <div class="row-rem_for">
-                <label><input type="checkbox" name="remember"> Remember Me</label>
-                <a href="../login/forgot_password.html" class="forgot-link">Forgot Password?</a>
-            </div>
-
-            <p class="register-link">
-                Don't have an account?
-                <a href="../registration/registration.php">Register here</a>
-            </p>
-        </form>
-
-    </div>
+    <p>
+        Don't have an account? 
+        <a href="../registration/registration.php">Register here</a>
+    </p>
 </div>
 
-<?php if (!$isPopup): ?>
+<?php include("../home page/footer.php"); ?> <!-- 🔥 Footer -->
+
 </body>
 </html>
-<?php endif; ?>
