@@ -57,6 +57,7 @@ $result = mysqli_query($connection, $query);
                     <th>Address</th>
                     <th>DOB</th>
                     <th>Pincode</th>
+                    <th>Status</th> <!-- Added -->
                     <th>Created At</th>
                     <th>Action</th>
                 </tr>
@@ -72,6 +73,7 @@ $result = mysqli_query($connection, $query);
                         <td><?= $row['Address'] ?></td>
                         <td><?= $row['DOB'] ?></td>
                         <td><?= $row['Pincode'] ?></td>
+                        <td><?= $row['Status'] ?></td> <!-- Added -->
                         <td><?= isset($row['Create_At']) ? date("d-m-Y H:i", strtotime($row['Create_At'])) : 'N/A' ?></td>
                         <td>
                             <a href="delivery_boy/edit_delivery_boy.php?id=<?= $row['User_Id'] ?>"
@@ -80,7 +82,6 @@ $result = mysqli_query($connection, $query);
                     </tr>
                 <?php } ?>
             </tbody>
-
 
         </table>
 
