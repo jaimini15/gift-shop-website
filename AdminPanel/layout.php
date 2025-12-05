@@ -15,6 +15,7 @@ $allowed = [
     'delivery' => 'delivery/delivery.php',
     'feedback' => 'feedback/feedback.php',
     'admin_profile' => 'admin/admin_profile.php',  // PROFILE PAGE
+    'delivery_boys' => 'delivery_boy/delivery_boys.php',
 ];
 
 $page = isset($allowed[$view]) ? $allowed[$view] : $allowed['dashboard'];
@@ -125,7 +126,8 @@ $page = isset($allowed[$view]) ? $allowed[$view] : $allowed['dashboard'];
         <a href="layout.php?view=dashboard" class="<?= ($view == 'dashboard') ? 'active' : '' ?>"><i
                 class="fa-solid fa-chart-line"></i> Dashboard</a>
 
-        <a href="layout.php?view=users" class="<?= ($view == 'users') ? 'active' : '' ?>"><i class="fa-solid fa-users"></i>
+        <a href="layout.php?view=users" class="<?= ($view == 'users') ? 'active' : '' ?>"><i
+                class="fa-solid fa-users"></i>
             Users</a>
 
         <a href="layout.php?view=categories" class="<?= ($view == 'categories') ? 'active' : '' ?>"><i
@@ -148,6 +150,11 @@ $page = isset($allowed[$view]) ? $allowed[$view] : $allowed['dashboard'];
 
         <a href="layout.php?view=feedback" class="<?= ($view == 'feedback') ? 'active' : '' ?>"><i
                 class="fa-solid fa-comments"></i> Feedback</a>
+
+        <a href="layout.php?view=delivery_boys" class="<?= ($view == 'delivery_boys') ? 'active' : '' ?>">
+            <i class="fa-solid fa-motorcycle"></i> Delivery Boys </a>
+
+
 
     </div>
 
