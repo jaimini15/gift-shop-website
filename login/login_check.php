@@ -2,9 +2,14 @@
 session_start();
 include("../db.php");
 
-// Check missing fields
+// Always return JSON for AJAX
+header("Content-Type: application/json");
+
 if (!isset($_POST['email']) || !isset($_POST['password'])) {
-    header("Location: login.php?error=Email or Password missing");
+    echo json_encode([
+        "success" => false,
+        "message" => "Email or Password missing"
+    ]);
     exit;
 }
 
@@ -16,7 +21,10 @@ $result = mysqli_query($connection, $query);
 
 // Query error
 if (!$result) {
-    header("Location: login.php?error=Database error");
+    echo json_encode([
+        "success" => false,
+        "message" => "Database error"
+    ]);
     exit;
 }
 
@@ -24,22 +32,40 @@ $user = mysqli_fetch_assoc($result);
 
 // No user found
 if (!$user) {
-    header("Location: login.php?error=Invalid Email");
+    echo json_encode([
+        "success" => false,
+        "message" => "Invalid Email"
+    ]);
     exit;
 }
 
-// Password check (TEXT as you stored)
+// Password check (plain text)
 if ($password === $user['Password']) {
 
+    // Save user session
     $_SESSION['user_id'] = $user['User_Id'];
     $_SESSION['email']   = $user['Email'];
 
-    // ⭐ REDIRECT TO PRODUCT LIST PAGE
-    header("Location: ../product_page/product_list.php");
+    // ⭐ Check if user clicked Buy Now earlier
+    if (isset($_SESSION['redirect_after_login'])) {
+        $redirect = $_SESSION['redirect_after_login'];
+        unset($_SESSION['redirect_after_login']);
+    } else {
+        $redirect = "../product_page/product_list.php";
+    }
+
+    echo json_encode([
+        "success" => true,
+        "message" => "Login Successful!",
+        "redirect" => $redirect
+    ]);
     exit;
 }
 
 // Wrong password
-header("Location: login.php?error=Incorrect Password");
+echo json_encode([
+    "success" => false,
+    "message" => "Incorrect Password"
+]);
 exit;
 ?>
