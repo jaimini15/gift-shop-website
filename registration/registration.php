@@ -65,7 +65,7 @@ $isPopup = isset($embedded);
 
         <h2>Create Account</h2>
 
-        <form action="register_check.php" method="POST">
+        <form action="register.php" method="POST">
 
             <div class="input-box">
                 <input type="text" name="first_name" placeholder="First Name" required>
