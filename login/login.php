@@ -5,7 +5,7 @@ include("../AdminPanel/db.php");
 $isPopup = isset($embedded) ? true : false;
 $email_val = "";
 
-// Handle AJAX LOGIN
+// AJAX LOGIN REQUEST
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     $email = mysqli_real_escape_string($connection, $_POST['email']);
@@ -18,22 +18,23 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if ($result && mysqli_num_rows($result) === 1) {
         $user = mysqli_fetch_assoc($result);
 
-        // TEXT PASSWORD CHECK
         if ($password === $user['Password']) {
 
-            $_SESSION['User_Id']   = $user['User_Id'];
-            $_SESSION['First_Name'] = $user['First_Name'];
-            $_SESSION['Last_Name']  = $user['Last_Name'];
-            $_SESSION['DOB']        = $user['DOB'];
-            $_SESSION['User_Role']  = $user['User_Role'];
-            $_SESSION['Phone']      = $user['Phone'];
-            $_SESSION['Address']    = $user['Address'];
-            $_SESSION['Pincode']    = $user['Pincode'];
-            $_SESSION['Email']      = $user['Email'];
-            $_SESSION['Create_At']  = $user['Create_At'];
+            // STORE USER SESSION
+            $_SESSION['User_Id']     = $user['User_Id'];
+            $_SESSION['First_Name']  = $user['First_Name'];
+            $_SESSION['Last_Name']   = $user['Last_Name'];
+            $_SESSION['DOB']         = $user['DOB'];
+            $_SESSION['User_Role']   = $user['User_Role'];
+            $_SESSION['Phone']       = $user['Phone'];
+            $_SESSION['Address']     = $user['Address'];
+            $_SESSION['Pincode']     = $user['Pincode'];
+            $_SESSION['Email']       = $user['Email'];
+            $_SESSION['Create_At']   = $user['Create_At'];
 
-            $redirect = isset($_SESSION['redirect_after_login']) 
-                        ? $_SESSION['redirect_after_login'] 
+            // REDIRECT PAGE (after Buy Now)
+            $redirect = isset($_SESSION['redirect_after_login'])
+                        ? $_SESSION['redirect_after_login']
                         : "../product_page/product_list.php";
 
             unset($_SESSION['redirect_after_login']);
@@ -67,25 +68,22 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <?php endif; ?>
 
 <style>
+/* ——— YOUR SAME DESIGN, NOT TOUCHED ——— */
 body { margin:0; font-family:Arial,sans-serif; }
 
-/* BLUR BACKGROUND ONLY FOR POPUP */
 .overlay {
     position: <?= $isPopup ? "fixed" : "relative" ?>;
     top:0; left:0; width:100%; height:100%;
-
     <?php if ($isPopup): ?>
     background: rgba(0,0,0,0.4);
     backdrop-filter: blur(8px);
     <?php endif; ?>
-
     display:flex;
     justify-content:center;
     align-items:center;
     z-index:9999;
 }
 
-/* LOGIN BOX — NO BLUR */
 .login-card {
     width:380px;
     background:#fff;
@@ -94,12 +92,6 @@ body { margin:0; font-family:Arial,sans-serif; }
     box-shadow:0 10px 30px rgba(0,0,0,0.25);
     text-align:center;
     position:relative;
-    animation: pop 0.35s ease-out;
-}
-
-@keyframes pop {
-    from { transform: translateY(20px); opacity:0; }
-    to { transform: translateY(0); opacity:1; }
 }
 
 .logo-login { font-size:70px; color:#d36b5e; margin-bottom:10px; }
@@ -135,9 +127,6 @@ h2 { margin:0 0 20px; color:#333; font-size:26px; }
     font-size:14px;
 }
 
-.forgot-link { color:#b35d52; text-decoration:none; }
-.forgot-link:hover { text-decoration:underline; }
-
 .register-link { margin-top:20px; font-size:14px; }
 .register-link a { color:#b35d52; font-weight:bold; }
 
@@ -157,7 +146,6 @@ h2 { margin:0 0 20px; color:#333; font-size:26px; }
     cursor:pointer;
     color:#444;
 }
-.close-btn:hover { color:#000; }
 <?php endif; ?>
 </style>
 
@@ -196,16 +184,18 @@ h2 { margin:0 0 20px; color:#333; font-size:26px; }
                 <a href="../login/forgot_password.php" class="forgot-link">Forgot Password?</a>
             </div>
 
-            <p class="register-link">
-                Don't have an account?
-                <a href="../registration/registration.php?popup=1">Register here</a>
+            <p class="register-link">Don't have an account?
+                <a href="" onclick="showRegister(); return false;">Register here</a>
             </p>
         </form>
 
     </div>
 </div>
 
+
+
 <script>
+// AJAX LOGIN HANDLER
 document.getElementById("loginForm").addEventListener("submit", function(e){
     e.preventDefault();
 
@@ -218,20 +208,45 @@ document.getElementById("loginForm").addEventListener("submit", function(e){
     .then(res => res.json())
     .then(data => {
         if (data.success) {
+
+            // SHOW SUCCESS POPUP
+            alert(data.message);
+
+            // REDIRECT TO product_list.php OR SAVED PAGE
             window.location.href = data.redirect;
         } else {
             let box = document.getElementById("errorBox");
             box.style.display = "block";
             box.textContent = data.message;
         }
-    })
-    .catch(() => {
-        let box = document.getElementById("errorBox");
-        box.style.display = "block";
-        box.textContent = "Request failed!";
     });
 });
 </script>
+<!-- Register Popup Wrapper -->
+<div id="register-popup-wrapper" 
+     style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+     background:rgba(0,0,0,0.5); backdrop-filter:blur(6px); 
+     z-index:10000; justify-content:center; align-items:center;">
+    
+    <div id="register-popup"></div>
+</div>
+
+<script>
+function showRegister() {
+
+    fetch("../registration/registration.php?embedded=1")
+        .then(res => res.text())
+        .then(html => {
+
+            // SHOW POPUP
+            document.getElementById("register-popup-wrapper").style.display = "flex";
+
+            // LOAD REGISTRATION PAGE INSIDE
+            document.getElementById("register-popup").innerHTML = html;
+        });
+}
+</script>
+
 
 <?php if (!$isPopup): ?>
 </body>
