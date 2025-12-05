@@ -20,7 +20,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <!DOCTYPE html>
 <html>
 <head>
+    
     <title>Register</title>
+     <link rel="stylesheet" href="../home page/style.css" />
     <style>
         body { font-family: Arial; background: #f4f4f4; padding: 50px; }
         .container {
