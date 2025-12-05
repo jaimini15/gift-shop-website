@@ -1,8 +1,8 @@
 <?php
-
 session_start();
 include("../AdminPanel/db.php");
 
+// SAVE CORRECT REDIRECT URL
 $_SESSION['redirect_after_login'] = $_SERVER['REQUEST_URI'];
 
 // Validate category id
@@ -26,7 +26,6 @@ if (!$category || $category['Status'] === 'Disabled') {
 
 $categoryName = $category['Category_Name'];
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -111,7 +110,7 @@ if (mysqli_num_rows($productResult) > 0) {
                 <p class="card-price">₹ <?= $product['Price'] ?></p>
 
                 <button class="product-btn"
-                        onclick="showLogin('product_page/product_list.php?category_id=<?= $category_id ?>')">
+                        onclick="showLogin()">
                     Buy now
                 </button>
             </div>
@@ -176,67 +175,19 @@ if (mysqli_num_rows($productResult) > 0) {
     <?php $embedded = true; include("../login/login.php"); ?>
 </div>
 
-
 <!-- REGISTER POPUP -->
 <div id="register-popup" style="display:none; z-index:1000;">
     <?php 
         $embedded = true;
-        include("../login/registration.php");
+        include("../registration/registration.php");
     ?>
 </div>
 
 <script>
-function showLogin(page) {
-    // Save redirect page
-    fetch("../login/save_redirect.php?page=" + encodeURIComponent(page));
-
+function showLogin() {
     document.getElementById("blur-overlay").style.display = "block";
     document.getElementById("login-popup").style.display = "flex";
     document.getElementById("register-popup").style.display = "none";
-}
-
-function showRegister() {
-    document.getElementById("login-popup").style.display = "none";
-    document.getElementById("register-popup").style.display = "flex";
-}
-
-function closePopups() {
-    document.getElementById("login-popup").style.display = "none";
-    document.getElementById("register-popup").style.display = "none";
-    document.getElementById("blur-overlay").style.display = "none";
-}
-</script>
-
-<script>
-function submitLoginForm() {
-    const form = document.querySelector("#login-popup form");
-    const formData = new FormData(form);
-
-    fetch("../login/login.php", {
-        method: "POST",
-        body: formData
-    })
-    .then(res => res.json())
-    .then(data => {
-        const errorDiv = document.querySelector("#login-popup .error-msg");
-        if (data.success) {
-            alert(data.message);
-            window.location.href = data.redirect;
-        } else {
-            if (errorDiv) {
-                errorDiv.textContent = data.message;
-            } else {
-                // create error div if not exists
-                const div = document.createElement("div");
-                div.className = "error-msg";
-                div.textContent = data.message;
-                form.prepend(div);
-            }
-        }
-    })
-    .catch(err => console.error("Login AJAX error:", err));
-
-    return false; // prevent normal form submission
 }
 </script>
 
