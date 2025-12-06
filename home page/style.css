@@ -986,18 +986,28 @@ body {
   font-weight: 500;
 }
 
-.product-btn{
+.product-btn {
   border: 2px solid;
-  background-color : var(--btn-color);
-  color:#fff;
-  padding:0.5rem 2rem;
+  border-color: var(--btn-color);   /* ensure border color is controlled */
+  background-color: var(--btn-color);
+  color: #fff;                      /* text color */
+  padding: 0.5rem 2rem;
   border-radius: 20px;
   font-size: 20px;
   font-weight: 500;
+  text-decoration: none;            /* remove underline */
+  display: inline-block;
+  transition: background 0.3s;      /* smooth hover */
 }
-.product-btn:hover{
-  background-color: black;
+
+.product-btn:hover {
+  background-color: black;          /* only background changes */
+  color: #fff;                      /* keep text white */
+  /* border-color: var(--btn-color);   keep original border */
+  text-decoration: none;            /* no underline */
 }
+
+
 /* Shop css ends */
 /* product display content starts */
 .product-image {
@@ -1015,12 +1025,85 @@ body {
     cursor: zoom-out;
 }
 
-
-
-
 /* product display content ends */
+/* Profile dropdown css starts */
+/* === PROFILE DROPDOWN FIX (ISOLATED) === */
+.profile-dropdown:hover .profile-menu {
+    display: block;
+}
+.profile-menu {
+    display: none;
+    position: absolute;
+    top: 110%;
+    right: 0;
+    background: #fff;
+    min-width: 170px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+    border-radius: 8px;
+    padding: 8px 0;
+    z-index: 2000;
+}
+.profile-dropdown {
+    position: relative;
+    list-style: none;
+}
+
+.profile-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--grey);
+    text-decoration: none;
+    cursor: pointer;
+    padding: 6px 10px;
+}
+
+.profile-btn:hover {
+    color: var(--btn-color);
+}
+
+.profile-dropdown .profile-menu {
+    position: absolute;
+    top: 110%;
+    right: 0;
+    background: #fff;
+    min-width: 170px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+    border-radius: 8px;
+    padding: 8px 0;
+    display: none;
+    z-index: 2000;
+}
+
+.profile-dropdown .profile-menu li {
+    list-style: none;
+}
+
+.profile-dropdown .profile-menu li a {
+    display: block;
+    padding: 10px 15px;
+    color: var(--grey);
+    font-size: 14px;
+    text-decoration: none;
+    transition: background 0.2s, color 0.2s;
+}
+
+.profile-dropdown .profile-menu li a:hover {
+    background: var(--main-color);
+    color: var(--black);
+}
+
+/* Show dropdown on hover */
+.profile-dropdown:hover .profile-menu {
+    display: block;
+}
+
+  
 
 
+/* Profile dropdown css ends */
 
 
 
