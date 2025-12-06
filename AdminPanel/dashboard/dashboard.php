@@ -9,17 +9,13 @@ $totalUsersQuery = mysqli_query(
 );
 $totalUsers = mysqli_fetch_assoc($totalUsersQuery)['total'];
 
-// ------------------------------------
-// TOTAL PRODUCTS (Dynamic)
-// ------------------------------------
+// TOTAL PRODUCTS
 $totalProductsQuery = mysqli_query($connection, "SELECT COUNT(*) AS total FROM product_details");
 $totalProducts = mysqli_fetch_assoc($totalProductsQuery)['total'];
 
-// ------------------------------------
-// STATIC VALUES (As you requested)
-// ------------------------------------
-$totalOrders = 56;          // static
-$pendingDelivery = 12;      // static
+// STATIC VALUES
+$totalOrders = 56;
+$pendingDelivery = 12;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -28,10 +24,7 @@ $pendingDelivery = 12;      // static
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GiftShop Admin Panel</title>
 
-  <!-- Bootstrap -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-
-  <!-- Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
   <style>
@@ -40,10 +33,19 @@ $pendingDelivery = 12;      // static
       font-family: Arial, sans-serif;
     }
 
+    /* Default (Desktop) */
     .content {
       margin-left: 120px;
       padding: 20px;
       padding-top: 40px;
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+      .content {
+        margin-left: 0 !important;
+        padding-top: 100px; /* space for fixed header */
+      }
     }
 
     .card-box {
@@ -68,31 +70,30 @@ $pendingDelivery = 12;      // static
   
   <h2 class="fw-bold mb-4">Dashboard Overview</h2>
 
-  <!-- Dashboard Cards -->
   <div class="row g-4">
 
-    <div class="col-md-3">
+    <div class="col-md-3 col-6">
       <div class="card-box">
         <h5><i class="fa-solid fa-users"></i> Total Users</h5>
         <h3><?= $totalUsers ?></h3>
       </div>
     </div>
 
-    <div class="col-md-3">
+    <div class="col-md-3 col-6">
       <div class="card-box">
         <h5><i class="fa-solid fa-box"></i> Total Products</h5>
         <h3><?= $totalProducts ?></h3>
       </div>
     </div>
 
-    <div class="col-md-3">
+    <div class="col-md-3 col-6">
       <div class="card-box">
         <h5><i class="fa-solid fa-cart-shopping"></i> Orders</h5>
         <h3><?= $totalOrders ?></h3>
       </div>
     </div>
 
-    <div class="col-md-3">
+    <div class="col-md-3 col-6">
       <div class="card-box">
         <h5><i class="fa-solid fa-truck"></i> Pending Delivery</h5>
         <h3><?= $pendingDelivery ?></h3>
@@ -101,7 +102,6 @@ $pendingDelivery = 12;      // static
 
   </div>
 
-  <!-- Static Recent Orders Table -->
   <div class="mt-5 card-box">
     <h5 class="fw-bold">Recent Orders</h5>
 
@@ -115,10 +115,8 @@ $pendingDelivery = 12;      // static
         </tr>
       </thead>
       <tbody>
-
         <tr><td>101</td><td>John</td><td>Delivered</td><td>1500</td></tr>
         <tr><td>102</td><td>Asha</td><td>Pending</td><td>850</td></tr>
-
       </tbody>
     </table>
   </div>
