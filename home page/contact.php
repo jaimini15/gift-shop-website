@@ -1,3 +1,7 @@
+<?php
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -47,9 +51,35 @@
     </nav>
 
     <div class="icons">
-      <a href="#"><i class="fa-solid fa-cart-shopping"></i> Cart</a>
-      <a href="#"><i class="fa-regular fa-user"></i> My Profile</a>
-    </div>
+
+    <a href="#"><i class="fa-solid fa-cart-shopping"></i> Cart</a>
+
+    <?php if (!isset($_SESSION['User_Id'])): ?>
+
+    <!-- NOT LOGGED IN -->
+    <a href="../login/login.php">
+        <i class="fa-regular fa-user"></i> My Profile
+    </a>
+
+<?php else: ?>
+
+   <!-- LOGGED IN -->
+<div class="profile-dropdown">
+    <a class="profile-btn">
+        <i class="fa-regular fa-user"></i> My Profile
+    </a>
+
+    <ul class="profile-menu">
+        <li><a href="#">Check Profile</a></li>
+        <li><a href="../login/logout.php">Logout</a></li>
+    </ul>
+</div>
+
+
+<?php endif; ?>
+
+
+</div>
 </header>
 
     <!-- Main Contact Section -->
