@@ -152,6 +152,10 @@ $imgSrc = img_src_from_blob_single($product['Product_Image'], 'product_mug_buyno
             <?php if (strtolower($productPhoto) === 'yes') : ?>
                 <label class="label-title" style="font-weight:600;margin-top:20px;">Upload Photo for Customization*</label>
                 <input type="file" id="uploadPhoto" class="form-control mb-2">
+             <script>   document.getElementById("uploadPhoto")?.addEventListener("change", function(){
+    document.getElementById("realUpload").files = this.files;
+});</script>
+
                 <!-- PREVIEW BUTTON -->
                 <button id="previewButton" class="btn btn-primary mb-3">Preview Photo</button>
             <?php endif; ?>
@@ -219,12 +223,32 @@ $imgSrc = img_src_from_blob_single($product['Product_Image'], 'product_mug_buyno
             <div style="display:flex; gap:20px; margin-top:20px;">
 
     <!-- ADD TO CART -->
-    <form method="POST" action="add_to_cart.php">
-        <input type="hidden" name="product_id" value="<?= (int)$product['Product_Id'] ?>">
-        <button type="submit" class="product-btn" style="padding:0.5rem 2rem;">
-            Add to Cart
-        </button>
-    </form>
+    <form method="POST" action="add_to_cart.php" enctype="multipart/form-data">
+
+    <input type="hidden" name="product_id" value="<?= (int)$product['Product_Id'] ?>">
+
+    <!-- Gift Wrap -->
+    <input type="hidden" id="giftWrapVal" name="gift_wrap" value="0">
+
+    <!-- Gift Card -->
+    <input type="hidden" id="giftCardVal" name="gift_card" value="0">
+
+    <!-- Gift Card Message -->
+    <textarea id="giftCardMsgVal" name="gift_card_msg" style="display:none;"></textarea>
+
+    <!-- Custom Text -->
+    <input type="hidden" id="customTextVal" name="custom_text" value="">
+
+    <!-- Default Text -->
+    <input type="hidden" id="defaultTextVal" name="default_text" value="<?= $defaultText ?>">
+
+    
+    <input type="file" id="realUpload" name="custom_image" style="display:none;">
+
+
+    <button type="submit" class="product-btn" style="padding:0.5rem 2rem;">Add to Cart</button>
+</form>
+
 
     <!-- BUY NOW -->
     <form method="POST" action="checkout.php">
@@ -373,6 +397,30 @@ if (previewBtn) {
     });
 }
 </script>
+<script>
+document.querySelector("form[action='add_to_cart.php']").addEventListener("submit", function(e) {
 
+    // Gift wrap
+    document.getElementById("giftWrapVal").value = document.getElementById("giftWrap").checked ? 1 : 0;
+
+    // Gift Card
+    document.getElementById("giftCardVal").value = document.getElementById("giftCard").checked ? 1 : 0;
+
+    // Gift Card Message
+    let cardMsgBox = document.querySelector("#giftCardMessageBox textarea");
+    if (cardMsgBox) document.getElementById("giftCardMsgVal").value = cardMsgBox.value;
+
+    // Custom or default text
+    let finalText = "";
+    if (document.getElementById("customText")?.checked)
+        finalText = document.getElementById("customMessage").value;
+    else if (document.getElementById("defaultText")?.checked)
+        finalText = document.getElementById("defaultTextVal").value;
+
+    document.getElementById("customTextVal").value = finalText;
+
+    
+});
+</script>
 </body>
 </html>
