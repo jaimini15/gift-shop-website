@@ -1,4 +1,8 @@
-<?php include("../AdminPanel/db.php"); ?>
+<?php 
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+include("../AdminPanel/db.php"); ?>
 <header>
     <div class="logo">GiftShop</div>
 
@@ -11,7 +15,6 @@
           <a href="#">Shop</a>
 
           <ul class="dropdown-content">
-
             <?php  
               $catQuery = "SELECT * FROM category_details WHERE Status='Enabled'";
               $catResult = mysqli_query($connection, $catQuery);
@@ -24,7 +27,6 @@
                   </a>
                 </li>
             <?php } ?>
-
           </ul>
         </li> |
 
@@ -33,7 +35,35 @@
     </nav>
 
     <div class="icons">
-      <a href="#"><i class="fa-solid fa-cart-shopping"></i> Cart</a>
-      <a href="../login/login.php"><i class="fa-regular fa-user"></i> My Profile</a>
-    </div>
+
+    <a href="#"><i class="fa-solid fa-cart-shopping"></i> Cart</a>
+
+    <?php if (!isset($_SESSION['User_Id'])): ?>
+
+    <!-- NOT LOGGED IN -->
+    <a href="../login/login.php">
+        <i class="fa-regular fa-user"></i> My Profile
+    </a>
+
+<?php else: ?>
+
+   <!-- LOGGED IN -->
+<div class="profile-dropdown">
+    <a class="profile-btn">
+        <i class="fa-regular fa-user"></i> My Profile
+    </a>
+
+    <ul class="profile-menu">
+        <li><a href="#">Check Profile</a></li>
+        <li><a href="../login/logout.php">Logout</a></li>
+    </ul>
+</div>
+
+
+<?php endif; ?>
+
+
+</div>
+
+
 </header>
