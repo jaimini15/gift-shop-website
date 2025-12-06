@@ -118,7 +118,6 @@ nav ul li.dropdown .dropdown-content li a:hover {
 /* Navbar cart css starts */
 .cart-count {
     background: red;
-    color: white;
     padding: 2px 7px;
     border-radius: 50%;
     font-size: 12px;
@@ -130,9 +129,9 @@ nav ul li.dropdown .dropdown-content li a:hover {
     position: fixed;
     top: 0;
     right: -400px;
+    background: #ffffff;   
     width: 400px;
     height: 100vh;
-    background: #fff;
     box-shadow: -3px 0 8px rgba(0,0,0,0.2);
     padding: 20px;
     transition: 0.4s ease;
@@ -158,7 +157,6 @@ nav ul li.dropdown .dropdown-content li a:hover {
 .cart-box {
     width: 55px;
     height: 55px;
-    background: #f1f1f1;
     border-radius: 50%;
     position: relative;
     display: flex;
@@ -169,7 +167,6 @@ nav ul li.dropdown .dropdown-content li a:hover {
 
 .cart-box i {
     font-size: 28px;
-    color: #4a4a4a;
     position: relative;
 }
 

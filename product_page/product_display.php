@@ -65,6 +65,11 @@ $imgSrc = img_src_from_blob_single($product['Product_Image'], 'product_mug_buyno
 
 <!-- NAVBAR -->
 <header>
+    <div id="sidePanel">
+    <span id="panelClose">&times;</span>
+    <div id="panelContent"></div>
+</div>
+
     <div class="logo">GiftShop</div>
     <nav>
       <ul>
@@ -93,7 +98,13 @@ $imgSrc = img_src_from_blob_single($product['Product_Image'], 'product_mug_buyno
 
     <div class="icons">
 
-    <a href="#"><i class="fa-solid fa-cart-shopping"></i> Cart</a>
+    <a href="javascript:void(0)" id="cartBtn" class="cart-wrapper">
+    <div class="cart-box">
+        <i class="fa-solid fa-cart-shopping"></i>
+        <span class="cart-badge"><?= $cart_count ?></span>
+    </div>
+</a>
+
 
     <?php if (!isset($_SESSION['User_Id'])): ?>
 
@@ -478,6 +489,29 @@ document.querySelector("form[action='add_to_cart.php']").addEventListener("submi
     document.getElementById("customTextVal").value = finalText;
 
 });
+</script>
+<script>
+const panel = document.getElementById("sidePanel");
+const content = document.getElementById("panelContent");
+
+document.getElementById("panelClose").onclick = () => {
+    panel.classList.remove("active");
+};
+
+document.getElementById("cartBtn").onclick = () => {
+    document.getElementById("sidePanel").style.right = "0";
+
+    fetch("../product_page/cart_panel.php")
+        .then(res => res.text())
+        .then(html => {
+            document.querySelector("#panelContent").innerHTML = html;
+        });
+};
+
+document.getElementById("panelClose").onclick = () => {
+    document.getElementById("sidePanel").style.right = "-400px";
+};
+
 </script>
 
 </body>
