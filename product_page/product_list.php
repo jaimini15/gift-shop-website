@@ -2,31 +2,39 @@
 session_start();
 include("../AdminPanel/db.php");
 
-
 // Save relative URL only
-$_SESSION['redirect_after_login'] = $_SERVER['REQUEST_URI'];
-
+$_SESSION['redirect_after_login'] = $_SERVER['REQUEST_URI'] ?? '/';
 
 // Validate category id
-if (!isset($_GET['category_id'])) {
+if (!isset($_GET['category_id']) || empty($_GET['category_id'])) {
     echo "<h2 style='text-align:center;'>Invalid Category!</h2>";
     exit;
 }
 
-$category_id = $_GET['category_id'];
+$category_id = $_GET['category_id'] + 0; // simple cast to int for safety
 
-// Fetch category info
-$catQuery  = "SELECT * FROM category_details WHERE Category_Id='$category_id'";
-$catResult = mysqli_query($connection, $catQuery);
-$category  = mysqli_fetch_assoc($catResult);
+// Fetch category info (prepared)
+$catStmt = mysqli_prepare($connection, "SELECT Category_Name, Status FROM category_details WHERE Category_Id = ?");
+mysqli_stmt_bind_param($catStmt, 'i', $category_id);
+mysqli_stmt_execute($catStmt);
+$catResult = mysqli_stmt_get_result($catStmt);
+$category = mysqli_fetch_assoc($catResult);
+mysqli_stmt_close($catStmt);
 
-// If not found or disabled
-if (!$category || $category['Status'] === 'Disabled') {
+if (!$category || strtolower($category['Status']) === 'disabled') {
     echo "<h2 style='text-align:center;'>Category Not Available</h2>";
     exit;
 }
 
-$categoryName = $category['Category_Name'];
+$categoryName = htmlspecialchars($category['Category_Name'], ENT_QUOTES);
+
+function img_src_from_blob($blob, $placeholder = '../product_page/product_mug_buynow1.jpg') {
+    if ($blob === null || $blob === '' || strlen($blob) === 0) {
+        return $placeholder;
+    }
+    // detect if blob is already binary - encode to base64
+    return 'data:image/jpeg;base64,' . base64_encode($blob);
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -54,14 +62,17 @@ $categoryName = $category['Category_Name'];
         <li class="dropdown">
             <a href="#" class="active">Shop</a>
             <ul class="dropdown-content">
-                <?php  
-                $catQuery = "SELECT * FROM category_details WHERE Status='Enabled'";
-                $catResult = mysqli_query($connection, $catQuery);
-                while ($cat = mysqli_fetch_assoc($catResult)) {
+                <?php
+                // fetch enabled categories (simple query)
+                $catQuery = "SELECT Category_Id, Category_Name FROM category_details WHERE Status='Enabled' ORDER BY Category_Name";
+                $catResultAll = mysqli_query($connection, $catQuery);
+                while ($catRow = mysqli_fetch_assoc($catResultAll)) {
+                    $cId = (int)$catRow['Category_Id'];
+                    $cName = htmlspecialchars($catRow['Category_Name'], ENT_QUOTES);
                 ?>
                     <li>
-                        <a href="../product_page/product_list.php?category_id=<?= $cat['Category_Id'] ?>">
-                            <?= $cat['Category_Name'] ?>
+                        <a href="../product_page/product_list.php?category_id=<?= $cId ?>">
+                            <?= $cName ?>
                         </a>
                     </li>
                 <?php } ?>
@@ -72,10 +83,36 @@ $categoryName = $category['Category_Name'];
       </ul>
     </nav>
 
-    <div class="icons">
-        <a href="#"><i class="fa-solid fa-cart-shopping"></i> Cart</a>
-        <a href="#"><i class="fa-regular fa-user"></i> My Profile</a>
-    </div>
+   <div class="icons">
+
+    <a href="#"><i class="fa-solid fa-cart-shopping"></i> Cart</a>
+
+    <?php if (!isset($_SESSION['User_Id'])): ?>
+
+    <!-- NOT LOGGED IN -->
+    <a href="../login/login.php">
+        <i class="fa-regular fa-user"></i> My Profile
+    </a>
+
+<?php else: ?>
+
+   <!-- LOGGED IN -->
+<div class="profile-dropdown">
+    <a class="profile-btn">
+        <i class="fa-regular fa-user"></i> My Profile
+    </a>
+
+    <ul class="profile-menu">
+        <li><a href="#">Check Profile</a></li>
+        <li><a href="../login/logout.php">Logout</a></li>
+    </ul>
+</div>
+
+
+<?php endif; ?>
+
+
+</div>
 </header>
 
 <!-- PAGE BANNER -->
@@ -89,32 +126,48 @@ $categoryName = $category['Category_Name'];
 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
 
 <?php
-$productQuery = "
-    SELECT * FROM product_details
-    WHERE Category_Id='$category_id' AND Status='Enabled'
-";
+// Fetch products for category (prepared)
+$prodStmt = mysqli_prepare($connection, "
+    SELECT Product_Id, Product_Name, Product_Image, Description, Price
+    FROM product_details
+    WHERE Category_Id = ? AND Status = 'Enabled'
+    ORDER BY Product_Id DESC
+");
+mysqli_stmt_bind_param($prodStmt, 'i', $category_id);
+mysqli_stmt_execute($prodStmt);
+$productResult = mysqli_stmt_get_result($prodStmt);
 
-$productResult = mysqli_query($connection, $productQuery);
-
-if (mysqli_num_rows($productResult) > 0) {
+if ($productResult && mysqli_num_rows($productResult) > 0) {
     while ($product = mysqli_fetch_assoc($productResult)) {
-        $img = base64_encode($product['Product_Image']);
+        $imgSrc = img_src_from_blob($product['Product_Image']);
+        $description = htmlspecialchars($product['Description'], ENT_QUOTES);
+        $price = number_format((float)$product['Price'], 2, '.', '');
+        $pid = (int)$product['Product_Id'];
+        $pname = htmlspecialchars($product['Product_Name'], ENT_QUOTES);
 ?>
     <div class="col">
         <div class="card shadow-sm">
 
-            <img src="data:image/jpeg;base64,<?= $img ?>"
+            <img src="<?= $imgSrc ?>"
                  class="card-img-top"
-                 style="width: 100%; height: 225px; object-fit: cover;">
+                 style="width: 100%; height: 225px; object-fit: cover;"
+                 alt="<?= $pname ?>">
 
             <div class="card-body">
-                <p class="card-text"><?= $product['Description'] ?></p>
-                <p class="card-price">₹ <?= $product['Price'] ?></p>
+                <p class="card-text"><?= $description ?></p>
+                <p class="card-price">₹ <?= $price ?></p>
 
-                <button class="product-btn"
-                        onclick="showLogin()">
-                    Buy now
-                </button>
+               <?php 
+if (!isset($_SESSION['User_Id'])): 
+    // Build correct redirect URL
+    $currentURL = "product_list.php?category_id=" . $category_id;
+    $redirectURL = "../login/login.php?redirect=" . urlencode($currentURL);
+?>
+<a href="<?= $redirectURL ?>" class="product-btn">Buy Now</a>
+<?php else: ?>
+<a href="product_display.php?product_id=<?= $product['Product_Id'] ?>" class="product-btn">Buy Now</a>
+<?php endif; ?>
+
             </div>
         </div>
     </div>
@@ -124,6 +177,7 @@ if (mysqli_num_rows($productResult) > 0) {
 } else {
     echo "<h3 style='text-align:center;'>No products found.</h3>";
 }
+mysqli_stmt_close($prodStmt);
 ?>
 </div>
 </section>
@@ -166,32 +220,6 @@ if (mysqli_num_rows($productResult) > 0) {
     </div>
     <div class="credit">created by <span>GiftShop</span> | all right reserved!</div>
 </section>
-
-<!-- BLUR BACKGROUND -->
-<div id="blur-overlay"
-     style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
-            background:rgba(0,0,0,0.35); backdrop-filter:blur(8px); z-index:999;">
-</div>
-
-<div id="login-popup" style="display:none; z-index:1000;">
-    <?php $embedded = true; include("../login/login.php"); ?>
-</div>
-
-<!-- REGISTER POPUP -->
-<div id="register-popup" style="display:none; z-index:1000;">
-    <?php 
-        $embedded = true;
-        include("../registration/registration.php");
-    ?>
-</div>
-
-<script>
-function showLogin() {
-    document.getElementById("blur-overlay").style.display = "block";
-    document.getElementById("login-popup").style.display = "flex";
-    document.getElementById("register-popup").style.display = "none";
-}
-</script>
 
 <script src="../home page/script.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>

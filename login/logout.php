@@ -2,7 +2,6 @@
 session_start();
 session_unset();
 session_destroy();
-
-header("Location: login.php");
-exit;
+header("Location: ../home page/index.php");
+exit();
 ?>

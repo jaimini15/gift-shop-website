@@ -2,18 +2,40 @@
 session_start();
 include("../AdminPanel/db.php");
 
-// If already logged in redirect
+// ----------------------------
+// 1️⃣ Handle incoming redirect URL
+// ----------------------------
+if (isset($_GET['redirect'])) {
+    // Save redirect page in session
+    $_SESSION['redirect_after_login'] = $_GET['redirect'];
+}
+
+// ----------------------------
+// 2️⃣ If already logged in, redirect immediately
+// ----------------------------
 if (isset($_SESSION['User_Id'])) {
-    header("Location: ../home page/index.php");
+    $redirect = $_SESSION['redirect_after_login'] ?? '../home page/index.php';
+    unset($_SESSION['redirect_after_login']);
+    
+    // Make sure relative paths for product pages
+    if (!str_starts_with($redirect, '../') && !str_starts_with($redirect, '/')) {
+        $redirect = '../product_page/' . $redirect;
+    }
+    
+    header("Location: $redirect");
     exit();
 }
 
+// ----------------------------
+// 3️⃣ Handle form submission
+// ----------------------------
 $error = "";
+$rememberedEmail = $_COOKIE['remember_email'] ?? "";
 
-// Handle form submission
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    $email = $_POST['email'];
-    $pass = $_POST['password'];
+
+    $email = mysqli_real_escape_string($connection, $_POST['email']);
+    $pass  = mysqli_real_escape_string($connection, $_POST['password']);
 
     $sql = "SELECT * FROM user_details WHERE Email='$email' LIMIT 1";
     $result = mysqli_query($connection, $sql);
@@ -21,26 +43,36 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if ($result && mysqli_num_rows($result) === 1) {
         $row = mysqli_fetch_assoc($result);
 
+        // Use plain text password check for now (replace with password_verify if hashed)
         if ($pass === $row['Password']) {
 
-            // Set session
+            // ✅ Set user session
             $_SESSION['User_Id'] = $row['User_Id'];
             $_SESSION['Email']   = $row['Email'];
 
-            // Remember Me (store email in cookie)
+            // ✅ Handle Remember Me
             if (isset($_POST['remember'])) {
                 setcookie("remember_email", $email, time() + (86400 * 30), "/"); // 30 days
             } else {
                 setcookie("remember_email", "", time() - 3600, "/");
             }
 
-            header("Location: ../home page/index.php");
+            // ✅ Redirect after login
+            $redirect = $_SESSION['redirect_after_login'] ?? '../home page/index.php';
+            unset($_SESSION['redirect_after_login']);
+
+            if (!str_starts_with($redirect, '../') && !str_starts_with($redirect, '/')) {
+                $redirect = '../product_page/' . $redirect;
+            }
+
+            header("Location: $redirect");
             exit();
         }
     }
 
     $error = "Invalid Email or Password!";
 }
+
 
 // Pre-fill email if "Remember Me" was used before
 $rememberedEmail = isset($_COOKIE['remember_email']) ? $_COOKIE['remember_email'] : "";
@@ -51,10 +83,11 @@ $rememberedEmail = isset($_COOKIE['remember_email']) ? $_COOKIE['remember_email'
      
     <title>Login</title>
     <link rel="stylesheet" href="../home page/style.css" />
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <style>
         body { font-family: Arial; background: #f7f7f7; margin:0; }
         .form-box {
-            width: 350px; margin: 60px auto; padding: 25px;
+            width: 400px; margin: 30px auto; padding: 35px;
             background: #fff; border-radius: 10px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
@@ -78,14 +111,35 @@ $rememberedEmail = isset($_COOKIE['remember_email']) ? $_COOKIE['remember_email'
             display: flex; align-items:center;
             gap: 5px; cursor:pointer;
         }
+        .login-icon {
+    text-align: center;
+    font-size: 70px;
+    color: brown;
+    margin-bottom: 10px;
+}
+
+.login-title {
+    text-align: center;
+    margin: 0;
+    font-size: 28px;
+    font-weight: bold;
+    color: #333;
+}
+
     </style>
 </head>
 <body>
 
 <?php include("../home page/navbar.php"); ?>  <!-- Navbar -->
 
+
 <div class="form-box">
-    <h2>Login</h2>
+
+    <div class="login-icon">
+        <i class="fa-solid fa-user-circle"></i>
+    </div>
+
+    <h2 class="login-title">Login</h2>
 
     <?php if ($error): ?>
         <div class="error"><?= $error ?></div>
@@ -96,23 +150,23 @@ $rememberedEmail = isset($_COOKIE['remember_email']) ? $_COOKIE['remember_email'
 
         <input type="password" name="password" placeholder="Password" required>
 
+        <button class="btn">Login</button>
+
         <div class="extra-options">
             <label>
-                <input type="checkbox" name="remember">
-                Remember me
+                <input type="checkbox" name="remember"> Remember me
             </label>
 
-            <a href="../forgot_password/forgot.php">Forgot Password?</a>
+            <a href="forget_password_customer.php">Forgot Password?</a>
         </div>
-
-        <button class="btn">Login</button>
     </form>
 
     <p>
-        Don't have an account? 
+        Don't have an account?
         <a href="../registration/registration.php">Register here</a>
     </p>
 </div>
+
 
 <?php include("../home page/footer.php"); ?> <!-- Footer -->
 
