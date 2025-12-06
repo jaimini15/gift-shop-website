@@ -13,18 +13,37 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $quantity = 1;
 
     /* -------------------------
-       GET EXTRA CUSTOM FIELDS
+       EXTRA FIELDS
        ------------------------- */
-    $giftWrap     = isset($_POST['gift_wrap']) ? (int)$_POST['gift_wrap'] : 0;
-    $giftCard     = isset($_POST['gift_card']) ? (int)$_POST['gift_card'] : 0;
+    $giftWrap     = isset($_POST['gift_wrap']) ? 1 : 0;
+    $giftCard     = isset($_POST['gift_card']) ? 1 : 0;
     $giftCardMsg  = !empty($_POST['gift_card_msg']) ? $_POST['gift_card_msg'] : null;
     $customText   = !empty($_POST['custom_text']) ? $_POST['custom_text'] : null;
 
-    $uploadPath = null;
+    /* PRICES */
+    $wrapPrice = 39;
+    $cardPrice = 50;
 
     /* -------------------------
-       IMAGE UPLOAD (ONLY USER IMAGE)
+       GET PRODUCT PRICE
        ------------------------- */
+    $result = mysqli_query($connection, "SELECT Price FROM product_details WHERE Product_Id = $productId");
+    $row = mysqli_fetch_assoc($result);
+    $productPrice = (float)$row['Price'];
+
+    /* -------------------------
+       CALCULATE TOTAL PRICE
+       ------------------------- */
+    $totalPrice = $productPrice;
+
+    if ($giftWrap == 1)  $totalPrice += $wrapPrice;
+    if ($giftCard == 1)  $totalPrice += $cardPrice;
+
+    /* -------------------------
+       IMAGE UPLOAD
+       ------------------------- */
+    $uploadPath = null;
+
     if (!empty($_FILES['custom_image']['name'])) {
 
         $targetDir = "../uploads/";
@@ -41,7 +60,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     /* -------------------------
-       GET OR CREATE CART FOR USER
+       GET OR CREATE CART
        ------------------------- */
     $cartQuery = "SELECT Cart_Id FROM cart WHERE User_Id = ?";
     $cartStmt = mysqli_prepare($connection, $cartQuery);
@@ -51,7 +70,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     mysqli_stmt_fetch($cartStmt);
     mysqli_stmt_close($cartStmt);
 
-    // If cart doesn't exist → create one
     if (!$cartId) {
         $insertCart = "INSERT INTO cart (User_Id) VALUES (?)";
         $stmt = mysqli_prepare($connection, $insertCart);
@@ -62,22 +80,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     /* -------------------------
-       INSERT INTO customize_cart_details
+       INSERT FINAL VALUES
        ------------------------- */
     $sql = "INSERT INTO customize_cart_details 
             (Cart_Id, Product_Id, Quantity, Price, Custom_Image, Gift_Wrapping, Custom_Text, Personalized_Message)
-            VALUES (
-                ?, ?, ?, 
-                (SELECT Price FROM product_details WHERE Product_Id = ?),
-                ?, ?, ?, ?
-            )";
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
     $stmt = mysqli_prepare($connection, $sql);
-    mysqli_stmt_bind_param($stmt, "iiiissss", 
+    mysqli_stmt_bind_param($stmt, "iiidssss", 
         $cartId, 
         $productId, 
         $quantity, 
-        $productId, 
+        $totalPrice, 
         $uploadPath,
         $giftWrap,
         $customText,
@@ -87,9 +101,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     mysqli_stmt_execute($stmt);
     mysqli_stmt_close($stmt);
 
-    /* -------------------------
-       REDIRECT BACK TO PRODUCT PAGE
-       ------------------------- */
     header("Location: product_display.php?product_id=$productId&success=1");
     exit;
 }
