@@ -14,7 +14,7 @@ $allowed = [
     'payments' => 'payments/payments.php',
     'delivery' => 'delivery/delivery.php',
     'feedback' => 'feedback/feedback.php',
-    'admin_profile' => 'admin/admin_profile.php',  // PROFILE PAGE
+    'admin_profile' => 'admin/admin_profile.php',
     'delivery_boys' => 'delivery_boy/delivery_boys.php',
 ];
 
@@ -38,6 +38,7 @@ $page = isset($allowed[$view]) ? $allowed[$view] : $allowed['dashboard'];
             font-family: Arial, sans-serif;
         }
 
+        /* SIDEBAR */
         .sidebar {
             width: 260px;
             height: 100vh;
@@ -47,6 +48,7 @@ $page = isset($allowed[$view]) ? $allowed[$view] : $allowed['dashboard'];
             left: 0;
             padding-top: 70px;
             color: white;
+            transition: transform .3s ease-in-out;
         }
 
         .sidebar a {
@@ -66,6 +68,7 @@ $page = isset($allowed[$view]) ? $allowed[$view] : $allowed['dashboard'];
             margin-right: 10px;
         }
 
+        /* HEADER */
         .header {
             height: 70px;
             width: 100%;
@@ -82,20 +85,57 @@ $page = isset($allowed[$view]) ? $allowed[$view] : $allowed['dashboard'];
             z-index: 1000;
         }
 
+        /* HAMBURGER BUTTON - MOBILE ONLY */
+        .menu-btn {
+            display: none;
+            font-size: 26px;
+            cursor: pointer;
+            margin-right: 15px;
+        }
+
+        /* PAGE CONTENT */
         .content {
             margin-left: 260px;
             padding: 90px 20px 20px;
         }
-    </style>
 
+        /* MOBILE RESPONSIVE */
+        @media (max-width: 768px) {
+
+            .menu-btn {
+                display: block;
+            }
+
+            .header {
+                padding-left: 0;
+            }
+
+            .sidebar {
+                transform: translateX(-260px);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .content {
+                margin-left: 0;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
     <!-- HEADER -->
     <div class="header">
-        <div class="fw-bold fs-4">
-            <i class="fa-solid fa-gift text-danger"></i> GiftShop Admin
+        <div class="d-flex align-items-center">
+            <!-- MOBILE TOGGLE BUTTON -->
+            <i class="fa-solid fa-bars menu-btn" onclick="toggleSidebar()"></i>
+
+            <div class="fw-bold fs-4">
+                <i class="fa-solid fa-gift text-danger"></i> GiftShop Admin
+            </div>
         </div>
 
         <!-- FIXED DROPDOWN -->
@@ -107,54 +147,27 @@ $page = isset($allowed[$view]) ? $allowed[$view] : $allowed['dashboard'];
             <ul class="dropdown-menu dropdown-menu-end shadow">
                 <li><a class="dropdown-item" href="layout.php?view=admin_profile">
                         <i class="fa-solid fa-id-badge"></i> Profile
-                    </a>
-                </li>
-
-                <li>
-                    <a class="dropdown-item" href="admin_login/logout.php">
+                    </a></li>
+                <li><a class="dropdown-item" href="admin_login/logout.php">
                         <i class="fa-solid fa-right-from-bracket"></i> Logout
-                    </a>
-                </li>
-
+                    </a></li>
             </ul>
         </div>
     </div>
 
     <!-- SIDEBAR -->
-    <div class="sidebar">
+    <div class="sidebar" id="sidebar">
 
-        <a href="layout.php?view=dashboard" class="<?= ($view == 'dashboard') ? 'active' : '' ?>"><i
-                class="fa-solid fa-chart-line"></i> Dashboard</a>
-
-        <a href="layout.php?view=users" class="<?= ($view == 'users') ? 'active' : '' ?>"><i
-                class="fa-solid fa-users"></i>
-            Users</a>
-
-        <a href="layout.php?view=categories" class="<?= ($view == 'categories') ? 'active' : '' ?>"><i
-                class="fa-solid fa-layer-group"></i> Categories</a>
-
-        <a href="layout.php?view=products" class="<?= ($view == 'products') ? 'active' : '' ?>"><i
-                class="fa-solid fa-box"></i> Products</a>
-
-        <a href="layout.php?view=stock" class="<?= ($view == 'stock') ? 'active' : '' ?>"><i
-                class="fa-solid fa-boxes-packing"></i> Stock</a>
-
-        <a href="layout.php?view=orders" class="<?= ($view == 'orders') ? 'active' : '' ?>"><i
-                class="fa-solid fa-cart-shopping"></i> Orders</a>
-
-        <a href="layout.php?view=payments" class="<?= ($view == 'payments') ? 'active' : '' ?>"><i
-                class="fa-solid fa-credit-card"></i> Payments</a>
-
-        <a href="layout.php?view=delivery" class="<?= ($view == 'delivery') ? 'active' : '' ?>"><i
-                class="fa-solid fa-truck"></i> Delivery</a>
-
-        <a href="layout.php?view=feedback" class="<?= ($view == 'feedback') ? 'active' : '' ?>"><i
-                class="fa-solid fa-comments"></i> Feedback</a>
-
-        <a href="layout.php?view=delivery_boys" class="<?= ($view == 'delivery_boys') ? 'active' : '' ?>">
-            <i class="fa-solid fa-motorcycle"></i> Delivery Boys </a>
-
-
+        <a href="layout.php?view=dashboard" class="<?= ($view == 'dashboard') ? 'active' : '' ?>"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
+        <a href="layout.php?view=users" class="<?= ($view == 'users') ? 'active' : '' ?>"><i class="fa-solid fa-users"></i> Users</a>
+        <a href="layout.php?view=categories" class="<?= ($view == 'categories') ? 'active' : '' ?>"><i class="fa-solid fa-layer-group"></i> Categories</a>
+        <a href="layout.php?view=products" class="<?= ($view == 'products') ? 'active' : '' ?>"><i class="fa-solid fa-box"></i> Products</a>
+        <a href="layout.php?view=stock" class="<?= ($view == 'stock') ? 'active' : '' ?>"><i class="fa-solid fa-boxes-packing"></i> Stock</a>
+        <a href="layout.php?view=orders" class="<?= ($view == 'orders') ? 'active' : '' ?>"><i class="fa-solid fa-cart-shopping"></i> Orders</a>
+        <a href="layout.php?view=payments" class="<?= ($view == 'payments') ? 'active' : '' ?>"><i class="fa-solid fa-credit-card"></i> Payments</a>
+        <a href="layout.php?view=delivery" class="<?= ($view == 'delivery') ? 'active' : '' ?>"><i class="fa-solid fa-truck"></i> Delivery</a>
+        <a href="layout.php?view=feedback" class="<?= ($view == 'feedback') ? 'active' : '' ?>"><i class="fa-solid fa-comments"></i> Feedback</a>
+        <a href="layout.php?view=delivery_boys" class="<?= ($view == 'delivery_boys') ? 'active' : '' ?>"><i class="fa-solid fa-motorcycle"></i> Delivery Boys</a>
 
     </div>
 
@@ -162,6 +175,12 @@ $page = isset($allowed[$view]) ? $allowed[$view] : $allowed['dashboard'];
     <div class="content">
         <?php include($page); ?>
     </div>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById("sidebar").classList.toggle("active");
+        }
+    </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 

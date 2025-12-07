@@ -9,7 +9,7 @@ $view = isset($_GET['view']) ? $_GET['view'] : 'dashboard';
 $allowed = [
     'dashboard' => 'dashboard/dashboard.php',
     'assigned_orders' => 'orders/assigned_orders.php',
-    'update_status' => 'orders/update_status.php',
+    'Complete_deliveries' => 'complete_deliveries/complete_deliveries.php',
     'profile' => 'deliveryboy/deliveryboy_profile.php',
 ];
 
@@ -130,8 +130,8 @@ $page = isset($allowed[$view]) ? $allowed[$view] : $allowed['dashboard'];
             <i class="fa-solid fa-box"></i> Assigned Orders
         </a>
 
-        <a href="layout.php?view=update_status" class="<?= ($view == 'update_status') ? 'active' : '' ?>">
-            <i class="fa-solid fa-sync"></i> Update Status
+        <a href="layout.php?view=complete_deliveries" class="<?= ($view == 'complete_deliveries') ? 'active' : '' ?>">
+            <i class="fa-solid fa-sync"></i> Complete deliveries
         </a>
 
 
