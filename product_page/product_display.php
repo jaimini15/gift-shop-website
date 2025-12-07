@@ -400,27 +400,85 @@ if (previewBtn) {
 <script>
 document.querySelector("form[action='add_to_cart.php']").addEventListener("submit", function(e) {
 
+    let productSupportsPhoto = <?= strtolower($productPhoto) === 'yes' ? 'true' : 'false' ?>;
+    let productSupportsText  = <?= strtolower($productText) === 'yes' ? 'true' : 'false' ?>;
+
+    let fileInput = document.getElementById("realUpload");
+    let uploadedPhoto = fileInput && fileInput.files.length > 0;
+
+    let customTextRadio = document.getElementById("customText");
+    let defaultTextRadio = document.getElementById("defaultText");
+
+    let customTextValue = document.getElementById("customMessage") 
+                          ? document.getElementById("customMessage").value.trim()
+                          : "";
+
+    // ----------------------------
+    // RULE 1: If product requires image → photo required
+    // ----------------------------
+    if (productSupportsPhoto && !uploadedPhoto) {
+        alert("Please upload a photo for customization.");
+        e.preventDefault();
+        return;
+    }
+
+    // ----------------------------
+    // RULE 2: If text supported and user selects custom text → custom text required
+    // ----------------------------
+    if (productSupportsText && customTextRadio && customTextRadio.checked) {
+        if (customTextValue.length === 0) {
+            alert("Please enter your custom message.");
+            e.preventDefault();
+            return;
+        }
+    }
+
+    // ----------------------------
+    // RULE 3: If BOTH (image + text) supported → require BOTH fields
+    // ----------------------------
+    if (productSupportsPhoto && productSupportsText) {
+        if (customTextRadio && customTextRadio.checked && customTextValue.length === 0) {
+            alert("Please enter custom text.");
+            e.preventDefault();
+            return;
+        }
+        if (!uploadedPhoto) {
+            alert("Please upload a photo for this product.");
+            e.preventDefault();
+            return;
+        }
+    }
+
+    // ----------------------------
+    // Set hidden form fields
+    // ----------------------------
+
     // Gift wrap
-    document.getElementById("giftWrapVal").value = document.getElementById("giftWrap").checked ? 1 : 0;
+    document.getElementById("giftWrapVal").value =
+        document.getElementById("giftWrap").checked ? 1 : 0;
 
     // Gift Card
-    document.getElementById("giftCardVal").value = document.getElementById("giftCard").checked ? 1 : 0;
+    document.getElementById("giftCardVal").value =
+        document.getElementById("giftCard").checked ? 1 : 0;
 
     // Gift Card Message
     let cardMsgBox = document.querySelector("#giftCardMessageBox textarea");
-    if (cardMsgBox) document.getElementById("giftCardMsgVal").value = cardMsgBox.value;
+    if (cardMsgBox) {
+        document.getElementById("giftCardMsgVal").value = cardMsgBox.value;
+    }
 
-    // Custom or default text
+    // Final text
     let finalText = "";
-    if (document.getElementById("customText")?.checked)
-        finalText = document.getElementById("customMessage").value;
-    else if (document.getElementById("defaultText")?.checked)
+    if (customTextRadio && customTextRadio.checked) {
+        finalText = customTextValue;
+    } else if (defaultTextRadio && defaultTextRadio.checked) {
         finalText = document.getElementById("defaultTextVal").value;
+    }
 
     document.getElementById("customTextVal").value = finalText;
 
-    
 });
 </script>
+
 </body>
 </html>
