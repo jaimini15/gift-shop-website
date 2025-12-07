@@ -96,11 +96,11 @@ $rememberedEmail = isset($_COOKIE['remember_email']) ? $_COOKIE['remember_email'
             border: 1px solid #ccc; border-radius: 5px;
         }
         .btn {
-            width: 100%; padding: 12px; background: brown; 
+            width: 100%; padding: 12px; background:#7e2626d5; 
             color: #fff; border: none; border-radius: 5px;
             cursor: pointer;
         }
-        .btn:hover { background: #8b3e3e; }
+        .btn:hover { background: black;color:white; }
         .error { color: red; margin-bottom: 10px; }
         a { color: brown; text-decoration:none; }
         .extra-options {
@@ -114,7 +114,7 @@ $rememberedEmail = isset($_COOKIE['remember_email']) ? $_COOKIE['remember_email'
         .login-icon {
     text-align: center;
     font-size: 70px;
-    color: brown;
+    color: #7e2626d5;
     margin-bottom: 10px;
 }
 
@@ -160,11 +160,13 @@ $rememberedEmail = isset($_COOKIE['remember_email']) ? $_COOKIE['remember_email'
             <a href="forget_password_customer.php">Forgot Password?</a>
         </div>
     </form>
-
+<br>
+<center>
     <p>
         Don't have an account?
         <a href="../registration/registration.php">Register here</a>
     </p>
+    </center>
 </div>
 
 
