@@ -115,7 +115,78 @@ nav ul li.dropdown .dropdown-content li a:hover {
 }
 
 
+/* Navbar cart css starts */
+.cart-count {
+    background: red;
+    color: white;
+    padding: 2px 7px;
+    border-radius: 50%;
+    font-size: 12px;
+    margin-left: 4px;
+}
 
+/* Slide Panel (Cart + Profile) */
+#sidePanel {
+    position: fixed;
+    top: 0;
+    right: -400px;
+    width: 400px;
+    height: 100vh;
+    background: #fff;
+    box-shadow: -3px 0 8px rgba(0,0,0,0.2);
+    padding: 20px;
+    transition: 0.4s ease;
+    z-index: 9999;
+    overflow-y: auto;
+}
+
+#sidePanel.active {
+    right: 0;
+}
+
+#panelClose {
+    float: right;
+    font-size: 22px;
+    cursor: pointer;
+}
+.cart-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cart-box {
+    width: 55px;
+    height: 55px;
+    background: #f1f1f1;
+    border-radius: 50%;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.cart-box i {
+    font-size: 28px;
+    color: #4a4a4a;
+    position: relative;
+}
+
+.cart-badge {
+    position: absolute;
+    top: 5px;
+    right: 12px;
+    background: #ff0050;
+    color: white;
+    font-size: 13px;
+    font-weight: bold;
+    padding: 2px 7px;
+    border-radius: 50%;
+    line-height: 1;
+}
+
+/* Navbar cart css ends */
 
 .hero-slide {
     width: 100%;
