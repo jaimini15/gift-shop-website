@@ -60,13 +60,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         margin: 8px 0;
         border-radius: 8px;
         border: 1px solid #ccc;
-        background: #eef3ff;
+        background: white;
     }
 
     .register-box button {
     width: 100%;
     padding: 12px;
-    background: brown;
+    background: #7e2626d5;
     color: #fff;
     border: none;
     border-radius: 5px;
@@ -76,7 +76,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 }
 
 .register-box button:hover {
-    background: #8b3e3e;
+    background:black;color:white;
 }
 
 
@@ -86,7 +86,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 
     .register-box a {
-        color: #8b3e3e;
+        color: #7e2626d5;
         text-decoration: none;
         font-weight: bold;
     }
