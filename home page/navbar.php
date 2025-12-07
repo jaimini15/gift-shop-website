@@ -123,7 +123,7 @@ if (isset($_SESSION['User_Id'])) {
 const sidePanel = document.getElementById("sidePanel");
 const panelContent = document.getElementById("panelContent");
 
-// OPEN CART PANEL
+// Open panel and attach handlers after HTML inject
 document.getElementById("cartBtn").onclick = () => {
     sidePanel.classList.add("active");
 
@@ -131,10 +131,24 @@ document.getElementById("cartBtn").onclick = () => {
         .then(res => res.text())
         .then(html => {
             panelContent.innerHTML = html;
+
+            // Attach remove handlers to all remove buttons and images
+            document.querySelectorAll(".remove-btn").forEach(btn => {
+                const id = btn.getAttribute("data-id");
+                btn.addEventListener("click", () => removeItem(id));
+            });
+
+            // If you want image click to also delete:
+            document.querySelectorAll(".cart-img[data-id]").forEach(img => {
+                img.addEventListener("click", () => removeItem(img.getAttribute("data-id")));
+            });
+        })
+        .catch(err => {
+            console.error("Failed loading panel:", err);
         });
 };
 
-// CLOSE CART PANEL
+// Close panel
 document.getElementById("panelClose").onclick = () => {
     sidePanel.classList.remove("active");
 };
@@ -143,22 +157,76 @@ document.getElementById("panelClose").onclick = () => {
 document.getElementById("profileCheckBtn")?.addEventListener("click", () => {
     window.location.href = "../customer_profile/profile.php";
 });
-</script>
-<script>
-function deleteItem(id) {
-    if (!confirm("Remove this item?")) return;
+// -------------------
+// GLOBAL FUNCTIONS
+// -------------------
+function removeItem(id) {
+    if (!confirm("Remove this item from cart?")) return;
+
+    let itemDiv = document.getElementById("item-" + id);
+    let hr = itemDiv ? itemDiv.nextElementSibling : null;
 
     fetch("../product_page/delete_from_cart.php", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: "id=" + id
+        body: "id=" + encodeURIComponent(id)
     })
     .then(res => res.text())
-    .then(data => {
-        if (data.trim() === "success") {
-            // reload cart panel
-            document.getElementById("cartBtn").click();
+    .then(text => {
+        const response = text.trim();
+        if (response === "success") {
+
+            if (itemDiv) {
+                itemDiv.style.transition = "opacity 0.25s";
+                itemDiv.style.opacity = "0";
+                setTimeout(() => {
+                    if (itemDiv) itemDiv.remove();
+                    if (hr && hr.tagName === "HR") hr.remove();
+                    updateSubtotal();
+                    updateCartCount();
+                }, 260);
+            } else {
+                // Just update counts if DOM element missing
+                updateSubtotal();
+                updateCartCount();
+            }
+
+        } else {
+            // show full response for debugging
+            alert("Delete failed:\n" + response);
+            console.error("Delete failed response:", response);
         }
+    })
+    .catch(err => {
+        alert("Network error while deleting. See console.");
+        console.error(err);
     });
+}
+
+
+function updateSubtotal() {
+    const items = document.querySelectorAll(".item-price");
+    let subtotal = 0;
+    items.forEach(item => {
+        const txt = item.innerText; // ex: "1 × ₹589"
+        const qty = parseInt(txt.split("×")[0]) || 0;
+        const price = parseInt((txt.split("₹")[1] || "0").replace(/,/g,"")) || 0;
+        subtotal += qty * price;
+    });
+
+    const el = document.getElementById("subtotal-box");
+    if (el) el.innerText = "₹" + subtotal.toLocaleString();
+}
+
+
+function updateCartCount() {
+    fetch("../product_page/get_cart_count.php")
+        .then(r => r.text())
+        .then(text => {
+            const num = text.trim();
+            const badge = document.querySelector(".cart-badge");
+            if (badge) badge.innerText = num;
+        })
+        .catch(err => console.error("Failed to update cart count:", err));
 }
 </script>
