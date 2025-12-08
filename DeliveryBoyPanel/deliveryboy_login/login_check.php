@@ -1,6 +1,6 @@
 <?php
 session_start();
-include("../../AdminPanel/db.php");  // ✔ Correct Path
+include("../../AdminPanel/db.php");  // Correct Path
 
 if (isset($_POST['login'])) {
 
