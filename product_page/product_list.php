@@ -1,19 +1,12 @@
 <?php
 session_start();
 include("../AdminPanel/db.php");
-
-// Save relative URL only
 $_SESSION['redirect_after_login'] = $_SERVER['REQUEST_URI'] ?? '/';
-
-// Validate category id
 if (!isset($_GET['category_id']) || empty($_GET['category_id'])) {
     echo "<h2 style='text-align:center;'>Invalid Category!</h2>";
     exit;
 }
-
-$category_id = $_GET['category_id'] + 0; // simple cast to int for safety
-
-// Fetch category info (prepared)
+$category_id = $_GET['category_id'] + 0; 
 $catStmt = mysqli_prepare($connection, "SELECT Category_Name, Status FROM category_details WHERE Category_Id = ?");
 mysqli_stmt_bind_param($catStmt, 'i', $category_id);
 mysqli_stmt_execute($catStmt);
@@ -32,7 +25,6 @@ function img_src_from_blob($blob, $placeholder = '../product_page/product_mug_bu
     if ($blob === null || $blob === '' || strlen($blob) === 0) {
         return $placeholder;
     }
-    // detect if blob is already binary - encode to base64
     return 'data:image/jpeg;base64,' . base64_encode($blob);
 }
 ?>
@@ -57,7 +49,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 include("../AdminPanel/db.php");
 
-// ------- CART COUNT ---------
+//CART COUNT 
 $cart_count = 0;
 if (isset($_SESSION['User_Id'])) {
     $uid = $_SESSION['User_Id'];
@@ -79,7 +71,7 @@ if (isset($_SESSION['User_Id'])) {
     }
 }
 ?>
-<!-- =================== NAVBAR =================== -->
+
 <header>
     <div class="logo">GiftShop</div>
 
@@ -108,8 +100,6 @@ if (isset($_SESSION['User_Id'])) {
             <li><a href="../home page/contact.php">Contact</a></li>
         </ul>
     </nav>
-
-    <!-- =================== ICONS =================== -->
     <div class="icons">
 
         <!-- CART ICON -->
@@ -139,8 +129,6 @@ if (isset($_SESSION['User_Id'])) {
 
     </div>
 </header>
-
-<!-- =================== CART SLIDE PANEL =================== -->
 <style>
 #sidePanel {
     position: fixed;
@@ -170,8 +158,6 @@ if (isset($_SESSION['User_Id'])) {
     <span id="panelClose">&times;</span>
     <div id="panelContent" style="margin-top:40px;"></div>
 </div>
-
-<!-- =================== JAVASCRIPT =================== -->
 <script>
 const sidePanel = document.getElementById("sidePanel");
 const panelContent = document.getElementById("panelContent");
@@ -191,7 +177,6 @@ document.getElementById("cartBtn").onclick = () => {
                 btn.addEventListener("click", () => removeItem(id));
             });
 
-            // If you want image click to also delete:
             document.querySelectorAll(".cart-img[data-id]").forEach(img => {
                 img.addEventListener("click", () => removeItem(img.getAttribute("data-id")));
             });
@@ -210,9 +195,6 @@ document.getElementById("panelClose").onclick = () => {
 document.getElementById("profileCheckBtn")?.addEventListener("click", () => {
     window.location.href = "../customer_profile/profile.php";
 });
-// -------------------
-// GLOBAL FUNCTIONS
-// -------------------
 function removeItem(id) {
     if (!confirm("Remove this item from cart?")) return;
 
@@ -239,13 +221,12 @@ function removeItem(id) {
                     updateCartCount();
                 }, 260);
             } else {
-                // Just update counts if DOM element missing
+                
                 updateSubtotal();
                 updateCartCount();
             }
 
         } else {
-            // show full response for debugging
             alert("Delete failed:\n" + response);
             console.error("Delete failed response:", response);
         }
@@ -261,7 +242,7 @@ function updateSubtotal() {
     const items = document.querySelectorAll(".item-price");
     let subtotal = 0;
     items.forEach(item => {
-        const txt = item.innerText; // ex: "1 × ₹589"
+        const txt = item.innerText; 
         const qty = parseInt(txt.split("×")[0]) || 0;
         const price = parseInt((txt.split("₹")[1] || "0").replace(/,/g,"")) || 0;
         subtotal += qty * price;
@@ -296,7 +277,7 @@ function updateCartCount() {
 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
 
 <?php
-// Fetch products for category (prepared)
+// Fetch products for category
 $prodStmt = mysqli_prepare($connection, "
     SELECT Product_Id, Product_Name, Product_Image, Description, Price
     FROM product_details
@@ -329,7 +310,6 @@ if ($productResult && mysqli_num_rows($productResult) > 0) {
 
                <?php 
 if (!isset($_SESSION['User_Id'])): 
-    // Build correct redirect URL
     $currentURL = "product_list.php?category_id=" . $category_id;
     $redirectURL = "../login/login.php?redirect=" . urlencode($currentURL);
 ?>
