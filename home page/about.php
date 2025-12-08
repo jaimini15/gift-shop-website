@@ -320,7 +320,7 @@ Perfect for celebrations, corporate gifting, or festive occasions</p>
 
 
 <!-- about our mission ends -->
-<!-- review section starts here -->
+<!-- footer section starts here -->
 
 <section class="reviews">
   <h1 class="heading-title">Our Team</h1>
@@ -328,34 +328,34 @@ Perfect for celebrations, corporate gifting, or festive occasions</p>
   <div class="review-container">
     <div class="slide">
       <p>
-        "Traveling has never been this easy! The FlyAway team understood exactly what I was looking for and planned an itinerary full of incredible experiences. Every detail was handled professionally, and the price was unbeatable.
+       Video provides a powerful way to help you prove your point. When you click Online Video, you can paste in the embed code for the video you want to add. You can also type a keyword to search online for the video that best fits your document.
       </p>
       <h3>Riya Rathod</h3>
-      <span>Traveler</span>
+      <span>Developer</span>
       <img src="about_our_team_riya.jpg" alt="Client Joe Root">
     </div>
 
     <div class="slide">
-      <p>
-        "I was skeptical at first, but FlyAway exceeded my expectations! Their recommendations were spot-on, and the booking process was smooth. I got great discounts on flights and hotels, and everything was hassle-free. A fantastic service!"
+       <p>
+       Video provides a powerful way to help you prove your point. When you click Online Video, you can paste in the embed code for the video you want to add. You can also type a keyword to search online for the video that best fits your document.
       </p>
       <h3>Jaimini Shah</h3>
-      <span>Traveler</span>
+      <span>Developer</span>
       <img src="about_our_team_jaimini.jpg" alt="Client Smith Alice">
     </div>
 
     <div class="slide">
-      <p>
-        "FlyAway truly cares about its customers. From the moment I booked, I felt supported. They even helped me with last-minute travel changes without extra charges. It’s rare to find such a reliable and customer-friendly travel service."
+       <p>
+       Video provides a powerful way to help you prove your point. When you click Online Video, you can paste in the embed code for the video you want to add. You can also type a keyword to search online for the video that best fits your document.
       </p>
       <h3>Prerna Nankani</h3>
-      <span>Traveler</span>
+      <span>Developer</span>
       <img src="about_our_team_prerna.jpg" alt="Client Smith Sofia">
     </div>
   </div>
 </section>
 
-<!-- review section ends here -->
+<!-- footer section ends here -->
 
 
 
