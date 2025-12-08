@@ -1,13 +1,12 @@
 <?php
 session_start();
-include("../db.php");   // FIXED PATH: only one level up
+include("../db.php");  
 
 if (isset($_POST['login'])) {
 
     $email    = mysqli_real_escape_string($connection, $_POST['email']);
     $password = mysqli_real_escape_string($connection, $_POST['password']);
 
-    // User table
     $query = "SELECT * FROM user_details WHERE Email='$email' LIMIT 1";
     $result = mysqli_query($connection, $query);
 
@@ -15,13 +14,12 @@ if (isset($_POST['login'])) {
 
         $user = mysqli_fetch_assoc($result);
 
-        // Check role = ADMIN
+        // Check role 
         if ($user['User_Role'] !== "ADMIN") {
             header("Location: login.php?error=Access Denied");
             exit();
         }
 
-        // Password check (simple comparison)
         if ($password === $user['Password']) {
 
             // SESSION SET
