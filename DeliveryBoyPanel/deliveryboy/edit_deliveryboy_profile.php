@@ -16,7 +16,7 @@ $delivery_boy = mysqli_fetch_assoc($res);
 
 $error = "";
 
-// Update profile + password
+// Update profile and password
 if (isset($_POST['update'])) {
 
     $fname   = mysqli_real_escape_string($connection, $_POST['fname']);
