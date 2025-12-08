@@ -38,7 +38,7 @@ if (isset($_POST['add'])) {
 
 <div class="container">
     <div class="row">
-        <div class="col-lg-8 ms-5"> <!-- LEFT SPACE SAME AS CATEGORY PAGE -->
+        <div class="col-lg-8 ms-5"> 
 
             <h3 class="mb-4">Add Stock</h3>
 
@@ -49,7 +49,7 @@ if (isset($_POST['add'])) {
                     <option value="">Select Product</option>
 
                     <?php
-                    // Status is 'Enabled'
+                    // Status is Enabled
                     $productQuery = mysqli_query($connection, 
                         "SELECT Product_Id, Product_Name 
                          FROM product_details 
