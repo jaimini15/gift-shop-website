@@ -102,21 +102,29 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     <form method="POST">
 
-        <input type="text" name="first_name" placeholder="First Name" required>
+        <input type="text" name="first_name" placeholder="First Name" 
+       required pattern="[A-Za-z]+" title="Only alphabets allowed">
 
-        <input type="text" name="last_name" placeholder="Last Name" required>
+<input type="text" name="last_name" placeholder="Last Name" 
+       required pattern="[A-Za-z]+" title="Only alphabets allowed">
 
-        <input type="date" name="dob" required>
+<input type="date" name="dob" required 
+       max="<?php echo date('Y-m-d', strtotime('-17 years')); ?>">
+       
+<input type="text" name="phone" placeholder="Phone Number" maxlength="10" 
+       required pattern="[0-9]{10}" title="Exactly 10 digits">
 
-        <input type="text" name="phone" placeholder="Phone Number" maxlength="10" required>
+<input type="text" name="address" placeholder="Address" required>
 
-        <input type="text" name="address" placeholder="Address" required>
+<input type="text" name="pincode" placeholder="Pincode" maxlength="6"
+       required pattern="[0-9]{6}" title="Exactly 6 digits">
 
-        <input type="text" name="pincode" placeholder="Pincode" maxlength="6" required>
+<input type="email" name="email" placeholder="Email Address"
+       required pattern="^[a-zA-Z0-9._%+-]+@[A-Za-z]{5}\.[A-Za-z]{2,3}$"
+       title="Format: example@abcde.in or example@abcde.com">
 
-        <input type="email" name="email" placeholder="Email Address" required>
+<input type="password" name="password" placeholder="Password" required>
 
-        <input type="password" name="password" placeholder="Password" required>
 
         <!-- Hidden default role -->
         <input type="hidden" name="user_role" value="CUSTOMER">
