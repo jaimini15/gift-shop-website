@@ -261,7 +261,7 @@ function updateCartCount() {
       <h2>About Our Gift Shop</h2>
       <p>
         Welcome to <b>GiftShop</b>, your one-stop destination for personalized and unique gifts made with love and creativity!
-We believe every gift should tell a story — your story. 
+We believe every gift should tell a story thats your story. 
 That's why we bring you a wide range of customizable products including mugs, photo frames, and more, 
 designed to make every moment special.
       </p>
