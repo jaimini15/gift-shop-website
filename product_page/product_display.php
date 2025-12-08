@@ -2,7 +2,6 @@
 session_start();
 include("../AdminPanel/db.php");
 
-// must receive product_id
 if (!isset($_GET['product_id']) || empty($_GET['product_id'])) {
     echo "<h2 style='text-align:center;color:red;'>Invalid Product!</h2>";
     exit;
@@ -10,7 +9,6 @@ if (!isset($_GET['product_id']) || empty($_GET['product_id'])) {
 
 $product_id = (int)$_GET['product_id'];
 
-// fetch product using prepared statement
 $prodStmt = mysqli_prepare($connection, "
     SELECT Product_Id, Category_Id, Product_Name, Product_Image, Product_Default_Text,
            Product_Photo, Product_Text, Description, Price, Status
@@ -28,8 +26,6 @@ if (!$product || strtolower($product['Status']) === 'disabled') {
     echo "<h2 style='text-align:center;color:red;'>Product Not Found!</h2>";
     exit;
 }
-
-// helper for image
 function img_src_from_blob_single($blob, $placeholder = 'product_mug_buynow1.jpg') {
     if ($blob === null || $blob === '' || strlen($blob) === 0) {
         return $placeholder;
@@ -57,20 +53,15 @@ $imgSrc = img_src_from_blob_single($product['Product_Image'], 'product_mug_buyno
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
-  <!-- Fabric.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
 </head>
 
 <body>
 
 <!-- Navbar starts -->
-   <?php
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
-include("../AdminPanel/db.php");
+  <?php
 
-// ------- CART COUNT ---------
+// CART COUNT
 $cart_count = 0;
 if (isset($_SESSION['User_Id'])) {
     $uid = $_SESSION['User_Id'];
@@ -92,7 +83,6 @@ if (isset($_SESSION['User_Id'])) {
     }
 }
 ?>
-<!-- =================== NAVBAR =================== -->
 <header>
     <div class="logo">GiftShop</div>
 
@@ -121,8 +111,6 @@ if (isset($_SESSION['User_Id'])) {
             <li><a href="../home page/contact.php">Contact</a></li>
         </ul>
     </nav>
-
-    <!-- =================== ICONS =================== -->
     <div class="icons">
 
         <!-- CART ICON -->
@@ -152,8 +140,6 @@ if (isset($_SESSION['User_Id'])) {
 
     </div>
 </header>
-
-<!-- =================== CART SLIDE PANEL =================== -->
 <style>
 #sidePanel {
     position: fixed;
@@ -183,8 +169,6 @@ if (isset($_SESSION['User_Id'])) {
     <span id="panelClose">&times;</span>
     <div id="panelContent" style="margin-top:40px;"></div>
 </div>
-
-<!-- =================== JAVASCRIPT =================== -->
 <script>
 const sidePanel = document.getElementById("sidePanel");
 const panelContent = document.getElementById("panelContent");
@@ -203,8 +187,6 @@ document.getElementById("cartBtn").onclick = () => {
                 const id = btn.getAttribute("data-id");
                 btn.addEventListener("click", () => removeItem(id));
             });
-
-            // If you want image click to also delete:
             document.querySelectorAll(".cart-img[data-id]").forEach(img => {
                 img.addEventListener("click", () => removeItem(img.getAttribute("data-id")));
             });
@@ -223,9 +205,7 @@ document.getElementById("panelClose").onclick = () => {
 document.getElementById("profileCheckBtn")?.addEventListener("click", () => {
     window.location.href = "../customer_profile/profile.php";
 });
-// -------------------
-// GLOBAL FUNCTIONS
-// -------------------
+
 function removeItem(id) {
     if (!confirm("Remove this item from cart?")) return;
 
@@ -252,13 +232,11 @@ function removeItem(id) {
                     updateCartCount();
                 }, 260);
             } else {
-                // Just update counts if DOM element missing
                 updateSubtotal();
                 updateCartCount();
             }
 
         } else {
-            // show full response for debugging
             alert("Delete failed:\n" + response);
             console.error("Delete failed response:", response);
         }
@@ -274,7 +252,7 @@ function updateSubtotal() {
     const items = document.querySelectorAll(".item-price");
     let subtotal = 0;
     items.forEach(item => {
-        const txt = item.innerText; // ex: "1 × ₹589"
+        const txt = item.innerText; 
         const qty = parseInt(txt.split("×")[0]) || 0;
         const price = parseInt((txt.split("₹")[1] || "0").replace(/,/g,"")) || 0;
         subtotal += qty * price;
@@ -304,7 +282,6 @@ function updateCartCount() {
         <!-- LEFT IMAGE (Preview Area) -->
         <div class="col-md-5">
             <div class="product-image" style="position:relative; width:100%; padding-left:40px; padding-right:40px;">
-                <!-- BASE MUG IMAGE -->
                 <img id="mugBase" src="<?= $imgSrc ?>" 
      style="width:430px; height:480px; object-fit:cover; border-radius:8px;" 
      alt="<?= $productName ?>">
@@ -439,7 +416,7 @@ function updateCartCount() {
     </div>
 </div>
 
-<!-- FOOTER (same as before) -->
+<!-- FOOTER Starts -->
 <section class="footer">
     <div class="box-container">
         <div class="box">
@@ -474,7 +451,7 @@ function updateCartCount() {
     <div class="credit">created by <span>GiftShop</span> | all right reserved!</div>
 </section>
 
-<!-- ZOOM LOGIC -->
+<!-- ZOOM EFFECT ON IMAGE -->
 <script>
 const img = document.querySelector('.product-image img');
 
@@ -497,7 +474,7 @@ if (img) {
 <script src="../home page/script.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 
-<!-- PRICE LOGIC -->
+<!-- PRICE UPDATE -->
 <script>
 let basePrice = <?= json_encode((float)$product['Price']) ?>;
 
@@ -534,7 +511,7 @@ if (document.getElementById("defaultText")) {
 updateTotal();
 </script>
 
-<!-- FABRIC.JS LOGIC -->
+<!-- PREVIEW USING FABRIC.js -->
 <script>
 let canvas;
 const previewBtn = document.getElementById("previewButton");
@@ -547,7 +524,6 @@ if (previewBtn) {
         if (!canvas) { canvas = new fabric.Canvas('mugCanvas', { preserveObjectStacking: true }); }
         else { canvas.clear(); }
 
-        // Product background - use the page image as background
         const baseSrc = document.getElementById("mugBase").getAttribute('src');
         fabric.Image.fromURL(baseSrc, function(mugImg){
             mugImg.scaleToWidth(canvas.width);
@@ -555,7 +531,6 @@ if (previewBtn) {
             canvas.setBackgroundImage(mugImg, canvas.renderAll.bind(canvas));
         }, { crossOrigin: 'anonymous' });
 
-        // Customer image
         const file = fileInput.files[0];
         const reader = new FileReader();
         reader.onload = function(f){
@@ -588,18 +563,12 @@ document.querySelector("form[action='add_to_cart.php']").addEventListener("submi
                           ? document.getElementById("customMessage").value.trim()
                           : "";
 
-    // ----------------------------
-    // RULE 1: If product requires image → photo required
-    // ----------------------------
     if (productSupportsPhoto && !uploadedPhoto) {
         alert("Please upload a photo for customization.");
         e.preventDefault();
         return;
     }
 
-    // ----------------------------
-    // RULE 2: If text supported and user selects custom text → custom text required
-    // ----------------------------
     if (productSupportsText && customTextRadio && customTextRadio.checked) {
         if (customTextValue.length === 0) {
             alert("Please enter your custom message.");
@@ -607,10 +576,6 @@ document.querySelector("form[action='add_to_cart.php']").addEventListener("submi
             return;
         }
     }
-
-    // ----------------------------
-    // RULE 3: If BOTH (image + text) supported → require BOTH fields
-    // ----------------------------
     if (productSupportsPhoto && productSupportsText) {
         if (customTextRadio && customTextRadio.checked && customTextValue.length === 0) {
             alert("Please enter custom text.");
@@ -623,11 +588,6 @@ document.querySelector("form[action='add_to_cart.php']").addEventListener("submi
             return;
         }
     }
-
-    // ----------------------------
-    // Set hidden form fields
-    // ----------------------------
-
     // Gift wrap
     document.getElementById("giftWrapVal").value =
         document.getElementById("giftWrap").checked ? 1 : 0;
@@ -654,29 +614,7 @@ document.querySelector("form[action='add_to_cart.php']").addEventListener("submi
 
 });
 </script>
-<script>
-const panel = document.getElementById("sidePanel");
-const content = document.getElementById("panelContent");
 
-document.getElementById("panelClose").onclick = () => {
-    panel.classList.remove("active");
-};
-
-document.getElementById("cartBtn").onclick = () => {
-    document.getElementById("sidePanel").style.right = "0";
-
-    fetch("../product_page/cart_panel.php")
-        .then(res => res.text())
-        .then(html => {
-            document.querySelector("#panelContent").innerHTML = html;
-        });
-};
-
-document.getElementById("panelClose").onclick = () => {
-    document.getElementById("sidePanel").style.right = "-400px";
-};
-
-</script>
 
 </body>
 </html>
