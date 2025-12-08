@@ -16,7 +16,7 @@ if (!$data) {
     die("Delivery Boy not found");
 }
 
-// Update Logic
+// Update 
 if (isset($_POST['update'])) {
 
     $fname    = mysqli_real_escape_string($connection, $_POST['First_Name']);
@@ -125,7 +125,7 @@ if (isset($_POST['update'])) {
             <input type="text" name="Password" class="form-control" value="<?= $data['Password'] ?>" required>
         </div>
 
-        <!-- 🔥 ONLY NEW FIELD ADDED -->
+        <!--  NEW FIELD ADDED -->
         <div class="mb-3">
             <label>Status</label>
             <select name="Status" class="form-control">
