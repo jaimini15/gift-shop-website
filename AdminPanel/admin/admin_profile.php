@@ -1,7 +1,5 @@
 <?php
 if (!isset($_SESSION)) session_start();
-
-// Only Admin allowed
 if (!isset($_SESSION['admin_id']) || $_SESSION['admin_role'] !== "ADMIN") {
     header("Location: ../admin_login/login.php?error=Please login first");
     exit;
