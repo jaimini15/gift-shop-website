@@ -22,7 +22,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 include("../AdminPanel/db.php");
 
-// ------- CART COUNT ---------
+//CART COUNT
 $cart_count = 0;
 if (isset($_SESSION['User_Id'])) {
     $uid = $_SESSION['User_Id'];
@@ -44,15 +44,13 @@ if (isset($_SESSION['User_Id'])) {
     }
 }
 ?>
-<!-- =================== NAVBAR =================== -->
+<!--Navbar Starts-->
 <header>
     <div class="logo">GiftShop</div>
-
     <nav>
         <ul>
             <li><a href="../home page/index.php">Home</a></li> |
             <li><a href="../home page/about.php" class="active">About us</a></li> |
-
             <li class="dropdown">
                 <a href="#">Shop</a>
                 <ul class="dropdown-content">
@@ -73,10 +71,7 @@ if (isset($_SESSION['User_Id'])) {
             <li><a href="../home page/contact.php">Contact</a></li>
         </ul>
     </nav>
-
-    <!-- =================== ICONS =================== -->
     <div class="icons">
-
         <!-- CART ICON -->
         <a href="javascript:void(0)" id="cartBtn" class="cart-wrapper">
             <div class="cart-box">
@@ -84,7 +79,6 @@ if (isset($_SESSION['User_Id'])) {
                 <span class="cart-badge"><?= $cart_count ?></span>
             </div>
         </a>
-
         <!-- PROFILE -->
         <?php if (!isset($_SESSION['User_Id'])): ?>
             <a href="../login/login.php"><i class="fa-regular fa-user"></i> My Profile</a>
@@ -104,8 +98,6 @@ if (isset($_SESSION['User_Id'])) {
 
     </div>
 </header>
-
-<!-- =================== CART SLIDE PANEL =================== -->
 <style>
 #sidePanel {
     position: fixed;
@@ -135,28 +127,21 @@ if (isset($_SESSION['User_Id'])) {
     <span id="panelClose">&times;</span>
     <div id="panelContent" style="margin-top:40px;"></div>
 </div>
-
-<!-- =================== JAVASCRIPT =================== -->
 <script>
 const sidePanel = document.getElementById("sidePanel");
 const panelContent = document.getElementById("panelContent");
-
 // Open panel and attach handlers after HTML inject
 document.getElementById("cartBtn").onclick = () => {
     sidePanel.classList.add("active");
-
     fetch("../product_page/cart_panel.php")
         .then(res => res.text())
         .then(html => {
             panelContent.innerHTML = html;
-
             // Attach remove handlers to all remove buttons and images
             document.querySelectorAll(".remove-btn").forEach(btn => {
                 const id = btn.getAttribute("data-id");
                 btn.addEventListener("click", () => removeItem(id));
             });
-
-            // If you want image click to also delete:
             document.querySelectorAll(".cart-img[data-id]").forEach(img => {
                 img.addEventListener("click", () => removeItem(img.getAttribute("data-id")));
             });
@@ -165,7 +150,6 @@ document.getElementById("cartBtn").onclick = () => {
             console.error("Failed loading panel:", err);
         });
 };
-
 // Close panel
 document.getElementById("panelClose").onclick = () => {
     sidePanel.classList.remove("active");
@@ -175,9 +159,7 @@ document.getElementById("panelClose").onclick = () => {
 document.getElementById("profileCheckBtn")?.addEventListener("click", () => {
     window.location.href = "../customer_profile/profile.php";
 });
-// -------------------
-// GLOBAL FUNCTIONS
-// -------------------
+
 function removeItem(id) {
     if (!confirm("Remove this item from cart?")) return;
 
@@ -204,13 +186,11 @@ function removeItem(id) {
                     updateCartCount();
                 }, 260);
             } else {
-                // Just update counts if DOM element missing
                 updateSubtotal();
                 updateCartCount();
             }
 
         } else {
-            // show full response for debugging
             alert("Delete failed:\n" + response);
             console.error("Delete failed response:", response);
         }
@@ -226,7 +206,7 @@ function updateSubtotal() {
     const items = document.querySelectorAll(".item-price");
     let subtotal = 0;
     items.forEach(item => {
-        const txt = item.innerText; // ex: "1 × ₹589"
+        const txt = item.innerText; 
         const qty = parseInt(txt.split("×")[0]) || 0;
         const price = parseInt((txt.split("₹")[1] || "0").replace(/,/g,"")) || 0;
         subtotal += qty * price;
@@ -277,7 +257,7 @@ designed to make every moment special.
   </div>
 </section>
 
-<!--services section strats here-->
+<!--services section starts here-->
 
 <section class="about-services">
 
