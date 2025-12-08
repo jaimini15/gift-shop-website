@@ -85,11 +85,11 @@ if (isset($_SESSION['User_Id'])) {
 
     <nav>
         <ul>
-            <li><a href="../home page/index.php" class="active">Home</a></li> |
+            <li><a href="../home page/index.php">Home</a></li> |
             <li><a href="../home page/about.php">About us</a></li> |
 
             <li class="dropdown">
-                <a href="#">Shop</a>
+                <a href="#" class="active">Shop</a>
                 <ul class="dropdown-content">
                     <?php  
                     $catQuery = "SELECT * FROM category_details WHERE Status='Enabled'";
@@ -105,7 +105,7 @@ if (isset($_SESSION['User_Id'])) {
                 </ul>
             </li> |
 
-            <li><a href="../contact/contact.php">Contact</a></li>
+            <li><a href="../home page/contact.php">Contact</a></li>
         </ul>
     </nav>
 
