@@ -28,9 +28,7 @@ if(isset($_POST['update'])){
     $product_photo = mysqli_real_escape_string($connection, $_POST['product_photo']);
     $product_text  = mysqli_real_escape_string($connection, $_POST['product_text']);
 
-    // -------------------------------------------------
-    // IMAGE UPLOAD (Only update if new file uploaded)
-    // -------------------------------------------------
+    // IMAGE UPLOAD OF NEW FIELD
     if (!empty($_FILES['product_image']['tmp_name'])) {
         $imageData = file_get_contents($_FILES['product_image']['tmp_name']);
         $imageData = mysqli_real_escape_string($connection, $imageData);
@@ -38,10 +36,7 @@ if(isset($_POST['update'])){
     } else {
         $update_image = "";
     }
-
-    // ---------------------
     // UPDATE PRODUCT
-    // ---------------------
     $query = "
         UPDATE Product_Details SET
             Category_Id='$cat_id',
