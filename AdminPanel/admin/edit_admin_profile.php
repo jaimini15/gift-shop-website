@@ -18,7 +18,7 @@ $admin = mysqli_fetch_assoc(mysqli_query(
 
 $error = "";
 
-// Update profile + password
+// Update profile and password
 if (isset($_POST['update'])) {
 
     $fname   = mysqli_real_escape_string($connection, $_POST['fname']);
@@ -40,7 +40,7 @@ if (isset($_POST['update'])) {
     // If user entered any password field
     if (!empty($current_password) || !empty($new_password) || !empty($confirm_password)) {
 
-        // ❌ Plain Text Compare
+        // Plain Text Compare
         if ($current_password !== $db_pass) {
             $error = "Current password is incorrect!";
         }
@@ -48,7 +48,7 @@ if (isset($_POST['update'])) {
             $error = "New Password and Confirm Password do not match!";
         }
         else {
-            // ✔ Save new password as plain text
+            // Save new password 
             $plain_pass = mysqli_real_escape_string($connection, $new_password);
 
             $password_update = mysqli_query(
