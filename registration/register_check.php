@@ -1,11 +1,8 @@
 <?php
 session_start();
 include("../AdminPanel/db.php");
-
-// Only handle POST requests
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
-    // Collect and sanitize input
     $first_name = mysqli_real_escape_string($connection, $_POST['first_name']);
     $last_name  = mysqli_real_escape_string($connection, $_POST['last_name']);
     $dob        = mysqli_real_escape_string($connection, $_POST['dob']);
@@ -21,7 +18,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $emailResult = mysqli_query($connection, $checkEmail);
 
     if ($emailResult && mysqli_num_rows($emailResult) > 0) {
-        // Email exists → redirect to login popup
+        // Email exists → redirect to login page
         echo "<script>
                 alert('Email already exists! Please login.');
                 window.location.href='../login/login.php?popup=1';
