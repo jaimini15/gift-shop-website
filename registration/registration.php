@@ -108,7 +108,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         <input type="date" name="dob" required>
 
-        <input type="text" name="phone" placeholder="Phone Number" maxlength="13" required>
+        <input type="text" name="phone" placeholder="Phone Number" maxlength="10" required>
 
         <input type="text" name="address" placeholder="Address" required>
 
