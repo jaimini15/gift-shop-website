@@ -1,7 +1,7 @@
 <?php
 include(__DIR__ . '/../db.php');
 
-// ----- GET STOCK ID -----
+// GET STOCK ID 
 if (!isset($_GET['id'])) {
     header("Location: ../layout.php?view=stock");
     exit;
@@ -9,7 +9,7 @@ if (!isset($_GET['id'])) {
 
 $stock_id = intval($_GET['id']);
 
-// ----- FETCH STOCK DATA -----
+// FETCH STOCK DATA 
 $stockQuery = mysqli_query($connection,
     "SELECT s.*, p.Product_Name 
      FROM stock_details s
@@ -24,7 +24,7 @@ if (mysqli_num_rows($stockQuery) == 0) {
 
 $stock = mysqli_fetch_assoc($stockQuery);
 
-// ----- UPDATE STOCK -----
+//UPDATE STOCK 
 if (isset($_POST['update'])) {
     $new_stock = intval($_POST['stock']);
 
@@ -35,7 +35,7 @@ if (isset($_POST['update'])) {
          WHERE Stock_Id = $stock_id"
     );
 
-    // DIRECT REDIRECT – NO ALERT
+    
     header("Location: ../layout.php?view=stock&msg=updated");
     exit;
 }
@@ -52,7 +52,7 @@ if (isset($_POST['update'])) {
 
 <div class="container">
     <div class="row">
-        <div class="col-lg-8 ms-5"> <!-- SAME LEFT SPACE -->
+        <div class="col-lg-8 ms-5"> 
 
             <h3 class="mb-4">Update Stock</h3>
 
