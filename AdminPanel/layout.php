@@ -37,8 +37,6 @@ $page = isset($allowed[$view]) ? $allowed[$view] : $allowed['dashboard'];
             background: #f4f6f9;
             font-family: Arial, sans-serif;
         }
-
-        /* SIDEBAR */
         .sidebar {
             width: 260px;
             height: 100vh;
@@ -67,8 +65,6 @@ $page = isset($allowed[$view]) ? $allowed[$view] : $allowed['dashboard'];
         .sidebar a i {
             margin-right: 10px;
         }
-
-        /* HEADER */
         .header {
             height: 70px;
             width: 100%;
@@ -84,16 +80,12 @@ $page = isset($allowed[$view]) ? $allowed[$view] : $allowed['dashboard'];
             padding-right: 20px;
             z-index: 1000;
         }
-
-        /* HAMBURGER BUTTON - MOBILE ONLY */
         .menu-btn {
             display: none;
             font-size: 26px;
             cursor: pointer;
             margin-right: 15px;
         }
-
-        /* PAGE CONTENT */
         .content {
             margin-left: 260px;
             padding: 90px 20px 20px;
