@@ -49,7 +49,7 @@
             font-size: 14px;
             display: inline-flex;
             align-items: center;
-            white-space: nowrap; /* THIS KEEPS "Remember Me" TOGETHER */
+            white-space: nowrap; 
             gap: 6px;
             cursor: pointer;
         }
@@ -84,7 +84,6 @@
 
         <div class="options-row">
 
-            <!-- Checkbox + Remember Me in one single line -->
             <label class="remember-label">
                 <input type="checkbox" name="remember" 
                        <?php echo isset($_COOKIE['admin_email']) ? 'checked' : ''; ?>>
