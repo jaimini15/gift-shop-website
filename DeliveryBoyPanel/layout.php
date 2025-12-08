@@ -4,7 +4,6 @@ if (!isset($_SESSION))
 
 // Default view
 $view = isset($_GET['view']) ? $_GET['view'] : 'dashboard';
-
 // Allowed pages
 $allowed = [
     'dashboard' => 'dashboard/dashboard.php',
@@ -12,7 +11,6 @@ $allowed = [
     'Complete_deliveries' => 'complete_deliveries/complete_deliveries.php',
     'profile' => 'deliveryboy/deliveryboy_profile.php',
 ];
-
 $page = isset($allowed[$view]) ? $allowed[$view] : $allowed['dashboard'];
 ?>
 <!DOCTYPE html>
@@ -32,8 +30,6 @@ $page = isset($allowed[$view]) ? $allowed[$view] : $allowed['dashboard'];
             background: #f4f6f9;
             font-family: Arial, sans-serif;
         }
-
-        /* Sidebar */
         .sidebar {
             width: 260px;
             height: 100vh;
@@ -44,7 +40,6 @@ $page = isset($allowed[$view]) ? $allowed[$view] : $allowed['dashboard'];
             padding-top: 70px;
             color: white;
         }
-
         .sidebar a {
             padding: 12px 20px;
             display: block;
@@ -57,12 +52,9 @@ $page = isset($allowed[$view]) ? $allowed[$view] : $allowed['dashboard'];
         .sidebar a:hover {
             background: #495057;
         }
-
         .sidebar a i {
             margin-right: 10px;
         }
-
-        /* Header */
         .header {
             height: 70px;
             width: 100%;
