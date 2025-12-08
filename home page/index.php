@@ -4,8 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GiftShop | Home</title>
-
-  <!-- CSS -->
   <link rel="stylesheet" href="style.css" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" 
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
@@ -15,18 +13,13 @@
 
   <?php require_once 'navbar.php'; ?>
 
-  <!-- HERO CAROUSEL -->
   <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel">
-
-    <!-- Indicators -->
     <div class="carousel-indicators">
       <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active" aria-current="true" style="background-color: black;"></button>
       <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1" style="background-color: black;"></button>
       <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2" style="background-color: black;"></button>
       <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="3" style="background-color: black;"></button>
     </div>
-
-    <!-- Slides -->
     <div class="carousel-inner">
 
       <!-- Slide 1 -->
@@ -146,7 +139,7 @@
     </div>
   </section>
 
-  <!-- CATEGORIES SECTION (UNCHANGED) -->
+  <!-- CATEGORIES SECTION -->
   <?php include 'category_section.php'; ?>
 
   <!-- OFFER SECTION -->
