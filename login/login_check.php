@@ -1,8 +1,6 @@
 <?php
 session_start();
 include("../db.php");
-
-// Always return JSON for AJAX
 header("Content-Type: application/json");
 
 if (!isset($_POST['email']) || !isset($_POST['password'])) {
@@ -12,14 +10,11 @@ if (!isset($_POST['email']) || !isset($_POST['password'])) {
     ]);
     exit;
 }
-
 $email    = mysqli_real_escape_string($connection, $_POST['email']);
 $password = mysqli_real_escape_string($connection, $_POST['password']);
 
 $query = "SELECT * FROM user_details WHERE Email='$email' LIMIT 1";
 $result = mysqli_query($connection, $query);
-
-// Query error
 if (!$result) {
     echo json_encode([
         "success" => false,
@@ -46,7 +41,7 @@ if ($password === $user['Password']) {
     $_SESSION['user_id'] = $user['User_Id'];
     $_SESSION['email']   = $user['Email'];
 
-    // ⭐ Check if user clicked Buy Now earlier
+    // Check if user clicked Buy Now 
     if (isset($_SESSION['redirect_after_login'])) {
         $redirect = $_SESSION['redirect_after_login'];
         unset($_SESSION['redirect_after_login']);
