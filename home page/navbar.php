@@ -4,7 +4,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 include("../AdminPanel/db.php");
 
-// ------- CART COUNT ---------
+// CART COUNT 
 $cart_count = 0;
 if (isset($_SESSION['User_Id'])) {
     $uid = $_SESSION['User_Id'];
@@ -26,7 +26,7 @@ if (isset($_SESSION['User_Id'])) {
     }
 }
 ?>
-<!-- =================== NAVBAR =================== -->
+<!-- Navbar Starts -->
 <header>
     <div class="logo">GiftShop</div>
 
@@ -55,8 +55,6 @@ if (isset($_SESSION['User_Id'])) {
             <li><a href="../contact/contact.php">Contact</a></li>
         </ul>
     </nav>
-
-    <!-- =================== ICONS =================== -->
     <div class="icons">
 
         <!-- CART ICON -->
@@ -86,8 +84,6 @@ if (isset($_SESSION['User_Id'])) {
 
     </div>
 </header>
-
-<!-- =================== CART SLIDE PANEL =================== -->
 <style>
 #sidePanel {
     position: fixed;
@@ -117,8 +113,6 @@ if (isset($_SESSION['User_Id'])) {
     <span id="panelClose">&times;</span>
     <div id="panelContent" style="margin-top:40px;"></div>
 </div>
-
-<!-- =================== JAVASCRIPT =================== -->
 <script>
 const sidePanel = document.getElementById("sidePanel");
 const panelContent = document.getElementById("panelContent");
@@ -137,8 +131,6 @@ document.getElementById("cartBtn").onclick = () => {
                 const id = btn.getAttribute("data-id");
                 btn.addEventListener("click", () => removeItem(id));
             });
-
-            // If you want image click to also delete:
             document.querySelectorAll(".cart-img[data-id]").forEach(img => {
                 img.addEventListener("click", () => removeItem(img.getAttribute("data-id")));
             });
@@ -157,9 +149,6 @@ document.getElementById("panelClose").onclick = () => {
 document.getElementById("profileCheckBtn")?.addEventListener("click", () => {
     window.location.href = "../customer_profile/profile.php";
 });
-// -------------------
-// GLOBAL FUNCTIONS
-// -------------------
 function removeItem(id) {
     if (!confirm("Remove this item from cart?")) return;
 
@@ -186,13 +175,11 @@ function removeItem(id) {
                     updateCartCount();
                 }, 260);
             } else {
-                // Just update counts if DOM element missing
                 updateSubtotal();
                 updateCartCount();
             }
 
         } else {
-            // show full response for debugging
             alert("Delete failed:\n" + response);
             console.error("Delete failed response:", response);
         }
@@ -208,7 +195,7 @@ function updateSubtotal() {
     const items = document.querySelectorAll(".item-price");
     let subtotal = 0;
     items.forEach(item => {
-        const txt = item.innerText; // ex: "1 × ₹589"
+        const txt = item.innerText; 
         const qty = parseInt(txt.split("×")[0]) || 0;
         const price = parseInt((txt.split("₹")[1] || "0").replace(/,/g,"")) || 0;
         subtotal += qty * price;
