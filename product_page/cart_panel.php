@@ -54,8 +54,6 @@ $subtotal = 0;
             <h4 class="item-title"><?= htmlspecialchars($row['Product_Name']) ?></h4>
             <p class="item-price"><?= $qty ?> × ₹<?= number_format($price) ?></p>
         </div>
-
-        <!-- data-id attribute used by navbar.js to attach handler -->
         <span class="remove-btn" data-id="<?= $row['Customize_Id'] ?>">✕</span>
     </div>
 
@@ -78,14 +76,11 @@ $subtotal = 0;
     padding: 10px; 
 }
 
-/* Each item */
 .cart-item { 
     display: flex; 
-    align-items: flex-start;   /* <-- FIX: Align image to top */
+    align-items: flex-start;  
     margin-bottom: 12px; 
 }
-
-
 .cart-img { 
     width: 80px; 
     height: 80px; 
@@ -94,64 +89,52 @@ $subtotal = 0;
     margin-right: 12px;
     border: 1px solid #ddd;
 }
-
 .cart-info { flex: 1; }
-
 .item-title { 
     font-size: 18px; 
     margin: 0; 
 }
-
 .item-price { 
     color: green; 
     font-weight: bold; 
     margin-top: 4px; 
 }
-
 .remove-btn { 
     cursor: pointer; 
     color: #999; 
     font-size: 22px; 
     padding: 5px; 
 }
-
 .remove-btn:hover { color: red; }
-
-/* ⭐ Subtotal spacing */
 .subtotal-box { 
-    margin: 20px 0 15px 0;       /* Adds space before & after subtotal */
+    margin: 20px 0 15px 0;       
     text-align: center;
     padding:10px;
 }
-
 .subtotal-box h3 {
     font-size: 30px;
 }
-
-/* ⭐ Buttons spacing */
 .cart-actions { 
     display: flex; 
-    gap: 15px;                   /* ⭐ Space BETWEEN buttons */
-    margin-top: 20px;            /* ⭐ Space ABOVE buttons */
+    gap: 15px;                   
+    margin-top: 20px;            
 }
-
 .view-cart-btn, 
 .checkout-btn { 
-    flex: 1;                     /* Buttons same size */
+    flex: 1;                     
     text-align: center;
     padding: 12px 15px; 
     border-radius: 5px; 
     text-decoration: none; 
     font-weight: bold;
 }
-
 .view-cart-btn { 
     background: #000; 
     color: white; 
 }
 
 .checkout-btn { 
-    background: #ff3252;         /* More like screenshot */
+    background: #7e2626d5;         
     color: white;
 }
 </style>
