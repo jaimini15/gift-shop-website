@@ -1,8 +1,5 @@
-
-
-
 <?php
-include(__DIR__ . '/../db.php');  // Correct path to db.php
+include(__DIR__ . '/../db.php'); 
 ?> 
 
 <!DOCTYPE html>
@@ -43,7 +40,7 @@ include(__DIR__ . '/../db.php');  // Correct path to db.php
                 <tr>
                     <th>ID</th>
                     <th>Category Name</th>
-                    <th>Image</th> <!-- NEW -->
+                    <th>Image</th> 
                     <th>Description</th>
                     <th>Status</th>
                     <th>Action</th>
