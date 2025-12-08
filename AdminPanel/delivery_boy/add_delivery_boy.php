@@ -103,7 +103,7 @@ if (isset($_POST['add'])) {
             <input type="text" name="password" maxlength="10" class="form-control" required>
         </div>
 
-        <!-- ✅ NEW STATUS FIELD -->
+        <!--NEW STATUS FIELD -->
         <div class="mb-3">
             <label class="form-label">Status</label>
             <select name="status" class="form-control" required>
