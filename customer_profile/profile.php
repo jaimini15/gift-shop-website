@@ -29,8 +29,7 @@ $profileUser = $user;
 <head>
 <meta charset="UTF-8">
 <title>My Profile | GiftShop</title>
-<link rel="stylesheet" href="style.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
 <style>
 /* ---------------- GLOBAL ---------------- */
 body {
@@ -124,7 +123,8 @@ body {
 }
 
 </style>
-
+<link rel="stylesheet" href="../home page/style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 </head>
 <body>
 
@@ -139,8 +139,8 @@ body {
         <ul>
             <li><a href="profile.php">Dashboard</a></li>
             <li><a href="orders.php">Orders</a></li>
-            <li><a href="addresses.php">Addresses</a></li>
-            <li><a href="edit_profile.php">Account Details</a></li>
+            <!-- <li><a href="addresses.php">Addresses</a></li> -->
+            <li><a href="edit_profile.php">Edit Profile</a></li>
             <li><a href="../login/logout.php" style="color:red;">Logout</a></li>
         </ul>
     </div>
@@ -180,6 +180,7 @@ body {
     </div>
 
 </div>
- <?php require_once 'footer.php'; ?>
+ <?php require_once '../home page/footer.php'; ?>
+ 
 </body>
 </html>
