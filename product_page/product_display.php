@@ -459,7 +459,8 @@ function updateCartCount() {
             <h3>Contact info</h3>
             <a href="#"><i class="fas fa-phone"></i>+123-456-7890</a>
             <a href="#"><i class="fas fa-phone"></i>+222-333-4523</a>
-            <a href="#"><i class="fas fa-envelope"></i>GiftShop@gmail.com</a>
+            <a href="https://mail.google.com/mail/?view=cm&fs=1&to=giftshopmaninagar@gmail.com" target="_blank">
+                    <i class="fas fa-envelope"></i> giftshopmaninagar@gmail.com</a>
             <a href="#"><i class="fas fa-map"></i>Maninagar, India - 380008</a>
         </div>
         <div class="box">
