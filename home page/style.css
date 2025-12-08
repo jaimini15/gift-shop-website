@@ -637,18 +637,21 @@ body {
 }
 
 .footer .box a {
-    display: block;
-    font-size: 1rem;
-    color:var(--btn-color);
+    display: flex;             /* puts icon + text in one line */
+    align-items: center;        /* vertically centers them */
+    font-size: 1rem;            /* increase size so text aligns with icon */
+    color: var(--btn-color);
     text-decoration: none;
     margin-bottom: 1rem;
     transition: color 0.3s ease, padding-left 0.3s ease;
 }
 
 .footer .box a i {
-    color: var(--black); /* purple accent */
+    color: var(--black);
     margin-right: 0.5rem;
+    font-size: 1.2rem;          /* optional: icon size slightly bigger */
 }
+
 
 .footer .box a:hover {
     color: var(--black);
