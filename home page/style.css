@@ -12,15 +12,15 @@
      --btn-color:#7e2626d5;
 }
 
-/* ================= HEADER ================= */
+/* HEADER */
 header {
-  background-color: #fff; /* Solid background */
+  background-color: #fff; 
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 15px 50px;
   border-bottom: 1px solid #eee;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.05); /* subtle shadow */
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05); 
 }
 
 /* Logo */
@@ -30,7 +30,7 @@ header {
   color: var(--btn-color);
 }
 
-/* Navigation */
+/* Navbar starts */
 nav ul {
   display: flex;
   gap: 30px;
@@ -60,7 +60,7 @@ nav ul li.dropdown {
 nav ul li.dropdown .dropdown-content {
   display: none;
   position: absolute;
-  top: 100%; /* Below the parent */
+  top: 100%; 
   left: 0;
   background-color: #fff;
   min-width: 150px;
@@ -91,7 +91,7 @@ nav ul li.dropdown .dropdown-content li a:hover {
 .icons {
   display: flex;
   align-items: center;
-  gap: 25px;   /* spacing between items */
+  gap: 25px;  
 }
 
 .icons a {
@@ -123,8 +123,6 @@ nav ul li.dropdown .dropdown-content li a:hover {
     font-size: 12px;
     margin-left: 4px;
 }
-
-/* Slide Panel (Cart + Profile) */
 #sidePanel {
     position: fixed;
     top: 0;
@@ -187,14 +185,11 @@ nav ul li.dropdown .dropdown-content li a:hover {
 
 .hero-slide {
     width: 100%;
-    height: 520px; /* adjust as you like */
+    height: 520px; 
     display: flex;
     align-items: center;
     justify-content: center;
 }
-
-
-/* RESET & BASE STYLES */
 * {
   margin: 0;
   padding: 0;
@@ -207,9 +202,9 @@ body {
   color: #222;
 }
 
-/* Dropdown styling */
+/*Shop  Dropdown styling */
 .dropdown-content {
-  display: none; /* hidden by default */
+  display: none; 
   position: absolute;
   top: 100%;
   left: 0;
@@ -244,7 +239,6 @@ body {
 
 /* Dropdown section start */
 
-/* Make dropdown items vertical */
 .dropdown-content li {
   list-style: none;
   border-bottom: 1px solid #eee;
@@ -254,7 +248,6 @@ body {
   border-bottom: none;
 }
 
-/* Style links inside dropdown */
 .dropdown-content li a {
   display: block;
   padding: 0.8rem 1.2rem;
@@ -263,19 +256,13 @@ body {
   text-decoration: none;
   transition: background 0.2s, color 0.2s;
 }
-
-/* Hover effect for dropdown links */
 .dropdown-content li a:hover {
   background: #f8f8f8;
   color:var(--black);
 }
-
-/* Show dropdown on hover */
 .dropdown:hover .dropdown-content {
   display: block;
 }
-
-
 /* Dropdown section ends */
 
 /* HERO SECTION */
@@ -350,7 +337,7 @@ body {
 .shop-btn {
   background-color:var(--btn-color);
   color: var(--white);
-  padding: 15px 24px; /* 👈 Smaller button like FlyAway */
+  padding: 15px 24px; 
   font-size: 1.2rem;
   text-decoration: none;
   font-weight: 500;
@@ -366,7 +353,7 @@ body {
   color:var(--white);
 }
 
-/* FEATURES SECTION */
+/* FEATURES SECTION Starts*/
 .features {
   text-align: center;
   padding: 60px 80px;
@@ -401,9 +388,8 @@ body {
   font-size: 14px;
 }
 /* Feature section ends */
-/* about section starts */
 
-/* ABOUT SECTION */
+/* about section starts */
 .home-about {
   display: flex;
   align-items: center;
@@ -476,12 +462,9 @@ body {
   background-color: #222;
   
 }
-
-
 /* about section ends */
 
 /* Package section starts */
-
 .home-package {
     background: var(--main-color);
     padding: 4rem 6rem;
@@ -618,7 +601,7 @@ body {
 /* footer section starts */
 
 .footer {
-    background:var(--main-color);  /* dark background */
+    background:var(--main-color); 
     padding: 4rem 8%;
     color:var(--black);
 }
@@ -637,9 +620,9 @@ body {
 }
 
 .footer .box a {
-    display: flex;             /* puts icon + text in one line */
-    align-items: center;        /* vertically centers them */
-    font-size: 1rem;            /* increase size so text aligns with icon */
+    display: flex;            
+    align-items: center;       
+    font-size: 1rem;            
     color: var(--btn-color);
     text-decoration: none;
     margin-bottom: 1rem;
@@ -649,7 +632,7 @@ body {
 .footer .box a i {
     color: var(--black);
     margin-right: 0.5rem;
-    font-size: 1.2rem;          /* optional: icon size slightly bigger */
+    font-size: 1.2rem;          
 }
 
 
@@ -668,17 +651,16 @@ body {
 }
 
 .footer .credit span {
-    color:var(--btn-color); /* purple highlight */
+    color:var(--btn-color);
     font-weight: 800;
 }
 
 /* footer section ends */
 
-
 /* About page starts */
 .about-section {
   background-color: var(--main-color);
-  padding: 10px 0; /* reduced padding */
+  padding: 10px 0; 
   display: flex;
   justify-content: center;
   align-items: center;
@@ -695,10 +677,8 @@ body {
   box-shadow: 0 4px 15px rgba(0,0,0,0.1);
   position: relative;
   overflow: hidden;
-  min-height: 100px; /* reduced height further */
+  min-height: 100px; 
 }
-
-/* Left side image fills container */
 .about-image-left img {
   width: 100%;
   height: 100%;
@@ -706,9 +686,8 @@ body {
   border-radius: 12px 0 0 12px;
 }
 
-/* Content area adjustments */
 .about-content {
-  padding: 5px 25px; /* smaller padding */
+  padding: 5px 25px; 
   padding-top: 20px;
   padding-bottom: 20px;
   display: flex;
@@ -747,9 +726,7 @@ body {
 
 /* About page ends */
 
-
-
-/* services section starts */
+/* about page services section starts */
 
 .home-package {
     background: var(--main-color);
@@ -842,11 +819,6 @@ body {
 }
 
 /*  section ends */
-
-
-
-
-
 
 /* services section starts */
 
@@ -975,9 +947,8 @@ body {
 
 
 /* our mission section starts */
-/* Our Mission Section */
 .mission-section {
-  background:var(--main-color); /* soft beige tone */
+  background:var(--main-color); 
   padding: 60px 20px;
   display: flex;
   justify-content: center;
@@ -997,7 +968,7 @@ body {
 }
 
 .mission-icon {
-  background:var(--main-color); /* orange column */
+  background:var(--main-color); 
   color: white;
   font-size: 3rem;
   padding: 10px 5px;
@@ -1011,13 +982,13 @@ body {
 .mission-content h2 {
   font-size: 2.5rem;
   font-weight: 700;
-  color: var(--btn-color); /* dark green */
+  color: var(--btn-color); 
   margin-bottom: 15px;
   text-transform: uppercase;
 }
 
 .mission-content h2 span {
-  color:var(--btn-color); /* red for 'OUR' */
+  color:var(--btn-color); 
   margin-right: 8px;
 }
 
@@ -1059,26 +1030,23 @@ body {
 
 .product-btn {
   border: 2px solid;
-  border-color: var(--btn-color);   /* ensure border color is controlled */
+  border-color: var(--btn-color);  
   background-color: var(--btn-color);
-  color: #fff;                      /* text color */
+  color: #fff;                     
   padding: 0.5rem 2rem;
   border-radius: 20px;
   font-size: 20px;
   font-weight: 500;
-  text-decoration: none;            /* remove underline */
+  text-decoration: none;            
   display: inline-block;
-  transition: background 0.3s;      /* smooth hover */
+  transition: background 0.3s;      
 }
 
 .product-btn:hover {
-  background-color: black;          /* only background changes */
-  color: #fff;                      /* keep text white */
-  /* border-color: var(--btn-color);   keep original border */
-  text-decoration: none;            /* no underline */
+  background-color: black;          
+  color: #fff;                      
+  text-decoration: none;           
 }
-
-
 /* Shop css ends */
 /* product display content starts */
 .product-image {
@@ -1098,7 +1066,6 @@ body {
 
 /* product display content ends */
 /* Profile dropdown css starts */
-/* === PROFILE DROPDOWN FIX (ISOLATED) === */
 .profile-dropdown:hover .profile-menu {
     display: block;
 }
@@ -1160,20 +1127,13 @@ body {
     text-decoration: none;
     transition: background 0.2s, color 0.2s;
 }
-
 .profile-dropdown .profile-menu li a:hover {
     background: var(--main-color);
     color: var(--black);
 }
-
-/* Show dropdown on hover */
 .profile-dropdown:hover .profile-menu {
     display: block;
 }
-
-  
-
-
 /* Profile dropdown css ends */
 
 
