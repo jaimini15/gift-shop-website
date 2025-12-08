@@ -19,7 +19,6 @@ if (isset($_POST['submit'])) {
     $imageData = file_get_contents($_FILES['product_image']['tmp_name']);
     $imageData = mysqli_real_escape_string($connection, $imageData);
 
-    // INSERT QUERY
     $query = "
         INSERT INTO Product_Details
         (Category_Id, Product_Name, Product_Image, Product_Default_Text, Product_Photo, Product_Text, Description, Price, Status)
@@ -74,7 +73,7 @@ if (isset($_POST['submit'])) {
         <input type="file" name="product_image" required class="form-control">
     </div>
 
-    <!-- PRODUCT DEFAULT TEXT (MOVED BELOW IMAGE) -->
+    <!-- PRODUCT DEFAULT TEXT  -->
     <div class="mb-3">
         <label class="form-label">Product Default Text</label>
         <textarea name="product_default_text" class="form-control" placeholder="Enter default text"></textarea>
