@@ -20,15 +20,11 @@ if (isset($_POST['update'])) {
     if ($new_password == "") {
         $message = "<p style='color:red;'>Password cannot be empty!</p>";
     } else {
-
-        // Since you said password is stored in plain text
         $query = "UPDATE user_details 
                   SET Password='$new_password', otp=NULL 
                   WHERE Email='$email'";
 
         if (mysqli_query($connection, $query)) {
-
-            // Clear sessions
             unset($_SESSION['reset_email']);
             unset($_SESSION['otp_verified']);
 
