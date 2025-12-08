@@ -123,15 +123,11 @@ require __DIR__ . '/../../PHPMailer-master/src/SMTP.php';
             }
         }
         ?>
-
         <form method="POST">
             <input type="email" name="email" placeholder="Enter Delivery Boy Email" required>
             <button type="submit" name="send_otp">Send OTP</button>
         </form>
 
-        
-
-        <!-- ONLY THIS PART CHANGED → Centered Back to Login -->
         <div class="back-link" style="text-align:center; margin-top:10px;">
             <a href="login.php" style="font-size:15px; font-weight:bold;">
                  Back to Login
