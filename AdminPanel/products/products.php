@@ -53,10 +53,7 @@ include(__DIR__ . '/../db.php');
                     <th>Default Text</th>
                     <th>Product Photo</th>
                     <th>Product Text</th>
-                    
-                    <!-- ✅ Added Description -->
                     <th>Description</th>
-
                     <th>Product Name</th>
                     <th>Price</th>
                     <th>Status</th>
@@ -82,14 +79,10 @@ include(__DIR__ . '/../db.php');
                     <td><?= $row['Product_Default_Text'] ?></td>
                     <td><?= $row['Product_Photo'] ?></td>
                     <td><?= $row['Product_Text'] ?></td>
-
-                    <!-- ✅ Added Description -->
                     <td><?= $row['Description'] ?></td>
-
                     <td><?= $row['Product_Name'] ?></td>
                     <td><?= $row['Price'] ?></td>
                     <td><?= $row['Status'] ?></td>
-
                     <td>
                         <a href="products/edit_products.php?id=<?= $row['Product_Id'] ?>" 
                            class="btn btn-sm btn-warning">Edit</a>
