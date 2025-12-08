@@ -2,17 +2,9 @@
 session_start();
 include("../AdminPanel/db.php");
 
-// ----------------------------
-// 1️⃣ Handle incoming redirect URL
-// ----------------------------
 if (isset($_GET['redirect'])) {
-    // Save redirect page in session
     $_SESSION['redirect_after_login'] = $_GET['redirect'];
 }
-
-// ----------------------------
-// 2️⃣ If already logged in, redirect immediately
-// ----------------------------
 if (isset($_SESSION['User_Id'])) {
     $redirect = $_SESSION['redirect_after_login'] ?? '../home page/index.php';
     unset($_SESSION['redirect_after_login']);
@@ -25,10 +17,6 @@ if (isset($_SESSION['User_Id'])) {
     header("Location: $redirect");
     exit();
 }
-
-// ----------------------------
-// 3️⃣ Handle form submission
-// ----------------------------
 $error = "";
 $rememberedEmail = $_COOKIE['remember_email'] ?? "";
 
@@ -43,21 +31,17 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if ($result && mysqli_num_rows($result) === 1) {
         $row = mysqli_fetch_assoc($result);
 
-        // Use plain text password check for now (replace with password_verify if hashed)
+        // Use plain text password check 
         if ($pass === $row['Password']) {
 
-            // ✅ Set user session
             $_SESSION['User_Id'] = $row['User_Id'];
             $_SESSION['Email']   = $row['Email'];
 
-            // ✅ Handle Remember Me
             if (isset($_POST['remember'])) {
                 setcookie("remember_email", $email, time() + (86400 * 30), "/"); // 30 days
             } else {
                 setcookie("remember_email", "", time() - 3600, "/");
             }
-
-            // ✅ Redirect after login
             $redirect = $_SESSION['redirect_after_login'] ?? '../home page/index.php';
             unset($_SESSION['redirect_after_login']);
 
@@ -72,9 +56,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     $error = "Invalid Email or Password!";
 }
-
-
-// Pre-fill email if "Remember Me" was used before
 $rememberedEmail = isset($_COOKIE['remember_email']) ? $_COOKIE['remember_email'] : "";
 ?>
 <!DOCTYPE html>
@@ -130,7 +111,7 @@ $rememberedEmail = isset($_COOKIE['remember_email']) ? $_COOKIE['remember_email'
 </head>
 <body>
 
-<?php include("../home page/navbar.php"); ?>  <!-- Navbar -->
+<?php include("../home page/navbar.php"); ?>  
 
 
 <div class="form-box">
@@ -170,7 +151,7 @@ $rememberedEmail = isset($_COOKIE['remember_email']) ? $_COOKIE['remember_email'
 </div>
 
 
-<?php include("../home page/footer.php"); ?> <!-- Footer -->
+<?php include("../home page/footer.php"); ?> 
 
 </body>
 </html>
