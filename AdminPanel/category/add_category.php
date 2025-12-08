@@ -7,14 +7,13 @@ if(isset($_POST['submit'])){
     $desc  = $_POST['description'];
     $status = $_POST['status'];
 
-    // IMAGE VALIDATION + CONVERSION TO BLOB
+    // IMAGE VALIDATION conversion to BLOB
     $imageData = null;
 
     if(isset($_FILES['image']) && $_FILES['image']['error'] == 0){
         $imageData = addslashes(file_get_contents($_FILES['image']['tmp_name']));
     }
 
-    // Insert Query
     $query = "INSERT INTO category_details (Category_Name, Category_Image, Description, Status)
               VALUES ('$name', '$imageData', '$desc', '$status')";
 
