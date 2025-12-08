@@ -6,9 +6,8 @@ if ($_SERVER["REQUEST_METHOD"] !== "POST") {
     die("Invalid request");
 }
 
-/* ---------------------------------------
-   CHECK USER LOGIN
----------------------------------------- */
+//    CHECK USER LOGIN
+
 if (!isset($_SESSION['User_Id'])) {
     die("User not logged in");
 }
@@ -16,10 +15,8 @@ if (!isset($_SESSION['User_Id'])) {
 $userId     = (int) $_SESSION['User_Id'];
 $productId  = (int) $_POST['product_id'];
 $quantity   = 1;
+//  SANITIZE EXTRA FIELDS
 
-/* ---------------------------------------
-   SANITIZE EXTRA FIELDS
----------------------------------------- */
 $giftWrap       = (isset($_POST['gift_wrap']) && $_POST['gift_wrap'] == "1") ? 1 : 0;
 $giftCard       = (isset($_POST['gift_card']) && $_POST['gift_card'] == "1") ? 1 : 0;
 $giftCardMsg    = isset($_POST['gift_card_msg']) && trim($_POST['gift_card_msg']) !== "" 
@@ -28,14 +25,10 @@ $giftCardMsg    = isset($_POST['gift_card_msg']) && trim($_POST['gift_card_msg']
 $customText     = isset($_POST['custom_text']) && trim($_POST['custom_text']) !== "" 
                     ? trim($_POST['custom_text']) 
                     : null;
-
-/* Additional fixed prices */
+// Fix Price of wrapping and card
 $wrapPrice = 39;
 $cardPrice = 50;
 
-/* ---------------------------------------
-   GET PRODUCT PRICE
----------------------------------------- */
 $query = "SELECT Price FROM product_details WHERE Product_Id = ?";
 $stmt = mysqli_prepare($connection, $query);
 mysqli_stmt_bind_param($stmt, "i", $productId);
@@ -50,17 +43,11 @@ if (!$productPrice) {
 
 $productPrice = (float)$productPrice;
 
-/* ---------------------------------------
-   CALCULATE TOTAL PRICE
----------------------------------------- */
+//    CALCULATE TOTAL PRICE
 $totalPrice = $productPrice;
-
 if ($giftWrap == 1) $totalPrice += $wrapPrice;
 if ($giftCard == 1) $totalPrice += $cardPrice;
 
-/* ---------------------------------------
-   IMAGE UPLOAD PROCESS
----------------------------------------- */
 $uploadPath = null;
 
 if (!empty($_FILES['custom_image']['name'])) {
@@ -77,10 +64,6 @@ if (!empty($_FILES['custom_image']['name'])) {
         $uploadPath = "uploads/" . $newName;
     }
 }
-
-/* ---------------------------------------
-   GET OR CREATE CART FOR USER
----------------------------------------- */
 $cartId = null;
 
 $query = "SELECT Cart_Id FROM cart WHERE User_Id = ?";
@@ -100,9 +83,6 @@ if (!$cartId) {
     mysqli_stmt_close($stmt);
 }
 
-/* ---------------------------------------
-   INSERT ITEM INTO CART DETAILS
----------------------------------------- */
 $query = "
     INSERT INTO customize_cart_details
     (Cart_Id, Product_Id, Quantity, Price, Custom_Image, Gift_Wrapping, Custom_Text, Personalized_Message)
@@ -127,9 +107,6 @@ mysqli_stmt_bind_param(
 mysqli_stmt_execute($stmt);
 mysqli_stmt_close($stmt);
 
-/* ---------------------------------------
-   REDIRECT
----------------------------------------- */
 header("Location: product_display.php?product_id=$productId&success=1");
 exit;
 
