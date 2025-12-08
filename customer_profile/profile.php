@@ -15,13 +15,10 @@ $query = "SELECT * FROM user_details WHERE User_Id='$uid' LIMIT 1";
 $result = mysqli_query($connection, $query);
 $user = mysqli_fetch_assoc($result);
 
-// SAFETY CHECK
 if (!$user || !is_array($user)) {
     echo "<h2 style='color:red;'>ERROR: User data not found.</h2>";
     exit();
 }
-
-// IMPORTANT — PREVENT navbar.php FROM OVERWRITING $user
 $profileUser = $user;
 ?>
 <!DOCTYPE html>
@@ -31,7 +28,6 @@ $profileUser = $user;
 <title>My Profile | GiftShop</title>
 
 <style>
-/* ---------------- GLOBAL ---------------- */
 body {
     font-family: Arial, sans-serif;
     background: #f3f4f6;
@@ -46,8 +42,6 @@ body {
     display: flex;
     gap: 20px;
 }
-
-/* ---------------- SIDEBAR ---------------- */
 .account-sidebar {
     width: 260px;
     background: white;
@@ -87,7 +81,6 @@ body {
     color: #d6005c;
 }
 
-/* ---------------- CONTENT ---------------- */
 .account-content {
     flex: 1;
     background: white;
@@ -112,7 +105,6 @@ body {
     color: #555;
 }
 
-/* ---------------- RESPONSIVE ---------------- */
 @media (max-width: 850px) {
     .account-wrapper {
         flex-direction: column;
@@ -139,7 +131,6 @@ body {
         <ul>
             <li><a href="profile.php">Dashboard</a></li>
             <li><a href="orders.php">Orders</a></li>
-            <!-- <li><a href="addresses.php">Addresses</a></li> -->
             <li><a href="edit_profile.php">Edit Profile</a></li>
             <li><a href="../login/logout.php" style="color:red;">Logout</a></li>
         </ul>
