@@ -58,8 +58,6 @@ if (isset($_POST['send_otp'])) {
             $mail->isSMTP();
             $mail->Host = 'smtp.gmail.com';
             $mail->SMTPAuth = true;
-
-            // ⚠️ ENTER YOUR NEW APP PASSWORD HERE
             $mail->Username = 'giftshopmaninagar@gmail.com';
             $mail->Password = 'ljoy otkw cvnk beqi';
 
