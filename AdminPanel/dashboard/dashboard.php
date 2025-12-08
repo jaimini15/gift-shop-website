@@ -2,7 +2,7 @@
 if (!isset($_SESSION)) session_start();
 include(__DIR__ . '/../db.php');
 
-// TOTAL USERS (Only Customers)
+// TOTAL Customer
 $totalUsersQuery = mysqli_query(
     $connection,
     "SELECT COUNT(*) AS total FROM user_details WHERE User_Role='CUSTOMER'"
