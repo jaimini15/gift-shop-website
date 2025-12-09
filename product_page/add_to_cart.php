@@ -15,8 +15,7 @@ if (!isset($_SESSION['User_Id'])) {
 $userId     = (int) $_SESSION['User_Id'];
 $productId  = (int) $_POST['product_id'];
 $quantity   = 1;
-//  SANITIZE EXTRA FIELDS
-
+//  EXTRA FIELDS options
 $giftWrap       = (isset($_POST['gift_wrap']) && $_POST['gift_wrap'] == "1") ? 1 : 0;
 $giftCard       = (isset($_POST['gift_card']) && $_POST['gift_card'] == "1") ? 1 : 0;
 $giftCardMsg    = isset($_POST['gift_card_msg']) && trim($_POST['gift_card_msg']) !== "" 
