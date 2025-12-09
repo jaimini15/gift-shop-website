@@ -52,7 +52,7 @@ $subtotal = 0;
         <img src="<?= $imgSrc ?>" class="cart-img" data-id="<?= $row['Customize_Id'] ?>">
         <div class="cart-info">
             <h4 class="item-title"><?= htmlspecialchars($row['Product_Name']) ?></h4>
-            <p class="item-price"><?= $qty ?> × ₹<?= number_format($price) ?></p>
+            <p class="item-price"><?= $qty ?> x ₹<?= number_format($price) ?></p>
         </div>
         <span class="remove-btn" data-id="<?= $row['Customize_Id'] ?>">✕</span>
     </div>
