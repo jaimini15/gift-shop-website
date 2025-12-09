@@ -79,17 +79,16 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     background:black;color:white;
 }
 
+.register-box p {
+    text-align: center;
+    margin-top: 10px;
+}
 
-    .register-box p {
-        text-align: center;
-        margin-top: 10px;
-    }
-
-    .register-box a {
-        color: #7e2626d5;
-        text-decoration: none;
-        font-weight: bold;
-    }
+.register-box a {
+    color: #7e2626d5;
+    text-decoration: none;
+    font-weight: bold;
+}
 </style>
 </head>
 <body>
