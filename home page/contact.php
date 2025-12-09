@@ -278,7 +278,7 @@ function updateCartCount() {
         <div class="gift-extra-box">
             <i class="fa-solid fa-clock"></i>
             <h3>HOURS</h3>
-            <p>Mon–Fri: 10 AM – 8 PM<br>Sat–Sun: 10 AM – 6 PM</p>
+            <p>Mon-Fri: 10 AM - 8 PM<br>Sat-Sun: 10 AM -6 PM</p>
         </div>
 
     </div>
