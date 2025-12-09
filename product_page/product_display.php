@@ -132,7 +132,7 @@ if (isset($_SESSION['User_Id'])) {
                 </a>
 
                 <ul class="profile-menu">
-                    <li><a href="javascript:void(0)" id="profileCheckBtn">Check Profile</a></li>
+                    <li><a href="#" id="profileCheckBtn">Check Profile</a></li>
                     <li><a href="../login/logout.php">Logout</a></li>
                 </ul>
             </div>
@@ -253,7 +253,7 @@ function updateSubtotal() {
     let subtotal = 0;
     items.forEach(item => {
         const txt = item.innerText; 
-        const qty = parseInt(txt.split("×")[0]) || 0;
+        const qty = parseInt(txt.split("x")[0]) || 0;
         const price = parseInt((txt.split("₹")[1] || "0").replace(/,/g,"")) || 0;
         subtotal += qty * price;
     });
