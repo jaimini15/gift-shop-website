@@ -38,7 +38,7 @@ $productName = htmlspecialchars($product['Product_Name'], ENT_QUOTES);
 $price = number_format((float)$product['Price'], 2, '.', '');
 $description = htmlspecialchars($product['Description'], ENT_QUOTES);
 $defaultText = htmlspecialchars($product['Product_Default_Text'] ?? '', ENT_QUOTES);
-$productPhoto = $product['Product_Photo'] ?? 'No'; // Yes/No
+$productPhoto = $product['Product_Photo'] ?? 'No'; 
 $productText = $product['Product_Text'] ?? 'No';
 $imgSrc = img_src_from_blob_single($product['Product_Image'], 'product_mug_buynow1.jpg');
 ?>
