@@ -99,7 +99,7 @@ if (isset($_POST['add'])) {
         </div>
 
         <div class="mb-3">
-            <label class="form-label">Password (Stored as TEXT)</label>
+            <label class="form-label">Password</label>
             <input type="text" name="password" maxlength="10" class="form-control" required>
         </div>
 
