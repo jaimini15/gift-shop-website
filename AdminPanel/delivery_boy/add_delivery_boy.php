@@ -20,26 +20,34 @@ if (isset($_POST['add'])) {
     $address = mysqli_real_escape_string($connection, $_POST['address']);
     $pincode = mysqli_real_escape_string($connection, $_POST['pincode']);
     $email = mysqli_real_escape_string($connection, $_POST['email']);
-    $password = mysqli_real_escape_string($connection, $_POST['password']); // TEXT storage
-    $status = mysqli_real_escape_string($connection, $_POST['status']); // NEW
+    $password = mysqli_real_escape_string($connection, $_POST['password']);
+    $status = mysqli_real_escape_string($connection, $_POST['status']);
 
-    // Check if email already exists
-    $check = mysqli_query($connection, "SELECT * FROM user_details WHERE Email='$email'");
-    if (mysqli_num_rows($check) > 0) {
-        $message = "<div class='alert alert-danger'>Email already exists!</div>";
-    } else {
+    // EMAIL VALIDATION (only change you requested)
+    if (!preg_match("/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]{5,}\.[A-Za-z]{2,3}$/", $email)) {
+        $message = "<div class='alert alert-danger'>Invalid Email Format!</div>";
+    }
 
-        // Insert Delivery Boy
-        $query = "INSERT INTO user_details
-        (First_Name, Last_Name, DOB, User_Role, Phone, Address, Pincode, Email, Password, Status)
-        VALUES
-        ('$first', '$last', '$dob', 'DELIVERY_BOY', '$phone', '$address', '$pincode', '$email', '$password', '$status')";
+    if ($message === "") {
 
-        if (mysqli_query($connection, $query)) {
-            header("Location: ../layout.php?view=delivery_boys&msg=added");
-            exit;
+        // Check if email exists
+        $check = mysqli_query($connection, "SELECT * FROM user_details WHERE Email='$email'");
+        if (mysqli_num_rows($check) > 0) {
+            $message = "<div class='alert alert-danger'>Email already exists!</div>";
         } else {
-            $message = "<div class='alert alert-danger'>Failed to add delivery boy!</div>";
+
+            // Insert the record
+            $query = "INSERT INTO user_details
+            (First_Name, Last_Name, DOB, User_Role, Phone, Address, Pincode, Email, Password, Status)
+            VALUES
+            ('$first', '$last', '$dob', 'DELIVERY_BOY', '$phone', '$address', '$pincode', '$email', '$password', '$status')";
+
+            if (mysqli_query($connection, $query)) {
+                header("Location: ../layout.php?view=delivery_boys&msg=added");
+                exit;
+            } else {
+                $message = "<div class='alert alert-danger'>Failed to add delivery boy!</div>";
+            }
         }
     }
 }
@@ -64,51 +72,57 @@ if (isset($_POST['add'])) {
         <div class="row">
             <div class="col-md-6 mb-3">
                 <label class="form-label">First Name</label>
-                <input type="text" name="first_name" class="form-control" required>
+                <input type="text" name="first_name" class="form-control" required
+                       value="<?= $_POST['first_name'] ?? '' ?>">
             </div>
 
             <div class="col-md-6 mb-3">
                 <label class="form-label">Last Name</label>
-                <input type="text" name="last_name" class="form-control" required>
+                <input type="text" name="last_name" class="form-control" required
+                       value="<?= $_POST['last_name'] ?? '' ?>">
             </div>
         </div>
 
         <div class="mb-3">
             <label class="form-label">DOB</label>
-            <input type="date" name="dob" class="form-control" required>
+            <input type="date" name="dob" class="form-control" required
+                   value="<?= $_POST['dob'] ?? '' ?>">
         </div>
 
         <div class="mb-3">
             <label class="form-label">Phone Number</label>
-            <input type="text" name="phone" maxlength="13" class="form-control" required>
+            <input type="text" name="phone" maxlength="13" class="form-control" required
+                   value="<?= $_POST['phone'] ?? '' ?>">
         </div>
 
         <div class="mb-3">
             <label class="form-label">Full Address</label>
-            <textarea name="address" class="form-control" required></textarea>
+            <textarea name="address" class="form-control" required><?= $_POST['address'] ?? '' ?></textarea>
         </div>
 
         <div class="mb-3">
             <label class="form-label">Pincode</label>
-            <input type="text" name="pincode" maxlength="6" class="form-control" required>
+            <input type="text" name="pincode" maxlength="6" class="form-control" required
+                   value="<?= $_POST['pincode'] ?? '' ?>">
         </div>
 
         <div class="mb-3">
             <label class="form-label">Email ID</label>
-            <input type="email" name="email" maxlength="40" class="form-control" required>
+            <input type="email" name="email" maxlength="40" class="form-control" required
+                   value="<?= $_POST['email'] ?? '' ?>">
         </div>
 
         <div class="mb-3">
             <label class="form-label">Password</label>
-            <input type="text" name="password" maxlength="10" class="form-control" required>
+            <input type="text" name="password" maxlength="10" class="form-control" required
+                   value="<?= $_POST['password'] ?? '' ?>">
         </div>
 
-        <!--NEW STATUS FIELD -->
         <div class="mb-3">
             <label class="form-label">Status</label>
             <select name="status" class="form-control" required>
-                <option value="ENABLE">ENABLE</option>
-                <option value="DISABLE">DISABLE</option>
+                <option value="ENABLE" <?= (($_POST['status'] ?? '') == "ENABLE") ? 'selected' : '' ?>>ENABLE</option>
+                <option value="DISABLE" <?= (($_POST['status'] ?? '') == "DISABLE") ? 'selected' : '' ?>>DISABLE</option>
             </select>
         </div>
 
