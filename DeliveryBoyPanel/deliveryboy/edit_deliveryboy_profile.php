@@ -27,29 +27,65 @@ if (isset($_POST['update'])) {
     $pincode = mysqli_real_escape_string($connection, $_POST['pincode']);
     $email   = mysqli_real_escape_string($connection, $_POST['email']);
 
-    $current_password = isset($_POST['current_password']) ? $_POST['current_password'] : '';
-    $new_password     = isset($_POST['new_password']) ? $_POST['new_password'] : '';
-    $confirm_password = isset($_POST['confirm_password']) ? $_POST['confirm_password'] : '';
+    $current_password = $_POST['current_password'] ?? '';
+    $new_password     = $_POST['new_password'] ?? '';
+    $confirm_password = $_POST['confirm_password'] ?? '';
+
+    /* ================= VALIDATION (SAME AS REGISTRATION) ================= */
+
+    // First & Last Name (Only alphabets)
+    if (!preg_match("/^[A-Za-z]+$/", $fname) || !preg_match("/^[A-Za-z]+$/", $lname)) {
+        $error = "Only alphabets allowed in name!";
+    }
+
+    // Age validation (Minimum 17 years)
+    elseif (!empty($dob) && strtotime($dob) > strtotime('-17 years')) {
+        $error = "Age must be 17 years or above!";
+    }
+
+    // Phone number (Exactly 10 digits)
+    elseif (!empty($phone) && !preg_match("/^[0-9]{10}$/", $phone)) {
+        $error = "Phone number must be exactly 10 digits!";
+    }
+
+    // Pincode (Exactly 6 digits)
+    elseif (!empty($pincode) && !preg_match("/^[0-9]{6}$/", $pincode)) {
+        $error = "Pincode must be exactly 6 digits!";
+    }
+
+    // Email validation (gmail / yahoo only)
+    elseif (!preg_match("/^[a-zA-Z0-9]+@(gmail|yahoo)\.(com|in)$/", $email)) {
+        $error = "Invalid Email Format!";
+    }
+
+    /* ================= PASSWORD LOGIC (UNCHANGED) ================= */
 
     $db_pass = $delivery_boy['Password'];
 
-    // Password update only if any password field filled
-    if ($current_password !== '' || $new_password !== '' || $confirm_password !== '') {
+    if (empty($error) &&
+        ($current_password !== '' || $new_password !== '' || $confirm_password !== '')
+    ) {
         if ($current_password !== $db_pass) {
             $error = "Current password is incorrect!";
-        } elseif ($new_password !== $confirm_password) {
+        }
+        elseif ($new_password !== $confirm_password) {
             $error = "New password and confirm password do not match!";
-        } else {
+        }
+        else {
             $plain_pass = mysqli_real_escape_string($connection, $new_password);
-            $q = "UPDATE user_details SET Password='$plain_pass' WHERE User_Id=$delivery_boy_id";
-            if (!mysqli_query($connection, $q)) {
+            if (!mysqli_query(
+                $connection,
+                "UPDATE user_details SET Password='$plain_pass' WHERE User_Id=$delivery_boy_id"
+            )) {
                 $error = "Failed to update password.";
             }
         }
     }
 
-    // If no password errors, update profile fields
+    /* ================= UPDATE PROFILE ================= */
+
     if (empty($error)) {
+
         $update_q = "
             UPDATE user_details SET
                 First_Name='$fname',
@@ -61,6 +97,7 @@ if (isset($_POST['update'])) {
                 Email='$email'
             WHERE User_Id=$delivery_boy_id
         ";
+
         if (mysqli_query($connection, $update_q)) {
             header("Location: ../layout.php?view=profile&success=Profile updated successfully");
             exit;
@@ -86,79 +123,89 @@ if (isset($_POST['update'])) {
 .btn-primary { padding:10px 20px; font-size:16px; border-radius:8px; }
 </style>
 </head>
+
 <body>
 <div class="container mt-4">
-    <div class="edit-card">
+<div class="edit-card">
 
-        <h3 class="text-center mb-4"><i class="fa-solid fa-user-pen"></i> Edit Profile</h3>
+<h3 class="text-center mb-4">
+    <i class="fa-solid fa-user-pen"></i> Edit Profile
+</h3>
 
-        <?php if (!empty($error)) { ?>
-            <div class="alert alert-danger text-center"><?php echo htmlspecialchars($error); ?></div>
-        <?php } ?>
+<?php if (!empty($error)) { ?>
+    <div class="alert alert-danger text-center"><?php echo htmlspecialchars($error); ?></div>
+<?php } ?>
 
-        <form method="POST" novalidate>
+<form method="POST" novalidate>
 
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">First Name</label>
-                    <input type="text" name="fname" class="form-control" value="<?php echo htmlspecialchars($delivery_boy['First_Name']); ?>" required>
-                </div>
-
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Last Name</label>
-                    <input type="text" name="lname" class="form-control" value="<?php echo htmlspecialchars($delivery_boy['Last_Name']); ?>" required>
-                </div>
-
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Date of Birth</label>
-                    <input type="date" name="dob" class="form-control" value="<?php echo htmlspecialchars($delivery_boy['DOB']); ?>">
-                </div>
-
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Phone</label>
-                    <input type="text" name="phone" class="form-control" value="<?php echo htmlspecialchars($delivery_boy['Phone']); ?>">
-                </div>
-
-                <div class="col-md-12 mb-3">
-                    <label class="form-label">Address</label>
-                    <input type="text" name="address" class="form-control" value="<?php echo htmlspecialchars($delivery_boy['Address']); ?>">
-                </div>
-
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Pincode</label>
-                    <input type="text" name="pincode" class="form-control" value="<?php echo htmlspecialchars($delivery_boy['Pincode']); ?>">
-                </div>
-
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Email</label>
-                    <input type="email" name="email" class="form-control" value="<?php echo htmlspecialchars($delivery_boy['Email']); ?>" required>
-                </div>
-            </div>
-
-            <hr>
-            <h5 class="mt-3">Change Password (Optional)</h5>
-
-            <div class="col-md-12 mb-3">
-                <label class="form-label">Current Password</label>
-                <input type="password" name="current_password" class="form-control">
-            </div>
-
-            <div class="col-md-6 mb-3">
-                <label class="form-label">New Password</label>
-                <input type="password" name="new_password" class="form-control">
-            </div>
-
-            <div class="col-md-6 mb-3">
-                <label class="form-label">Confirm New Password</label>
-                <input type="password" name="confirm_password" class="form-control">
-            </div>
-
-            <button type="submit" name="update" class="btn btn-primary">
-                <i class="fa-solid fa-check"></i> Save Changes
-            </button>
-
-        </form>
+<div class="row">
+    <div class="col-md-6 mb-3">
+        <label class="form-label">First Name</label>
+        <input type="text" name="fname" class="form-control"
+               value="<?php echo htmlspecialchars($delivery_boy['First_Name']); ?>" required>
     </div>
+
+    <div class="col-md-6 mb-3">
+        <label class="form-label">Last Name</label>
+        <input type="text" name="lname" class="form-control"
+               value="<?php echo htmlspecialchars($delivery_boy['Last_Name']); ?>" required>
+    </div>
+
+    <div class="col-md-6 mb-3">
+        <label class="form-label">Date of Birth</label>
+        <input type="date" name="dob" class="form-control"
+               value="<?php echo htmlspecialchars($delivery_boy['DOB']); ?>">
+    </div>
+
+    <div class="col-md-6 mb-3">
+        <label class="form-label">Phone</label>
+        <input type="text" name="phone" class="form-control"
+               value="<?php echo htmlspecialchars($delivery_boy['Phone']); ?>">
+    </div>
+
+    <div class="col-md-12 mb-3">
+        <label class="form-label">Address</label>
+        <input type="text" name="address" class="form-control"
+               value="<?php echo htmlspecialchars($delivery_boy['Address']); ?>">
+    </div>
+
+    <div class="col-md-6 mb-3">
+        <label class="form-label">Pincode</label>
+        <input type="text" name="pincode" class="form-control"
+               value="<?php echo htmlspecialchars($delivery_boy['Pincode']); ?>">
+    </div>
+
+    <div class="col-md-6 mb-3">
+        <label class="form-label">Email</label>
+        <input type="email" name="email" class="form-control"
+               value="<?php echo htmlspecialchars($delivery_boy['Email']); ?>" required>
+    </div>
+</div>
+
+<hr>
+<h5 class="mt-3">Change Password (Optional)</h5>
+
+<div class="mb-3">
+    <label class="form-label">Current Password</label>
+    <input type="password" name="current_password" class="form-control">
+</div>
+
+<div class="mb-3">
+    <label class="form-label">New Password</label>
+    <input type="password" name="new_password" class="form-control">
+</div>
+
+<div class="mb-3">
+    <label class="form-label">Confirm New Password</label>
+    <input type="password" name="confirm_password" class="form-control">
+</div>
+
+<button type="submit" name="update" class="btn btn-primary">
+    <i class="fa-solid fa-check"></i> Save Changes
+</button>
+
+</form>
+</div>
 </div>
 </body>
 </html>
