@@ -31,46 +31,35 @@ if (isset($_POST['update'])) {
     $password = mysqli_real_escape_string($connection, $_POST['Password']);
     $status   = mysqli_real_escape_string($connection, $_POST['Status']);
 
-    // ---------------- VALIDATIONS ---------------- //
+    /* ===== VALIDATION (SAME AS registration.php) ===== */
 
-    // Name validations
-    if (!preg_match("/^[A-Za-z]+$/", $fname)) {
-        $message = "<div class='alert alert-danger'>First Name must contain only letters.</div>";
-    } else if (!preg_match("/^[A-Za-z]+$/", $lname)) {
-        $message = "<div class='alert alert-danger'>Last Name must contain only letters.</div>";
-    }
-    // Address
-    else if (!preg_match("/^[A-Za-z ]+$/", $address)) {
-        $message = "<div class='alert alert-danger'>Address must contain only letters and spaces.</div>";
-    }
-    // Age 18+
-    else {
-        $age = (int)((time() - strtotime($dob)) / (365*24*60*60));
-        if ($age < 18) {
-            $message = "<div class='alert alert-danger'>Delivery boy must be 18+ years old.</div>";
-        }
+    // First & Last Name (Only alphabets)
+    if (!preg_match("/^[A-Za-z]+$/", $fname) || !preg_match("/^[A-Za-z]+$/", $lname)) {
+        $message = "<div class='alert alert-danger'>Only alphabets allowed in name!</div>";
     }
 
-    // Phone
-    if ($message === "" && !preg_match("/^[0-9]{10}$/", $phone)) {
-        $message = "<div class='alert alert-danger'>Phone must be exactly 10 digits.</div>";
+    // Age validation (Minimum 17 years)
+    elseif (strtotime($dob) > strtotime('-17 years')) {
+        $message = "<div class='alert alert-danger'>Age must be 17 years or above!</div>";
     }
 
-    // Pincode
-    if ($message === "" && !preg_match("/^[0-9]{6}$/", $pincode)) {
-        $message = "<div class='alert alert-danger'>Pincode must be 6 digits.</div>";
+    // Phone number (Exactly 10 digits)
+    elseif (!preg_match("/^[0-9]{10}$/", $phone)) {
+        $message = "<div class='alert alert-danger'>Phone number must be exactly 10 digits!</div>";
     }
 
-    // Email validation (same as add_delivery_boy)
-    if ($message === "" &&
-        !preg_match("/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]{5,}\.[A-Za-z]{2,3}$/", $email)
-    ) {
+    // Pincode (Exactly 6 digits)
+    elseif (!preg_match("/^[0-9]{6}$/", $pincode)) {
+        $message = "<div class='alert alert-danger'>Pincode must be exactly 6 digits!</div>";
+    }
+
+    // Email validation (gmail / yahoo only)
+    elseif (!preg_match("/^[a-zA-Z0-9]+@(gmail|yahoo)\.(com|in)$/", $email)) {
         $message = "<div class='alert alert-danger'>Invalid Email Format!</div>";
     }
 
-    // ---------------- END VALIDATIONS ---------------- //
-
-    if ($message === "") {
+    /* ===== UPDATE LOGIC ===== */
+    else {
 
         $update = "
             UPDATE user_details 
@@ -90,7 +79,7 @@ if (isset($_POST['update'])) {
             header("Location: ../layout.php?view=delivery_boys&msg=updated");
             exit;
         } else {
-            $message = "<div class='alert alert-danger'>Update Failed: " . mysqli_error($connection) . "</div>";
+            $message = "<div class='alert alert-danger'>Update Failed!</div>";
         }
     }
 }
@@ -188,7 +177,7 @@ if (isset($_POST['update'])) {
         </div>
 
         <button type="submit" name="update" class="btn btn-success">Update</button>
-        <a href="../../layout.php?view=delivery_boys" class="btn btn-secondary">Back</a>
+        <a href="../layout.php?view=delivery_boys" class="btn btn-secondary">Back</a>
 
     </form>
 </div>
