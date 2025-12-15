@@ -34,13 +34,41 @@ if (isset($_POST['update'])) {
     $new_password     = $_POST['new_password'];
     $confirm_password = $_POST['confirm_password'];
 
+    // ================= VALIDATION (SAME AS REGISTRATION) =================
+
+    // First & Last Name (Only alphabets)
+    if (!preg_match("/^[A-Za-z]+$/", $fname) || !preg_match("/^[A-Za-z]+$/", $lname)) {
+        $error = "Only alphabets allowed in name!";
+    }
+
+    // Age validation (Minimum 17 years)
+    elseif (!empty($dob) && strtotime($dob) > strtotime('-17 years')) {
+        $error = "Age must be 17 years or above!";
+    }
+
+    // Phone number (Exactly 10 digits)
+    elseif (!empty($phone) && !preg_match("/^[0-9]{10}$/", $phone)) {
+        $error = "Phone number must be exactly 10 digits!";
+    }
+
+    // Pincode (Exactly 6 digits)
+    elseif (!empty($pincode) && !preg_match("/^[0-9]{6}$/", $pincode)) {
+        $error = "Pincode must be exactly 6 digits!";
+    }
+
+    // Email validation (gmail / yahoo only)
+    elseif (!preg_match("/^[a-zA-Z0-9]+@(gmail|yahoo)\.(com|in)$/", $email)) {
+        $error = "Invalid Email Format!";
+    }
+
+    // ================= PASSWORD LOGIC (UNCHANGED) =================
+
     // Get current DB password (PLAIN TEXT)
     $db_pass = $admin['Password'];
 
-    // If user entered any password field
-    if (!empty($current_password) || !empty($new_password) || !empty($confirm_password)) {
-
-        // Plain Text Compare
+    if (empty($error) &&
+        (!empty($current_password) || !empty($new_password) || !empty($confirm_password))
+    ) {
         if ($current_password !== $db_pass) {
             $error = "Current password is incorrect!";
         }
@@ -48,7 +76,6 @@ if (isset($_POST['update'])) {
             $error = "New Password and Confirm Password do not match!";
         }
         else {
-            // Save new password 
             $plain_pass = mysqli_real_escape_string($connection, $new_password);
 
             $password_update = mysqli_query(
@@ -61,6 +88,8 @@ if (isset($_POST['update'])) {
             }
         }
     }
+
+    // ================= UPDATE PROFILE =================
 
     if (empty($error)) {
 
@@ -105,102 +134,95 @@ if (isset($_POST['update'])) {
     border-radius: 12px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.08);
 }
-
-.form-label {
-    font-weight: 600;
-}
-
-.form-control {
-    height: 45px;
-    border-radius: 8px;
-}
-
-.btn-primary {
-    padding: 10px 20px;
-    font-size: 16px;
-    border-radius: 8px;
-}
+.form-label { font-weight: 600; }
+.form-control { height: 45px; border-radius: 8px; }
+.btn-primary { padding: 10px 20px; font-size: 16px; border-radius: 8px; }
 </style>
 </head>
 
 <body>
 
 <div class="container mt-4">
+<div class="edit-card">
 
-    <div class="edit-card">
+<h3 class="text-center mb-4">
+    <i class="fa-solid fa-user-pen"></i> Edit Profile
+</h3>
 
-        <h3 class="text-center mb-4">
-            <i class="fa-solid fa-user-pen"></i> Edit Profile
-        </h3>
+<?php if (!empty($error)) { ?>
+    <div class="alert alert-danger text-center"><?php echo $error; ?></div>
+<?php } ?>
 
-        <?php if (!empty($error)) { ?>
-            <div class="alert alert-danger text-center"><?php echo $error; ?></div>
-        <?php } ?>
+<form method="POST">
 
-        <form method="POST">
-
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">First Name</label>
-                    <input type="text" name="fname" class="form-control" value="<?php echo $admin['First_Name']; ?>" required>
-                </div>
-
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Last Name</label>
-                    <input type="text" name="lname" class="form-control" value="<?php echo $admin['Last_Name']; ?>" required>
-                </div>
-
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Date of Birth</label>
-                    <input type="date" name="dob" class="form-control" value="<?php echo $admin['DOB']; ?>">
-                </div>
-
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Phone</label>
-                    <input type="text" name="phone" class="form-control" value="<?php echo $admin['Phone']; ?>">
-                </div>
-
-                <div class="col-md-12 mb-3">
-                    <label class="form-label">Address</label>
-                    <input type="text" name="address" class="form-control" value="<?php echo $admin['Address']; ?>">
-                </div>
-
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Pincode</label>
-                    <input type="text" name="pincode" class="form-control" value="<?php echo $admin['Pincode']; ?>">
-                </div>
-
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Email</label>
-                    <input type="email" name="email" class="form-control" value="<?php echo $admin['Email']; ?>" required>
-                </div>
-            </div>
-
-            <hr>
-            <h5 class="mt-3">Change Password</h5>
-
-            <div class="col-md-12 mb-3">
-                <label class="form-label">Current Password</label>
-                <input type="password" name="current_password" class="form-control">
-            </div>
-
-            <div class="col-md-6 mb-3">
-                <label class="form-label">New Password</label>
-                <input type="password" name="new_password" class="form-control">
-            </div>
-
-            <div class="col-md-6 mb-3">
-                <label class="form-label">Confirm New Password</label>
-                <input type="password" name="confirm_password" class="form-control">
-            </div>
-
-            <button type="submit" name="update" class="btn btn-primary">
-                <i class="fa-solid fa-check"></i> Save Changes
-            </button>
-
-        </form>
+<div class="row">
+    <div class="col-md-6 mb-3">
+        <label class="form-label">First Name</label>
+        <input type="text" name="fname" class="form-control"
+               value="<?php echo $admin['First_Name']; ?>" required>
     </div>
 
+    <div class="col-md-6 mb-3">
+        <label class="form-label">Last Name</label>
+        <input type="text" name="lname" class="form-control"
+               value="<?php echo $admin['Last_Name']; ?>" required>
+    </div>
+
+    <div class="col-md-6 mb-3">
+        <label class="form-label">Date of Birth</label>
+        <input type="date" name="dob" class="form-control"
+               value="<?php echo $admin['DOB']; ?>">
+    </div>
+
+    <div class="col-md-6 mb-3">
+        <label class="form-label">Phone</label>
+        <input type="text" name="phone" class="form-control"
+               value="<?php echo $admin['Phone']; ?>">
+    </div>
+
+    <div class="col-md-12 mb-3">
+        <label class="form-label">Address</label>
+        <input type="text" name="address" class="form-control"
+               value="<?php echo $admin['Address']; ?>">
+    </div>
+
+    <div class="col-md-6 mb-3">
+        <label class="form-label">Pincode</label>
+        <input type="text" name="pincode" class="form-control"
+               value="<?php echo $admin['Pincode']; ?>">
+    </div>
+
+    <div class="col-md-6 mb-3">
+        <label class="form-label">Email</label>
+        <input type="email" name="email" class="form-control"
+               value="<?php echo $admin['Email']; ?>" required>
+    </div>
+</div>
+
+<hr>
+<h5 class="mt-3">Change Password</h5>
+
+<div class="mb-3">
+    <label class="form-label">Current Password</label>
+    <input type="password" name="current_password" class="form-control">
+</div>
+
+<div class="mb-3">
+    <label class="form-label">New Password</label>
+    <input type="password" name="new_password" class="form-control">
+</div>
+
+<div class="mb-3">
+    <label class="form-label">Confirm New Password</label>
+    <input type="password" name="confirm_password" class="form-control">
+</div>
+
+<button type="submit" name="update" class="btn btn-primary">
+    <i class="fa-solid fa-check"></i> Save Changes
+</button>
+
+</form>
+</div>
 </div>
 
 </body>
