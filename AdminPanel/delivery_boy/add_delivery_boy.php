@@ -13,22 +13,45 @@ $message = "";
 
 if (isset($_POST['add'])) {
 
-    $first = mysqli_real_escape_string($connection, $_POST['first_name']);
-    $last  = mysqli_real_escape_string($connection, $_POST['last_name']);
-    $dob   = mysqli_real_escape_string($connection, $_POST['dob']);
-    $phone = mysqli_real_escape_string($connection, $_POST['phone']);
+    $first   = mysqli_real_escape_string($connection, $_POST['first_name']);
+    $last    = mysqli_real_escape_string($connection, $_POST['last_name']);
+    $dob     = mysqli_real_escape_string($connection, $_POST['dob']);
+    $phone   = mysqli_real_escape_string($connection, $_POST['phone']);
     $address = mysqli_real_escape_string($connection, $_POST['address']);
     $pincode = mysqli_real_escape_string($connection, $_POST['pincode']);
-    $email = mysqli_real_escape_string($connection, $_POST['email']);
-    $password = mysqli_real_escape_string($connection, $_POST['password']);
-    $status = mysqli_real_escape_string($connection, $_POST['status']);
+    $email   = mysqli_real_escape_string($connection, $_POST['email']);
+    $password= mysqli_real_escape_string($connection, $_POST['password']);
+    $status  = mysqli_real_escape_string($connection, $_POST['status']);
 
-    // EMAIL VALIDATION 
-    if (!preg_match("/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]{5,}\.[A-Za-z]{2,3}$/", $email)) {
+    /* ===== VALIDATION (SAME AS registration.php) ===== */
+
+    // First & Last Name (Only alphabets)
+    if (!preg_match("/^[A-Za-z]+$/", $first) || !preg_match("/^[A-Za-z]+$/", $last)) {
+        $message = "<div class='alert alert-danger'>Only alphabets allowed in name!</div>";
+    }
+
+    // Age validation (Minimum 17 years)
+    elseif (strtotime($dob) > strtotime('-17 years')) {
+        $message = "<div class='alert alert-danger'>Age must be 17 years or above!</div>";
+    }
+
+    // Phone number (Exactly 10 digits)
+    elseif (!preg_match("/^[0-9]{10}$/", $phone)) {
+        $message = "<div class='alert alert-danger'>Phone number must be exactly 10 digits!</div>";
+    }
+
+    // Pincode (Exactly 6 digits)
+    elseif (!preg_match("/^[0-9]{6}$/", $pincode)) {
+        $message = "<div class='alert alert-danger'>Pincode must be exactly 6 digits!</div>";
+    }
+
+    // Email validation (gmail / yahoo only)
+    elseif (!preg_match("/^[a-zA-Z0-9]+@(gmail|yahoo)\.(com|in)$/", $email)) {
         $message = "<div class='alert alert-danger'>Invalid Email Format!</div>";
     }
 
-    if ($message === "") {
+    /* ===== INSERT LOGIC ===== */
+    else {
 
         // Check if email exists
         $check = mysqli_query($connection, "SELECT * FROM user_details WHERE Email='$email'");
@@ -36,7 +59,7 @@ if (isset($_POST['add'])) {
             $message = "<div class='alert alert-danger'>Email already exists!</div>";
         } else {
 
-            // Insert the record
+            // Insert record
             $query = "INSERT INTO user_details
             (First_Name, Last_Name, DOB, User_Role, Phone, Address, Pincode, Email, Password, Status)
             VALUES
@@ -91,7 +114,7 @@ if (isset($_POST['add'])) {
 
         <div class="mb-3">
             <label class="form-label">Phone Number</label>
-            <input type="text" name="phone" maxlength="13" class="form-control" required
+            <input type="text" name="phone" maxlength="10" class="form-control" required
                    value="<?= $_POST['phone'] ?? '' ?>">
         </div>
 
