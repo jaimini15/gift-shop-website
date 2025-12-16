@@ -1,6 +1,7 @@
 <?php
 session_start();
 include("../AdminPanel/db.php");
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     $first_name = mysqli_real_escape_string($connection, $_POST['first_name']);
