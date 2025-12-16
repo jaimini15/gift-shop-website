@@ -23,7 +23,7 @@ if (isset($_POST['add'])) {
     $password = mysqli_real_escape_string($connection, $_POST['password']);
     $status = mysqli_real_escape_string($connection, $_POST['status']);
 
-    // EMAIL VALIDATION (only change you requested)
+    // EMAIL VALIDATION 
     if (!preg_match("/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]{5,}\.[A-Za-z]{2,3}$/", $email)) {
         $message = "<div class='alert alert-danger'>Invalid Email Format!</div>";
     }
