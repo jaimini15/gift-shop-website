@@ -52,7 +52,7 @@ if (isset($_SESSION['User_Id'])) {
                 </ul>
             </li> |
 
-            <li><a href="../contact/contact.php">Contact</a></li>
+            <li><a href="contact.php">Contact</a></li>
         </ul>
     </nav>
     <div class="icons">
