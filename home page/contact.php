@@ -294,7 +294,7 @@ function updateCartCount() {
             allowfullscreen
             style="border:0;"
             referrerpolicy="no-referrer-when-downgrade"
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3670.0905310933363!2d72.55968227508943!3d23.09246737913215!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395e84f0b9972b8f%3A0x52ed9b4ac95e2990!2sCG%20Road%2C%20Navrangpura%2C%20Ahmedabad%2C%20Gujarat!5e0!3m2!1sen!2sin!4v1700000000000">
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d29382.749202289648!2d72.58377993376554!3d22.992776174988155!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395e85c2e335ed6b%3A0xd19a77c6688f5c9b!2sManinagar%2C%20Ahmedabad%2C%20Gujarat!5e0!3m2!1sen!2sin!4v1765858369921!5m2!1sen!2sin">
         </iframe>
     </div>
 <?php require_once '../home page/footer.php' ?>
