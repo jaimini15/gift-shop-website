@@ -99,7 +99,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     <h2>Create Account</h2>
 
-    <form method="POST">
+    <form  action="register_check.php" method="POST">
 
         <input type="text" name="first_name" placeholder="First Name" 
        required pattern="[A-Za-z]+" title="Only alphabets allowed">
@@ -119,11 +119,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
        required pattern="[0-9]{6}" title="Exactly 6 digits">
 
 <input type="email" name="email" placeholder="Email Address"
-       required pattern="^[a-zA-Z0-9._%+-]+@[A-Za-z]{5}\.[A-Za-z]{2,3}$"
-       title="Format: example@abcde.in or example@abcde.com">
+       required
+       pattern="^[a-zA-Z0-9]+@(gmail|yahoo)\.(com|in)$"
+       title="Format: username@gmail.com">
+
 
 <input type="password" name="password" placeholder="Password" required>
-
 
         <!-- Hidden default role -->
         <input type="hidden" name="user_role" value="CUSTOMER">
