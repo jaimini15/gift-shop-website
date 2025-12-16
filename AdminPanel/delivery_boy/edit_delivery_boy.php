@@ -16,7 +16,9 @@ if (!$data) {
     die("Delivery Boy not found");
 }
 
-// Update 
+$message = "";
+
+// UPDATE PROCESS
 if (isset($_POST['update'])) {
 
     $fname    = mysqli_real_escape_string($connection, $_POST['First_Name']);
@@ -27,30 +29,71 @@ if (isset($_POST['update'])) {
     $pincode  = mysqli_real_escape_string($connection, $_POST['Pincode']);
     $email    = mysqli_real_escape_string($connection, $_POST['Email']);
     $password = mysqli_real_escape_string($connection, $_POST['Password']);
-    $status   = mysqli_real_escape_string($connection, $_POST['Status']); // ADDED
+    $status   = mysqli_real_escape_string($connection, $_POST['Status']);
 
-    $update = "
-        UPDATE user_details 
-        SET First_Name='$fname',
-            Last_Name='$lname',
-            DOB='$dob',
-            Phone='$phone',
-            Address='$address',
-            Pincode='$pincode',
-            Email='$email',
-            Password='$password',
-            Status='$status'
-        WHERE User_Id=$id
-    ";
+    // ---------------- VALIDATIONS ---------------- //
 
-    if (mysqli_query($connection, $update)) {
-        header("Location: ../layout.php?view=delivery_boys&msg=updated");
-        exit;
-    } else {
-        echo "<div class='alert alert-danger'>Update Failed: " . mysqli_error($connection) . "</div>";
+    // Name validations
+    if (!preg_match("/^[A-Za-z]+$/", $fname)) {
+        $message = "<div class='alert alert-danger'>First Name must contain only letters.</div>";
+    } else if (!preg_match("/^[A-Za-z]+$/", $lname)) {
+        $message = "<div class='alert alert-danger'>Last Name must contain only letters.</div>";
+    }
+    // Address
+    else if (!preg_match("/^[A-Za-z ]+$/", $address)) {
+        $message = "<div class='alert alert-danger'>Address must contain only letters and spaces.</div>";
+    }
+    // Age 18+
+    else {
+        $age = (int)((time() - strtotime($dob)) / (365*24*60*60));
+        if ($age < 18) {
+            $message = "<div class='alert alert-danger'>Delivery boy must be 18+ years old.</div>";
+        }
+    }
+
+    // Phone
+    if ($message === "" && !preg_match("/^[0-9]{10}$/", $phone)) {
+        $message = "<div class='alert alert-danger'>Phone must be exactly 10 digits.</div>";
+    }
+
+    // Pincode
+    if ($message === "" && !preg_match("/^[0-9]{6}$/", $pincode)) {
+        $message = "<div class='alert alert-danger'>Pincode must be 6 digits.</div>";
+    }
+
+    // Email validation (same as add_delivery_boy)
+    if ($message === "" &&
+        !preg_match("/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]{5,}\.[A-Za-z]{2,3}$/", $email)
+    ) {
+        $message = "<div class='alert alert-danger'>Invalid Email Format!</div>";
+    }
+
+    // ---------------- END VALIDATIONS ---------------- //
+
+    if ($message === "") {
+
+        $update = "
+            UPDATE user_details 
+            SET First_Name='$fname',
+                Last_Name='$lname',
+                DOB='$dob',
+                Phone='$phone',
+                Address='$address',
+                Pincode='$pincode',
+                Email='$email',
+                Password='$password',
+                Status='$status'
+            WHERE User_Id=$id
+        ";
+
+        if (mysqli_query($connection, $update)) {
+            header("Location: ../layout.php?view=delivery_boys&msg=updated");
+            exit;
+        } else {
+            $message = "<div class='alert alert-danger'>Update Failed: " . mysqli_error($connection) . "</div>";
+        }
     }
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -75,6 +118,9 @@ if (isset($_POST['update'])) {
 <body>
 
 <div class="card-box">
+
+    <?= $message ?>
+
     <h2 class="fw-bold mb-3">
         <i class="fa-solid fa-motorcycle"></i> Edit Delivery Boy
     </h2>
@@ -84,48 +130,55 @@ if (isset($_POST['update'])) {
         <div class="row">
             <div class="col-md-6 mb-3">
                 <label>First Name</label>
-                <input type="text" name="First_Name" class="form-control" value="<?= $data['First_Name'] ?>" required>
+                <input type="text" name="First_Name" class="form-control" required
+                       value="<?= $data['First_Name'] ?>">
             </div>
 
             <div class="col-md-6 mb-3">
                 <label>Last Name</label>
-                <input type="text" name="Last_Name" class="form-control" value="<?= $data['Last_Name'] ?>" required>
+                <input type="text" name="Last_Name" class="form-control" required
+                       value="<?= $data['Last_Name'] ?>">
             </div>
         </div>
 
         <div class="row">
             <div class="col-md-6 mb-3">
                 <label>DOB</label>
-                <input type="date" name="DOB" class="form-control" value="<?= $data['DOB'] ?>">
+                <input type="date" name="DOB" class="form-control" required
+                       value="<?= $data['DOB'] ?>">
             </div>
 
             <div class="col-md-6 mb-3">
                 <label>Phone</label>
-                <input type="text" name="Phone" class="form-control" value="<?= $data['Phone'] ?>">
+                <input type="text" name="Phone" maxlength="10" class="form-control" required
+                       value="<?= $data['Phone'] ?>">
             </div>
         </div>
 
         <div class="mb-3">
             <label>Address</label>
-            <input type="text" name="Address" class="form-control" value="<?= $data['Address'] ?>">
+            <input type="text" name="Address" class="form-control" required
+                   value="<?= $data['Address'] ?>">
         </div>
 
         <div class="mb-3">
             <label>Pincode</label>
-            <input type="text" name="Pincode" class="form-control" value="<?= $data['Pincode'] ?>">
+            <input type="text" name="Pincode" maxlength="6" class="form-control" required
+                   value="<?= $data['Pincode'] ?>">
         </div>
 
         <div class="mb-3">
             <label>Email</label>
-            <input type="email" name="Email" class="form-control" value="<?= $data['Email'] ?>" required>
+            <input type="email" name="Email" class="form-control" required
+                   value="<?= $data['Email'] ?>">
         </div>
 
         <div class="mb-3">
             <label>Password</label>
-            <input type="text" name="Password" class="form-control" value="<?= $data['Password'] ?>" required>
+            <input type="text" name="Password" class="form-control" required
+                   value="<?= $data['Password'] ?>">
         </div>
 
-        <!--  NEW FIELD ADDED -->
         <div class="mb-3">
             <label>Status</label>
             <select name="Status" class="form-control">
