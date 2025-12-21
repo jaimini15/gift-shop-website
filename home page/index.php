@@ -23,25 +23,7 @@
     <div class="carousel-inner">
 
       <!-- Slide 1 -->
-      <div class="carousel-item active">
-        <section class="hero">
-          <div class="hero-left">
-            <img src="home_category_mug.jpg" class="hero-img">
-          </div>
-          <div class="hero-content">
-            <p class="collection">Mugs That Speak Your Heart</p>
-            <h1>Your ideas, your style<br>a mug that matches your vibe.</h1>
-            <p class="subtitle">Premium quality • Perfect for gifts</p>
-            <button class="shop-btn" onclick="location.href='#categories'">CUSTOMIZE NOW</button>
-          </div>
-          <div class="hero-right">
-            <img src="homemug1.jpg" class="hero-img">
-          </div>
-        </section>
-      </div>
-
-      <!-- Slide 2 -->
-      <div class="carousel-item">
+       <div class="carousel-item">
         <section class="hero">
           <div class="hero-left">
             <img src="home_category_mobile.jpg" class="hero-img">
@@ -53,11 +35,27 @@
             <button class="shop-btn" onclick="location.href='#categories'">CUSTOMIZE NOW</button>
           </div>
           <div class="hero-right">
-            <img src="homepagemobile_silde3.jpg" class="hero-img">
+            <img src="homepagemobile_silde3.jpg" style="height: 450px;" class="hero-img">
           </div>
         </section>
       </div>
-
+      <!-- Slide 2 -->
+       <div class="carousel-item active">
+        <section class="hero">
+          <div class="hero-left">
+            <img src="slidemug1.jpeg" class="hero-img">
+          </div>
+          <div class="hero-content">
+            <p class="collection">Mugs That Speak Your Heart</p>
+            <h1>Your ideas, your style<br>a mug that matches your vibe.</h1>
+            <p class="subtitle">Premium quality • Perfect for gifts</p>
+            <button class="shop-btn" onclick="location.href='#categories'">CUSTOMIZE NOW</button>
+          </div>
+          <div class="hero-right">
+            <img src="sildemug.jpeg" style="height: 450px;" class="hero-img">
+          </div>
+        </section>
+      </div>
       <!-- Slide 3 -->
       <div class="carousel-item">
         <section class="hero">
@@ -71,7 +69,7 @@
             <button class="shop-btn" onclick="location.href='#categories'">CUSTOMIZE NOW</button>
           </div>
           <div class="hero-right">
-            <img src="homephoto2.jpg" class="hero-img">
+            <img src="homephoto2.jpg" style="height: 450px;" class="hero-img">
           </div>
         </section>
       </div>
@@ -80,7 +78,7 @@
       <div class="carousel-item">
         <section class="hero">
           <div class="hero-left">
-            <img src="homepagebook_silde4.jpg" class="hero-img">
+            <img src="slidebook1.jpeg" class="hero-img">
           </div>
           <div class="hero-content">
             <p class="collection">Personal Touch, Perfect Finish</p>
@@ -89,7 +87,7 @@
             <button class="shop-btn" onclick="location.href='#categories'">SHOP COLLECTION</button>
           </div>
           <div class="hero-right">
-            <img src="home_category_book.jpg" class="hero-img">
+            <img src="home_category_book.jpg" style="height: 450px;" class="hero-img">
           </div>
         </section>
       </div>
