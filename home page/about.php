@@ -230,11 +230,11 @@ function updateCartCount() {
 </script>
 <!-- Navbar ends -->
    
-<section class="about-section">
-  <div class="about-container">
+<section class="about-section" >
+  <div class="about-container" style="margin-top:40px;margin-bottom: 40px;max-height: 400px;">
 
     <div class="about-image-left">
-      <img src="about_page_frame.jpg" alt="Gift shop creative workspace">
+      <img src="about_page_frame.jpg" alt="Gift shop creative workspace" style="max-height:400px;">
     </div>
 
     <div class="about-content">
