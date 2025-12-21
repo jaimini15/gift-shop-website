@@ -1,9 +1,9 @@
 <?php include("../AdminPanel/db.php"); ?>
 
-<section class="home-package" id="categories">
-    <h1 class="heading-title">Our Categories</h1>
+<section class="home-package" id="categories" style="padding-top:20px">
+    <h1 class="heading-title" style="">Our Categories</h1>
 
-    <div class="box-container">
+    <div class="box-container" style="max-height:450px;">
 
         <?php
         $query = "SELECT * FROM category_details WHERE Status='Enabled'";
@@ -14,7 +14,7 @@
 
                 $img = base64_encode($row['Category_Image']);
         ?>
-        <div class="box">
+        <div class="box" style="max-height: 500px;">
             <div class="image">
                 <img src="data:image/jpeg;base64,<?= $img ?>" alt="<?= $row['Category_Name'] ?>">
             </div>
