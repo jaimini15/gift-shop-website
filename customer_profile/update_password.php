@@ -13,29 +13,46 @@ $current = $_POST['current_password'];
 $new     = $_POST['new_password'];
 $confirm = $_POST['confirm_password'];
 
-// Fetch current password
-$result = mysqli_query($connection,
+// Fetch current password from DB
+$result = mysqli_query(
+    $connection,
     "SELECT Password FROM user_details WHERE User_Id='$uid' LIMIT 1"
 );
+
 $row = mysqli_fetch_assoc($result);
 
-// 1. Check current password
+if (!$row) {
+    header("Location: change_password.php?error=4");
+    exit();
+}
+
+/* ================= VALIDATIONS ================= */
+
+// 1️⃣ Check current password
 if ($row['Password'] !== $current) {
     header("Location: change_password.php?error=1");
     exit();
 }
 
-// 2. Check new passwords match
+// 2️⃣ Check new & confirm match
 if ($new !== $confirm) {
     header("Location: change_password.php?error=2");
     exit();
 }
 
-// 3. Update password
-mysqli_query($connection,
+// 3️⃣ Check new password is NOT same as old password
+if ($new === $row['Password']) {
+    header("Location: change_password.php?error=3");
+    exit();
+}
+
+/* ================= UPDATE PASSWORD ================= */
+
+mysqli_query(
+    $connection,
     "UPDATE user_details SET Password='$new' WHERE User_Id='$uid'"
 );
 
-// 4. Redirect to profile/dashboard
+// Redirect after success
 header("Location: profile.php?password=success");
 exit();
