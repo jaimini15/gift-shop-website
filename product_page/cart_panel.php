@@ -137,4 +137,14 @@ $subtotal = 0;
     background: #7e2626d5;         
     color: white;
 }
+.view-cart-btn:hover {
+    background: #222;
+    color: white;
+}
+
+.checkout-btn:hover {
+    background: #5f1d1d;
+    color: white;
+}
+
 </style>
