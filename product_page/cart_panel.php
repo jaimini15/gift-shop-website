@@ -66,7 +66,7 @@ $subtotal = 0;
     </div>
 <hr>
     <div class="cart-actions">
-        <a href="viewcart.php" class="view-cart-btn">View cart</a>
+        <a href="../view_cart/view_cart.php" class="view-cart-btn">View cart</a>
         <a href="checkout.php" class="checkout-btn">Checkout</a>
     </div>
 
