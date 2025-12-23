@@ -129,7 +129,7 @@ $rememberedEmail = isset($_COOKIE['remember_email']) ? $_COOKIE['remember_email'
     <form method="POST">
         <input type="email" name="email" placeholder="Email" required value="<?= $rememberedEmail ?>">
 
-        <input type="password" name="password" placeholder="Password" required>
+        <input type="password" name="password" placeholder="Password" autocomplete="no" required>
 
         <button class="btn">Login</button>
 
