@@ -30,7 +30,7 @@ $query = "
 $result = mysqli_query($connection, $query);
 
 if (mysqli_num_rows($result) == 0) {
-    echo "<p class='empty-msg'>Your cart is empty.</p>";
+   header("location: ../home page/index.php");
     exit;
 }
 
@@ -48,8 +48,8 @@ $subtotal = 0;
 
 <!-- HEADER -->
 <header class="cart-header">
-    <div class="logo">GiftShop</div>
-
+   <div class="header-inner">
+        <div class="logo">GiftShop</div>
     <div class="steps-wrapper">
         <div class="step active">
             <span class="circle">1</span>
@@ -58,19 +58,16 @@ $subtotal = 0;
         <div class="line"></div>
         <div class="step">
             <span class="circle">2</span>
-            <span class="label">Address</span>
-        </div>
-        <div class="line"></div>
-        <div class="step">
-            <span class="circle">3</span>
             <span class="label">Payment</span>
         </div>
         <div class="line"></div>
         <div class="step">
-            <span class="circle">4</span>
+            <span class="circle">3</span>
             <span class="label">Summary</span>
         </div>
     </div>
+     <div></div> 
+</div>
 </header>
 
 <!-- MAIN -->
@@ -87,20 +84,16 @@ $subtotal = 0;
     $qty   = $row['Quantity'];
     $subtotal += ($price * $qty);
 ?>
-
+<br>
 <div class="cart-item">
     <img src="<?= $img ?>">
     <div class="item-details">
         <h3><?= htmlspecialchars($row['Product_Name']) ?></h3>
         <p class="price">₹<?= number_format($price) ?></p>
         <p>Qty: <?= $qty ?></p>
-        <p class="return">All issue easy returns</p>
+        <p class="return">No return No refund</p>
         <a href="#" class="remove" data-id="<?= $row['Customize_Id'] ?>">✕ REMOVE</a>
     </div>
-</div>
-
-<div class="seller">
-    <span>Free Delivery</span>
 </div>
 
 <?php endwhile; ?>
@@ -108,8 +101,8 @@ $subtotal = 0;
 
 <!-- RIGHT -->
 <?php
-$discount = 14; // example
-$total = $subtotal - $discount;
+$shipping = 0; // example
+$total = $subtotal - $shipping;
 ?>
 
 <div class="cart-right">
@@ -120,9 +113,9 @@ $total = $subtotal - $discount;
     <span>₹<?= number_format($subtotal) ?></span>
 </div>
 
-<div class="price-row discount">
-    <span>Total Discounts</span>
-    <span>-₹<?= $discount ?></span>
+<div class="price-row shipping">
+    <span>Shipping Charges</span>
+    <span>-₹<?= $shipping ?></span>
 </div>
 
 <hr>
@@ -132,14 +125,37 @@ $total = $subtotal - $discount;
     <span>₹<?= number_format($total) ?></span>
 </div>
 
-<div class="discount-box">
-    🎉 Yay! Your total discount is ₹<?= $discount ?>
-</div>
+
 
 <button class="continue-btn">Continue</button>
 <p class="note">Clicking on "Continue" will not deduct any money</p>
 </div>
 
 </div>
+<script>
+document.addEventListener("click", function(e) {
+
+    if (e.target.classList.contains("remove")) {
+
+        e.preventDefault();
+        let id = e.target.dataset.id;
+
+        fetch("../cart/remove_cart_item.php", {
+            method: "POST",
+            headers: {"Content-Type": "application/x-www-form-urlencoded"},
+            body: "customize_id=" + id
+        })
+        .then(res => res.text())
+        .then(res => {
+            if (res.trim() === "success") {
+                e.target.closest(".cart-item").remove();
+                location.reload();
+            }
+        });
+    }
+
+});
+</script>
+
 </body>
 </html>
