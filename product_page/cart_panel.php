@@ -148,3 +148,26 @@ $subtotal = 0;
 }
 
 </style>
+<script>
+document.addEventListener("click", function(e) {
+
+    if (e.target.classList.contains("remove-btn")) {
+
+        let id = e.target.dataset.id;
+
+        fetch("../cart/remove_cart_item.php", {
+            method: "POST",
+            headers: {"Content-Type": "application/x-www-form-urlencoded"},
+            body: "customize_id=" + id
+        })
+        .then(res => res.text())
+        .then(res => {
+            if (res.trim() === "success") {
+                e.target.closest(".cart-item").remove();
+                location.reload();
+            }
+        });
+    }
+
+});
+</script>
