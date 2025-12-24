@@ -1,5 +1,8 @@
 <?php
 session_start();
+$currentStep = 1;
+include("checkout_steps.php");
+
 include("../AdminPanel/db.php");
 
 if (!isset($_SESSION['User_Id'])) {
@@ -45,38 +48,12 @@ $subtotal = 0;
 <link rel="stylesheet" href="view_cart.css">
 </head>
 <body>
-
-<!-- HEADER -->
-<header class="cart-header">
-   <div class="header-inner">
-        <div class="logo">GiftShop</div>
-    <div class="steps-wrapper">
-        <div class="step active">
-            <span class="circle">1</span>
-            <span class="label">Cart</span>
-        </div>
-        <div class="line"></div>
-        <div class="step">
-            <span class="circle">2</span>
-            <span class="label">Payment</span>
-        </div>
-        <div class="line"></div>
-        <div class="step">
-            <span class="circle">3</span>
-            <span class="label">Summary</span>
-        </div>
-    </div>
-     <div></div> 
-</div>
-</header>
-
 <!-- MAIN -->
 <div class="cart-container">
 
 <!-- LEFT -->
 <div class="cart-left">
 <h2>Product Details</h2>
-
 <?php while ($row = mysqli_fetch_assoc($result)) :
 
     $img = "data:image/jpeg;base64," . base64_encode($row['Product_Image']);
@@ -124,10 +101,9 @@ $total = $subtotal - $shipping;
     <span>Order Total</span>
     <span>₹<?= number_format($total) ?></span>
 </div>
-
-
-
+<a href="payment.php" style="text-decoration:none;">
 <button class="continue-btn">Continue</button>
+</a>
 <p class="note">Clicking on "Continue" will not deduct any money</p>
 </div>
 
