@@ -68,11 +68,11 @@ body{
 }
 
 .account-card{
-   background: #f3f4f6;
-    /* background:#fff; */
+   /* background: #f3f4f6; */
+   border:1px solid #7e2626d5;
     border-radius:12px;
     padding:25px;
-    box-shadow:0 4px 12px rgba(0,0,0,0.08);
+    box-shadow:0 4px 12px rgba(0,0,0,0.02);
     transition:0.3s;
     cursor:pointer;
 }
@@ -114,7 +114,7 @@ body{
 <div class="account-container">
 
     <div class="account-title">
-        Hello, <?= htmlspecialchars($profileUser["First_Name"]); ?> 👋
+        Hello, <?= htmlspecialchars($profileUser["First_Name"]); ?> &#128075;
     </div>
 
     <div class="account-grid">
