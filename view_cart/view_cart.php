@@ -80,8 +80,11 @@ $subtotal = 0;
 <?php
 $shipping = 0; // example
 $total = $subtotal - $shipping;
+/* STORE IN SESSION */
+$_SESSION['subtotal'] = $subtotal;
+$_SESSION['shipping'] = $shipping;
+$_SESSION['total']    = $total;
 ?>
-
 <div class="cart-right">
 <h3>Price Details</h3>
 
