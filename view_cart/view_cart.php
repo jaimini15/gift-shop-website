@@ -38,7 +38,12 @@ if (mysqli_num_rows($result) == 0) {
 }
 
 $subtotal = 0;
+
+
+/* Estimated Delivery Date */
+$estimatedDate = date("d M Y", strtotime("+3 days"));
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -54,7 +59,9 @@ $subtotal = 0;
 <!-- LEFT -->
 <div class="cart-left">
 <h2>Product Details</h2>
-<?php while ($row = mysqli_fetch_assoc($result)) :
+<?php 
+
+while ($row = mysqli_fetch_assoc($result)) :
 
     $img = "data:image/jpeg;base64," . base64_encode($row['Product_Image']);
     $price = $row['Price'];
@@ -62,16 +69,24 @@ $subtotal = 0;
     $subtotal += ($price * $qty);
 ?>
 <br>
-<div class="cart-item">
-    <img src="<?= $img ?>">
-    <div class="item-details">
-        <h3><?= htmlspecialchars($row['Product_Name']) ?></h3>
-        <p class="price">₹<?= number_format($price) ?></p>
-        <p>Qty: <?= $qty ?></p>
-        <p class="return">No return No refund</p>
-        <a href="#" class="remove" data-id="<?= $row['Customize_Id'] ?>">✕ REMOVE</a>
+<div class="cart-box">
+    <div class="cart-item">
+        <img src="<?= $img ?>" alt="product">
+        <div class="item-details">
+            <h3><?= htmlspecialchars($row['Product_Name']) ?></h3>
+            <p class="price">₹<?= number_format($price) ?></p>
+            <p>Qty: <?= $qty ?></p>
+            <p class="return">No return No refund</p>
+            <a href="#" class="remove" data-id="<?= $row['Customize_Id'] ?>">✕ REMOVE</a>
+        </div>
+    </div>
+
+    <div class="delivery-row">
+        <span><strong>Estimated delivery by</strong></span>
+        <span class="date"><?= $estimatedDate ?></span>
     </div>
 </div>
+
 
 <?php endwhile; ?>
 </div>
