@@ -52,18 +52,64 @@ body {
 /* LEFT */
 .cart-left {
     width: 65%;
-    background: #f6f6f6;
+    border: 1px solid #7e2626d5;
     padding: 20px;
     border-radius: 6px;
+    margin: 0px;
 }
+.cart-left h2{
+    margin-bottom: 0px;
+    margin-top: 0px;
+}
+/* ============================= */
+/* CART PRODUCT BOX STYLE */
+/* ============================= */
+
+.cart-box {
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 10px;
+    background: #ffffff;              /* forces box visibility */
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+/* override old border-bottom */
+.cart-box .cart-item {
+    border-bottom: none;
+    padding-bottom: 10px;
+    height: auto;
+}
+
+/* DELIVERY ROW */
+.delivery-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid #ddd;
+    margin-top: 15px;
+    padding-top: 10px;
+    font-size: 14px;
+}
+
+.delivery-row strong {
+    color: #000;
+}
+
+.delivery-row .date {
+    color: black;
+    font-weight: 500;
+}
+
 
 .cart-item {
     display: flex;
-    gap:50px;
+    gap: 50px;
     padding: 15px 0;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid #7e2626d5;
     height: 220px;
 }
+
 
 .cart-item img {
     width: 150px;
@@ -111,9 +157,9 @@ body {
 /* RIGHT */
 .cart-right {
     width: 35%;
-    background: #f6f6f6;
     padding: 20px;
     border-radius: 6px;
+    border: 1px solid #7e2626d5;
 }
 
 .price-row {
@@ -138,7 +184,9 @@ body {
     border-radius: 5px;
     cursor: pointer;
 }
-
+.continue-btn:hover{
+    background-color: black;
+}
 .note {
     text-align: center;
     font-size: 12px;
@@ -201,3 +249,203 @@ body {
     background: #cfcfe6;
     margin-bottom: 18px;
 }
+/* ACTIVE LINE */
+.active-line {
+    background: #7e2626d5;
+}
+
+/* COMPLETED STEP */
+.step.completed .circle {
+    background: #7e2626d5;
+    color: #fff;
+    border-color: #7e2626d5;
+}
+
+/* ============================= */
+/* PAYMENT PAGE LAYOUT */
+/* ============================= */
+
+/* PAYMENT PAGE MAIN LAYOUT */
+.container {
+    max-width: 1200px;
+    margin: auto;
+    display: flex;
+    gap: 30px;
+    padding: 40px;
+    align-items: flex-start;
+}
+
+/* LEFT : Payment box */
+.left {
+    flex: 2;
+}
+
+/* RIGHT : Price details */
+.right {
+    flex: 1;
+    border: 1px solid #7e2626d5;
+    border-radius: 8px;
+    padding: 25px;
+    height: fit-content;
+}
+
+.left, .right {
+    background: #fff;
+    border-radius: 8px;
+    padding: 25px;
+}
+
+/* PAYMENT BOX */
+.payment-box {
+    border: 1px solid #7e2626d5;
+    border-radius: 8px;
+    padding: 20px;
+}
+
+.payment-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.online-only {
+    color: green;
+    font-size: 14px;
+    margin-bottom: 15px;
+}
+
+/* PAYMENT METHODS */
+.methods img {
+    height: 35px;
+    margin-right: 10px;
+    vertical-align: middle;
+}
+
+/* REMOVE EXTRA STEPPER (we already have common navbar) */
+.stepper {
+    display: none;
+}
+/* ============================= */
+/* PAYMENT ICONS FIX */
+/* ============================= */
+
+.payment-icons {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+}
+
+.payment-icons img {
+    height: 35px;
+    max-width: 80px;
+    object-fit: contain;
+}
+.payment-icons img[alt="RuPay"] {
+    width: 100px;
+    height: 80px;
+    filter: contrast(1.4);
+}
+.methods {
+    margin-top: 15px;
+}
+
+.payment-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 14px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    transition: border 0.2s ease, background 0.2s ease;
+}
+
+.payment-option:hover {
+    border-color: #7e2626d5;
+    background: #faf5f5;
+}
+
+
+.payment-option input[type="radio"] {
+    transform: scale(1.1);
+    accent-color: #7e2626d5;
+}
+
+
+.payment-content {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.payment-content img {
+    height: 34px;
+    width: auto;
+}
+
+.payment-content strong {
+    font-size: 15px;
+    color: #000;
+}
+
+.payment-content p {
+    font-size: 13px;
+    color: #666;
+    margin: 2px 0 0;
+}
+.payment-option input:checked + .payment-content {
+    font-weight: 500;
+}
+
+.payment-option:has(input:checked) {
+    border-color: #7e2626d5;
+    background: #fff7f7;
+}
+.payment-info {
+    margin-top: 12px;
+    padding: 10px 12px;
+    font-size: 13px;
+    background: #f7f7f7;
+    border-radius: 5px;
+    color: #444;
+}
+
+.payment-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+/* hide by default */
+.payment-desc {
+    display: none;
+    margin: 8px 0 16px 42px; /* aligns nicely under radio */
+    padding: 10px 12px;
+    font-size: 13px;
+    background: #f7f7f7;
+    border-radius: 5px;
+    color: #444;
+}
+
+/* show description when radio is checked */
+.payment-group:has(input[type="radio"]:checked) .payment-desc {
+    display: block;
+}
+
+/* highlight selected box */
+.payment-group:has(input[type="radio"]:checked) .payment-option {
+    border-color: #7e2626d5;
+    background: #fff7f7;
+}
+
+
+/* radio styling */
+.payment-option input[type="radio"] {
+    transform: scale(1.1);
+    accent-color: #7e2626d5;
+}
+
+
+

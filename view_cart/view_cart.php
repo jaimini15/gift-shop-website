@@ -1,5 +1,8 @@
 <?php
 session_start();
+$currentStep = 1;
+include("checkout_steps.php");
+
 include("../AdminPanel/db.php");
 
 if (!isset($_SESSION['User_Id'])) {
@@ -35,7 +38,12 @@ if (mysqli_num_rows($result) == 0) {
 }
 
 $subtotal = 0;
+
+
+/* Estimated Delivery Date */
+$estimatedDate = date("d M Y", strtotime("+3 days"));
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -45,39 +53,15 @@ $subtotal = 0;
 <link rel="stylesheet" href="view_cart.css">
 </head>
 <body>
-
-<!-- HEADER -->
-<header class="cart-header">
-   <div class="header-inner">
-        <div class="logo">GiftShop</div>
-    <div class="steps-wrapper">
-        <div class="step active">
-            <span class="circle">1</span>
-            <span class="label">Cart</span>
-        </div>
-        <div class="line"></div>
-        <div class="step">
-            <span class="circle">2</span>
-            <span class="label">Payment</span>
-        </div>
-        <div class="line"></div>
-        <div class="step">
-            <span class="circle">3</span>
-            <span class="label">Summary</span>
-        </div>
-    </div>
-     <div></div> 
-</div>
-</header>
-
 <!-- MAIN -->
 <div class="cart-container">
 
 <!-- LEFT -->
 <div class="cart-left">
 <h2>Product Details</h2>
+<?php 
 
-<?php while ($row = mysqli_fetch_assoc($result)) :
+while ($row = mysqli_fetch_assoc($result)) :
 
     $img = "data:image/jpeg;base64," . base64_encode($row['Product_Image']);
     $price = $row['Price'];
@@ -85,16 +69,24 @@ $subtotal = 0;
     $subtotal += ($price * $qty);
 ?>
 <br>
-<div class="cart-item">
-    <img src="<?= $img ?>">
-    <div class="item-details">
-        <h3><?= htmlspecialchars($row['Product_Name']) ?></h3>
-        <p class="price">₹<?= number_format($price) ?></p>
-        <p>Qty: <?= $qty ?></p>
-        <p class="return">No return No refund</p>
-        <a href="#" class="remove" data-id="<?= $row['Customize_Id'] ?>">✕ REMOVE</a>
+<div class="cart-box">
+    <div class="cart-item">
+        <img src="<?= $img ?>" alt="product">
+        <div class="item-details">
+            <h3><?= htmlspecialchars($row['Product_Name']) ?></h3>
+            <p class="price">₹<?= number_format($price) ?></p>
+            <p>Qty: <?= $qty ?></p>
+            <p class="return">No return No refund</p>
+            <a href="#" class="remove" data-id="<?= $row['Customize_Id'] ?>">✕ REMOVE</a>
+        </div>
+    </div>
+
+    <div class="delivery-row">
+        <span><strong>Estimated delivery by</strong></span>
+        <span class="date"><?= $estimatedDate ?></span>
     </div>
 </div>
+
 
 <?php endwhile; ?>
 </div>
@@ -103,8 +95,11 @@ $subtotal = 0;
 <?php
 $shipping = 0; // example
 $total = $subtotal - $shipping;
+/* STORE IN SESSION */
+$_SESSION['subtotal'] = $subtotal;
+$_SESSION['shipping'] = $shipping;
+$_SESSION['total']    = $total;
 ?>
-
 <div class="cart-right">
 <h3>Price Details</h3>
 
@@ -124,10 +119,9 @@ $total = $subtotal - $shipping;
     <span>Order Total</span>
     <span>₹<?= number_format($total) ?></span>
 </div>
-
-
-
+<a href="payment.php" style="text-decoration:none;">
 <button class="continue-btn">Continue</button>
+</a>
 <p class="note">Clicking on "Continue" will not deduct any money</p>
 </div>
 

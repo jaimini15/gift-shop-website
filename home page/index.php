@@ -1,3 +1,28 @@
+<?php
+include("../AdminPanel/db.php");
+
+/* Fetch first enabled category */
+$firstCategoryId = null;
+
+$catQ = mysqli_query(
+    $connection,
+    "SELECT Category_Id 
+     FROM category_details 
+     WHERE Status='Enabled' 
+     ORDER BY Category_Id ASC 
+     LIMIT 1"
+);
+
+if ($row = mysqli_fetch_assoc($catQ)) {
+    $firstCategoryId = $row['Category_Id'];
+}
+
+/* Fallback URL if no category exists */
+$shopNowUrl = $firstCategoryId
+    ? "../product_page/product_list.php?category_id=" . $firstCategoryId
+    : "#";
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -146,7 +171,7 @@
       <h3>Upto 50% off</h3>
       <p>Celebrate love, laughter, and memories with custom-made treasures.<br>
       Shop today and save up to 50% on your perfect gift!</p>
-      <a href="contact_us.html" class="btn">Shop now</a>
+      <a href="<?= $shopNowUrl ?>" class="btn">Shop now</a>
     </div>
   </section>
 
