@@ -94,7 +94,8 @@ while ($row = mysqli_fetch_assoc($result)) :
 <!-- RIGHT -->
 <?php
 $shipping = 0; // example
-$total = $subtotal - $shipping;
+$total = max(0, $subtotal - $shipping);
+
 /* STORE IN SESSION */
 $_SESSION['subtotal'] = $subtotal;
 $_SESSION['shipping'] = $shipping;
@@ -119,9 +120,13 @@ $_SESSION['total']    = $total;
     <span>Order Total</span>
     <span>₹<?= number_format($total) ?></span>
 </div>
-<a href="payment.php" style="text-decoration:none;">
-<button class="continue-btn">Continue</button>
-</a>
+<form action="payment.php" method="POST">
+    <button type="submit" class="continue-btn">
+        Continue
+    </button>
+</form>
+
+
 <p class="note">Clicking on "Continue" will not deduct any money</p>
 </div>
 
