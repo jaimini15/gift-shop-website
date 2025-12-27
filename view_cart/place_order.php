@@ -6,23 +6,19 @@ include("../AdminPanel/db.php");
    BASIC VALIDATIONS
 -------------------- */
 if (!isset($_SESSION['User_Id'])) {
-    header("Location: login.php");
+    echo json_encode(["success" => false, "message" => "Login required"]);
     exit;
 }
 
 if (empty($_POST['payment_method'])) {
-    $_SESSION['payment_error'] = "Please select a payment option";
-    header("Location: payment.php");
+    echo json_encode(["success" => false, "message" => "Payment method required"]);
     exit;
 }
 
-$userId        = $_SESSION['User_Id'];
-$totalAmount  = $_SESSION['total'];
-$paymentMethod = $_POST['payment_method'];
+$userId         = $_SESSION['User_Id'];
+$totalAmount    = $_SESSION['total'];
+$paymentMethod  = $_POST['payment_method'];
 
-/* --------------------
-   START TRANSACTION
--------------------- */
 mysqli_begin_transaction($connection);
 
 try {
@@ -30,7 +26,8 @@ try {
     /* --------------------
        GET CART ID
     -------------------- */
-    $cartRes = mysqli_query($connection,
+    $cartRes = mysqli_query(
+        $connection,
         "SELECT Cart_Id FROM cart WHERE User_Id = '$userId'"
     );
 
@@ -42,7 +39,7 @@ try {
     $cartId = $cart['Cart_Id'];
 
     /* --------------------
-       INSERT INTO order
+       INSERT ORDER (PENDING)
     -------------------- */
     $orderSql = "INSERT INTO `order`
         (User_Id, Total_Amount, Status)
@@ -55,7 +52,7 @@ try {
     $orderId = mysqli_insert_id($connection);
 
     /* --------------------
-       FETCH CART ITEMS
+       INSERT ORDER ITEMS
     -------------------- */
     $itemsQuery = mysqli_query($connection, "
         SELECT Product_Id, Quantity, Price, Custom_Text, Custom_Image
@@ -63,9 +60,6 @@ try {
         WHERE Cart_Id = '$cartId'
     ");
 
-    /* --------------------
-       INSERT INTO order_item
-    -------------------- */
     $itemSql = "INSERT INTO order_item
         (Order_Id, Product_Id, Quantity, Price_Snapshot, Custom_Text, Custom_Image)
         VALUES (?, ?, ?, ?, ?, ?)";
@@ -86,22 +80,26 @@ try {
         mysqli_stmt_execute($stmtItem);
     }
 
-    /* --------------------
-       CLEAR CART
-    -------------------- */
-    mysqli_query($connection, "DELETE FROM customize_cart_details WHERE Cart_Id='$cartId'");
-    mysqli_query($connection, "DELETE FROM cart WHERE Cart_Id='$cartId'");
-
-    /* --------------------
-       COMMIT
-    -------------------- */
     mysqli_commit($connection);
 
-    header("Location: order_summary.php?order_id=$orderId");
+    /* --------------------
+       STORE PENDING ORDER
+    -------------------- */
+    $_SESSION['pending_order_id'] = $orderId;
+
+    echo json_encode([
+        "success"  => true,
+        "order_id" => $orderId
+    ]);
     exit;
 
 } catch (Exception $e) {
 
     mysqli_rollback($connection);
-    die("Order Failed: " . $e->getMessage());
+
+    echo json_encode([
+        "success" => false,
+        "message" => $e->getMessage()
+    ]);
+    exit;
 }
