@@ -1,5 +1,13 @@
 <?php
+if (!isset($_SESSION)) session_start();
+
 include(__DIR__ . '/../db.php');
+
+// Only Admin allowed
+if (!isset($_SESSION['admin_id']) || $_SESSION['admin_role'] !== "ADMIN") {
+    header("Location: ../admin_login/login.php?error=Please login first");
+    exit;
+}
 
 if (!isset($_GET['id'])) {
     die("Invalid Request");
@@ -7,18 +15,16 @@ if (!isset($_GET['id'])) {
 
 $id = intval($_GET['id']);
 
-// Fetch data
-$query = "SELECT * FROM user_details WHERE User_Id = $id AND User_Role='DELIVERY_BOY'";
+// Fetch delivery boy
+$query  = "SELECT * FROM user_details WHERE User_Id=$id AND User_Role='DELIVERY_BOY'";
 $result = mysqli_query($connection, $query);
-$data = mysqli_fetch_assoc($result);
+$data   = mysqli_fetch_assoc($result);
 
 if (!$data) {
     die("Delivery Boy not found");
 }
 
-$message = "";
-
-// UPDATE PROCESS
+// UPDATE PROCESS (NO BACKEND VALIDATION)
 if (isset($_POST['update'])) {
 
     $fname    = mysqli_real_escape_string($connection, $_POST['First_Name']);
@@ -31,57 +37,22 @@ if (isset($_POST['update'])) {
     $password = mysqli_real_escape_string($connection, $_POST['Password']);
     $status   = mysqli_real_escape_string($connection, $_POST['Status']);
 
-    /* ===== VALIDATION (SAME AS registration.php) ===== */
+    mysqli_query($connection, "
+        UPDATE user_details SET
+            First_Name='$fname',
+            Last_Name='$lname',
+            DOB='$dob',
+            Phone='$phone',
+            Address='$address',
+            Pincode='$pincode',
+            Email='$email',
+            Password='$password',
+            Status='$status'
+        WHERE User_Id=$id
+    ");
 
-    // First & Last Name (Only alphabets)
-    if (!preg_match("/^[A-Za-z]+$/", $fname) || !preg_match("/^[A-Za-z]+$/", $lname)) {
-        $message = "<div class='alert alert-danger'>Only alphabets allowed in name!</div>";
-    }
-
-    // Age validation (Minimum 17 years)
-    elseif (strtotime($dob) > strtotime('-17 years')) {
-        $message = "<div class='alert alert-danger'>Age must be 17 years or above!</div>";
-    }
-
-    // Phone number (Exactly 10 digits)
-    elseif (!preg_match("/^[0-9]{10}$/", $phone)) {
-        $message = "<div class='alert alert-danger'>Phone number must be exactly 10 digits!</div>";
-    }
-
-    // Pincode (Exactly 6 digits)
-    elseif (!preg_match("/^[0-9]{6}$/", $pincode)) {
-        $message = "<div class='alert alert-danger'>Pincode must be exactly 6 digits!</div>";
-    }
-
-    // Email validation (gmail / yahoo only)
-    elseif (!preg_match("/^[a-zA-Z0-9]+@(gmail|yahoo)\.(com|in)$/", $email)) {
-        $message = "<div class='alert alert-danger'>Invalid Email Format!</div>";
-    }
-
-    /* ===== UPDATE LOGIC ===== */
-    else {
-
-        $update = "
-            UPDATE user_details 
-            SET First_Name='$fname',
-                Last_Name='$lname',
-                DOB='$dob',
-                Phone='$phone',
-                Address='$address',
-                Pincode='$pincode',
-                Email='$email',
-                Password='$password',
-                Status='$status'
-            WHERE User_Id=$id
-        ";
-
-        if (mysqli_query($connection, $update)) {
-            header("Location: ../layout.php?view=delivery_boys&msg=updated");
-            exit;
-        } else {
-            $message = "<div class='alert alert-danger'>Update Failed!</div>";
-        }
-    }
+    header("Location: ../layout.php?view=delivery_boys&msg=updated");
+    exit;
 }
 ?>
 
@@ -108,24 +79,22 @@ if (isset($_POST['update'])) {
 
 <div class="card-box">
 
-    <?= $message ?>
-
-    <h2 class="fw-bold mb-3">
-        <i class="fa-solid fa-motorcycle"></i> Edit Delivery Boy
-    </h2>
+    <h2 class="fw-bold mb-3">Edit Delivery Boy</h2>
 
     <form method="POST">
 
         <div class="row">
             <div class="col-md-6 mb-3">
                 <label>First Name</label>
-                <input type="text" name="First_Name" class="form-control" required
+                <input type="text" name="First_Name" class="form-control"
+                       required pattern="[A-Za-z]+"
                        value="<?= $data['First_Name'] ?>">
             </div>
 
             <div class="col-md-6 mb-3">
                 <label>Last Name</label>
-                <input type="text" name="Last_Name" class="form-control" required
+                <input type="text" name="Last_Name" class="form-control"
+                       required pattern="[A-Za-z]+"
                        value="<?= $data['Last_Name'] ?>">
             </div>
         </div>
@@ -133,13 +102,16 @@ if (isset($_POST['update'])) {
         <div class="row">
             <div class="col-md-6 mb-3">
                 <label>DOB</label>
-                <input type="date" name="DOB" class="form-control" required
+                <input type="date" name="DOB" class="form-control"
+                       required
+                       max="<?= date('Y-m-d', strtotime('-17 years')) ?>"
                        value="<?= $data['DOB'] ?>">
             </div>
 
             <div class="col-md-6 mb-3">
                 <label>Phone</label>
-                <input type="text" name="Phone" maxlength="10" class="form-control" required
+                <input type="text" name="Phone" class="form-control"
+                       required pattern="[0-9]{10}" maxlength="10"
                        value="<?= $data['Phone'] ?>">
             </div>
         </div>
@@ -152,27 +124,31 @@ if (isset($_POST['update'])) {
 
         <div class="mb-3">
             <label>Pincode</label>
-            <input type="text" name="Pincode" maxlength="6" class="form-control" required
+            <input type="text" name="Pincode" class="form-control"
+                   required pattern="[0-9]{6}" maxlength="6"
                    value="<?= $data['Pincode'] ?>">
         </div>
 
         <div class="mb-3">
             <label>Email</label>
-            <input type="email" name="Email" class="form-control" required
+            <input type="email" name="Email" class="form-control"
+                   required
+                   pattern="[a-zA-Z0-9]+@(gmail|yahoo)\.(com|in)"
                    value="<?= $data['Email'] ?>">
         </div>
 
         <div class="mb-3">
             <label>Password</label>
-            <input type="text" name="Password" class="form-control" required
+            <input type="text" name="Password" class="form-control"
+                   required maxlength="10"
                    value="<?= $data['Password'] ?>">
         </div>
 
         <div class="mb-3">
             <label>Status</label>
-            <select name="Status" class="form-control">
-                <option value="ENABLE"  <?= ($data['Status'] == 'ENABLE') ? 'selected' : '' ?>>ENABLE</option>
-                <option value="DISABLE" <?= ($data['Status'] == 'DISABLE') ? 'selected' : '' ?>>DISABLE</option>
+            <select name="Status" class="form-control" required>
+                <option value="ENABLE"  <?= ($data['Status']=='ENABLE')?'selected':'' ?>>ENABLE</option>
+                <option value="DISABLE" <?= ($data['Status']=='DISABLE')?'selected':'' ?>>DISABLE</option>
             </select>
         </div>
 
@@ -180,6 +156,7 @@ if (isset($_POST['update'])) {
         <a href="../layout.php?view=delivery_boys" class="btn btn-secondary">Back</a>
 
     </form>
+
 </div>
 
 </body>

@@ -9,69 +9,31 @@ if (!isset($_SESSION['admin_id']) || $_SESSION['admin_role'] !== "ADMIN") {
     exit;
 }
 
-$message = "";
-
 if (isset($_POST['add'])) {
 
-    $first   = mysqli_real_escape_string($connection, $_POST['first_name']);
-    $last    = mysqli_real_escape_string($connection, $_POST['last_name']);
-    $dob     = mysqli_real_escape_string($connection, $_POST['dob']);
-    $phone   = mysqli_real_escape_string($connection, $_POST['phone']);
-    $address = mysqli_real_escape_string($connection, $_POST['address']);
-    $pincode = mysqli_real_escape_string($connection, $_POST['pincode']);
-    $email   = mysqli_real_escape_string($connection, $_POST['email']);
-    $password= mysqli_real_escape_string($connection, $_POST['password']);
-    $status  = mysqli_real_escape_string($connection, $_POST['status']);
+    $first    = mysqli_real_escape_string($connection, $_POST['first_name']);
+    $last     = mysqli_real_escape_string($connection, $_POST['last_name']);
+    $dob      = mysqli_real_escape_string($connection, $_POST['dob']);
+    $phone    = mysqli_real_escape_string($connection, $_POST['phone']);
+    $address  = mysqli_real_escape_string($connection, $_POST['address']);
+    $pincode  = mysqli_real_escape_string($connection, $_POST['pincode']);
+    $email    = mysqli_real_escape_string($connection, $_POST['email']);
+    $password = mysqli_real_escape_string($connection, $_POST['password']);
+    $status   = mysqli_real_escape_string($connection, $_POST['status']);
 
-    /* ===== VALIDATION (SAME AS registration.php) ===== */
+    // Check email exists (ONLY backend check needed)
+    $check = mysqli_query($connection, "SELECT * FROM user_details WHERE Email='$email'");
+    if (mysqli_num_rows($check) == 0) {
 
-    // First & Last Name (Only alphabets)
-    if (!preg_match("/^[A-Za-z]+$/", $first) || !preg_match("/^[A-Za-z]+$/", $last)) {
-        $message = "<div class='alert alert-danger'>Only alphabets allowed in name!</div>";
-    }
-
-    // Age validation (Minimum 17 years)
-    elseif (strtotime($dob) > strtotime('-17 years')) {
-        $message = "<div class='alert alert-danger'>Age must be 17 years or above!</div>";
-    }
-
-    // Phone number (Exactly 10 digits)
-    elseif (!preg_match("/^[0-9]{10}$/", $phone)) {
-        $message = "<div class='alert alert-danger'>Phone number must be exactly 10 digits!</div>";
-    }
-
-    // Pincode (Exactly 6 digits)
-    elseif (!preg_match("/^[0-9]{6}$/", $pincode)) {
-        $message = "<div class='alert alert-danger'>Pincode must be exactly 6 digits!</div>";
-    }
-
-    // Email validation (gmail / yahoo only)
-    elseif (!preg_match("/^[a-zA-Z0-9]+@(gmail|yahoo)\.(com|in)$/", $email)) {
-        $message = "<div class='alert alert-danger'>Invalid Email Format!</div>";
-    }
-
-    /* ===== INSERT LOGIC ===== */
-    else {
-
-        // Check if email exists
-        $check = mysqli_query($connection, "SELECT * FROM user_details WHERE Email='$email'");
-        if (mysqli_num_rows($check) > 0) {
-            $message = "<div class='alert alert-danger'>Email already exists!</div>";
-        } else {
-
-            // Insert record
-            $query = "INSERT INTO user_details
+        mysqli_query($connection, "
+            INSERT INTO user_details
             (First_Name, Last_Name, DOB, User_Role, Phone, Address, Pincode, Email, Password, Status)
             VALUES
-            ('$first', '$last', '$dob', 'DELIVERY_BOY', '$phone', '$address', '$pincode', '$email', '$password', '$status')";
+            ('$first','$last','$dob','DELIVERY_BOY','$phone','$address','$pincode','$email','$password','$status')
+        ");
 
-            if (mysqli_query($connection, $query)) {
-                header("Location: ../layout.php?view=delivery_boys&msg=added");
-                exit;
-            } else {
-                $message = "<div class='alert alert-danger'>Failed to add delivery boy!</div>";
-            }
-        }
+        header("Location: ../layout.php?view=delivery_boys&msg=added");
+        exit;
     }
 }
 ?>
@@ -88,64 +50,71 @@ if (isset($_POST['add'])) {
 
     <h3 class="mb-4">Add Delivery Boy</h3>
 
-    <?= $message ?>
-
     <form method="POST">
 
         <div class="row">
             <div class="col-md-6 mb-3">
                 <label class="form-label">First Name</label>
-                <input type="text" name="first_name" class="form-control" required
-                       value="<?= $_POST['first_name'] ?? '' ?>">
+                <input type="text" name="first_name" class="form-control"
+                       required pattern="[A-Za-z]+"
+                       title="Only alphabets allowed">
             </div>
 
             <div class="col-md-6 mb-3">
                 <label class="form-label">Last Name</label>
-                <input type="text" name="last_name" class="form-control" required
-                       value="<?= $_POST['last_name'] ?? '' ?>">
+                <input type="text" name="last_name" class="form-control"
+                       required pattern="[A-Za-z]+"
+                       title="Only alphabets allowed">
             </div>
         </div>
 
         <div class="mb-3">
             <label class="form-label">DOB</label>
-            <input type="date" name="dob" class="form-control" required
-                   value="<?= $_POST['dob'] ?? '' ?>">
+            <input type="date" name="dob" class="form-control"
+                   required
+                   max="<?= date('Y-m-d', strtotime('-17 years')) ?>">
         </div>
 
         <div class="mb-3">
             <label class="form-label">Phone Number</label>
-            <input type="text" name="phone" maxlength="10" class="form-control" required
-                   value="<?= $_POST['phone'] ?? '' ?>">
+            <input type="text" name="phone" class="form-control"
+                   required pattern="[0-9]{10}"
+                   maxlength="10"
+                   title="Exactly 10 digits">
         </div>
 
         <div class="mb-3">
             <label class="form-label">Full Address</label>
-            <textarea name="address" class="form-control" required><?= $_POST['address'] ?? '' ?></textarea>
+            <textarea name="address" class="form-control" required></textarea>
         </div>
 
         <div class="mb-3">
             <label class="form-label">Pincode</label>
-            <input type="text" name="pincode" maxlength="6" class="form-control" required
-                   value="<?= $_POST['pincode'] ?? '' ?>">
+            <input type="text" name="pincode" class="form-control"
+                   required pattern="[0-9]{6}"
+                   maxlength="6"
+                   title="Exactly 6 digits">
         </div>
 
         <div class="mb-3">
             <label class="form-label">Email ID</label>
-            <input type="email" name="email" maxlength="40" class="form-control" required
-                   value="<?= $_POST['email'] ?? '' ?>">
+            <input type="email" name="email" class="form-control"
+                   required
+                   pattern="[a-zA-Z0-9]+@(gmail|yahoo)\.(com|in)"
+                   title="Only Gmail or Yahoo email allowed">
         </div>
 
         <div class="mb-3">
             <label class="form-label">Password</label>
-            <input type="text" name="password" maxlength="10" class="form-control" required
-                   value="<?= $_POST['password'] ?? '' ?>">
+            <input type="text" name="password" class="form-control"
+                   required maxlength="10">
         </div>
 
         <div class="mb-3">
             <label class="form-label">Status</label>
             <select name="status" class="form-control" required>
-                <option value="ENABLE" <?= (($_POST['status'] ?? '') == "ENABLE") ? 'selected' : '' ?>>ENABLE</option>
-                <option value="DISABLE" <?= (($_POST['status'] ?? '') == "DISABLE") ? 'selected' : '' ?>>DISABLE</option>
+                <option value="ENABLE">ENABLE</option>
+                <option value="DISABLE">DISABLE</option>
             </select>
         </div>
 
