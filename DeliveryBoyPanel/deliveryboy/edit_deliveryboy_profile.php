@@ -16,7 +16,7 @@ $delivery_boy = mysqli_fetch_assoc($res);
 
 $error = "";
 
-// Update profile and password
+// Update profile and password (UNCHANGED)
 if (isset($_POST['update'])) {
 
     $fname   = mysqli_real_escape_string($connection, $_POST['fname']);
@@ -31,40 +31,10 @@ if (isset($_POST['update'])) {
     $new_password     = $_POST['new_password'] ?? '';
     $confirm_password = $_POST['confirm_password'] ?? '';
 
-    /* ================= VALIDATION (SAME AS REGISTRATION) ================= */
-
-    // First & Last Name (Only alphabets)
-    if (!preg_match("/^[A-Za-z]+$/", $fname) || !preg_match("/^[A-Za-z]+$/", $lname)) {
-        $error = "Only alphabets allowed in name!";
-    }
-
-    // Age validation (Minimum 17 years)
-    elseif (!empty($dob) && strtotime($dob) > strtotime('-17 years')) {
-        $error = "Age must be 17 years or above!";
-    }
-
-    // Phone number (Exactly 10 digits)
-    elseif (!empty($phone) && !preg_match("/^[0-9]{10}$/", $phone)) {
-        $error = "Phone number must be exactly 10 digits!";
-    }
-
-    // Pincode (Exactly 6 digits)
-    elseif (!empty($pincode) && !preg_match("/^[0-9]{6}$/", $pincode)) {
-        $error = "Pincode must be exactly 6 digits!";
-    }
-
-    // Email validation (gmail / yahoo only)
-    elseif (!preg_match("/^[a-zA-Z0-9]+@(gmail|yahoo)\.(com|in)$/", $email)) {
-        $error = "Invalid Email Format!";
-    }
-
-    /* ================= PASSWORD LOGIC (UNCHANGED) ================= */
-
     $db_pass = $delivery_boy['Password'];
 
-    if (empty($error) &&
-        ($current_password !== '' || $new_password !== '' || $confirm_password !== '')
-    ) {
+    if ($current_password !== '' || $new_password !== '' || $confirm_password !== '') {
+
         if ($current_password !== $db_pass) {
             $error = "Current password is incorrect!";
         }
@@ -73,21 +43,18 @@ if (isset($_POST['update'])) {
         }
         else {
             $plain_pass = mysqli_real_escape_string($connection, $new_password);
-            if (!mysqli_query(
+            mysqli_query(
                 $connection,
                 "UPDATE user_details SET Password='$plain_pass' WHERE User_Id=$delivery_boy_id"
-            )) {
-                $error = "Failed to update password.";
-            }
+            );
         }
     }
 
-    /* ================= UPDATE PROFILE ================= */
-
     if (empty($error)) {
 
-        $update_q = "
-            UPDATE user_details SET
+        mysqli_query(
+            $connection,
+            "UPDATE user_details SET
                 First_Name='$fname',
                 Last_Name='$lname',
                 DOB='$dob',
@@ -95,15 +62,11 @@ if (isset($_POST['update'])) {
                 Address='$address',
                 Pincode='$pincode',
                 Email='$email'
-            WHERE User_Id=$delivery_boy_id
-        ";
+            WHERE User_Id=$delivery_boy_id"
+        );
 
-        if (mysqli_query($connection, $update_q)) {
-            header("Location: ../layout.php?view=profile&success=Profile updated successfully");
-            exit;
-        } else {
-            $error = "Error updating profile.";
-        }
+        header("Location: ../layout.php?view=profile&success=Profile updated successfully");
+        exit;
     }
 }
 ?>
@@ -133,52 +96,62 @@ if (isset($_POST['update'])) {
 </h3>
 
 <?php if (!empty($error)) { ?>
-    <div class="alert alert-danger text-center"><?php echo htmlspecialchars($error); ?></div>
+    <div class="alert alert-danger text-center"><?= htmlspecialchars($error) ?></div>
 <?php } ?>
 
-<form method="POST" novalidate>
+<!-- 🔴 novalidate REMOVED so HTML validation works -->
+<form method="POST">
 
 <div class="row">
     <div class="col-md-6 mb-3">
         <label class="form-label">First Name</label>
         <input type="text" name="fname" class="form-control"
-               value="<?php echo htmlspecialchars($delivery_boy['First_Name']); ?>" required>
+               required pattern="[A-Za-z]+"
+               value="<?= htmlspecialchars($delivery_boy['First_Name']); ?>">
     </div>
 
     <div class="col-md-6 mb-3">
         <label class="form-label">Last Name</label>
         <input type="text" name="lname" class="form-control"
-               value="<?php echo htmlspecialchars($delivery_boy['Last_Name']); ?>" required>
+               required pattern="[A-Za-z]+"
+               value="<?= htmlspecialchars($delivery_boy['Last_Name']); ?>">
     </div>
 
     <div class="col-md-6 mb-3">
         <label class="form-label">Date of Birth</label>
         <input type="date" name="dob" class="form-control"
-               value="<?php echo htmlspecialchars($delivery_boy['DOB']); ?>">
+               required
+               max="<?= date('Y-m-d', strtotime('-17 years')) ?>"
+               value="<?= htmlspecialchars($delivery_boy['DOB']); ?>">
     </div>
 
     <div class="col-md-6 mb-3">
         <label class="form-label">Phone</label>
         <input type="text" name="phone" class="form-control"
-               value="<?php echo htmlspecialchars($delivery_boy['Phone']); ?>">
+               required pattern="[0-9]{10}" maxlength="10"
+               value="<?= htmlspecialchars($delivery_boy['Phone']); ?>">
     </div>
 
     <div class="col-md-12 mb-3">
         <label class="form-label">Address</label>
         <input type="text" name="address" class="form-control"
-               value="<?php echo htmlspecialchars($delivery_boy['Address']); ?>">
+               required
+               value="<?= htmlspecialchars($delivery_boy['Address']); ?>">
     </div>
 
     <div class="col-md-6 mb-3">
         <label class="form-label">Pincode</label>
         <input type="text" name="pincode" class="form-control"
-               value="<?php echo htmlspecialchars($delivery_boy['Pincode']); ?>">
+               required pattern="[0-9]{6}" maxlength="6"
+               value="<?= htmlspecialchars($delivery_boy['Pincode']); ?>">
     </div>
 
     <div class="col-md-6 mb-3">
         <label class="form-label">Email</label>
         <input type="email" name="email" class="form-control"
-               value="<?php echo htmlspecialchars($delivery_boy['Email']); ?>" required>
+               required
+               pattern="[a-zA-Z0-9._%+-]+@(gmail|yahoo)\.(com|in)"
+               value="<?= htmlspecialchars($delivery_boy['Email']); ?>">
     </div>
 </div>
 
