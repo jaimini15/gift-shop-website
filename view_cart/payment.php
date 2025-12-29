@@ -171,11 +171,15 @@ if (!$userId) {
     font-size: 50px;
     color: #1aa14a;
     margin-bottom: 10px;
+    background-color:white;
+   width:100%;
 }
 
 #successState h3 {
+    background-color:white;
     color: #1aa14a;
     margin: 10px 0;
+    width:100%;
 }
 
     </style>
