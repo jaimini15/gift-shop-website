@@ -34,41 +34,12 @@ if (isset($_POST['update'])) {
     $new_password     = $_POST['new_password'];
     $confirm_password = $_POST['confirm_password'];
 
-    // ================= VALIDATION (SAME AS REGISTRATION) =================
+    /* ================= PASSWORD LOGIC (UNCHANGED) ================= */
 
-    // First & Last Name (Only alphabets)
-    if (!preg_match("/^[A-Za-z]+$/", $fname) || !preg_match("/^[A-Za-z]+$/", $lname)) {
-        $error = "Only alphabets allowed in name!";
-    }
-
-    // Age validation (Minimum 17 years)
-    elseif (!empty($dob) && strtotime($dob) > strtotime('-17 years')) {
-        $error = "Age must be 17 years or above!";
-    }
-
-    // Phone number (Exactly 10 digits)
-    elseif (!empty($phone) && !preg_match("/^[0-9]{10}$/", $phone)) {
-        $error = "Phone number must be exactly 10 digits!";
-    }
-
-    // Pincode (Exactly 6 digits)
-    elseif (!empty($pincode) && !preg_match("/^[0-9]{6}$/", $pincode)) {
-        $error = "Pincode must be exactly 6 digits!";
-    }
-
-    // Email validation (gmail / yahoo only)
-    elseif (!preg_match("/^[a-zA-Z0-9]+@(gmail|yahoo)\.(com|in)$/", $email)) {
-        $error = "Invalid Email Format!";
-    }
-
-    // ================= PASSWORD LOGIC (UNCHANGED) =================
-
-    // Get current DB password (PLAIN TEXT)
     $db_pass = $admin['Password'];
 
-    if (empty($error) &&
-        (!empty($current_password) || !empty($new_password) || !empty($confirm_password))
-    ) {
+    if (!empty($current_password) || !empty($new_password) || !empty($confirm_password)) {
+
         if ($current_password !== $db_pass) {
             $error = "Current password is incorrect!";
         }
@@ -78,22 +49,18 @@ if (isset($_POST['update'])) {
         else {
             $plain_pass = mysqli_real_escape_string($connection, $new_password);
 
-            $password_update = mysqli_query(
+            mysqli_query(
                 $connection,
                 "UPDATE user_details SET Password='$plain_pass' WHERE User_Id=$admin_id"
             );
-
-            if (!$password_update) {
-                $error = "Failed to update password!";
-            }
         }
     }
 
-    // ================= UPDATE PROFILE =================
+    /* ================= UPDATE PROFILE ================= */
 
     if (empty($error)) {
 
-        $update = mysqli_query(
+        mysqli_query(
             $connection,
             "UPDATE user_details SET 
                 First_Name='$fname',
@@ -106,12 +73,8 @@ if (isset($_POST['update'])) {
             WHERE User_Id=$admin_id"
         );
 
-        if ($update) {
-            header("Location: ../layout.php?view=admin_profile&success=Profile updated successfully");
-            exit;
-        } else {
-            $error = "Error updating profile.";
-        }
+        header("Location: ../layout.php?view=admin_profile&success=Profile updated successfully");
+        exit;
     }
 }
 ?>
@@ -159,43 +122,50 @@ if (isset($_POST['update'])) {
     <div class="col-md-6 mb-3">
         <label class="form-label">First Name</label>
         <input type="text" name="fname" class="form-control"
-               value="<?php echo $admin['First_Name']; ?>" required>
+               required pattern="[A-Za-z]+"
+               value="<?= $admin['First_Name']; ?>">
     </div>
 
     <div class="col-md-6 mb-3">
         <label class="form-label">Last Name</label>
         <input type="text" name="lname" class="form-control"
-               value="<?php echo $admin['Last_Name']; ?>" required>
+               required pattern="[A-Za-z]+"
+               value="<?= $admin['Last_Name']; ?>">
     </div>
 
     <div class="col-md-6 mb-3">
         <label class="form-label">Date of Birth</label>
         <input type="date" name="dob" class="form-control"
-               value="<?php echo $admin['DOB']; ?>">
+               max="<?= date('Y-m-d', strtotime('-17 years')) ?>"
+               value="<?= $admin['DOB']; ?>">
     </div>
 
     <div class="col-md-6 mb-3">
         <label class="form-label">Phone</label>
         <input type="text" name="phone" class="form-control"
-               value="<?php echo $admin['Phone']; ?>">
+               pattern="[0-9]{10}" maxlength="10"
+               value="<?= $admin['Phone']; ?>">
     </div>
 
     <div class="col-md-12 mb-3">
         <label class="form-label">Address</label>
         <input type="text" name="address" class="form-control"
-               value="<?php echo $admin['Address']; ?>">
+               value="<?= $admin['Address']; ?>">
     </div>
 
     <div class="col-md-6 mb-3">
         <label class="form-label">Pincode</label>
         <input type="text" name="pincode" class="form-control"
-               value="<?php echo $admin['Pincode']; ?>">
+               pattern="[0-9]{6}" maxlength="6"
+               value="<?= $admin['Pincode']; ?>">
     </div>
 
     <div class="col-md-6 mb-3">
         <label class="form-label">Email</label>
         <input type="email" name="email" class="form-control"
-               value="<?php echo $admin['Email']; ?>" required>
+               required
+               pattern="[a-zA-Z0-9]+@(gmail|yahoo)\.(com|in)"
+               value="<?= $admin['Email']; ?>">
     </div>
 </div>
 
