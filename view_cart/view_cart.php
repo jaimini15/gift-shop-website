@@ -60,13 +60,13 @@ $estimatedDate = date("d M Y", strtotime("+3 days"));
 <div class="cart-left">
 <h2>Product Details</h2>
 <?php 
-
+$totalItems = 0;
 while ($row = mysqli_fetch_assoc($result)) :
-
     $img = "data:image/jpeg;base64," . base64_encode($row['Product_Image']);
     $price = $row['Price'];
     $qty   = $row['Quantity'];
     $subtotal += ($price * $qty);
+     $totalItems += $qty;
 ?>
 <br>
 <div class="cart-box">
@@ -121,6 +121,15 @@ $_SESSION['total']    = $total;
     <span>₹<?= number_format($total) ?></span>
 </div>
 <form action="payment.php" method="POST">
+    <?php if ($totalItems >= 3): ?>
+<div style="margin:15px 0;">
+    <label>
+        <input type="checkbox" name="hamper" value="1"
+            <?= !empty($_SESSION['hamper_selected']) ? 'checked' : '' ?>>
+         🎁 You have 3 or more items. Pack as gift hamper?
+    </label>
+</div>
+<?php endif; ?>
     <button type="submit" class="continue-btn">
         Continue
     </button>
