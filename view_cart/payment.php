@@ -273,15 +273,35 @@ function showError(msg) {
 }
 
 function closePopup() {
+
+    // 🔔 Step 1: Show alert (ONLY OK button)
+    alert("❌ Payment failed");
+
+    // 🔁 Step 2: Cancel order AFTER user clicks OK
+    if (!window.pendingOrderId) return;
+
     fetch("cancel_order.php", {
         method: "POST",
-        headers: {"Content-Type":"application/json"},
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ order_id: window.pendingOrderId })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            console.log("Pending order cancelled successfully");
+        } else {
+            console.log("Cancel failed:", data.error || data.message);
+        }
+    })
+    .finally(() => {
+        // 🧹 Step 3: Close popup & unblur page
+        document.getElementById("paymentOverlay").style.display = "none";
+        document.querySelector(".container").classList.remove("blur");
+        window.pendingOrderId = null;
     });
-
-    document.getElementById("paymentOverlay").style.display = "none";
-    document.querySelector(".container").classList.remove("blur");
 }
+
+
 
 
 document.getElementById("placeOrderBtn").addEventListener("click", function(){
@@ -293,19 +313,37 @@ document.getElementById("placeOrderBtn").addEventListener("click", function(){
     }
     document.getElementById("paymentMethodInput").value = selected.value;
 
-    fetch("create_pending_order.php", {
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body: JSON.stringify({payment_method:selected.value})
-    })
-    .then(res=>res.json())
-    .then(data=>{
-        if(!data.success){ alert(data.error || "Order creation failed"); return; }
-        window.pendingOrderId = data.order_id;
-        document.getElementById("paymentOverlay").style.display="flex";
+   fetch("place_order.php", {
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body: JSON.stringify({payment_method:selected.value})
+})
+
+    .then(res => res.json())
+.then(data => {
+
+    // 🔁 Pending order already exists → resume payment popup
+    if (!data.success && data.pending) {
+        document.getElementById("paymentOverlay").style.display = "flex";
         document.querySelector(".container").classList.add("blur");
-    }).catch(()=>alert("Network error"));
-});
+        return;
+    }
+
+    // ❌ Real error
+    if (!data.success) {
+        alert(data.error || data.message || "Order creation failed");
+        return;
+    }
+
+    // ✅ New order created
+    window.pendingOrderId = data.order_id;
+    document.getElementById("paymentOverlay").style.display = "flex";
+    document.querySelector(".container").classList.add("blur");
+
+})
+.catch(() => alert("Network error"));
+}); // ✅ CLOSE placeOrderBtn click listener
+
 
 document.querySelector(".pay-btn").addEventListener("click", function(e){
     e.preventDefault();
