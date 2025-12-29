@@ -14,7 +14,8 @@ if (!isset($_SESSION['User_Id'])) {
     exit;
 }
 
-$userId = $_SESSION['User_Id'];
+$userId         = $_SESSION['User_Id'];
+$hamperSelected = $_SESSION['hamper_selected'] ?? 0;
 
 /* =======================
    READ JSON INPUT
@@ -29,14 +30,15 @@ if (empty($data['payment_method'])) {
     exit;
 }
 
-$paymentMethod = $data['payment_method'];
+$paymentMethod = trim($data['payment_method']);
 
 /* =======================
    PREVENT MULTIPLE PENDING ORDERS
 ======================= */
 $stmt = mysqli_prepare(
     $connection,
-    "SELECT Order_Id FROM `order`
+    "SELECT Order_Id
+     FROM `order`
      WHERE User_Id = ? AND Status = 'PENDING'
      LIMIT 1"
 );
@@ -45,12 +47,11 @@ mysqli_stmt_execute($stmt);
 $res = mysqli_stmt_get_result($stmt);
 
 if (mysqli_fetch_assoc($res)) {
-   echo json_encode([
-    "success"  => false,
-    "pending"  => true,
-    "message"  => "You already have a pending order"
-]);
-
+    echo json_encode([
+        "success" => false,
+        "pending" => true,
+        "message" => "You already have a pending order"
+    ]);
     exit;
 }
 
@@ -77,7 +78,7 @@ if (!$cart) {
 $cartId = $cart['Cart_Id'];
 
 /* =======================
-   CALCULATE TOTAL (DB ONLY)
+   CALCULATE TOTAL (DB SOURCE)
 ======================= */
 $stmt = mysqli_prepare(
     $connection,
@@ -140,20 +141,21 @@ try {
     $stmtInsertItem = mysqli_prepare(
         $connection,
         "INSERT INTO order_item
-         (Order_Id, Product_Id, Quantity, Price_Snapshot, Custom_Text, Custom_Image)
-         VALUES (?, ?, ?, ?, ?, ?)"
+        (Order_Id, Product_Id, Quantity, Price_Snapshot, Custom_Text, Custom_Image, Is_Hamper_Suggested)
+        VALUES (?, ?, ?, ?, ?, ?, ?)"
     );
 
     while ($item = mysqli_fetch_assoc($itemsRes)) {
         mysqli_stmt_bind_param(
             $stmtInsertItem,
-            "iiidss",
+            "iiidssi",
             $orderId,
             $item['Product_Id'],
             $item['Quantity'],
             $item['Price'],
             $item['Custom_Text'],
-            $item['Custom_Image']
+            $item['Custom_Image'],
+            $hamperSelected
         );
         mysqli_stmt_execute($stmtInsertItem);
     }
@@ -163,6 +165,7 @@ try {
     ======================= */
     mysqli_commit($connection);
 
+    // ✅ SET pending order ID ONCE
     $_SESSION['pending_order_id'] = $orderId;
 
     echo json_encode([
