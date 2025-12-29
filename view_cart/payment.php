@@ -2,7 +2,10 @@
 session_start();
 include("../AdminPanel/db.php");
 $currentStep = 2;
+
 include("checkout_steps.php");
+// Save hamper choice (default false)
+$_SESSION['hamper_selected'] = isset($_POST['hamper']) ? 1 : 0;
 
 // Validate totals
 if (!isset($_SESSION['subtotal'], $_SESSION['total'])) {
@@ -126,6 +129,54 @@ if (!$userId) {
 .total-breakup.show {
     display: block;
 }
+/* Loading of payment process */
+/* ===== LOADING OVERLAY ===== */
+#loadingOverlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+/* ===== POPUP BOX ===== */
+.loading-content {
+    /* background: #fff; */
+    padding: 30px;
+    border-radius: 12px;
+    text-align: center;
+    width: 350px;
+}
+
+/* ===== SPINNER ===== */
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid #eee;
+    border-top: 4px solid #7e2626d5;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 15px;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+}
+
+/* ===== SUCCESS STATE ===== */
+.checkmark {
+    font-size: 50px;
+    color: #1aa14a;
+    margin-bottom: 10px;
+}
+
+#successState h3 {
+    color: #1aa14a;
+    margin: 10px 0;
+}
 
     </style>
 </head>
@@ -225,25 +276,46 @@ if (!$userId) {
                 </div>
 
                 <div class="modal-right">
-                    <h4>Debit / Credit Card</h4>
-                    <label>Card Number</label>
-                    <input type="text" id="cardNumber" placeholder="0000 0000 0000 0000">
-                    <label>Name on Card</label>
-                    <input type="text" id="cardName" placeholder="Enter name on card">
-                    <div class="row">
-                        <div>
-                            <label>Expiry Date</label>
-                            <input type="text" id="expiry" placeholder="MM/YY" maxlength="5">
-                        </div>
-                        <div>
-                            <label>CVV</label>
-                            <input type="password" id="cvv" placeholder="CVV" maxlength="3">
-                        </div>
-                    </div>
-                    <button class="pay-btn">Proceed</button>
-                    <p id="cardError" class="card-error"></p>
-                    <p id="cardSuccess" style="color:green;font-size:15px;font-weight:500;display:none;">✔ Your payment was successful</p>
-                </div>
+
+    <!-- ===== CARD PANEL (existing UI) ===== -->
+    <div id="cardPanel">
+        <h4>Debit / Credit Card</h4>
+
+        <label>Card Number</label>
+        <input type="text" id="cardNumber" placeholder="0000 0000 0000 0000">
+
+        <label>Name on Card</label>
+        <input type="text" id="cardName" placeholder="Enter name on card">
+
+        <div class="row">
+            <div>
+                <label>Expiry Date</label>
+                <input type="text" id="expiry" placeholder="MM/YY" maxlength="5">
+            </div>
+            <div>
+                <label>CVV</label>
+                <input type="password" id="cvv" placeholder="CVV" maxlength="3">
+            </div>
+        </div>
+
+        <button class="pay-btn">Proceed</button>
+        <p id="cardError" class="card-error"></p>
+    </div>
+
+    <!-- ===== UPI PANEL (NEW) ===== -->
+    <div id="upiPanel" style="display:none;">
+        <h4>Pay using UPI ID</h4>
+
+        <label>UPI ID</label>
+        <input type="text" id="upiId" placeholder="example@upi">
+
+        <button class="pay-btn" id="upiPayBtn">Verify & Pay</button>
+
+        <p id="upiError" class="card-error"></p>
+    </div>
+
+</div>
+
             </div>
         </div>
     </div>
@@ -345,59 +417,158 @@ document.getElementById("placeOrderBtn").addEventListener("click", function(){
 }); // ✅ CLOSE placeOrderBtn click listener
 
 
-document.querySelector(".pay-btn").addEventListener("click", function(e){
+document.querySelector(".pay-btn").addEventListener("click", function (e) {
     e.preventDefault();
 
-    const errorBox = document.getElementById("cardError");
-    const successBox = document.getElementById("cardSuccess");
-
-    errorBox.style.visibility = "hidden";
-    successBox.style.display = "none";
-
+    /* ================= VALIDATION ================= */
     const cardNumber = document.getElementById("cardNumber").value.replace(/\s+/g,"");
     const cardName   = document.getElementById("cardName").value.trim();
     const expiry     = document.getElementById("expiry").value.trim();
     const cvv        = document.getElementById("cvv").value.trim();
 
-    if(!/^\d{16}$/.test(cardNumber)){
-        return showError("Card number must be 16 digits");
-    }
-    if(!/^[A-Za-z ]+$/.test(cardName)){
-        return showError("Invalid card holder name");
-    }
-    if(!/^\d{3}$/.test(cvv)){
-        return showError("CVV must be 3 digits");
-    }
-    if(!/^(0[1-9]|1[0-2])\/\d{2}$/.test(expiry)){
-        return showError("Invalid expiry format (MM/YY)");
-    }
+    if(!/^\d{16}$/.test(cardNumber)) return alert("Invalid card number");
+    if(!/^[A-Za-z ]+$/.test(cardName)) return alert("Invalid card holder name");
+    if(!/^\d{3}$/.test(cvv)) return alert("Invalid CVV");
+    if(!/^(0[1-9]|1[0-2])\/\d{2}$/.test(expiry)) return alert("Invalid expiry");
 
-    fetch("confirm_payment.php", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            order_id: window.pendingOrderId,
-            payment_method: document.getElementById("paymentMethodInput").value
+    /* ================= UI SWITCH ================= */
+    document.getElementById("paymentOverlay").style.display = "none";
+
+    const loader = document.getElementById("loadingOverlay");
+    loader.style.display = "flex";
+
+    document.getElementById("loadingState").style.display = "block";
+    document.getElementById("successState").style.display = "none";
+
+    document.querySelector(".container").classList.add("blur");
+
+    /* ================= PAYMENT ================= */
+    setTimeout(() => {
+
+        fetch("confirm_payment.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                order_id: window.pendingOrderId,
+                payment_method: document.getElementById("paymentMethodInput").value
+            })
         })
-    })
-    .then(res => res.json())
-    .then(data => {
-        if(!data.success){
-            return showError(data.error || "Payment failed");
-        }
+        .then(res => res.json())
+        .then(data => {
 
-        successBox.style.display = "block";
-         // 🔒 Disable close (X) after successful payment
-    document.querySelector(".close-btn").style.pointerEvents = "none";
-    document.querySelector(".close-btn").style.opacity = "0.4";
+            if(!data.success){
+                loader.style.display="none";
+                alert(data.error || "Payment failed");
+                return;
+            }
 
-        setTimeout(() => {
-            window.location.href = "order_summary.php?order_id=" + data.order_id;
-        }, 1200);
-    })
-    .catch(() => showError("Network error"));
+            /* ✅ SUCCESS STATE */
+            document.getElementById("loadingState").style.display = "none";
+            document.getElementById("successState").style.display = "block";
+
+            setTimeout(() => {
+                window.location.href =
+                    "order_summary.php?order_id=" + data.order_id;
+            }, 1500);
+
+        });
+
+    }, 4000); // realistic delay
 });
 </script>
+<script>
+document.getElementById("upiPayBtn").addEventListener("click", function () {
+
+    const upiId = document.getElementById("upiId").value.trim();
+    const error = document.getElementById("upiError");
+
+    error.style.visibility = "hidden";
+
+    if (!/^[\w.-]+@[\w.-]+$/.test(upiId)) {
+        error.innerText = "Invalid UPI ID";
+        error.style.visibility = "visible";
+        return;
+    }
+
+    // Close payment popup
+    document.getElementById("paymentOverlay").style.display = "none";
+
+    // Show loading overlay
+    document.getElementById("loadingOverlay").style.display = "flex";
+    document.getElementById("loadingState").style.display = "block";
+    document.getElementById("successState").style.display = "none";
+
+    setTimeout(() => {
+
+        fetch("confirm_payment.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                order_id: window.pendingOrderId,
+                payment_method: "UPI"
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+
+            if (!data.success) {
+                alert("UPI payment failed");
+                return;
+            }
+
+            document.getElementById("loadingState").style.display = "none";
+            document.getElementById("successState").style.display = "block";
+
+            setTimeout(() => {
+                window.location.href =
+                    "order_summary.php?order_id=" + data.order_id;
+            }, 1500);
+        });
+
+    }, 4000);
+});
+</script>
+
+<script>
+const upiRadio  = document.getElementById("phonepe");
+const cardRadio = document.getElementById("razorpay");
+
+const upiPanel  = document.getElementById("upiPanel");
+const cardPanel = document.getElementById("cardPanel");
+
+/* Switch UI when payment method changes */
+upiRadio.addEventListener("change", () => {
+    upiPanel.style.display = "block";
+    cardPanel.style.display = "none";
+});
+
+cardRadio.addEventListener("change", () => {
+    upiPanel.style.display = "none";
+    cardPanel.style.display = "block";
+});
+</script>
+
+<!-- LOADING OVERLAY -->
+<div id="loadingOverlay">
+    <div class="loading-content">
+
+        <!-- LOADING -->
+        <div id="loadingState">
+            <h3>Your payment is processing</h3>
+            <div class="spinner"></div>
+            <p>Please do not refresh the page</p>
+        </div>
+
+        <!-- SUCCESS -->
+        <div id="successState" style="display:none;">
+            <div class="checkmark">✔</div>
+            <h3>Order Confirmed</h3>
+            <p>Your payment was successful</p>
+        </div>
+
+    </div>
+</div>
+
 
 </body>
 </html>
