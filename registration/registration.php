@@ -118,10 +118,26 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <input type="text" name="pincode" placeholder="Pincode" maxlength="6"
        required pattern="[0-9]{6}" title="Exactly 6 digits">
 
-<input type="email" name="email" placeholder="Email Address"
-       required
-       pattern="^[a-zA-Z0-9]+@(gmail|yahoo)\.(com|in)$"
-       title="Format: username@gmail.com">
+<div style="display:flex; gap:5px;">
+    <input type="email" id="email" name="email"
+           placeholder="Email Address"
+           required
+           pattern="^[a-zA-Z0-9]+@(gmail|yahoo)\.(com|in)$"
+           title="Format: username@gmail.com"
+           style="flex:1">
+
+    <button type="button"
+            onclick="sendOTP()"
+            style="padding:10px; background:#7e2626d5; color:white; border:none; border-radius:5px;">
+        Send OTP
+    </button>
+</div>
+
+<input type="number" id="otp" placeholder="Enter OTP" style="display:none;">
+<button type="button" id="verifyBtn" onclick="verifyOTP()" style="display:none;">Verify OTP</button>
+
+<input type="hidden" id="otp_verified" name="otp_verified" value="0">
+
 
 
 <input type="password" name="password" placeholder="Password" required>
