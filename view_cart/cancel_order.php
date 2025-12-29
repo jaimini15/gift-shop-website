@@ -9,18 +9,19 @@ header('Content-Type: application/json');
 if (!isset($_SESSION['User_Id'])) {
     echo json_encode([
         "success" => false,
-        "error"   => "Login required"
+        "error" => "Login required"
     ]);
     exit;
 }
 
 if (!isset($_SESSION['pending_order_id'])) {
+    // Already cancelled — treat as success
     echo json_encode([
-        "success" => false,
-        "error"   => "No pending order found"
+        "success" => true
     ]);
     exit;
 }
+
 
 $userId  = $_SESSION['User_Id'];
 $orderId = $_SESSION['pending_order_id'];
