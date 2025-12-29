@@ -218,19 +218,27 @@ function sendOTP() {
         return;
     }
 
-    fetch("send_register_otp.php", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: email })
-    })
-    .then(res => res.json())
-    .then(data => {
-        alert(data.message);
-        if (data.success) {
+   fetch("send_register_otp.php", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email: email })
+})
+.then(res => res.text()) // temporarily use text() to see raw output
+.then(data => {
+    console.log(data); // see what PHP returned
+    try {
+        const json = JSON.parse(data);
+        alert(json.message);
+        if (json.success) {
             document.getElementById("otp").style.display = "block";
             document.getElementById("verifyBtn").style.display = "block";
         }
-    });
+    } catch(e) {
+        alert("PHP did not return JSON! Check console.");
+        console.log(e);
+    }
+});
+
 }
 
 function verifyOTP() {
