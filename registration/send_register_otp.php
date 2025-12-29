@@ -1,4 +1,5 @@
 <?php
+error_reporting(E_ALL & ~E_NOTICE & ~E_WARNING);
 session_start();
 include("../AdminPanel/db.php");
 include("../PHPMailer/PHPMailer.php");
@@ -6,6 +7,7 @@ include("../PHPMailer/SMTP.php");
 include("../PHPMailer/Exception.php");
 
 use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
 $data = json_decode(file_get_contents("php://input"), true);
 $email = trim($data['email'] ?? '');
@@ -31,22 +33,31 @@ $_SESSION['register_email'] = $email;
 $_SESSION['register_otp_time'] = time(); // for expiry
 
 $mail = new PHPMailer(true);
-$mail->isSMTP();
-$mail->Host = "smtp.gmail.com";
-$mail->SMTPAuth = true;
-$mail->Username = "yourmail@gmail.com";
-$mail->Password = "app_password";
-$mail->SMTPSecure = "tls";
-$mail->Port = 587;
 
-$mail->setFrom("yourmail@gmail.com", "GiftShop");
-$mail->addAddress($email);
-$mail->Subject = "Email Verification OTP";
-$mail->Body = "Your OTP for registration is: $otp";
+try {
+    $mail->isSMTP();
+    $mail->Host = "smtp.gmail.com";
+    $mail->SMTPAuth = true;
+    $mail->Username = "giftshopmaninagar@gmail.com"; // your Gmail
+    $mail->Password = "ljoy otkw cvnk beqi";       // Gmail App Password
+    $mail->SMTPSecure = "tls";
+    $mail->Port = 587;
 
-$mail->send();
+    $mail->setFrom("giftshopmaninagar@gmail.com", "GiftShop");
+    $mail->addAddress($email);
+    $mail->Subject = "Email Verification OTP";
+    $mail->Body = "Your OTP for registration is: $otp";
 
-echo json_encode([
-    "success" => true,
-    "message" => "OTP sent to your email"
-]);
+    $mail->send();
+
+    echo json_encode([
+        "success" => true,
+        "message" => "OTP sent to your email"
+    ]);
+} catch (Exception $e) {
+    echo json_encode([
+        "success" => false,
+        "message" => "Mailer Error: " . $mail->ErrorInfo
+    ]);
+}
+?>
