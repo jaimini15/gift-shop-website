@@ -1,6 +1,18 @@
 <?php
 session_start();
 include("../AdminPanel/db.php");
+
+if (
+    !isset($_SESSION['register_verified']) ||
+    $_SESSION['register_verified'] !== true
+) {
+    echo "<script>
+        alert('Please verify your email with OTP first');
+        window.location.href='register.php';
+    </script>";
+    exit;
+}
+
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
@@ -18,14 +30,23 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $checkEmail = "SELECT Email FROM user_details WHERE Email='$email' LIMIT 1";
     $emailResult = mysqli_query($connection, $checkEmail);
 
-    if ($emailResult && mysqli_num_rows($emailResult) > 0) {
-        // Email exists → redirect to login page
-        echo "<script>
-                alert('Email already exists! Please login.');
-                window.location.href='../login/login.php?popup=1';
-              </script>";
-        exit();
-    }
+    if (mysqli_query($connection, $insert)) {
+
+    // 🔥 CLEAN UP OTP SESSION (IMPORTANT)
+    unset(
+        $_SESSION['register_otp'],
+        $_SESSION['register_email'],
+        $_SESSION['register_otp_time'],
+        $_SESSION['register_verified']
+    );
+
+    echo "<script>
+            alert('Registration successful! Please login.');
+            window.location.href='../login/login.php?popup=1';
+          </script>";
+    exit();
+}
+
 
     // Check if phone already exists (optional, avoids duplicate key error)
     $checkPhone = "SELECT Phone FROM user_details WHERE Phone='$phone' LIMIT 1";

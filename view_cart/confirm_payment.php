@@ -125,6 +125,8 @@ try {
        CLEANUP & COMMIT
     ======================= */
     unset($_SESSION['pending_order_id']);
+    /* 🔥 CLEAR HAMPER SESSION AFTER SUCCESS */
+unset($_SESSION['hamper_selected']);
     mysqli_commit($connection);
 
     echo json_encode([

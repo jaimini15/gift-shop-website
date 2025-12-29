@@ -89,6 +89,44 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     text-decoration: none;
     font-weight: bold;
 }
+
+.email-otp-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.email-otp-wrapper input {
+    width: 100%;
+    padding: 12px 100px 12px 12px; /* leave space for Send OTP */
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 15px;
+    box-sizing: border-box;
+    position: relative; /* keep input above by default */
+    z-index: 1;
+}
+
+.send-otp-link {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 14px;
+    font-weight: 600;
+    color: #7e2626d5; 
+    cursor: pointer;
+    white-space: nowrap;
+    z-index: 2; /* make it above the input */
+}
+.send-otp-link {
+    pointer-events: auto;
+}
+
+
+.send-otp-link:hover {
+    text-decoration: underline;
+}
+
 </style>
 </head>
 <body>
@@ -99,7 +137,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     <h2>Create Account</h2>
 
-    <form  action="register_check.php" method="POST">
+    <form action="register_check.php" method="POST" onsubmit="return checkOTPBeforeRegister();">
+
 
         <input type="text" name="first_name" placeholder="First Name" 
        required pattern="[A-Za-z]+" title="Only alphabets allowed">
@@ -118,10 +157,27 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <input type="text" name="pincode" placeholder="Pincode" maxlength="6"
        required pattern="[0-9]{6}" title="Exactly 6 digits">
 
-<input type="email" name="email" placeholder="Email Address"
-       required
-       pattern="^[a-zA-Z0-9]+@(gmail|yahoo)\.(com|in)$"
-       title="Format: username@gmail.com">
+<div class="email-otp-wrapper">
+    <input
+        type="email"
+        id="email"
+        name="email"
+        placeholder="name@example.com"
+        required
+        pattern="^[a-zA-Z0-9._%+-]+@(gmail|yahoo)\.(com|in)$"
+    >
+
+
+    <span id="sendOtpBtn" class="send-otp-link" onclick="sendOTP()">Send OTP</span>
+
+</div>
+
+
+<input type="number" id="otp" placeholder="Enter OTP" style="display:none;">
+<button type="button" id="verifyBtn" onclick="verifyOTP()" style="display:none;">Verify OTP</button>
+
+<input type="hidden" id="otp_verified" name="otp_verified" value="0">
+
 
 
 <input type="password" name="password" placeholder="Password" required>
@@ -129,7 +185,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         <!-- Hidden default role -->
         <input type="hidden" name="user_role" value="CUSTOMER">
 
-        <button type="submit">Register</button>
+      <button type="submit">Register</button>
+
 
         <p>Already have an account? <a href="../login/login.php">Login here</a></p>
 
@@ -137,6 +194,62 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 </div>
 
 <?php include("../home page/footer.php"); ?>
+<script>
+function checkOTPBeforeRegister() {
+
+    let otpVerified = document.getElementById("otp_verified").value;
+
+    if (otpVerified !== "1") {
+        alert("Please verify your email with OTP first");
+        return false; // ⛔ STOP form submit
+    }
+
+    return true; // ✅ allow submit
+}
+</script>
+
+<script>
+
+function sendOTP() {
+    let email = document.getElementById("email").value;
+
+    if (!email) {
+        alert("Enter email first");
+        return;
+    }
+
+    fetch("send_register_otp.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email })
+    })
+    .then(res => res.json())
+    .then(data => {
+        alert(data.message);
+        if (data.success) {
+            document.getElementById("otp").style.display = "block";
+            document.getElementById("verifyBtn").style.display = "block";
+        }
+    });
+}
+
+function verifyOTP() {
+    let otp = document.getElementById("otp").value;
+
+    fetch("verify_register_otp.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ otp: otp })
+    })
+    .then(res => res.json())
+    .then(data => {
+        alert(data.message);
+        if (data.success) {
+            document.getElementById("otp_verified").value = "1";
+        }
+    });
+}
+</script>
 
 </body>
 </html>
