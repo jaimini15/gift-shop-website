@@ -45,21 +45,22 @@ if (!$order) {
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Order Summary</title>
+<title>Order Summary|GiftShop</title>
 
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
 .cart-header { background: #fff; border-bottom: 1px solid #ddd; height: 80px; }
-.header-inner { max-width: 1200px; margin: auto; padding: 15px 40px; display: grid; grid-template-columns: auto 1fr auto; align-items: center; }
-.logo { font-size: 26px; font-weight: 700; color: #7e2626d5; }
-.steps-wrapper { display: flex; justify-content: center; }
-.step { display: flex; flex-direction: column; align-items: center; min-width: 90px; }
-.circle { width: 28px; height: 28px; border-radius: 50%; border: 2px solid #cfcfe6; display: flex; align-items: center; justify-content: center; }
-.step.active .circle { border-color: #7e2626d5; color: #7e2626d5; }
-.step.completed .circle { background: #7e2626d5; color: #fff; }
-.label { margin-top: 6px; font-size: 14px; }
-.line { width: 100px; height: 2px; background: #cfcfe6; margin-bottom: 18px; }
-.active-line { background: #7e2626d5; }
+        .header-inner { max-width: 1200px; margin: 0px 45px; padding: 15px 0px; display: grid; grid-template-columns: auto 1fr auto; align-items: center; }
+        .logo { font-size: 26px; font-weight: 700; color: #7e2626d5;}
+        .steps-wrapper { display: flex; align-items: center; justify-content: center; }
+        .step { display: flex; flex-direction: column; align-items: center; min-width: 90px; }
+        .circle { width: 28px; height: 28px; border-radius: 50%; border: 2px solid #cfcfe6; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #cfcfe6; background: #fff; }
+        .label { margin-top: 6px; font-size: 14px; color: #cfcfe6; }
+        .step.active .circle { border-color: #7e2626d5; color: #7e2626d5; }
+        .step.active .label { color: #000; font-weight: 600; }
+        .step.completed .circle { background: #7e2626d5; border-color: #7e2626d5; color: #fff; }
+        .line { width: 100px; height: 2px; background: #cfcfe6; margin-bottom: 18px; }
+        .active-line { background: #7e2626d5; }
 
 *{
     box-sizing:border-box;
@@ -80,7 +81,7 @@ body{
 
 /* ===== SUMMARY BOX ===== */
 .summary-box{
-    border:1px solid #ddd;
+    border:1px solid #7e2626d5;
     border-radius:8px;
     padding:35px 45px;
     background:#fff;
@@ -125,7 +126,7 @@ body{
 hr{
     margin:25px 0;
     border:none;
-    border-top:1px solid #ddd;
+    border-top:1px solid #7e2626d5;
 }
 
 /* ===== BUTTON ===== */
@@ -159,9 +160,6 @@ hr{
 <div class="container">
 
     <div class="summary-box">
-
-        <div class="checkmark">&#10004;</div>
-
         <h2>Thank You for Your Order!</h2>
 
         <p>Your payment was successful and your order has been confirmed.</p>
@@ -192,12 +190,12 @@ hr{
         <hr>
 
         <p class="thank-note">
-           &#128150; Thank you for shopping with <strong>GiftShop</strong>.  
+           &#128150; Thank you for shopping with <strong style="color:#7e2626d5;">GiftShop</strong>.  
             We hope your gift brings happiness and smiles!
         </p>
 
         <a href="../home page/index.php" class="shop-btn">
-           &#127873;Shop More
+           Shop More
         </a>
 
     </div>

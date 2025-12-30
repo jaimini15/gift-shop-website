@@ -26,7 +26,7 @@ if (!$userId) {
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Payment</title>
+    <title>Payment|GiftShop</title>
     <style>
         /* ===== FULL CSS FROM ORIGINAL DESIGN ===== */
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
@@ -36,8 +36,8 @@ if (!$userId) {
 
         /* Checkout Header */
         .cart-header { background: #fff; border-bottom: 1px solid #ddd; height: 80px; }
-        .header-inner { max-width: 1200px; margin: auto; padding: 15px 40px; display: grid; grid-template-columns: auto 1fr auto; align-items: center; }
-        .logo { font-size: 26px; font-weight: 700; color: #7e2626d5; letter-spacing: 1px; }
+        .header-inner { max-width: 1200px; margin: 0px 45px; padding: 15px 0px; display: grid; grid-template-columns: auto 1fr auto; align-items: center; }
+        .logo { font-size: 26px; font-weight: 700; color: #7e2626d5;}
         .steps-wrapper { display: flex; align-items: center; justify-content: center; }
         .step { display: flex; flex-direction: column; align-items: center; min-width: 90px; }
         .circle { width: 28px; height: 28px; border-radius: 50%; border: 2px solid #cfcfe6; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #cfcfe6; background: #fff; }
@@ -175,12 +175,79 @@ if (!$userId) {
    width:100%;
 }
 
-#successState h3 {
-    background-color:white;
-    color: #1aa14a;
-    margin: 10px 0;
-    width:100%;
+/* ===== SUCCESS CARD ===== */
+.success-card {
+    background: #fff;
+    padding: 35px 30px;
+    border-radius: 16px;
+    text-align: center;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+    animation: popIn 0.4s ease;
 }
+
+@keyframes popIn {
+    from { transform: scale(0.9); opacity: 0; }
+    to   { transform: scale(1); opacity: 1; }
+}
+
+/* Checkmark animation */
+.success-icon {
+    width: 70px;
+    height: 70px;
+    margin: 0 auto 15px;
+}
+
+.success-icon svg {
+    width: 100%;
+    height: 100%;
+}
+
+.success-icon circle {
+    stroke: #1aa14a;
+    stroke-width: 3;
+    stroke-dasharray: 157;
+    stroke-dashoffset: 157;
+    animation: circleDraw 0.6s ease forwards;
+}
+
+.success-icon path {
+    stroke: #1aa14a;
+    stroke-width: 4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 48;
+    stroke-dashoffset: 48;
+    animation: checkDraw 0.4s ease forwards;
+    animation-delay: 0.6s;
+}
+
+@keyframes circleDraw {
+    to { stroke-dashoffset: 0; }
+}
+
+@keyframes checkDraw {
+    to { stroke-dashoffset: 0; }
+}
+
+.success-card h2 {
+    margin: 10px 0 5px;
+    font-size: 22px;
+    font-weight: 600;
+    color: #1aa14a;
+}
+
+.success-card p {
+    margin: 0;
+    font-size: 15px;
+    color: #444;
+}
+
+.success-subtext {
+    margin-top: 10px;
+    font-size: 13px;
+    color: #777;
+}
+
 
     </style>
 </head>
@@ -564,11 +631,22 @@ cardRadio.addEventListener("change", () => {
         </div>
 
         <!-- SUCCESS -->
-        <div id="successState" style="display:none;">
-            <div class="checkmark">✔</div>
-            <h3>Order Confirmed</h3>
-            <p>Your payment was successful</p>
-        </div>
+       <div id="successState" class="success-card" style="display:none;">
+    <div class="success-icon">
+        <svg viewBox="0 0 52 52">
+            <circle cx="26" cy="26" r="25" fill="none"/>
+            <path fill="none" d="M14 27l7 7 17-17"/>
+        </svg>
+    </div>
+
+    <h2>Payment Successful</h2>
+    <p>Your order has been placed successfully.</p>
+
+    <div class="success-subtext">
+        Redirecting to order summary…
+    </div>
+</div>
+
 
     </div>
 </div>
