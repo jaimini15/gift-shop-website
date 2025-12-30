@@ -220,9 +220,11 @@ function sendOTP() {
 
    fetch("send_register_otp.php", {
     method: "POST",
+    credentials: "same-origin", // 🔥 REQUIRED
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email: email })
+    body: JSON.stringify({ email })
 })
+
 .then(res => res.text()) // temporarily use text() to see raw output
 .then(data => {
     console.log(data); // see what PHP returned
@@ -245,16 +247,21 @@ function verifyOTP() {
     let otp = document.getElementById("otp").value;
 
     fetch("verify_register_otp.php", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ otp })
-})
-.then(res => res.json())
-.then(data => {
-    alert(data.message);
-});
+        method: "POST",
+        credentials: "same-origin",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ otp })
+    })
+    .then(res => res.json())
+    .then(data => {
+        alert(data.message);
 
+        if (data.success) {
+            document.getElementById("otp_verified").value = "1"; // ✅ IMPORTANT
+        }
+    });
 }
+
 </script>
 
 </body>
