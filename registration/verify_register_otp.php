@@ -1,33 +1,20 @@
 <?php
 session_start();
+header('Content-Type: application/json');
 $data = json_decode(file_get_contents("php://input"), true);
-$otpEntered = trim($data['otp'] ?? '');
-
-if (!$otpEntered) {
+$otp = trim($data['otp'] ?? '');
+if (!$otp) {
     echo json_encode(["success"=>false,"message"=>"OTP required"]);
     exit;
 }
-
-// OTP expiry: 5 minutes
-if (!isset($_SESSION['register_otp_time']) || time() - $_SESSION['register_otp_time'] > 300) {
-    unset($_SESSION['register_otp'], $_SESSION['register_email'], $_SESSION['register_otp_time']);
+if (!isset($_SESSION['register_otp']) ||
+    time() - $_SESSION['register_otp_time'] > 300) {
     echo json_encode(["success"=>false,"message"=>"OTP expired"]);
     exit;
 }
-
-if (
-    isset($_SESSION['register_otp']) &&
-    $otpEntered == $_SESSION['register_otp']
-) {
+if ($otp == $_SESSION['register_otp']) {
     $_SESSION['register_verified'] = true;
-
-    echo json_encode([
-        "success" => true,
-        "message" => "Email verified successfully"
-    ]);
+    echo json_encode(["success"=>true,"message"=>"Email verified"]);
 } else {
-    echo json_encode([
-        "success" => false,
-        "message" => "Invalid OTP"
-    ]);
+    echo json_encode(["success"=>false,"message"=>"Invalid OTP"]);
 }
