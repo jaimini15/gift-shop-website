@@ -9,12 +9,21 @@ if (!isset($_SESSION['delivery_id']) || $_SESSION['delivery_role'] !== "DELIVERY
 
 include(__DIR__ . '/../../AdminPanel/db.php');
 
-$delivery_id = $_SESSION['delivery_id'];
+$delivery_id = (int)$_SESSION['delivery_id'];
 
-$delivery = mysqli_fetch_assoc(mysqli_query(
-    $connection,
-    "SELECT * FROM user_details WHERE User_Id = $delivery_id LIMIT 1"
-));
+// ✅ FIXED QUERY (correct table name: area_details)
+$query = "
+SELECT 
+    u.*,
+    a.Area_Name,
+    a.Pincode AS Area_Pincode
+FROM user_details u
+LEFT JOIN area_details a ON u.Area_Id = a.Area_Id
+WHERE u.User_Id = $delivery_id
+LIMIT 1
+";
+
+$delivery = mysqli_fetch_assoc(mysqli_query($connection, $query));
 ?>
 
 <!DOCTYPE html>
@@ -37,9 +46,15 @@ $delivery = mysqli_fetch_assoc(mysqli_query(
 }
 .profile-header { display: flex; align-items: center; gap: 20px; }
 .profile-img {
-    width: 120px; height: 120px; background: #e8e8e8;
-    border-radius: 50%; display: flex; justify-content: center;
-    align-items: center; font-size: 48px; color: #5a5a5a;
+    width: 120px;
+    height: 120px;
+    background: #e8e8e8;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 48px;
+    color: #5a5a5a;
     box-shadow: 0 3px 8px rgba(0,0,0,0.15);
 }
 .profile-name h3 { margin: 0; font-weight: 700; }
@@ -75,7 +90,21 @@ $delivery = mysqli_fetch_assoc(mysqli_query(
             <tr><th>Phone</th><td><?php echo $delivery['Phone']; ?></td></tr>
             <tr><th>DOB</th><td><?php echo $delivery['DOB']; ?></td></tr>
             <tr><th>Address</th><td><?php echo $delivery['Address']; ?></td></tr>
-            <tr><th>Pincode</th><td><?php echo $delivery['Pincode']; ?></td></tr>
+
+            <!-- ✅ Area + Pincode -->
+            <tr>
+                <th>Area & Pincode</th>
+                <td>
+                    <?php
+                    if (!empty($delivery['Area_Name'])) {
+                        echo $delivery['Area_Name'] . ", " . $delivery['Area_Pincode'];
+                    } else {
+                        echo "N/A";
+                    }
+                    ?>
+                </td>
+            </tr>
+
             <tr><th>Created At</th><td><?php echo $delivery['Create_At']; ?></td></tr>
         </table>
 
@@ -84,6 +113,7 @@ $delivery = mysqli_fetch_assoc(mysqli_query(
                 <i class="fa-solid fa-pen-to-square"></i> Edit Profile
             </a>
         </div>
+
     </div>
 </div>
 </body>
