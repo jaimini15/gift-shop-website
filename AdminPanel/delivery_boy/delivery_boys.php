@@ -2,10 +2,20 @@
 include(__DIR__ . '/../db.php');
 
 $query = "
-    SELECT u.*, a.Area_Name, a.Pincode
+    SELECT 
+        u.*, 
+        a.Area_Name, 
+        a.Pincode,
+        GROUP_CONCAT(CONCAT(ad.Area_Name, ' (', ad.Pincode, ')') SEPARATOR '<br>') AS Assigned_Areas
     FROM user_details u
-    LEFT JOIN area_details a ON u.Area_Id = a.Area_Id
+    LEFT JOIN area_details a 
+        ON u.Area_Id = a.Area_Id
+    LEFT JOIN delivery_area_map dam 
+        ON u.User_Id = dam.delivery_boy_id
+    LEFT JOIN area_details ad 
+        ON dam.area_id = ad.Area_Id
     WHERE u.User_Role='DELIVERY_BOY'
+    GROUP BY u.User_Id
 ";
 $result = mysqli_query($connection, $query);
 ?>
@@ -62,6 +72,7 @@ $result = mysqli_query($connection, $query);
                 <th>Address</th>
                 <th>DOB</th>
                 <th>Area</th>
+                <th>Assigned Areas</th>
                 <th>Status</th>
                 <th>Created At</th>
                 <th>Action</th>
@@ -78,9 +89,14 @@ $result = mysqli_query($connection, $query);
                 <td><?= $row['Address'] ?></td>
                 <td><?= $row['DOB'] ?></td>
 
-                <!-- ✅ AREA NAME + PINCODE -->
+                <!-- EXISTING MAIN AREA -->
                 <td>
                     <?= $row['Area_Name'] ? $row['Area_Name'] . ', ' . $row['Pincode'] : 'N/A' ?>
+                </td>
+
+                <!-- ✅ ASSIGNED AREAS COLUMN -->
+                <td>
+                    <?= $row['Assigned_Areas'] ?: 'N/A' ?>
                 </td>
 
                 <td><?= $row['Status'] ?></td>
@@ -99,3 +115,5 @@ $result = mysqli_query($connection, $query);
 
 </body>
 </html>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
