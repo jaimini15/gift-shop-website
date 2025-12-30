@@ -20,6 +20,27 @@ if (isset($_GET['img'])) {
     exit;
 }
 /* ======================================================== */
+
+/* ============ UPDATE DELIVERY STATUS ==================== */
+if (isset($_POST['set_packed'])) {
+    $orderId = (int)$_POST['order_id'];
+
+    $check = mysqli_query($connection,
+        "SELECT Delivery_Id FROM delivery_details WHERE Order_Id = $orderId LIMIT 1");
+
+    if (mysqli_num_rows($check) == 0) {
+        mysqli_query($connection,
+    "INSERT INTO delivery_details (Order_Id, Delivery_Address, Delivery_Status)
+     VALUES ($orderId, '', 'Packed')");
+
+    } else {
+        mysqli_query($connection,
+            "UPDATE delivery_details
+             SET Delivery_Status = 'Packed'
+             WHERE Order_Id = $orderId");
+    }
+}
+/* ======================================================== */
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -57,6 +78,12 @@ while ($order = mysqli_fetch_assoc($orders)) {
          WHERE Order_Id = {$order['Order_Id']} LIMIT 1");
     $hr = mysqli_fetch_assoc($h);
     $isHamper = ($hr && $hr['Is_Hamper_Suggested'] == 1);
+
+    $d = mysqli_query($connection,
+        "SELECT Delivery_Status FROM delivery_details 
+         WHERE Order_Id = {$order['Order_Id']} LIMIT 1");
+    $dr = mysqli_fetch_assoc($d);
+    $deliveryStatus = $dr['Delivery_Status'] ?? '';
 ?>
 
 <div class="order-header mb-3">
@@ -66,9 +93,9 @@ while ($order = mysqli_fetch_assoc($orders)) {
         <div class="col-md-3"><strong>Date:</strong> <?= $order['Order_Date'] ?></div>
         <div class="col-md-3"><strong>Status:</strong> <?= $order['Status'] ?></div>
     </div>
-    <div class="d-flex justify-content-between">
-        <div><strong>Total Amount:</strong> ₹<?= number_format($order['Total_Amount'],2) ?></div>
-        <div>
+    <div class="row mb-2">
+        <div class="col-md-3"><strong>Total Amount:</strong> ₹<?= number_format($order['Total_Amount'],2) ?></div>
+        <div class="col-md-3">
             <strong>Hamper Suggested:</strong>
             <span class="badge <?= $isHamper ? 'badge-yes':'badge-no' ?>">
                 <?= $isHamper ? 'Yes':'No' ?>
@@ -86,6 +113,7 @@ while ($order = mysqli_fetch_assoc($orders)) {
     <th>Price</th>
     <th>Custom Text</th>
     <th>Custom Image</th>
+    <th>Delivery Status</th>
 </tr>
 </thead>
 <tbody>
@@ -104,11 +132,23 @@ while ($item = mysqli_fetch_assoc($items)) {
     <td><?= $item['Custom_Text'] ?? 'N/A' ?></td>
     <td>
         <?php if (!empty($item['Custom_Image'])) { ?>
-            <img src="orders.php?img=<?= $item['Order_Item_Id'] ?>"
-                 class="product-img">
+            <img src="orders.php?img=<?= $item['Order_Item_Id'] ?>" class="product-img">
         <?php } else { ?>
             <span class="text-muted">No Image</span>
         <?php } ?>
+    </td>
+    <td>
+        <form method="post">
+            <input type="hidden" name="order_id" value="<?= $order['Order_Id'] ?>">
+            <select class="form-select form-select-sm"
+                    onchange="this.form.submit()"
+                    name="set_packed">
+                <option value="">Select</option>
+                <option value="Packed" <?= $deliveryStatus=='Packed'?'selected':'' ?>>Packed</option>
+                <option disabled>Out of Delivery</option>
+                <option disabled>Delivered</option>
+            </select>
+        </form>
     </td>
 </tr>
 <?php } ?>
