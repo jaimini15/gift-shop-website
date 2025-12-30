@@ -54,7 +54,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         margin-bottom: 15px;
     }
 
-    .register-box input {
+    .register-box input,select {
         width: 100%;
         padding: 12px;
         margin: 8px 0;
@@ -154,8 +154,16 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 <input type="text" name="address" placeholder="Address" required>
 
-<input type="text" name="pincode" placeholder="Pincode" maxlength="6"
-       required pattern="[0-9]{6}" title="Exactly 6 digits">
+<select name="area_id" required>
+    <option value="">Select Area</option>
+    <?php
+    $area_q = mysqli_query($connection, "SELECT Area_Id, Area_Name FROM area_details");
+    while ($row = mysqli_fetch_assoc($area_q)) {
+        echo "<option value='{$row['Area_Id']}'>{$row['Area_Name']}</option>";
+    }
+    ?>
+</select>
+
 
 <div class="email-otp-wrapper">
     <input
