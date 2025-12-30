@@ -1,9 +1,8 @@
 <?php
 if (!isset($_SESSION)) session_start();
-
 include(__DIR__ . '/../db.php');
 
-// Only Admin allowed
+/* ================= ADMIN CHECK ================= */
 if (!isset($_SESSION['admin_id']) || $_SESSION['admin_role'] !== "ADMIN") {
     header("Location: ../admin_login/login.php?error=Please login first");
     exit;
@@ -13,51 +12,81 @@ if (!isset($_GET['id'])) {
     die("Invalid Request");
 }
 
-$id = intval($_GET['id']);
+$id = (int)$_GET['id'];
 
-// Fetch delivery boy
-$query = "
-    SELECT u.*, a.Pincode 
-    FROM user_details u
-    LEFT JOIN area_details a ON u.Area_Id = a.Area_Id
-    WHERE u.User_Id=$id AND u.User_Role='DELIVERY_BOY'
-";
-$result = mysqli_query($connection, $query);
-$data = mysqli_fetch_assoc($result);
+/* ================= FETCH DELIVERY BOY ================= */
+$res = mysqli_query($connection, "
+    SELECT * FROM user_details 
+    WHERE User_Id=$id AND User_Role='DELIVERY_BOY'
+");
+$data = mysqli_fetch_assoc($res);
 
 if (!$data) {
     die("Delivery Boy not found");
 }
 
-// Fetch all areas
-$areas = mysqli_query($connection, "SELECT * FROM area_details ORDER BY Area_Name");
+/* ================= FETCH AREAS + ASSIGN STATUS ================= */
+$areas = mysqli_query($connection, "
+    SELECT 
+        ad.Area_Id,
+        ad.Area_Name,
+        ad.Pincode,
+        CASE 
+            WHEN dam.delivery_boy_id = $id THEN 'SELF'
+            WHEN dam.delivery_boy_id IS NOT NULL THEN 'OTHER'
+            ELSE 'NONE'
+        END AS assign_status
+    FROM area_details ad
+    LEFT JOIN delivery_area_map dam 
+        ON ad.Area_Id = dam.area_id
+");
 
-// UPDATE PROCESS
+/* ================= UPDATE ================= */
 if (isset($_POST['update'])) {
 
-    $fname    = mysqli_real_escape_string($connection, $_POST['First_Name']);
-    $lname    = mysqli_real_escape_string($connection, $_POST['Last_Name']);
-    $dob      = mysqli_real_escape_string($connection, $_POST['DOB']);
-    $phone    = mysqli_real_escape_string($connection, $_POST['Phone']);
-    $address  = mysqli_real_escape_string($connection, $_POST['Address']);
-    $area_id  = (int)$_POST['Area_Id'];
-    $email    = mysqli_real_escape_string($connection, $_POST['Email']);
-    $password = mysqli_real_escape_string($connection, $_POST['Password']);
-    $status   = mysqli_real_escape_string($connection, $_POST['Status']);
+    $fname    = mysqli_real_escape_string($connection, $_POST['First_Name'] ?? '');
+    $lname    = mysqli_real_escape_string($connection, $_POST['Last_Name'] ?? '');
+    $dob      = !empty($_POST['DOB']) ? mysqli_real_escape_string($connection, $_POST['DOB']) : NULL;
+    $phone    = mysqli_real_escape_string($connection, $_POST['Phone'] ?? '');
+    $address  = mysqli_real_escape_string($connection, $_POST['Address'] ?? '');
+    $email    = mysqli_real_escape_string($connection, $_POST['Email'] ?? '');
+    $password = mysqli_real_escape_string($connection, $_POST['Password'] ?? '');
+    $status   = mysqli_real_escape_string($connection, $_POST['Status'] ?? 'ENABLE');
+
+    /* MAIN AREA (required column) */
+    $main_area = 0;
+    if (!empty($_POST['areas'])) {
+        $main_area = (int)$_POST['areas'][0];
+    }
 
     mysqli_query($connection, "
         UPDATE user_details SET
             First_Name='$fname',
             Last_Name='$lname',
-            DOB='$dob',
+            DOB=" . ($dob ? "'$dob'" : "NULL") . ",
             Phone='$phone',
             Address='$address',
-            Area_Id='$area_id',
+            Area_Id='$main_area',
             Email='$email',
             Password='$password',
             Status='$status'
         WHERE User_Id=$id
     ");
+
+    /* UPDATE AREA MAP */
+    mysqli_query($connection, "
+        DELETE FROM delivery_area_map 
+        WHERE delivery_boy_id=$id
+    ");
+
+    if (!empty($_POST['areas'])) {
+        foreach ($_POST['areas'] as $area_id) {
+            mysqli_query($connection, "
+                INSERT INTO delivery_area_map (delivery_boy_id, area_id)
+                VALUES ($id, $area_id)
+            ");
+        }
+    }
 
     header("Location: ../layout.php?view=delivery_boys&msg=updated");
     exit;
@@ -69,7 +98,6 @@ if (isset($_POST['update'])) {
 <head>
     <title>Edit Delivery Boy</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-
     <style>
         body { background: #f4f6f9; }
         .card-box {
@@ -111,7 +139,6 @@ if (isset($_POST['update'])) {
             <div class="col-md-6 mb-3">
                 <label>DOB</label>
                 <input type="date" name="DOB" class="form-control"
-                       required
                        max="<?= date('Y-m-d', strtotime('-17 years')) ?>"
                        value="<?= $data['DOB'] ?>">
             </div>
@@ -130,25 +157,31 @@ if (isset($_POST['update'])) {
                    value="<?= $data['Address'] ?>">
         </div>
 
-        <!-- ✅ SELECT AREA (ONLY CHANGE) -->
+        <!-- AREA ASSIGNMENT -->
         <div class="mb-3">
-            <label>Select Area</label>
-            <select name="Area_Id" class="form-control" required>
-                <option value="">-- Select Area --</option>
+            <label>Assign Delivery Areas</label>
+            <div class="border rounded p-3">
                 <?php while ($row = mysqli_fetch_assoc($areas)) { ?>
-                    <option value="<?= $row['Area_Id']; ?>"
-                        <?= ($row['Area_Id'] == $data['Area_Id']) ? 'selected' : ''; ?>>
-                        <?= $row['Area_Name']; ?> (<?= $row['Pincode']; ?>)
-                    </option>
+                    <div class="form-check">
+                        <input class="form-check-input"
+                               type="checkbox"
+                               name="areas[]"
+                               value="<?= $row['Area_Id']; ?>"
+                               <?= ($row['assign_status']=='SELF') ? 'checked' : '' ?>
+                               <?= ($row['assign_status']=='OTHER') ? 'disabled' : '' ?>>
+                        <label class="form-check-label text-muted">
+                            <?= $row['Area_Name']; ?> (<?= $row['Pincode']; ?>)
+                            <?= ($row['assign_status']=='OTHER') ? ' - Assigned to another delivery boy' : '' ?>
+                        </label>
+                    </div>
                 <?php } ?>
-            </select>
+            </div>
         </div>
 
         <div class="mb-3">
             <label>Email</label>
             <input type="email" name="Email" class="form-control"
-                   required
-                   pattern="[a-zA-Z0-9]+@(gmail|yahoo)\.(com|in)"
+                   required pattern="[a-zA-Z0-9]+@(gmail|yahoo)\.(com|in)"
                    value="<?= $data['Email'] ?>">
         </div>
 
