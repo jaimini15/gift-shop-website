@@ -1,46 +1,68 @@
 <?php
 if (!isset($_SESSION)) session_start();
+include(__DIR__ . '/../../AdminPanel/db.php');
 
-include("../db.php");
+$msg = "";
 
-// Only Admin allowed
-if (!isset($_SESSION['admin_id']) || $_SESSION['admin_role'] !== "ADMIN") {
-    header("Location: ../admin_login/login.php?error=Please login first");
-    exit;
-}
+/* ================= FETCH AREAS ================= */
+$areas = mysqli_query($connection, "
+    SELECT 
+        ad.Area_Id,
+        ad.Area_Name,
+        ad.Pincode,
+        IF(dam.area_id IS NULL, 0, 1) AS assigned_area
+    FROM area_details ad
+    LEFT JOIN delivery_area_map dam 
+        ON ad.Area_Id = dam.area_id
+");
 
-// Fetch all areas
-$areas = mysqli_query($connection, "SELECT * FROM area_details ORDER BY Area_Name");
-
+/* ================= ADD DELIVERY BOY ================= */
 if (isset($_POST['add'])) {
 
-    $first    = mysqli_real_escape_string($connection, $_POST['first_name']);
-    $last     = mysqli_real_escape_string($connection, $_POST['last_name']);
-    $dob      = mysqli_real_escape_string($connection, $_POST['dob']);
-    $phone    = mysqli_real_escape_string($connection, $_POST['phone']);
-    $address  = mysqli_real_escape_string($connection, $_POST['address']);
-    $area_id  = (int)$_POST['area_id'];
-    $email    = mysqli_real_escape_string($connection, $_POST['email']);
-    $password = mysqli_real_escape_string($connection, $_POST['password']);
-    $status   = mysqli_real_escape_string($connection, $_POST['status']);
+    $first   = mysqli_real_escape_string($connection, $_POST['first_name']);
+    $last    = mysqli_real_escape_string($connection, $_POST['last_name']);
+    $dob     = $_POST['dob'];
+    $phone   = mysqli_real_escape_string($connection, $_POST['phone']);
+    $address = mysqli_real_escape_string($connection, $_POST['address']);
+    $email   = mysqli_real_escape_string($connection, $_POST['email']);
+    $pass    = mysqli_real_escape_string($connection, $_POST['password']);
+    $status  = "ENABLE";
 
-    // Check email exists
-    $check = mysqli_query($connection, "SELECT * FROM user_details WHERE Email='$email'");
-    if (mysqli_num_rows($check) == 0) {
+    /* ✅ FIX: SET Area_Id (required column) */
+    $area_id_main = 0;
+    if (!empty($_POST['areas'])) {
+        $area_id_main = (int)$_POST['areas'][0]; // first selected area
+    }
 
-        mysqli_query($connection, "
-            INSERT INTO user_details
-            (First_Name, Last_Name, DOB, User_Role, Phone, Address, Area_Id, Email, Password, Status)
-            VALUES
-            ('$first','$last','$dob','DELIVERY_BOY','$phone','$address','$area_id','$email','$password','$status')
-        ");
+    /* INSERT DELIVERY BOY */
+    $insertUser = mysqli_query($connection, "
+        INSERT INTO user_details
+        (First_Name, Last_Name, DOB, User_Role, Status, Phone, Address, Area_Id, Email, Password)
+        VALUES
+        ('$first','$last','$dob','DELIVERY_BOY','$status','$phone','$address','$area_id_main','$email','$pass')
+    ");
 
-        header("Location: ../layout.php?view=delivery_boys&msg=added");
-        exit;
+    if ($insertUser) {
+
+        $delivery_boy_id = mysqli_insert_id($connection);
+
+        /* MAP MULTIPLE AREAS */
+        if (!empty($_POST['areas'])) {
+            foreach ($_POST['areas'] as $area_id) {
+                mysqli_query($connection, "
+                    INSERT INTO delivery_area_map (delivery_boy_id, area_id)
+                    VALUES ($delivery_boy_id, $area_id)
+                ");
+            }
+        }
+
+        header("Location: ../layout.php?view=delivery_boys&msg=updated");
+    exit;
+    } else {
+        $msg = "Error while registering delivery boy";
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -53,37 +75,34 @@ if (isset($_POST['add'])) {
 
     <h3 class="mb-4">Add Delivery Boy</h3>
 
+    <?php if ($msg) { ?>
+        <div class="alert alert-info"><?= $msg ?></div>
+    <?php } ?>
+
     <form method="POST">
 
         <div class="row">
             <div class="col-md-6 mb-3">
                 <label class="form-label">First Name</label>
-                <input type="text" name="first_name" class="form-control"
-                       required pattern="[A-Za-z]+"
-                       title="Only alphabets allowed">
+                <input type="text" name="first_name" class="form-control" required pattern="[A-Za-z]+">
             </div>
 
             <div class="col-md-6 mb-3">
                 <label class="form-label">Last Name</label>
-                <input type="text" name="last_name" class="form-control"
-                       required pattern="[A-Za-z]+"
-                       title="Only alphabets allowed">
+                <input type="text" name="last_name" class="form-control" required pattern="[A-Za-z]+">
             </div>
         </div>
 
         <div class="mb-3">
             <label class="form-label">DOB</label>
             <input type="date" name="dob" class="form-control"
-                   required
-                   max="<?= date('Y-m-d', strtotime('-17 years')) ?>">
+                   required max="<?= date('Y-m-d', strtotime('-17 years')) ?>">
         </div>
 
         <div class="mb-3">
             <label class="form-label">Phone Number</label>
             <input type="text" name="phone" class="form-control"
-                   required pattern="[0-9]{10}"
-                   maxlength="10"
-                   title="Exactly 10 digits">
+                   required pattern="[0-9]{10}" maxlength="10">
         </div>
 
         <div class="mb-3">
@@ -91,39 +110,36 @@ if (isset($_POST['add'])) {
             <textarea name="address" class="form-control" required></textarea>
         </div>
 
-        <!-- ✅ SELECT AREA (ONLY CHANGE) -->
+        <!-- AREA ASSIGNMENT (UNCHANGED DESIGN) -->
         <div class="mb-3">
-            <label class="form-label">Select Area</label>
-            <select name="area_id" class="form-control" required>
-                <option value="">-- Select Area --</option>
+            <label class="form-label">Assign Delivery Areas</label>
+            <div class="border rounded p-3">
                 <?php while ($row = mysqli_fetch_assoc($areas)) { ?>
-                    <option value="<?= $row['Area_Id']; ?>">
-                        <?= $row['Area_Name']; ?> (<?= $row['Pincode']; ?>)
-                    </option>
+                    <div class="form-check">
+                        <input class="form-check-input"
+                               type="checkbox"
+                               name="areas[]"
+                               value="<?= $row['Area_Id']; ?>"
+                               <?= $row['assigned_area'] ? 'disabled' : ''; ?>>
+                        <label class="form-check-label text-muted">
+                            <?= $row['Area_Name']; ?> (<?= $row['Pincode']; ?>)
+                            <?= $row['assigned_area'] ? ' - Already Assigned' : ''; ?>
+                        </label>
+                    </div>
                 <?php } ?>
-            </select>
+            </div>
         </div>
 
         <div class="mb-3">
             <label class="form-label">Email ID</label>
             <input type="email" name="email" class="form-control"
-                   required
-                   pattern="[a-zA-Z0-9]+@(gmail|yahoo)\.(com|in)"
-                   title="Only Gmail or Yahoo email allowed">
+                   required pattern="[a-zA-Z0-9]+@(gmail|yahoo)\.(com|in)">
         </div>
 
         <div class="mb-3">
             <label class="form-label">Password</label>
             <input type="text" name="password" class="form-control"
                    required maxlength="10">
-        </div>
-
-        <div class="mb-3">
-            <label class="form-label">Status</label>
-            <select name="status" class="form-control" required>
-                <option value="ENABLE">ENABLE</option>
-                <option value="DISABLE">DISABLE</option>
-            </select>
         </div>
 
         <button type="submit" name="add" class="btn btn-success">Add Delivery Boy</button>
