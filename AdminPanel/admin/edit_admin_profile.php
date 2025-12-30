@@ -9,25 +9,28 @@ if (!isset($_SESSION['admin_id']) || $_SESSION['admin_role'] !== "ADMIN") {
 
 include(__DIR__ . '/../db.php');
 
-// Fetch admin details
+// Fetch admin details with area
 $admin_id = $_SESSION['admin_id'];
 $admin = mysqli_fetch_assoc(mysqli_query(
     $connection,
     "SELECT * FROM user_details WHERE User_Id = $admin_id LIMIT 1"
 ));
 
+// Fetch all areas
+$areas = mysqli_query($connection, "SELECT * FROM area_details ORDER BY Area_Name");
+
 $error = "";
 
 // Update profile and password
 if (isset($_POST['update'])) {
 
-    $fname   = mysqli_real_escape_string($connection, $_POST['fname']);
-    $lname   = mysqli_real_escape_string($connection, $_POST['lname']);
-    $dob     = mysqli_real_escape_string($connection, $_POST['dob']);
-    $phone   = mysqli_real_escape_string($connection, $_POST['phone']);
-    $address = mysqli_real_escape_string($connection, $_POST['address']);
-    $pincode = mysqli_real_escape_string($connection, $_POST['pincode']);
-    $email   = mysqli_real_escape_string($connection, $_POST['email']);
+    $fname    = mysqli_real_escape_string($connection, $_POST['fname']);
+    $lname    = mysqli_real_escape_string($connection, $_POST['lname']);
+    $dob      = $_POST['dob'];
+    $phone    = $_POST['phone'];
+    $address  = mysqli_real_escape_string($connection, $_POST['address']);
+    $area_id  = (int)$_POST['area_id'];
+    $email    = $_POST['email'];
 
     // Password fields
     $current_password = $_POST['current_password'];
@@ -48,7 +51,6 @@ if (isset($_POST['update'])) {
         }
         else {
             $plain_pass = mysqli_real_escape_string($connection, $new_password);
-
             mysqli_query(
                 $connection,
                 "UPDATE user_details SET Password='$plain_pass' WHERE User_Id=$admin_id"
@@ -68,7 +70,7 @@ if (isset($_POST['update'])) {
                 DOB='$dob',
                 Phone='$phone',
                 Address='$address',
-                Pincode='$pincode',
+                Area_Id='$area_id',
                 Email='$email'
             WHERE User_Id=$admin_id"
         );
@@ -153,11 +155,18 @@ if (isset($_POST['update'])) {
                value="<?= $admin['Address']; ?>">
     </div>
 
+    <!-- ✅ SELECT AREA (ONLY CHANGE) -->
     <div class="col-md-6 mb-3">
-        <label class="form-label">Pincode</label>
-        <input type="text" name="pincode" class="form-control"
-               pattern="[0-9]{6}" maxlength="6"
-               value="<?= $admin['Pincode']; ?>">
+        <label class="form-label">Select Area</label>
+        <select name="area_id" class="form-control" required>
+            <option value="">-- Select Area --</option>
+            <?php while ($row = mysqli_fetch_assoc($areas)) { ?>
+                <option value="<?= $row['Area_Id']; ?>"
+                    <?= ($row['Area_Id'] == $admin['Area_Id']) ? 'selected' : ''; ?>>
+                    <?= $row['Area_Name']; ?> (<?= $row['Pincode']; ?>)
+                </option>
+            <?php } ?>
+        </select>
     </div>
 
     <div class="col-md-6 mb-3">
