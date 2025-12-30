@@ -9,6 +9,9 @@ if (!isset($_SESSION['admin_id']) || $_SESSION['admin_role'] !== "ADMIN") {
     exit;
 }
 
+// Fetch all areas
+$areas = mysqli_query($connection, "SELECT * FROM area_details ORDER BY Area_Name");
+
 if (isset($_POST['add'])) {
 
     $first    = mysqli_real_escape_string($connection, $_POST['first_name']);
@@ -16,20 +19,20 @@ if (isset($_POST['add'])) {
     $dob      = mysqli_real_escape_string($connection, $_POST['dob']);
     $phone    = mysqli_real_escape_string($connection, $_POST['phone']);
     $address  = mysqli_real_escape_string($connection, $_POST['address']);
-    $pincode  = mysqli_real_escape_string($connection, $_POST['pincode']);
+    $area_id  = (int)$_POST['area_id'];
     $email    = mysqli_real_escape_string($connection, $_POST['email']);
     $password = mysqli_real_escape_string($connection, $_POST['password']);
     $status   = mysqli_real_escape_string($connection, $_POST['status']);
 
-    // Check email exists (ONLY backend check needed)
+    // Check email exists
     $check = mysqli_query($connection, "SELECT * FROM user_details WHERE Email='$email'");
     if (mysqli_num_rows($check) == 0) {
 
         mysqli_query($connection, "
             INSERT INTO user_details
-            (First_Name, Last_Name, DOB, User_Role, Phone, Address, Pincode, Email, Password, Status)
+            (First_Name, Last_Name, DOB, User_Role, Phone, Address, Area_Id, Email, Password, Status)
             VALUES
-            ('$first','$last','$dob','DELIVERY_BOY','$phone','$address','$pincode','$email','$password','$status')
+            ('$first','$last','$dob','DELIVERY_BOY','$phone','$address','$area_id','$email','$password','$status')
         ");
 
         header("Location: ../layout.php?view=delivery_boys&msg=added");
@@ -88,12 +91,17 @@ if (isset($_POST['add'])) {
             <textarea name="address" class="form-control" required></textarea>
         </div>
 
+        <!-- ✅ SELECT AREA (ONLY CHANGE) -->
         <div class="mb-3">
-            <label class="form-label">Pincode</label>
-            <input type="text" name="pincode" class="form-control"
-                   required pattern="[0-9]{6}"
-                   maxlength="6"
-                   title="Exactly 6 digits">
+            <label class="form-label">Select Area</label>
+            <select name="area_id" class="form-control" required>
+                <option value="">-- Select Area --</option>
+                <?php while ($row = mysqli_fetch_assoc($areas)) { ?>
+                    <option value="<?= $row['Area_Id']; ?>">
+                        <?= $row['Area_Name']; ?> (<?= $row['Pincode']; ?>)
+                    </option>
+                <?php } ?>
+            </select>
         </div>
 
         <div class="mb-3">
