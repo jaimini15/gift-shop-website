@@ -10,7 +10,11 @@ include(__DIR__ . '/../db.php');
 $admin_id = $_SESSION['admin_id'];
 $admin = mysqli_fetch_assoc(mysqli_query(
     $connection,
-    "SELECT * FROM user_details WHERE User_Id = $admin_id LIMIT 1"
+    "SELECT u.*, a.Pincode 
+     FROM user_details u
+     LEFT JOIN area_details a ON u.Area_Id = a.Area_Id
+     WHERE u.User_Id = $admin_id
+     LIMIT 1"
 ));
 ?>
 
