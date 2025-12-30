@@ -245,17 +245,15 @@ function verifyOTP() {
     let otp = document.getElementById("otp").value;
 
     fetch("verify_register_otp.php", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ otp: otp })
-    })
-    .then(res => res.json())
-    .then(data => {
-        alert(data.message);
-        if (data.success) {
-            document.getElementById("otp_verified").value = "1";
-        }
-    });
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ otp })
+})
+.then(res => res.json())
+.then(data => {
+    alert(data.message);
+});
+
 }
 </script>
 
