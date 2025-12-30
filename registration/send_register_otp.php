@@ -1,57 +1,58 @@
 <?php
 session_start();
+header('Content-Type: application/json');
+ini_set('display_errors', 0);
+
 include("../AdminPanel/db.php");
-include("../PHPMailer/PHPMailer.php");
-include("../PHPMailer/SMTP.php");
-include("../PHPMailer/Exception.php");
+
+// ✅ CORRECT PHPMailer PATHS
+require_once __DIR__ . "/../PHPMailer-master/src/PHPMailer.php";
+require_once __DIR__ . "/../PHPMailer-master/src/SMTP.php";
+require_once __DIR__ . "/../PHPMailer-master/src/Exception.php";
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
-
-ini_set('display_errors', 0); // prevent warnings
-header('Content-Type: application/json'); // JSON output
-$mail = new PHPMailer(true);
 
 $data = json_decode(file_get_contents("php://input"), true);
 $email = trim($data['email'] ?? '');
 
 if (!$email) {
-    echo json_encode(["success" => false, "message" => "Email required"]);
+    echo json_encode(["success"=>false,"message"=>"Email required"]);
     exit;
 }
 
 // Check email exists
-$check = mysqli_query($connection, "SELECT Email FROM user_details WHERE Email='$email' LIMIT 1");
+$check = mysqli_query($connection,"SELECT Email FROM user_details WHERE Email='$email'");
 if (mysqli_num_rows($check) > 0) {
-    echo json_encode(["success" => false, "message" => "Email already registered"]);
+    echo json_encode(["success"=>false,"message"=>"Email already registered"]);
     exit;
 }
 
 // Generate OTP
-$otp = rand(100000, 999999);
+$otp = rand(100000,999999);
 $_SESSION['register_otp'] = $otp;
-$_SESSION['register_email'] = $email;
 $_SESSION['register_otp_time'] = time();
+
+$mail = new PHPMailer(true);
 
 try {
     $mail->isSMTP();
-    $mail->SMTPDebug = 0; // important: no debug output
     $mail->Host = "smtp.gmail.com";
     $mail->SMTPAuth = true;
-    $mail->Username = "giftshopmaninagar@gmail.com";
-    $mail->Password = 'ljoy otkw cvnk beqi'; // your app password
+    $mail->Username = 'giftshopmaninagar@gmail.com';
+    $mail->Password = 'ljoy otkw cvnk beqi';
     $mail->SMTPSecure = "tls";
     $mail->Port = 587;
 
-    $mail->setFrom("giftshopmaninagar@gmail.com", "GiftShop");
+    $mail->setFrom('giftshopmaninagar@gmail.com', 'GiftShop System');
     $mail->addAddress($email);
-    $mail->Subject = "Email Verification OTP";
-    $mail->Body = "Your OTP for registration is: $otp";
+    $mail->Subject = "OTP Verification";
+    $mail->Body = "Your OTP is: $otp";
 
     $mail->send();
 
-    echo json_encode(["success" => true, "message" => "OTP sent to your email"]);
+    echo json_encode(["success"=>true,"message"=>"OTP sent successfully"]);
+
 } catch (Exception $e) {
-    echo json_encode(["success" => false, "message" => "Mailer Error"]);
+    echo json_encode(["success"=>false,"message"=>"Email sending failed"]);
 }
-// ❌ DO NOT close with ?>
