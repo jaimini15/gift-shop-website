@@ -16,15 +16,23 @@ if (!isset($_GET['id'])) {
 $id = intval($_GET['id']);
 
 // Fetch delivery boy
-$query  = "SELECT * FROM user_details WHERE User_Id=$id AND User_Role='DELIVERY_BOY'";
+$query = "
+    SELECT u.*, a.Pincode 
+    FROM user_details u
+    LEFT JOIN area_details a ON u.Area_Id = a.Area_Id
+    WHERE u.User_Id=$id AND u.User_Role='DELIVERY_BOY'
+";
 $result = mysqli_query($connection, $query);
-$data   = mysqli_fetch_assoc($result);
+$data = mysqli_fetch_assoc($result);
 
 if (!$data) {
     die("Delivery Boy not found");
 }
 
-// UPDATE PROCESS (NO BACKEND VALIDATION)
+// Fetch all areas
+$areas = mysqli_query($connection, "SELECT * FROM area_details ORDER BY Area_Name");
+
+// UPDATE PROCESS
 if (isset($_POST['update'])) {
 
     $fname    = mysqli_real_escape_string($connection, $_POST['First_Name']);
@@ -32,7 +40,7 @@ if (isset($_POST['update'])) {
     $dob      = mysqli_real_escape_string($connection, $_POST['DOB']);
     $phone    = mysqli_real_escape_string($connection, $_POST['Phone']);
     $address  = mysqli_real_escape_string($connection, $_POST['Address']);
-    $pincode  = mysqli_real_escape_string($connection, $_POST['Pincode']);
+    $area_id  = (int)$_POST['Area_Id'];
     $email    = mysqli_real_escape_string($connection, $_POST['Email']);
     $password = mysqli_real_escape_string($connection, $_POST['Password']);
     $status   = mysqli_real_escape_string($connection, $_POST['Status']);
@@ -44,7 +52,7 @@ if (isset($_POST['update'])) {
             DOB='$dob',
             Phone='$phone',
             Address='$address',
-            Pincode='$pincode',
+            Area_Id='$area_id',
             Email='$email',
             Password='$password',
             Status='$status'
@@ -122,11 +130,18 @@ if (isset($_POST['update'])) {
                    value="<?= $data['Address'] ?>">
         </div>
 
+        <!-- ✅ SELECT AREA (ONLY CHANGE) -->
         <div class="mb-3">
-            <label>Pincode</label>
-            <input type="text" name="Pincode" class="form-control"
-                   required pattern="[0-9]{6}" maxlength="6"
-                   value="<?= $data['Pincode'] ?>">
+            <label>Select Area</label>
+            <select name="Area_Id" class="form-control" required>
+                <option value="">-- Select Area --</option>
+                <?php while ($row = mysqli_fetch_assoc($areas)) { ?>
+                    <option value="<?= $row['Area_Id']; ?>"
+                        <?= ($row['Area_Id'] == $data['Area_Id']) ? 'selected' : ''; ?>>
+                        <?= $row['Area_Name']; ?> (<?= $row['Pincode']; ?>)
+                    </option>
+                <?php } ?>
+            </select>
         </div>
 
         <div class="mb-3">
