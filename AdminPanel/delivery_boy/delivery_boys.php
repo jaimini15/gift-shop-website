@@ -1,7 +1,12 @@
 <?php
 include(__DIR__ . '/../db.php');
 
-$query = "SELECT * FROM user_details WHERE User_Role='DELIVERY_BOY'";
+$query = "
+    SELECT u.*, a.Area_Name, a.Pincode
+    FROM user_details u
+    LEFT JOIN area_details a ON u.Area_Id = a.Area_Id
+    WHERE u.User_Role='DELIVERY_BOY'
+";
 $result = mysqli_query($connection, $query);
 ?>
 
@@ -37,56 +42,60 @@ $result = mysqli_query($connection, $query);
 
 <body>
 
-    <div class="card-box">
+<div class="card-box">
 
-        <h2 class="fw-bold mb-3">
-            <i class="fa-solid fa-motorcycle"></i> Delivery Boys
-        </h2>
+    <h2 class="fw-bold mb-3">
+        <i class="fa-solid fa-motorcycle"></i> Delivery Boys
+    </h2>
 
-        <a href="delivery_boy/add_delivery_boy.php" class="btn btn-primary mb-3">
-            + Add Delivery Boy
-        </a>
+    <a href="delivery_boy/add_delivery_boy.php" class="btn btn-primary mb-3">
+        + Add Delivery Boy
+    </a>
 
-        <table class="table table-bordered table-striped">
-            <thead class="table-dark">
-                <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Phone</th>
-                    <th>Address</th>
-                    <th>DOB</th>
-                    <th>Pincode</th>
-                    <th>Status</th> 
-                    <th>Created At</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
+    <table class="table table-bordered table-striped">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Address</th>
+                <th>DOB</th>
+                <th>Area</th>
+                <th>Status</th>
+                <th>Created At</th>
+                <th>Action</th>
+            </tr>
+        </thead>
 
-            <tbody>
-                <?php while ($row = mysqli_fetch_assoc($result)) { ?>
-                    <tr>
-                        <td><?= $row['User_Id'] ?></td>
-                        <td><?= $row['First_Name'] . ' ' . $row['Last_Name'] ?></td>
-                        <td><?= $row['Email'] ?></td>
-                        <td><?= $row['Phone'] ?></td>
-                        <td><?= $row['Address'] ?></td>
-                        <td><?= $row['DOB'] ?></td>
-                        <td><?= $row['Pincode'] ?></td>
-                        <td><?= $row['Status'] ?></td> 
-                        <td><?= isset($row['Create_At']) ? date("d-m-Y H:i", strtotime($row['Create_At'])) : 'N/A' ?></td>
-                        <td>
-                            <a href="delivery_boy/edit_delivery_boy.php?id=<?= $row['User_Id'] ?>"
-                                class="btn btn-warning btn-sm">Edit</a>
-                        </td>
-                    </tr>
-                <?php } ?>
-            </tbody>
+        <tbody>
+        <?php while ($row = mysqli_fetch_assoc($result)) { ?>
+            <tr>
+                <td><?= $row['User_Id'] ?></td>
+                <td><?= $row['First_Name'] . ' ' . $row['Last_Name'] ?></td>
+                <td><?= $row['Email'] ?></td>
+                <td><?= $row['Phone'] ?></td>
+                <td><?= $row['Address'] ?></td>
+                <td><?= $row['DOB'] ?></td>
 
-        </table>
+                <!-- ✅ AREA NAME + PINCODE -->
+                <td>
+                    <?= $row['Area_Name'] ? $row['Area_Name'] . ', ' . $row['Pincode'] : 'N/A' ?>
+                </td>
 
-    </div>
+                <td><?= $row['Status'] ?></td>
+                <td><?= isset($row['Create_At']) ? date("d-m-Y H:i", strtotime($row['Create_At'])) : 'N/A' ?></td>
+                <td>
+                    <a href="delivery_boy/edit_delivery_boy.php?id=<?= $row['User_Id'] ?>"
+                       class="btn btn-warning btn-sm">Edit</a>
+                </td>
+            </tr>
+        <?php } ?>
+        </tbody>
+
+    </table>
+
+</div>
 
 </body>
-
 </html>
