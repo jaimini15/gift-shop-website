@@ -97,10 +97,23 @@ $items = mysqli_query(
             <span><?= htmlspecialchars($profileUser['First_Name']) ?></span>
         </div>
 
-        <div class="order-id">
-            <span class="label">ORDER #</span>
-            <span><?= $order['Order_Id'] ?></span>
-        </div>
+
+    <!-- ORDER # LINE -->
+   <div class="order-id invoice-wrapper">
+    <span class="order-number">
+        <span class="label">ORDER #</span>
+        <span><?= $order['Order_Id'] ?></span>
+    </span>
+
+    <a
+        href="invoice.php?order_id=<?= $order['Order_Id'] ?>"
+        target="_blank"
+        class="invoice-link"
+    >
+        View invoice
+    </a>
+</div>
+
 
     </div>
 
@@ -141,5 +154,19 @@ $items = mysqli_query(
 
 </div> <!-- account-content -->
 </div> <!-- account-wrapper -->
+<script>
+document.addEventListener("click", function (e) {
+
+    document.querySelectorAll(".invoice-dropdown").forEach(drop => {
+        if (!drop.contains(e.target)) {
+            drop.classList.remove("active");
+        }
+    });
+
+    if (e.target.closest(".invoice-text")) {
+        e.target.closest(".invoice-dropdown").classList.toggle("active");
+    }
+});
+</script>
 
 <?php include("../home page/footer.php"); ?>
