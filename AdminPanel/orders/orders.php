@@ -48,8 +48,10 @@ if (isset($_POST['set_packed']) && $_POST['set_packed'] === 'Packed') {
     }
 
     // Redirect safely before any output
-    // header("Location:orders.php");
-    exit;
+   ob_clean(); // 🔥 CLEAR ANY OUTPUT FROM layout.php
+header("Location: orders.php");
+exit;
+
 }
 
 // ================= IMAGE STREAM HANDLER =================
