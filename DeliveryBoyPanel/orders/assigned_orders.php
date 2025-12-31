@@ -32,7 +32,7 @@ if (isset($_POST['order_id'], $_POST['delivery_status'])) {
         mysqli_query($connection, "
             UPDATE delivery_details 
             SET Delivery_Status = 'Delivered',
-                Delivery_Date = CURDATE()
+                Delivery_Date = NOW()
             WHERE Order_Id = $orderId
         ");
     }
