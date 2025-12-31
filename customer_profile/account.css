@@ -342,3 +342,65 @@ body{
     -webkit-appearance: none;
     -moz-appearance: none;
 }
+/* invoice dropdown */
+.invoice-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    text-align: right;
+}
+
+/* FORCE single line */
+.order-number {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    white-space: nowrap;
+}
+.order-number * {
+    white-space: nowrap;
+}
+.order-number-line span {
+    white-space: nowrap;
+}
+.invoice-text {
+    font-size: 14px;
+    color: #7e2626d5;
+    cursor: pointer;
+}
+
+.invoice-text:hover {
+    text-decoration: none;
+}
+
+/* View invoice link */
+.invoice-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 4px;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    color: #007185;             
+    text-decoration: none;
+    white-space: nowrap;
+
+    transition: 
+        color 0.2s ease,
+        transform 0.15s ease;
+}
+/* Hover effect */
+.invoice-link:hover {
+    color:#7e2626d5;             
+    text-decoration: none;
+    transform: translateX(2px); 
+}
+.invoice-link::after {
+    content: ">";
+    font-size: 16px;
+    line-height: 1;
+    margin-left: 2px;
+}
