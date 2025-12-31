@@ -3,16 +3,7 @@ session_start();
 include("../AdminPanel/db.php");
 
 if ($_SERVER["REQUEST_METHOD"] !== "POST") {
-    header("Location: register.php");
-    exit();
-}
-
-/* 🔐 OTP VERIFICATION CHECK */
-if (!isset($_SESSION['register_verified']) || $_SESSION['register_verified'] !== true) {
-    echo "<script>
-        alert('Please verify your email with OTP first');
-        window.location.href='registration.php';
-    </script>";
+    header("Location: registration.php");
     exit();
 }
 
@@ -21,7 +12,7 @@ $last_name  = mysqli_real_escape_string($connection, $_POST['last_name']);
 $dob        = mysqli_real_escape_string($connection, $_POST['dob']);
 $phone      = mysqli_real_escape_string($connection, $_POST['phone']);
 $address    = mysqli_real_escape_string($connection, $_POST['address']);
-$pincode    = mysqli_real_escape_string($connection, $_POST['pincode']);
+$area_id = mysqli_real_escape_string($connection, $_POST['area_id']);
 $email      = mysqli_real_escape_string($connection, $_POST['email']);
 $password   = mysqli_real_escape_string($connection, $_POST['password']);
 $role       = "CUSTOMER";
@@ -48,30 +39,18 @@ if (mysqli_num_rows($checkPhone) > 0) {
 
 /* ✅ INSERT USER */
 $insert = "INSERT INTO user_details 
-    (First_Name, Last_Name, DOB, Phone, Address, Pincode, Email, Password, User_Role, Create_At)
-    VALUES 
-    ('$first_name','$last_name','$dob','$phone','$address','$pincode','$email','$password','$role',NOW())";
-
+(First_Name, Last_Name, DOB, Phone, Address, Area_Id, Email, Password, User_Role, Create_At)
+VALUES 
+('$first_name','$last_name','$dob','$phone','$address','$area_id','$email','$password','$role',NOW())";
 if (mysqli_query($connection, $insert)) {
-
-    /* 🧹 CLEAR OTP SESSION */
-    unset(
-        $_SESSION['register_otp'],
-        $_SESSION['register_email'],
-        $_SESSION['register_otp_time'],
-        $_SESSION['register_verified']
-    );
-
     echo "<script>
         alert('Registration successful! Please login.');
-        window.location.href='../login/login.php?popup=1';
+        window.location.href='../login/login.php';
     </script>";
-    exit();
-
 } else {
     echo "<script>
-        alert('Account creation failed. Try again.');
+        alert('Registration failed. Try again.');
         window.location.href='registration.php';
     </script>";
-    exit();
 }
+exit();
