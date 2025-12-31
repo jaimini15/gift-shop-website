@@ -50,9 +50,20 @@ include("account_layout.php");
     <input type="text" name="address"
            value="<?= htmlspecialchars($profileUser['Address']) ?>">
 
-    <label>Pincode</label>
-    <input type="text" name="pincode"
-           value="<?= htmlspecialchars($profileUser['Pincode']) ?>">
+   <label>Area</label>
+<select name="area_id" required>
+<?php
+$areas = mysqli_query($connection, "SELECT Area_Id, Area_Name FROM area_details");
+while ($area = mysqli_fetch_assoc($areas)) {
+    $selected = ($area['Area_Id'] == $profileUser['Area_Id']) ? 'selected' : '';
+    echo "<option value='{$area['Area_Id']}' $selected>
+            {$area['Area_Name']}
+          </option>";
+}
+?>
+</select>
+
+
 
     <button type="submit">Save Changes</button>
 </form>
