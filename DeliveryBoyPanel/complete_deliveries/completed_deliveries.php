@@ -13,9 +13,9 @@ $deliveryBoyId = (int)$_SESSION['delivery_id'];
 /* ============================================== */
 
 
-/* ========== FETCH COMPLETED DELIVERIES ========= */
+/* ========== FETCH ALL COMPLETED DELIVERIES (PERMANENT) ========= */
 $orders = mysqli_query($connection, "
-SELECT 
+SELECT DISTINCT
     o.Order_Id,
     DATE(o.Order_Date) AS Order_Date,
     o.Total_Amount,
@@ -32,11 +32,11 @@ JOIN delivery_area_map m ON m.area_id = d.Area_Id
 JOIN area_details a ON a.Area_Id = d.Area_Id
 WHERE 
     m.delivery_boy_id = $deliveryBoyId
-    AND m.status = 'ACTIVE'
     AND d.Delivery_Status = 'Delivered'
+    AND DATE(d.Delivery_Date) <= CURDATE()
 ORDER BY d.Delivery_Date DESC
 ");
-/* ============================================== */
+/* =============================================================== */
 ?>
 
 <!DOCTYPE html>
@@ -86,28 +86,18 @@ body { background:#f4f6f9; }
             <?php while ($row = mysqli_fetch_assoc($orders)) { ?>
                 <tr>
                     <td><?= $row['Order_Id'] ?></td>
-
                     <td><?= htmlspecialchars($row['Customer_Name']) ?></td>
-
                     <td><?= htmlspecialchars($row['Address']) ?></td>
-
                     <td><?= htmlspecialchars($row['Area_Name']) ?></td>
-
                     <td><?= date("d-m-Y", strtotime($row['Order_Date'])) ?></td>
-
                     <td>₹<?= number_format($row['Total_Amount'], 2) ?></td>
-
                     <td><?= htmlspecialchars($row['Phone']) ?></td>
-
                     <td>
                         <span class="badge bg-success">
                             <?= $row['Delivery_Status'] ?>
                         </span>
                     </td>
-
-                    <td>
-                        <?= date("d-m-Y h:i A", strtotime($row['Delivery_Date'])) ?>
-                    </td>
+                    <td><?= date("d-m-Y h:i A", strtotime($row['Delivery_Date'])) ?></td>
                 </tr>
             <?php } ?>
 
