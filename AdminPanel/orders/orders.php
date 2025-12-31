@@ -3,15 +3,20 @@ include(__DIR__ . '/../db.php');
 
 /* ================= IMAGE STREAM HANDLER ================= */
 if (isset($_GET['img'])) {
+
     $id = (int)$_GET['img'];
 
-    $q = mysqli_query($connection, "SELECT Custom_Image FROM order_item WHERE Order_Item_Id = $id LIMIT 1");
+    $q = mysqli_query($connection,
+        "SELECT Custom_Image 
+         FROM order_item 
+         WHERE Order_Item_Id = $id 
+         LIMIT 1");
+
     if ($q && mysqli_num_rows($q) === 1) {
         $row = mysqli_fetch_assoc($q);
 
         if (!empty($row['Custom_Image'])) {
             header("Content-Type: image/jpeg");
-            header("Content-Length: " . strlen($row['Custom_Image']));
             echo $row['Custom_Image'];
             exit;
         }
@@ -21,22 +26,53 @@ if (isset($_GET['img'])) {
 }
 /* ======================================================== */
 
-/* ============ UPDATE DELIVERY STATUS ==================== */
-if (isset($_POST['set_packed'])) {
+
+/* ============ UPDATE DELIVERY STATUS (WITH AREA & ADDRESS) =============== */
+if (isset($_POST['set_packed']) && $_POST['set_packed'] === 'Packed') {
+
     $orderId = (int)$_POST['order_id'];
 
+    // Get user id from order
+    $oq = mysqli_query($connection,
+        "SELECT User_Id 
+         FROM `order` 
+         WHERE Order_Id = $orderId 
+         LIMIT 1");
+    $or = mysqli_fetch_assoc($oq);
+    $userId = (int)$or['User_Id'];
+
+    // Get area id & address from user_details
+    $uq = mysqli_query($connection,
+        "SELECT Area_Id, Address 
+         FROM user_details 
+         WHERE User_Id = $userId 
+         LIMIT 1");
+    $ur = mysqli_fetch_assoc($uq);
+
+    $areaId = $ur['Area_Id'] ?? NULL;
+    $address = mysqli_real_escape_string($connection, $ur['Address'] ?? '');
+
+    // Check if delivery record exists
     $check = mysqli_query($connection,
-        "SELECT Delivery_Id FROM delivery_details WHERE Order_Id = $orderId LIMIT 1");
+        "SELECT Delivery_Id 
+         FROM delivery_details 
+         WHERE Order_Id = $orderId 
+         LIMIT 1");
 
     if (mysqli_num_rows($check) == 0) {
+
         mysqli_query($connection,
-    "INSERT INTO delivery_details (Order_Id, Delivery_Address, Delivery_Status)
-     VALUES ($orderId, '', 'Packed')");
+            "INSERT INTO delivery_details
+            (Order_Id, Area_Id, Delivery_Address, Delivery_Status)
+            VALUES ($orderId, $areaId, '$address', 'Packed')");
 
     } else {
+
         mysqli_query($connection,
             "UPDATE delivery_details
-             SET Delivery_Status = 'Packed'
+             SET Area_Id = $areaId,
+                 Delivery_Address = '$address',
+                 Delivery_Status = 'Packed'
              WHERE Order_Id = $orderId");
     }
 }
@@ -69,19 +105,37 @@ if (isset($_POST['set_packed'])) {
 <h2 class="fw-bold mb-4">Manage Orders</h2>
 
 <?php
-$orders = mysqli_query($connection, "SELECT * FROM `order` ORDER BY Order_Id DESC");
+$orders = mysqli_query($connection,
+    "SELECT * FROM `order` ORDER BY Order_Id DESC");
 
 while ($order = mysqli_fetch_assoc($orders)) {
 
+    /* AREA NAME */
+    $areaQ = mysqli_query($connection, "
+        SELECT a.Area_Name
+        FROM user_details u
+        JOIN area_details a ON a.Area_Id = u.Area_Id
+        WHERE u.User_Id = {$order['User_Id']}
+        LIMIT 1
+    ");
+    $area = mysqli_fetch_assoc($areaQ);
+    $areaName = $area['Area_Name'] ?? 'N/A';
+
+    /* HAMPER */
     $h = mysqli_query($connection,
-        "SELECT Is_Hamper_Suggested FROM order_item 
-         WHERE Order_Id = {$order['Order_Id']} LIMIT 1");
+        "SELECT Is_Hamper_Suggested 
+         FROM order_item 
+         WHERE Order_Id = {$order['Order_Id']} 
+         LIMIT 1");
     $hr = mysqli_fetch_assoc($h);
     $isHamper = ($hr && $hr['Is_Hamper_Suggested'] == 1);
 
+    /* DELIVERY STATUS */
     $d = mysqli_query($connection,
-        "SELECT Delivery_Status FROM delivery_details 
-         WHERE Order_Id = {$order['Order_Id']} LIMIT 1");
+        "SELECT Delivery_Status 
+         FROM delivery_details 
+         WHERE Order_Id = {$order['Order_Id']} 
+         LIMIT 1");
     $dr = mysqli_fetch_assoc($d);
     $deliveryStatus = $dr['Delivery_Status'] ?? '';
 ?>
@@ -100,6 +154,9 @@ while ($order = mysqli_fetch_assoc($orders)) {
             <span class="badge <?= $isHamper ? 'badge-yes':'badge-no' ?>">
                 <?= $isHamper ? 'Yes':'No' ?>
             </span>
+        </div>
+        <div class="col-md-6">
+            <strong>Delivery Area:</strong> <?= $areaName ?>
         </div>
     </div>
 </div>
