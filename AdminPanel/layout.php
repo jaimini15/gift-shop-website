@@ -1,4 +1,5 @@
 <?php
+ob_start();
 if (!isset($_SESSION))
     session_start();
 
@@ -19,6 +20,7 @@ $allowed = [
 ];
 
 $page = isset($allowed[$view]) ? $allowed[$view] : $allowed['dashboard'];
+ob_end_flush();
 ?>
 <!DOCTYPE html>
 <html lang="en">
