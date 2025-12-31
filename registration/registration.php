@@ -38,15 +38,16 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <title>Register|GiftShop</title>
 <link rel="stylesheet" href="../home page/style.css">
 <style>
-    body { background: #f5f5f5; margin: 0; }
+    body { background:white; margin: 0; }
 
     .register-box {
         width: 450px;
-        background: white;
+        background-color: #fff;
         margin: 30px auto;
         padding: 25px;
+        border:1px solid #7e2626d5;
         border-radius: 15px;
-        box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        box-shadow: 2px 5px 10px rgba(0,0,0,0.2);
     }
 
     .register-box h2 {
