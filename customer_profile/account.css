@@ -331,3 +331,14 @@ body{
     color:#0f766e;
     margin:12px 0;
 }
+/* Area dropdown  */
+.account-content select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 15px;
+    background-color: #fff;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
