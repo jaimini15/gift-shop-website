@@ -92,7 +92,7 @@ $stmt = mysqli_prepare($connection, $query);
 
 mysqli_stmt_bind_param(
     $stmt,
-    "iiidssss",
+    "iiidsiss",
     $cartId,
     $productId,
     $quantity,
