@@ -2,19 +2,19 @@
 // ================= START OUTPUT BUFFERING =================
 ob_start();
 
-// Include database connection first
+// Include database connection
 include(__DIR__ . '/../db.php');
 
 // ================= HANDLE POST BEFORE ANY OUTPUT =================
 if (isset($_POST['set_packed']) && $_POST['set_packed'] === 'Packed') {
 
-    $orderId = (int)$_POST['order_id'];
+    $orderId = (int) $_POST['order_id'];
 
     // Get user ID
     $oq = mysqli_query($connection,
         "SELECT User_Id FROM `order` WHERE Order_Id = $orderId LIMIT 1");
     $or = mysqli_fetch_assoc($oq);
-    $userId = (int)$or['User_Id'];
+    $userId = (int) ($or['User_Id'] ?? 0);
 
     // Get address & area
     $uq = mysqli_query($connection,
@@ -30,7 +30,6 @@ if (isset($_POST['set_packed']) && $_POST['set_packed'] === 'Packed') {
     $dr = mysqli_fetch_assoc($check);
     $currentStatus = $dr['Delivery_Status'] ?? '';
 
-    // Only update if not delivered
     if ($currentStatus !== 'Delivered') {
         if (mysqli_num_rows($check) == 0) {
             mysqli_query($connection,
@@ -50,14 +49,13 @@ if (isset($_POST['set_packed']) && $_POST['set_packed'] === 'Packed') {
 
 // ================= IMAGE STREAM HANDLER =================
 if (isset($_GET['img'])) {
-    $id = (int)$_GET['img'];
+    $id = (int) $_GET['img'];
 
     $q = mysqli_query($connection,
         "SELECT Custom_Image FROM order_item WHERE Order_Item_Id = $id LIMIT 1");
 
     if ($q && mysqli_num_rows($q) === 1) {
         $row = mysqli_fetch_assoc($q);
-
         if (!empty($row['Custom_Image'])) {
             header("Content-Type: image/jpeg");
             echo $row['Custom_Image'];
@@ -68,8 +66,6 @@ if (isset($_GET['img'])) {
     http_response_code(404);
     exit;
 }
-
-// ================= END PHP PREPROCESSING =================
 ?>
 
 <!DOCTYPE html>
@@ -88,6 +84,13 @@ body { background:#f4f6f9; font-family:Arial; }
 .product-img { width:60px; height:60px; object-fit:cover; border-radius:6px; }
 .badge-yes { background:#198754; }
 .badge-no { background:#dc3545; }
+.date-row {
+    background:#e9ecef;
+    font-weight:bold;
+    padding:10px;
+    border-radius:8px;
+    margin-bottom:15px;
+}
 </style>
 </head>
 
@@ -101,26 +104,35 @@ body { background:#f4f6f9; font-family:Arial; }
 <?php
 // ================= FETCH ONLY NEW ORDERS =================
 $orders = mysqli_query($connection, "
-    SELECT o.*
+    SELECT o.*, DATE(o.Order_Date) AS Order_Date_Only
     FROM `order` o
     LEFT JOIN delivery_details d 
         ON d.Order_Id = o.Order_Id
     WHERE d.Delivery_Status IS NULL
        OR d.Delivery_Status NOT IN ('Packed', 'Delivered')
-    ORDER BY o.Order_Id DESC
+    ORDER BY o.Order_Date DESC
 ");
 
-// ✅ NO ORDERS CONDITION (only added logic)
 if (mysqli_num_rows($orders) == 0) {
     echo '<div class="text-center text-muted fw-semibold py-5">
             No orders found
           </div>';
 }
+
+$lastDate = null;
 ?>
 
 <?php while ($order = mysqli_fetch_assoc($orders)): ?>
 
 <?php
+    if ($lastDate !== $order['Order_Date_Only']) {
+        echo '
+        <div class="date-row">
+            📅 ' . date("d-m-Y", strtotime($order['Order_Date_Only'])) . '
+        </div>';
+        $lastDate = $order['Order_Date_Only'];
+    }
+
     // Fetch area
     $areaQ = mysqli_query($connection, "
         SELECT a.Area_Name
@@ -191,7 +203,8 @@ if (mysqli_num_rows($orders) == 0) {
 <tbody>
 
 <?php
-$items = mysqli_query($connection, "SELECT * FROM order_item WHERE Order_Id = {$order['Order_Id']}");
+$items = mysqli_query($connection,
+    "SELECT * FROM order_item WHERE Order_Id = {$order['Order_Id']}");
 while ($item = mysqli_fetch_assoc($items)):
 ?>
 <tr>
