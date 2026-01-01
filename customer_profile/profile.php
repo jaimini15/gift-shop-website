@@ -55,17 +55,6 @@ body{
     gap:20px;
 }
 
-/* RESPONSIVE */
-@media (max-width: 900px){
-    .account-grid{
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-@media (max-width: 500px){
-    .account-grid{
-        grid-template-columns: 1fr;
-    }
-}
 
 .account-card{
    /* background: #f3f4f6; */
