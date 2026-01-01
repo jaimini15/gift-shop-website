@@ -25,13 +25,18 @@ $userAddress = mysqli_fetch_assoc($userQ);
 /* Fetch order */
 $orderQ = mysqli_query(
     $connection,
-    "SELECT o.*, pd.Product_Image
+    "SELECT 
+        o.*, 
+        pd.Product_Image,
+        pd.Product_Name,
+        pd.Description
      FROM `order` o
      JOIN order_item oi ON o.Order_Id = oi.Order_Id
      JOIN product_details pd ON oi.Product_Id = pd.Product_Id
      WHERE o.Order_Id='$orderId'
      LIMIT 1"
 );
+
 $order = mysqli_fetch_assoc($orderQ);
 
 /* Fetch delivery */
@@ -51,10 +56,13 @@ $stepMap = [
     'Delivered' => 4
 ];
 $currentStep = $stepMap[$status] ?? 1;
-
-include("account_layout.php");
 ?>
-
+ <?php include("../home page/navbar.php"); ?>
+ <title>Track Order|GiftShop</title>
+ <!-- MAIN SITE CSS -->
+    <link rel="stylesheet" href="../home page/style.css">
+    <!-- FONT AWESOME -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 <style>
 .track-header {
     display:flex;
@@ -65,14 +73,40 @@ include("account_layout.php");
 
 .track-header a {
     text-decoration:none;
-    color:#007185;
+    color:#7e2626d5;
     font-size:14px;
+}
+.track-header h3{
+    color:#7e2626d5;
+}
+.product-preview {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
 }
 
 .product-preview img {
-    width:80px;
-    margin-bottom:15px;
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border: 1px solid #ddd;
+    border-radius: 4px;
 }
+
+.product-info h4 {
+    margin: 0;
+    font-size: 16px;
+    color: #333;
+}
+
+.product-info p {
+    margin: 5px 0 0;
+    font-size: 14px;
+    color: #666;
+    line-height: 1.4;
+}
+
 
 .progress-container {
     margin: 40px 0;
@@ -140,7 +174,7 @@ include("account_layout.php");
 }
 
 .shipping-box {
-    border:1px solid #ddd;
+    border:1px solid #7e2626d5;
     padding:15px;
     width:350px;
     margin-top:30px;
@@ -148,6 +182,7 @@ include("account_layout.php");
 
 .shipping-box h4 {
     margin-bottom:8px;
+    color:#7e2626d5;
 }
 .progress-fill {
     width: 0%;
@@ -156,8 +191,33 @@ include("account_layout.php");
 .circle {
     transition: background 0.3s ease;
 }
+.progress-line {
+    overflow: hidden;
+}
+/* PAGE WRAPPER */
+.track-wrapper {
+    width: 100%;
+    min-height: 70vh;
+    display: flex;
+    justify-content: center;
+    padding: 40px 0;
+    background: white; 
+}
+
+/* BOX CARD */
+.track-container {
+    width: 900px;
+    background: #fff;
+    padding: 30px;
+    border: 1px solid #7e2626d5 ;
+    border-radius: 6px;
+    box-shadow: 0px 4px 12px rgba(0,0,0,0.2);
+}
+
 
 </style>
+<div class="track-wrapper">
+    <div class="track-container">
 
 <div class="track-header">
     <h3>
@@ -171,7 +231,13 @@ include("account_layout.php");
 
 <div class="product-preview">
     <img src="data:image/jpeg;base64,<?= base64_encode($order['Product_Image']) ?>">
+
+    <div class="product-info">
+        <h4><?= htmlspecialchars($order['Product_Name']) ?></h4>
+        <p><?= htmlspecialchars($order['Description']) ?></p>
+    </div>
 </div>
+
 
 <!-- PROGRESS BAR -->
 <div class="progress-container">
@@ -204,48 +270,58 @@ for ($i = 1; $i <= 4; $i++):
 </div>
 
 
-
-</div> <!-- account-content -->
-</div> <!-- account-wrapper -->
 <script>
 document.addEventListener("DOMContentLoaded", () => {
 
     const progressFill = document.querySelector(".progress-fill");
     const steps = document.querySelectorAll(".step");
+    const bgLine = document.querySelector(".progress-bg");
 
     const currentStep = <?= $currentStep ?>;
-    const totalSteps = steps.length;
 
-    let stepIndex = 1;
+    const stepPositions = [];
 
-    function animateStep() {
-        if (stepIndex > currentStep) return;
+    // Calculate circle center positions
+    steps.forEach(step => {
+        const circle = step.querySelector(".circle");
+        const circleRect = circle.getBoundingClientRect();
+        const bgRect = bgLine.getBoundingClientRect();
 
-        // 1️⃣ Move line first
-        const percent = ((stepIndex - 1) / (totalSteps - 1)) * 100;
-        progressFill.style.width = percent + "%";
+        const centerX = circleRect.left + circleRect.width / 2;
+        stepPositions.push(centerX - bgRect.left);
+    });
 
-        // 2️⃣ After line reaches, activate circle + text
+    const fullLineWidth = bgLine.offsetWidth;
+
+    let index = 0;
+
+    function animate() {
+        if (index >= currentStep) return;
+
+        let targetWidth;
+
+        // ✅ LAST STEP → extend line to full width
+        if (index === steps.length - 1 && currentStep === steps.length) {
+            targetWidth = fullLineWidth;
+        } else {
+            targetWidth = stepPositions[index];
+        }
+
+        progressFill.style.width = targetWidth + "px";
+
         setTimeout(() => {
-
-            // previous steps → completed
-            for (let i = 0; i < stepIndex - 1; i++) {
-                steps[i].classList.add("completed");
-            }
-
-            // current step → active
-            steps[stepIndex - 1].classList.add("active");
-
-            stepIndex++;
-            setTimeout(animateStep, 600); // pause before next step
-
-        }, 500); // wait until line touches circle
+            steps[index].classList.add("completed");
+            index++;
+            setTimeout(animate, 600);
+        }, 500);
     }
 
-    animateStep();
+    animate();
 });
 </script>
 
+    </div>
+</div>
 
 <?php include("../home page/footer.php"); ?>
 
