@@ -1,21 +1,31 @@
 <?php
 if (!isset($_SESSION)) session_start();
+
+/* ================= AUTH CHECK ================= */
 if (!isset($_SESSION['admin_id']) || $_SESSION['admin_role'] !== "ADMIN") {
     header("Location: ../admin_login/login.php?error=Please login first");
     exit;
 }
+/* ============================================= */
 
 include(__DIR__ . '/../db.php');
 
-$admin_id = $_SESSION['admin_id'];
-$admin = mysqli_fetch_assoc(mysqli_query(
-    $connection,
-    "SELECT u.*, a.Pincode 
-     FROM user_details u
-     LEFT JOIN area_details a ON u.Area_Id = a.Area_Id
-     WHERE u.User_Id = $admin_id
-     LIMIT 1"
-));
+$admin_id = (int)$_SESSION['admin_id'];
+
+/* ========== FETCH ADMIN DETAILS ========== */
+$adminQuery = mysqli_query($connection, "
+    SELECT 
+        u.*,
+        a.Area_Name,
+        a.Pincode
+    FROM user_details u
+    LEFT JOIN area_details a ON u.Area_Id = a.Area_Id
+    WHERE u.User_Id = $admin_id
+    LIMIT 1
+");
+
+$admin = mysqli_fetch_assoc($adminQuery);
+/* ======================================== */
 ?>
 
 <!DOCTYPE html>
@@ -71,13 +81,13 @@ $admin = mysqli_fetch_assoc(mysqli_query(
 <body>
 
 <div class="container mt-4">
-
     <div class="profile-card">
 
-        <!-- Success Message -->
+        <!-- SUCCESS MESSAGE -->
         <?php if (isset($_GET['success'])) { ?>
             <div class="alert alert-success text-center">
-                <i class="fa-solid fa-check-circle"></i> <?php echo $_GET['success']; ?>
+                <i class="fa-solid fa-check-circle"></i>
+                <?php echo htmlspecialchars($_GET['success']); ?>
             </div>
         <?php } ?>
 
@@ -87,15 +97,17 @@ $admin = mysqli_fetch_assoc(mysqli_query(
                 <i class="fa-solid fa-user"></i>
             </div>
             <div class="profile-name">
-                <h3><?php echo $admin['First_Name'] . " " . $admin['Last_Name']; ?></h3>
+                <h3><?php echo $admin['First_Name']." ".$admin['Last_Name']; ?></h3>
                 <p class="text-muted mb-0">
-                    <i class="fa-solid fa-shield-halved"></i> <?php echo $admin['User_Role']; ?>
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <?php echo $admin['User_Role']; ?>
                 </p>
             </div>
         </div>
 
         <!-- PROFILE DETAILS -->
         <table class="table table-bordered info-table">
+
             <tr>
                 <th><i class="fa-solid fa-id-card"></i> User ID</th>
                 <td><?php echo $admin['User_Id']; ?></td>
@@ -121,15 +133,20 @@ $admin = mysqli_fetch_assoc(mysqli_query(
                 <td><?php echo $admin['Address']; ?></td>
             </tr>
 
+            <!-- AREA + PINCODE IN SAME ROW -->
             <tr>
-                <th><i class="fa-solid fa-map-pin"></i> Pincode</th>
-                <td><?php echo $admin['Pincode']; ?></td>
+                <th><i class="fa-solid fa-map-location-dot"></i> Area & Pincode</th>
+                <td>
+                    <?php echo $admin['Area_Name'];?> 
+                    <span>, <?php echo $admin['Pincode']; ?></span>
+                </td>
             </tr>
 
             <tr>
                 <th><i class="fa-solid fa-clock"></i> Created At</th>
                 <td><?php echo $admin['Create_At']; ?></td>
             </tr>
+
         </table>
 
         <!-- BUTTON -->
