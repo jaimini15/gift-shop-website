@@ -1,6 +1,7 @@
 <?php
-if (!isset($_SESSION))
+if (!isset($_SESSION)) {
     session_start();
+}
 
 include("../AdminPanel/db.php");
 
@@ -9,14 +10,14 @@ if (!isset($_SESSION['delivery_id'])) {
     header("Location: login.php");
     exit;
 }
-$deliveryBoyId = (int)$_SESSION['delivery_id'];
+$deliveryBoyId = (int) $_SESSION['delivery_id'];
 /* ============================================== */
 
 
 /* ========== UPDATE DELIVERY STATUS ============= */
 if (isset($_POST['order_id'], $_POST['delivery_status'])) {
 
-    $orderId = (int)$_POST['order_id'];
+    $orderId = (int) $_POST['order_id'];
     $status  = $_POST['delivery_status'];
 
     if ($status === 'Out of Delivery') {
@@ -42,25 +43,25 @@ if (isset($_POST['order_id'], $_POST['delivery_status'])) {
 
 /* ========== FETCH ASSIGNED ORDERS ============== */
 $orders = mysqli_query($connection, "
-SELECT 
-    o.Order_Id,
-    o.Order_Date,
-    o.Total_Amount,
-    d.Delivery_Status,
-    a.Area_Name,
-    u.Phone,
-    u.Address,
-    CONCAT(u.First_Name, ' ', u.Last_Name) AS Customer_Name
-FROM delivery_details d
-JOIN `order` o ON o.Order_Id = d.Order_Id
-JOIN user_details u ON u.User_Id = o.User_Id
-JOIN delivery_area_map m ON m.area_id = d.Area_Id
-JOIN area_details a ON a.Area_Id = d.Area_Id
-WHERE 
-    m.delivery_boy_id = $deliveryBoyId
-    AND m.status = 'ACTIVE'
-    AND d.Delivery_Status IN ('Packed', 'Out of Delivery')
-ORDER BY d.Delivery_Id DESC
+    SELECT 
+        o.Order_Id,
+        DATE(o.Order_Date) AS Order_Date,
+        o.Total_Amount,
+        d.Delivery_Status,
+        a.Area_Name,
+        u.Phone,
+        u.Address,
+        CONCAT(u.First_Name, ' ', u.Last_Name) AS Customer_Name
+    FROM delivery_details d
+    JOIN `order` o ON o.Order_Id = d.Order_Id
+    JOIN user_details u ON u.User_Id = o.User_Id
+    JOIN delivery_area_map m ON m.area_id = d.Area_Id
+    JOIN area_details a ON a.Area_Id = d.Area_Id
+    WHERE 
+        m.delivery_boy_id = $deliveryBoyId
+        AND m.status = 'ACTIVE'
+        AND d.Delivery_Status IN ('Packed', 'Out of Delivery')
+    ORDER BY o.Order_Date DESC
 ");
 /* ============================================== */
 ?>
@@ -76,6 +77,10 @@ ORDER BY d.Delivery_Id DESC
 <style>
 body { background:#f4f6f9; }
 .card { border-radius:12px; }
+.date-row {
+    background:#e9ecef;
+    font-weight:bold;
+}
 </style>
 </head>
 
@@ -101,15 +106,30 @@ body { background:#f4f6f9; }
             </thead>
             <tbody>
 
-            <?php if (mysqli_num_rows($orders) == 0) { ?>
+            <?php
+            if (mysqli_num_rows($orders) == 0) {
+                echo '
                 <tr>
                     <td colspan="9" class="text-center text-muted">
                         No assigned orders
                     </td>
-                </tr>
-            <?php } ?>
+                </tr>';
+            }
 
-            <?php while ($row = mysqli_fetch_assoc($orders)) { ?>
+            $lastDate = null;
+
+            while ($row = mysqli_fetch_assoc($orders)) {
+
+                if ($lastDate !== $row['Order_Date']) {
+                    echo '
+                    <tr class="date-row">
+                        <td colspan="9">
+                            📅 ' . date("d-m-Y", strtotime($row['Order_Date'])) . '
+                        </td>
+                    </tr>';
+                    $lastDate = $row['Order_Date'];
+                }
+            ?>
                 <tr>
                     <td><?= $row['Order_Id'] ?></td>
 
@@ -119,7 +139,7 @@ body { background:#f4f6f9; }
 
                     <td><?= htmlspecialchars($row['Area_Name']) ?></td>
 
-                    <td><?= $row['Order_Date'] ?></td>
+                    <td><?= date("d-m-Y", strtotime($row['Order_Date'])) ?></td>
 
                     <td>₹<?= number_format($row['Total_Amount'], 2) ?></td>
 
@@ -141,7 +161,7 @@ body { background:#f4f6f9; }
                                 <option value="">Select</option>
 
                                 <option value="Out of Delivery"
-                                    <?= $row['Delivery_Status']=='Out of Delivery'?'selected':'' ?>>
+                                    <?= $row['Delivery_Status'] == 'Out of Delivery' ? 'selected' : '' ?>>
                                     Out of Delivery
                                 </option>
 
