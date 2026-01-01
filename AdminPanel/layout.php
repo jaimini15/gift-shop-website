@@ -93,29 +93,6 @@ ob_end_flush();
             padding: 90px 20px 20px;
         }
 
-        /* MOBILE RESPONSIVE */
-        @media (max-width: 768px) {
-
-            .menu-btn {
-                display: block;
-            }
-
-            .header {
-                padding-left: 0;
-            }
-
-            .sidebar {
-                transform: translateX(-260px);
-            }
-
-            .sidebar.active {
-                transform: translateX(0);
-            }
-
-            .content {
-                margin-left: 0;
-            }
-        }
     </style>
 </head>
 
@@ -123,30 +100,13 @@ ob_end_flush();
 
     <!-- HEADER -->
     <div class="header">
-        <div class="d-flex align-items-center">
-            <!-- MOBILE TOGGLE BUTTON -->
-            <i class="fa-solid fa-bars menu-btn" onclick="toggleSidebar()"></i>
 
             <div class="fw-bold fs-4">
                 <i class="fa-solid fa-gift text-danger"></i> GiftShop Admin
             </div>
         </div>
 
-        <!-- FIXED DROPDOWN -->
-        <div class="dropdown">
-            <a class="dropdown-toggle text-dark text-decoration-none" href="#" role="button" data-bs-toggle="dropdown">
-                <i class="fa-solid fa-user-shield"></i> Admin
-            </a>
-
-            <ul class="dropdown-menu dropdown-menu-end shadow">
-                <li><a class="dropdown-item" href="layout.php?view=admin_profile">
-                        <i class="fa-solid fa-id-badge"></i> Profile
-                    </a></li>
-                <li><a class="dropdown-item" href="admin_login/logout.php">
-                        <i class="fa-solid fa-right-from-bracket"></i> Logout
-                    </a></li>
-            </ul>
-        </div>
+       
     </div>
 
     <!-- SIDEBAR -->
