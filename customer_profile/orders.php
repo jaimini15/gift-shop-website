@@ -15,33 +15,55 @@ $profileUser = mysqli_fetch_assoc(
 );
 
 /* DELIVERY TEXT FUNCTION (+3 DAYS) */
-function getDeliveryText($orderDate) {
-    $orderDate = new DateTime($orderDate);
-    $deliveryDate = clone $orderDate;
-    $deliveryDate->modify('+3 days');
+function getDeliveryText($orderDate, $deliveryStatus, $deliveryDate = null) {
 
-    $today = new DateTime();
-    $today->setTime(0,0,0);
-    $deliveryDate->setTime(0,0,0);
-
-    $diff = (int)$today->diff($deliveryDate)->format('%r%a');
-
-    if ($diff === 0) {
-        return "Arriving today";
-    } elseif ($diff === 1) {
-        return "Arriving tomorrow";
-    } elseif ($diff > 1) {
-        return "Arriving on " . $deliveryDate->format('d M Y');
-    } else {
-        return "Delivered on " . $deliveryDate->format('d M Y');
+    // ✅ If delivered → show REAL delivered date
+    if ($deliveryStatus === 'Delivered' && $deliveryDate) {
+        return "Delivered on " . date('d M Y', strtotime($deliveryDate));
     }
+
+    // 📦 Estimated delivery = order date + 3 days
+    $orderDate = new DateTime($orderDate);
+    $estimated = clone $orderDate;
+    $estimated->modify('+3 days');
+
+    $today = new DateTime('today');
+
+    if ($today > $estimated) {
+        return "Arriving soon";
+    }
+
+    $diff = $today->diff($estimated)->days;
+
+    if ($diff === 0) return "Arriving today";
+    if ($diff === 1) return "Arriving tomorrow";
+
+    return "Arriving on " . $estimated->format('d M Y');
 }
+
+
 
 /* FETCH ORDERS */
 $orders = mysqli_query(
     $connection,
-    "SELECT * FROM `order` WHERE User_Id='$uid' ORDER BY Order_Date DESC"
+    "SELECT 
+        o.*,
+        d.Delivery_Status,
+        d.Delivery_Date,
+        CASE 
+            WHEN d.Delivery_Status = 'Delivered' THEN 1
+            ELSE 0
+        END AS is_delivered
+     FROM `order` o
+     LEFT JOIN delivery_details d 
+        ON o.Order_Id = d.Order_Id
+     WHERE o.User_Id = '$uid'
+     ORDER BY 
+        is_delivered ASC,
+        o.Order_Date DESC"
 );
+
+
 
 $activePage = "orders";
 include("account_layout.php");
@@ -61,7 +83,12 @@ include("account_layout.php");
 <?php while ($order = mysqli_fetch_assoc($orders)): ?>
 
 <?php
-$deliveryText = getDeliveryText($order['Order_Date']);
+$deliveryText = getDeliveryText(
+    $order['Order_Date'],
+    $order['Delivery_Status'] ?? '',
+    $order['Delivery_Date'] ?? null
+);
+
 
 /* FETCH ORDER ITEMS WITH PRODUCT DATA */
 $items = mysqli_query(
@@ -105,13 +132,10 @@ $items = mysqli_query(
         <span><?= $order['Order_Id'] ?></span>
     </span>
 
-    <a
-        href="invoice.php?order_id=<?= $order['Order_Id'] ?>"
-        target="_blank"
-        class="invoice-link"
-    >
-        View invoice
-    </a>
+    <a href="invoice.php?id=<?= $order['Order_Id'] ?>" class="invoice-link">
+    View invoice
+</a>
+
 </div>
 
 
