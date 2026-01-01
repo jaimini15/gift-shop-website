@@ -385,7 +385,10 @@ function updateCartCount() {
     <input type="hidden" id="giftCardVal" name="gift_card" value="0">
 
     <!-- Gift Card Message -->
-    <textarea id="giftCardMsgVal" name="gift_card_msg" style="display:none;"></textarea>
+    <!-- <textarea id="giftCardMsgVal" name="gift_card_msg" style="display:none;"></textarea> -->
+    <textarea id="giftMsg" class="form-control" rows="4"
+          placeholder="Type your Gift Card message..." style="display:none;"></textarea>
+
 
     <!-- Custom Text -->
     <input type="hidden" id="customTextVal" name="custom_text" value="">
@@ -398,16 +401,18 @@ function updateCartCount() {
 
 
     <button type="submit" class="product-btn" style="padding:0.5rem 2rem;">Add to Cart</button>
+
 </form>
 
 
+
     <!-- BUY NOW -->
-    <form method="POST" action="checkout.php">
-        <input type="hidden" name="product_id" value="<?= (int)$product['Product_Id'] ?>">
-        <button type="submit" class="product-btn" style="padding:0.5rem 2rem;">
-            Buy Now
-        </button>
-    </form>
+    <button type="button"
+        onclick="buyNow(<?= (int)$product['Product_Id'] ?>)"
+        class="product-btn">
+    Buy Now
+</button>
+
 
 </div>
 
@@ -613,6 +618,35 @@ document.querySelector("form[action='add_to_cart.php']").addEventListener("submi
     document.getElementById("customTextVal").value = finalText;
 
 });
+
+
+</script>
+
+
+
+<script>
+function buyNow(productId) {
+    fetch("set_buy_now.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            product_id: productId,
+            gift_wrap: document.getElementById("giftWrap").checked ? 1 : 0,
+            gift_card: document.getElementById("giftCard").checked ? 1 : 0,
+            gift_card_msg: document.getElementById("giftMsg")?.value || ""
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (!data.success) {
+            alert("Failed to prepare order");
+            return;
+        }
+
+        window.location.href =
+            "../view_cart/payment.php?buy_now=1&product_id=" + productId;
+    });
+}
 </script>
 
 
