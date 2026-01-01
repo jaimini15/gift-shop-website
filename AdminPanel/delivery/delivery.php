@@ -19,6 +19,12 @@ include(__DIR__ . '/../db.php');
         body { background:#f4f6f9; font-family: Arial; }
         .content { margin-left:120px; padding:20px; margin-top:30px; }
         .card-box { background:#fff; padding:20px; border-radius:12px; }
+
+        .date-row {
+            background: #e9ecef;
+            font-weight: bold;
+            font-size: 15px;
+        }
     </style>
 </head>
 
@@ -27,7 +33,7 @@ include(__DIR__ . '/../db.php');
 <div class="content">
 <div class="card-box">
 
-<h3 class="fw-bold mb-4">Delivered Orders</h3>
+<h3 class="fw-bold mb-4">Delivered Orders (Date Wise)</h3>
 
 <?php
 $deliveries = mysqli_query($connection, "
@@ -51,7 +57,7 @@ $deliveries = mysqli_query($connection, "
     LEFT JOIN area_details a ON a.Area_Id = d.Area_Id
 
     WHERE d.Delivery_Status IN ('Packed','Out of Delivery','Delivered')
-    ORDER BY d.Delivery_Date DESC
+    ORDER BY o.Order_Date DESC
 ");
 ?>
 
@@ -71,15 +77,26 @@ $deliveries = mysqli_query($connection, "
     </thead>
     <tbody>
 
-    <?php if (mysqli_num_rows($deliveries) == 0) { ?>
-        <tr>
-            <td colspan="9" class="text-center text-muted">
-                No orders found
-            </td>
-        </tr>
-    <?php } ?>
+<?php
+if (mysqli_num_rows($deliveries) == 0) {
+    echo '<tr><td colspan="9" class="text-center text-muted">No orders found</td></tr>';
+}
 
-    <?php while ($row = mysqli_fetch_assoc($deliveries)) { ?>
+$lastDate = null;
+
+while ($row = mysqli_fetch_assoc($deliveries)) {
+
+    // If date changes, print date heading row
+    if ($lastDate !== $row['Order_Date']) {
+        echo '
+        <tr class="date-row">
+            <td colspan="9">
+                📅 ' . date("d-m-Y", strtotime($row['Order_Date'])) . '
+            </td>
+        </tr>';
+        $lastDate = $row['Order_Date'];
+    }
+?>
         <tr>
             <td><?= $row['Order_Id'] ?></td>
             <td><?= htmlspecialchars($row['Customer_Name']) ?></td>
@@ -90,10 +107,9 @@ $deliveries = mysqli_query($connection, "
             <td><?= htmlspecialchars($row['Phone']) ?></td>
             <td>
                 <?php
-                $status = $row['Delivery_Status'];
-                if ($status == 'Packed') {
+                if ($row['Delivery_Status'] === 'Packed') {
                     echo '<span class="badge bg-warning text-dark">Packed</span>';
-                } elseif ($status == 'Out of Delivery') {
+                } elseif ($row['Delivery_Status'] === 'Out of Delivery') {
                     echo '<span class="badge bg-primary">Out of Delivery</span>';
                 } else {
                     echo '<span class="badge bg-success">Delivered</span>';
@@ -101,13 +117,12 @@ $deliveries = mysqli_query($connection, "
                 ?>
             </td>
             <td>
-                <?= $row['Delivery_Date'] 
-                    ? date("d-m-Y h:i A", strtotime($row['Delivery_Date'])) 
-                    : '-' 
-                ?>
+                <?= $row['Delivery_Date']
+                    ? date("d-m-Y h:i A", strtotime($row['Delivery_Date']))
+                    : '-' ?>
             </td>
         </tr>
-    <?php } ?>
+<?php } ?>
 
     </tbody>
 </table>
