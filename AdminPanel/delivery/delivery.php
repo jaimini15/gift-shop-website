@@ -4,7 +4,6 @@ if (!isset($_SESSION)) session_start();
 include(__DIR__ . '/../db.php');
 
 /* ================= AUTH CHECK ================= */
-
 /* ============================================== */
 ?>
 
@@ -51,7 +50,7 @@ $deliveries = mysqli_query($connection, "
     JOIN user_details u ON u.User_Id = o.User_Id
     LEFT JOIN area_details a ON a.Area_Id = d.Area_Id
 
-    WHERE d.Delivery_Status = 'Delivered'
+    WHERE d.Delivery_Status IN ('Packed','Out of Delivery','Delivered')
     ORDER BY d.Delivery_Date DESC
 ");
 ?>
@@ -75,7 +74,7 @@ $deliveries = mysqli_query($connection, "
     <?php if (mysqli_num_rows($deliveries) == 0) { ?>
         <tr>
             <td colspan="9" class="text-center text-muted">
-                No delivered orders found
+                No orders found
             </td>
         </tr>
     <?php } ?>
@@ -90,9 +89,23 @@ $deliveries = mysqli_query($connection, "
             <td>₹<?= number_format($row['Total_Amount'], 2) ?></td>
             <td><?= htmlspecialchars($row['Phone']) ?></td>
             <td>
-                <span class="badge bg-success">Delivered</span>
+                <?php
+                $status = $row['Delivery_Status'];
+                if ($status == 'Packed') {
+                    echo '<span class="badge bg-warning text-dark">Packed</span>';
+                } elseif ($status == 'Out of Delivery') {
+                    echo '<span class="badge bg-primary">Out of Delivery</span>';
+                } else {
+                    echo '<span class="badge bg-success">Delivered</span>';
+                }
+                ?>
             </td>
-            <td><?= date("d-m-Y h:i A", strtotime($row['Delivery_Date'])) ?></td>
+            <td>
+                <?= $row['Delivery_Date'] 
+                    ? date("d-m-Y h:i A", strtotime($row['Delivery_Date'])) 
+                    : '-' 
+                ?>
+            </td>
         </tr>
     <?php } ?>
 
