@@ -6,16 +6,69 @@ $currentStep = 2;
 include("checkout_steps.php");
 // Save hamper choice (default false)
 $_SESSION['hamper_selected'] = isset($_POST['hamper']) ? 1 : 0;
+$isBuyNow = isset($_GET['buy_now']) && $_GET['buy_now'] == 1;
 
 // Validate totals
-if (!isset($_SESSION['subtotal'], $_SESSION['total'])) {
-    header("Location: view_cart.php");
-    exit;
+if ($isBuyNow) {
+
+    if (!isset($_GET['product_id'])) {
+        header("Location: ../home page/index.php");
+        exit;
+    }
+
+    $productId = (int)$_GET['product_id'];
+
+    $stmt = mysqli_prepare($connection,
+        "SELECT Product_Name, Price FROM Product_Details WHERE Product_Id=?"
+    );
+    mysqli_stmt_bind_param($stmt, "i", $productId);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    $product = mysqli_fetch_assoc($result);
+
+    if (!$product) {
+        die("Invalid product");
+    }
+
+    // SINGLE PRODUCT TOTALS
+   $subtotal = $product['Price'];
+
+$giftWrapPrice = 0;
+$giftCardPrice = 0;
+
+if (!empty($_SESSION['gift_wrap'])) {
+    $giftWrapPrice = 39; // example price
 }
 
-$subtotal = $_SESSION['subtotal'];
-$shipping = $_SESSION['shipping'];
-$total    = $_SESSION['total'];
+if (!empty($_SESSION['gift_card'])) {
+    $giftCardPrice = 50;
+}
+
+$subtotal = $product['Price'];
+
+$giftWrapPrice = !empty($_SESSION['gift_wrap']) ? 39 : 0;
+$giftCardPrice = !empty($_SESSION['gift_card']) ? 50 : 0;
+
+$subtotal += $giftWrapPrice + $giftCardPrice;
+$shipping = 0;
+$total    = $subtotal;
+
+
+    $_SESSION['buy_now'] = true;
+    $_SESSION['buy_now_product_id'] = $productId;
+
+} else {
+
+    // CART FLOW (existing)
+    if (!isset($_SESSION['subtotal'], $_SESSION['total'])) {
+        header("Location: view_cart.php");
+        exit;
+    }
+
+    $subtotal = $_SESSION['subtotal'];
+    $shipping = $_SESSION['shipping'];
+    $total    = $_SESSION['total'];
+}
 $userId   = $_SESSION['User_Id'] ?? null;
 
 if (!$userId) {
