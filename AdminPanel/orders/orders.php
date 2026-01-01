@@ -46,12 +46,6 @@ if (isset($_POST['set_packed']) && $_POST['set_packed'] === 'Packed') {
                  WHERE Order_Id = $orderId");
         }
     }
-
-    // Redirect safely before any output
-   ob_clean(); // 🔥 CLEAR ANY OUTPUT FROM layout.php
-header("Location: orders.php");
-exit;
-
 }
 
 // ================= IMAGE STREAM HANDLER =================
@@ -116,8 +110,17 @@ $orders = mysqli_query($connection, "
     ORDER BY o.Order_Id DESC
 ");
 
-while ($order = mysqli_fetch_assoc($orders)):
+// ✅ NO ORDERS CONDITION (only added logic)
+if (mysqli_num_rows($orders) == 0) {
+    echo '<div class="text-center text-muted fw-semibold py-5">
+            No orders found
+          </div>';
+}
+?>
 
+<?php while ($order = mysqli_fetch_assoc($orders)): ?>
+
+<?php
     // Fetch area
     $areaQ = mysqli_query($connection, "
         SELECT a.Area_Name
@@ -134,12 +137,6 @@ while ($order = mysqli_fetch_assoc($orders)):
         "SELECT Is_Hamper_Suggested FROM order_item WHERE Order_Id = {$order['Order_Id']} LIMIT 1");
     $hr = mysqli_fetch_assoc($h);
     $isHamper = ($hr && $hr['Is_Hamper_Suggested'] == 1);
-
-    // Delivery status
-    $d = mysqli_query($connection,
-        "SELECT Delivery_Status FROM delivery_details WHERE Order_Id = {$order['Order_Id']} LIMIT 1");
-    $dr = mysqli_fetch_assoc($d);
-    $deliveryStatus = $dr['Delivery_Status'] ?? '';
 ?>
 
 <div class="order-header mb-3">
@@ -225,5 +222,5 @@ while ($item = mysqli_fetch_assoc($items)):
 </html>
 
 <?php
-ob_end_flush(); // Flush output buffer
+ob_end_flush();
 ?>
