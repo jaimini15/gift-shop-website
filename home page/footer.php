@@ -4,10 +4,10 @@
 
                 <div class="box">
                     <h3>Quick links</h3>
-                    <a href="index.php"><i class="fas fa-angle-right"></i>Home</a>
-                    <a href="about.php"><i class="fas fa-angle-right"></i>About Us</a>
-                    <a href="index.php#categories"><i class="fas fa-angle-right"></i>Shop</a>
-                    <a href="contact.php"><i class="fas fa-angle-right"></i>Contact us</a>
+                    <a href="../home page/index.php"><i class="fas fa-angle-right"></i>Home</a>
+                    <a href="../home page/about.php"><i class="fas fa-angle-right"></i>About Us</a>
+                    <a href="../home page/index.php#categories"><i class="fas fa-angle-right"></i>Shop</a>
+                    <a href="../home page/contact.php"><i class="fas fa-angle-right"></i>Contact us</a>
                 </div>
 
                 <div class="box">
