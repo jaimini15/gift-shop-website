@@ -1,7 +1,22 @@
 <?php
 session_start();
-include("../AdminPanel/db.php");
 header('Content-Type: application/json');
+error_reporting(0);
+ini_set('display_errors', 0);
+$data = json_decode(file_get_contents("php://input"), true);
+
+$order_id = $data['order_id'] ?? null;
+$payment_method = $data['payment_method'] ?? null;
+
+if (!$order_id || !$payment_method) {
+    echo json_encode([
+        "success" => false,
+        "error" => "Invalid payment data"
+    ]);
+    exit;
+}
+
+include("../AdminPanel/db.php");
 
 if (!isset($_SESSION['User_Id'], $_SESSION['pending_order_id'])) {
     echo json_encode(["success"=>false,"error"=>"Unauthorized"]);
