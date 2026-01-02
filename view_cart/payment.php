@@ -11,12 +11,12 @@ $isBuyNow = isset($_GET['buy_now']) && $_GET['buy_now'] == 1;
 // Validate totals
 if ($isBuyNow) {
 
-    if (!isset($_GET['product_id'])) {
-        header("Location: ../home page/index.php");
-        exit;
-    }
+    if (empty($_SESSION['buy_now_product_id'])) {
+    header("Location: ../home page/index.php");
+    exit;
+}
+$productId = (int)$_SESSION['buy_now_product_id'];
 
-    $productId = (int)$_GET['product_id'];
 
     $stmt = mysqli_prepare($connection,
         "SELECT Product_Name, Price FROM Product_Details WHERE Product_Id=?"
@@ -32,30 +32,24 @@ if ($isBuyNow) {
 
     // SINGLE PRODUCT TOTALS
    $subtotal = $product['Price'];
+$giftWrapPrice = ($_SESSION['gift_wrap'] ?? 0) ? 39 : 0;
+$giftCardPrice = ($_SESSION['gift_card'] ?? 0) ? 50 : 0;
 
-$giftWrapPrice = 0;
-$giftCardPrice = 0;
 
-if (!empty($_SESSION['gift_wrap'])) {
-    $giftWrapPrice = 39; // example price
-}
-
-if (!empty($_SESSION['gift_card'])) {
-    $giftCardPrice = 50;
-}
-
-$subtotal = $product['Price'];
-
-$giftWrapPrice = !empty($_SESSION['gift_wrap']) ? 39 : 0;
-$giftCardPrice = !empty($_SESSION['gift_card']) ? 50 : 0;
-
-$subtotal += $giftWrapPrice + $giftCardPrice;
+$subtotal = $product['Price'] + $giftWrapPrice + $giftCardPrice;
 $shipping = 0;
 $total    = $subtotal;
 
 
+    if (!isset($_SESSION['buy_now'])) {
     $_SESSION['buy_now'] = true;
+}
+
     $_SESSION['buy_now_product_id'] = $productId;
+    $_SESSION['buy_now_total'] = $total;
+$_SESSION['buy_now_gift_wrap'] = $giftWrapPrice;
+$_SESSION['buy_now_gift_card'] = $giftCardPrice;
+
 
 } else {
 
@@ -541,7 +535,7 @@ document.getElementById("placeOrderBtn").addEventListener("click", function(){
 }); // ✅ CLOSE placeOrderBtn click listener
 
 
-document.querySelector(".pay-btn").addEventListener("click", function (e) {
+document.querySelector("#cardPanel .pay-btn").addEventListener("click", function (e) {
     e.preventDefault();
 
     /* ================= VALIDATION ================= */
