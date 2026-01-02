@@ -10,6 +10,15 @@ if (!isset($_SESSION['User_Id'])) {
 
 $userId = $_SESSION['User_Id'];
 $isBuyNow = !empty($_SESSION['buy_now']);
+if (!empty($_SESSION['pending_order_id'])) {
+    echo json_encode([
+        "success" => false,
+        "pending" => true,
+        "order_id" => $_SESSION['pending_order_id']
+    ]);
+    exit;
+}
+
 $hamperSelected = $_SESSION['hamper_selected'] ?? 0;
 
 $data = json_decode(file_get_contents("php://input"), true);
@@ -47,7 +56,9 @@ if ($isBuyNow) {
             "INSERT INTO `order` (User_Id, Total_Amount, Status)
              VALUES (?, ?, 'PENDING')"
         );
-        mysqli_stmt_bind_param($stmt,"id",$userId,$product['Price']);
+        mysqli_stmt_bind_param($stmt,"id",$userId,$totalAmount);
+
+        // mysqli_stmt_bind_param($stmt,"id",$userId,$product['Price']);
         mysqli_stmt_execute($stmt);
 
         $orderId = mysqli_insert_id($connection);
@@ -98,6 +109,12 @@ $stmt = mysqli_prepare($connection,
 mysqli_stmt_bind_param($stmt,"i",$cart['Cart_Id']);
 mysqli_stmt_execute($stmt);
 $row = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
+$totalAmount = $_SESSION['total'] ?? 0;
+if ($totalAmount <= 0) {
+    echo json_encode(["success"=>false,"error"=>"Invalid total"]);
+    exit;
+}
+
 
 if (($row['total'] ?? 0) <= 0) {
     echo json_encode(["success"=>false,"error"=>"Cart empty"]);
