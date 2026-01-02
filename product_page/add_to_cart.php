@@ -92,16 +92,17 @@ $stmt = mysqli_prepare($connection, $query);
 
 mysqli_stmt_bind_param(
     $stmt,
-    "iiidsiss",
-    $cartId,
-    $productId,
-    $quantity,
-    $totalPrice,
-    $uploadPath,
-    $giftWrap,
-    $customText,
-    $giftCardMsg
+    "iiidssis",
+    $cartId,        // i
+    $productId,     // i
+    $quantity,      // i
+    $totalPrice,    // d  ✅ FINAL PRICE
+    $uploadPath,    // s
+    $giftWrap,      // i
+    $customText,    // s
+    $giftCardMsg    // s
 );
+
 
 mysqli_stmt_execute($stmt);
 mysqli_stmt_close($stmt);
