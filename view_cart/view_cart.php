@@ -1,5 +1,9 @@
 <?php
 session_start();
+
+$isBuyNow = isset($_GET['buy_now']) && $_GET['buy_now'] == 1
+            && isset($_SESSION['buy_now'], $_SESSION['buy_now_item']);
+
 $currentStep = 1;
 include("checkout_steps.php");
 
@@ -12,30 +16,67 @@ if (!isset($_SESSION['User_Id'])) {
 
 $uid = $_SESSION['User_Id'];
 
-/* Fetch Cart */
-$cartRes = mysqli_query($connection, "SELECT Cart_Id FROM cart WHERE User_Id='$uid'");
-$cart = mysqli_fetch_assoc($cartRes);
+  $items = [];
+$subtotal = 0;
+$totalItems = 0;
 
-if (!$cart) {
-    echo "<p class='empty-msg'>Your cart is empty.</p>";
-    exit;
+/* ================= BUY NOW FLOW ================= */
+if ($isBuyNow) {
+
+    $item = $_SESSION['buy_now_item'];
+
+    /* Fetch product image */
+    $stmt = mysqli_prepare(
+        $connection,
+        "SELECT Product_Image FROM product_details WHERE Product_Id=? LIMIT 1"
+    );
+    mysqli_stmt_bind_param($stmt, "i", $item['product_id']);
+    mysqli_stmt_execute($stmt);
+    $res = mysqli_stmt_get_result($stmt);
+    $imgRow = mysqli_fetch_assoc($res);
+    mysqli_stmt_close($stmt);
+
+    $items[] = [
+        'product_id'   => $item['product_id'],
+        'Product_Name' => $item['product_name'],
+        'Price'        => $item['price'],
+        'Quantity'     => 1,
+        'Product_Image'=> $imgRow['Product_Image'],
+        'buy_now'      => true
+    ];
+
+}
+/* ================= NORMAL CART FLOW ================= */
+else {
+
+    $cartRes = mysqli_query($connection, "SELECT Cart_Id FROM cart WHERE User_Id='$uid'");
+    $cart = mysqli_fetch_assoc($cartRes);
+
+    if (!$cart) {
+        echo "<p class='empty-msg'>Your cart is empty.</p>";
+        exit;
+    }
+
+    $cartId = $cart['Cart_Id'];
+
+    $query = "
+        SELECT ccd.*, pd.Product_Name, pd.Product_Image
+        FROM customize_cart_details ccd
+        JOIN product_details pd ON ccd.Product_Id = pd.Product_Id
+        WHERE ccd.Cart_Id = '$cartId'
+    ";
+    $result = mysqli_query($connection, $query);
+
+    if (mysqli_num_rows($result) == 0) {
+        echo "<p class='empty-msg'>Your cart is empty.</p>";
+        exit;
+    }
+
+    while ($row = mysqli_fetch_assoc($result)) {
+        $items[] = $row;
+    }
 }
 
-$cartId = $cart['Cart_Id'];
-
-/* Fetch Cart Items */
-$query = "
-    SELECT ccd.*, pd.Product_Name, pd.Product_Image
-    FROM customize_cart_details ccd
-    JOIN product_details pd ON ccd.Product_Id = pd.Product_Id
-    WHERE ccd.Cart_Id = '$cartId'
-";
-$result = mysqli_query($connection, $query);
-
-if (mysqli_num_rows($result) == 0) {
-   header("location: ../home page/index.php");
-    exit;
-}
 
 $subtotal = 0;
 
@@ -61,7 +102,7 @@ $estimatedDate = date("d M Y", strtotime("+3 days"));
 <h2>Product Details</h2>
 <?php 
 $totalItems = 0;
-while ($row = mysqli_fetch_assoc($result)) :
+foreach ($items as $row) :
     $img = "data:image/jpeg;base64," . base64_encode($row['Product_Image']);
     $price = $row['Price'];
     $qty   = $row['Quantity'];
@@ -77,7 +118,10 @@ while ($row = mysqli_fetch_assoc($result)) :
             <p class="price">₹<?= number_format($price) ?></p>
             <p>Qty: <?= $qty ?></p>
             <p class="return">No return No refund</p>
-            <a href="#" class="remove" data-id="<?= $row['Customize_Id'] ?>">✕ REMOVE</a>
+            <?php if (empty($row['buy_now'])): ?>
+<a href="#" class="remove" data-id="<?= $row['Customize_Id'] ?>">✕ REMOVE</a>
+<?php endif; ?>
+
         </div>
     </div>
 
@@ -88,7 +132,8 @@ while ($row = mysqli_fetch_assoc($result)) :
 </div>
 
 
-<?php endwhile; ?>
+<?php endforeach; ?>
+
 </div>
 
 <!-- RIGHT -->
@@ -162,6 +207,20 @@ document.addEventListener("click", function(e) {
         });
     }
 
+});
+</script>
+<script>
+let continueClicked = false;
+
+document.querySelector(".continue-btn").addEventListener("click", function () {
+    continueClicked = true;
+});
+
+/* Browser back / close / refresh */
+window.addEventListener("beforeunload", function () {
+    if (!continueClicked) {
+        navigator.sendBeacon("../cart/delete_cart.php");
+    }
 });
 </script>
 
