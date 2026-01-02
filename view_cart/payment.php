@@ -12,11 +12,11 @@ $isBuyNow = isset($_GET['buy_now']) && $_GET['buy_now'] == 1;
 if ($isBuyNow) {
 
     if (empty($_SESSION['buy_now_product_id'])) {
-    header("Location: ../home page/index.php");
-    exit;
-}
-$productId = (int)$_SESSION['buy_now_product_id'];
+        header("Location: ../home page/index.php");
+        exit;
+    }
 
+    $productId = (int)$_SESSION['buy_now_product_id'];
 
     $stmt = mysqli_prepare($connection,
         "SELECT Product_Name, Price FROM Product_Details WHERE Product_Id=?"
@@ -30,28 +30,23 @@ $productId = (int)$_SESSION['buy_now_product_id'];
         die("Invalid product");
     }
 
-    // SINGLE PRODUCT TOTALS
-   $subtotal = $product['Price'];
-$giftWrapPrice = ($_SESSION['gift_wrap'] ?? 0) ? 39 : 0;
-$giftCardPrice = ($_SESSION['gift_card'] ?? 0) ? 50 : 0;
+    // 🔹 READ extras from session (as saved in view_cart.php)
+  $giftWrapPrice = (float) ($_SESSION['buy_now_gift_wrap'] ?? 0);
+$giftCardPrice = (float) ($_SESSION['buy_now_gift_card'] ?? 0);
 
 
-$subtotal = $product['Price'] + $giftWrapPrice + $giftCardPrice;
-$shipping = 0;
-$total    = $subtotal;
-
+    // SINGLE PRODUCT TOTAL
+    $subtotal = $product['Price'] + $giftWrapPrice + $giftCardPrice;
+    $shipping = 0;
+    $total    = $subtotal;
 
     if (!isset($_SESSION['buy_now'])) {
-    $_SESSION['buy_now'] = true;
-}
+        $_SESSION['buy_now'] = true;
+    }
 
-    $_SESSION['buy_now_product_id'] = $productId;
     $_SESSION['buy_now_total'] = $total;
-$_SESSION['buy_now_gift_wrap'] = $giftWrapPrice;
-$_SESSION['buy_now_gift_card'] = $giftCardPrice;
-
-
-} else {
+}
+ else {
 
     // CART FLOW (existing)
     if (!isset($_SESSION['subtotal'], $_SESSION['total'])) {
@@ -470,7 +465,7 @@ function closePopup() {
     // 🔁 Step 2: Cancel order AFTER user clicks OK
     if (!window.pendingOrderId) return;
 
-    fetch("cancel_order.php", {
+    fetch("/view_cart/cancel_order.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ order_id: window.pendingOrderId })
@@ -503,7 +498,7 @@ document.getElementById("placeOrderBtn").addEventListener("click", function(){
     }
     document.getElementById("paymentMethodInput").value = selected.value;
 
-   fetch("place_order.php", {
+   fetch("/view_cart/place_order.php.php", {
     method:"POST",
     headers:{"Content-Type":"application/json"},
     body: JSON.stringify({payment_method:selected.value})
@@ -563,7 +558,7 @@ document.querySelector("#cardPanel .pay-btn").addEventListener("click", function
     /* ================= PAYMENT ================= */
     setTimeout(() => {
 
-        fetch("confirm_payment.php", {
+        fetch("/view_cart/confirm_payment.php", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
