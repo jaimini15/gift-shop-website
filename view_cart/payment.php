@@ -1,4 +1,7 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 session_start();
 include("../AdminPanel/db.php");
 $currentStep = 2;
@@ -309,15 +312,21 @@ if (!$userId) {
                     </p>
                     <div class="payment-group">
                         <div class="payment-option">
-                            <input type="radio" name="payment_method" id="phonepe" value="PHONEPE">
-                            <label for="phonepe"><img src="upilogo.png" alt="PhonePe"></label>
+                            <!-- UPI (FIRST & DEFAULT) -->
+                        <input type="radio" name="payment_method" id="upi" value="UPI">
+                    <label for="upi">
+                        <img src="upilogo.png" alt="UPI">
+</label>
                         </div>
                         <div class="payment-desc">All UPI apps, Debit and Credit Cards | Powered by PhonePe</div>
                     </div>
                     <div class="payment-group">
                         <div class="payment-option">
-                            <input type="radio" name="payment_method" id="razorpay" value="RAZORPAY">
-                            <label for="razorpay"><img src="cardlogo.png" alt="Razorpay"></label>
+                            <!-- CARD (SECOND) -->
+<input type="radio" name="payment_method" id="card" value="CARD">
+<label for="card">
+    <img src="cardlogo.png" alt="Card">
+</label>
                         </div>
                         <div class="payment-desc">Secure Payment done by Razorpay</div>
                     </div>
@@ -465,7 +474,7 @@ function closePopup() {
     // 🔁 Step 2: Cancel order AFTER user clicks OK
     if (!window.pendingOrderId) return;
 
-    fetch("/view_cart/cancel_order.php", {
+    fetch("cancel_order.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ order_id: window.pendingOrderId })
@@ -498,7 +507,7 @@ document.getElementById("placeOrderBtn").addEventListener("click", function(){
     }
     document.getElementById("paymentMethodInput").value = selected.value;
 
-   fetch("/view_cart/place_order.php.php", {
+   fetch("place_order.php", {
     method:"POST",
     headers:{"Content-Type":"application/json"},
     body: JSON.stringify({payment_method:selected.value})
@@ -558,7 +567,7 @@ document.querySelector("#cardPanel .pay-btn").addEventListener("click", function
     /* ================= PAYMENT ================= */
     setTimeout(() => {
 
-        fetch("/view_cart/confirm_payment.php", {
+        fetch("confirm_payment.php", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -643,9 +652,8 @@ document.getElementById("upiPayBtn").addEventListener("click", function () {
 </script>
 
 <script>
-const upiRadio  = document.getElementById("phonepe");
-const cardRadio = document.getElementById("razorpay");
-
+const upiRadio  = document.getElementById("upi");
+const cardRadio = document.getElementById("card");
 const upiPanel  = document.getElementById("upiPanel");
 const cardPanel = document.getElementById("cardPanel");
 
