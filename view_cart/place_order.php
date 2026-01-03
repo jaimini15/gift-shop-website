@@ -1,36 +1,37 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 session_start();
-header('Content-Type: application/json');
-error_reporting(0);
-ini_set('display_errors', 0);
-/* ✅ ADD THIS BLOCK HERE */
-$data = json_decode(file_get_contents("php://input"), true);
+header("Content-Type: application/json");
 
-$payment_method = $data['payment_method'] ?? null;
-
-if (!$payment_method) {
-    echo json_encode([
-        "success" => false,
-        "error" => "Payment method missing"
-    ]);
-    exit;
-}
-/* ✅ END BLOCK */
 include("../AdminPanel/db.php");
 
-
+/* STRICT MYSQLI MODE */
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
-/* ================= AUTH ================= */
-if (empty($_SESSION['User_Id'])) {
-    echo json_encode(["success" => false, "error" => "Login required"]);
+/* ================= READ JSON INPUT ================= */
+$raw  = file_get_contents("php://input");
+$data = json_decode($raw, true);
+
+$paymentMethod = trim($data['payment_method'] ?? '');
+
+/* ================= VALIDATION ================= */
+if ($paymentMethod === '') {
+    echo json_encode(["success" => false, "message" => "Payment method missing"]);
     exit;
 }
 
-$userId = (int)$_SESSION['User_Id'];
-$hamperSelected = (int)($_SESSION['hamper_selected'] ?? 0);
+if (empty($_SESSION['User_Id'])) {
+    echo json_encode(["success" => false, "message" => "Login required"]);
+    exit;
+}
 
-/* ================= HANDLE PENDING ORDER ================= */
+$userId         = (int) $_SESSION['User_Id'];
+$hamperSelected = (int) ($_SESSION['hamper_selected'] ?? 0);
+
+/* ================= PREVENT DUPLICATE ORDER ================= */
 if (!empty($_SESSION['pending_order_id'])) {
     echo json_encode([
         "success" => false,
@@ -40,27 +41,18 @@ if (!empty($_SESSION['pending_order_id'])) {
     exit;
 }
 
-/* ================= PAYMENT METHOD ================= */
-$data = json_decode(file_get_contents("php://input"), true);
-$paymentMethod = trim($data['payment_method'] ?? '');
-
-if ($paymentMethod === '') {
-    echo json_encode(["success" => false, "error" => "Payment method required"]);
-    exit;
-}
-
-/* ================= BUY NOW FLOW ================= */
+/* =======================================================
+   BUY NOW FLOW
+   ======================================================= */
 if (!empty($_SESSION['buy_now'])) {
 
-    $item = $_SESSION['buy_now_item'] ?? null;
-    if (!$item || empty($item['product_id'])) {
-        echo json_encode(["success" => false, "error" => "Invalid Buy Now session"]);
+    $productId = (int) ($_SESSION['buy_now_product_id'] ?? 0);
+    if ($productId <= 0) {
+        echo json_encode(["success" => false, "message" => "Invalid Buy Now session"]);
         exit;
     }
 
-    $productId = (int)$item['product_id'];
-
-    /* Fetch base price */
+    /* Fetch product price */
     $stmt = mysqli_prepare(
         $connection,
         "SELECT Price FROM Product_Details WHERE Product_Id=?"
@@ -70,34 +62,42 @@ if (!empty($_SESSION['buy_now'])) {
     $product = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
 
     if (!$product) {
-        echo json_encode(["success" => false, "error" => "Product not found"]);
+        echo json_encode(["success" => false, "message" => "Product not found"]);
         exit;
     }
 
-    $basePrice = (float)$product['Price'];
+    $basePrice  = (float) $product['Price'];
+    $giftWrap   = (float) ($_SESSION['buy_now_gift_wrap'] ?? 0);
+    $giftCard   = (float) ($_SESSION['buy_now_gift_card'] ?? 0);
+    $totalAmount = $basePrice + $giftWrap + $giftCard;
 
-    /* Extras */
-    $giftWrap = !empty($item['gift_wrap']) ? 39 : 0;
-    $giftCard = !empty($item['gift_card']) ? 50 : 0;
-
-    $priceSnapshot = $basePrice + $giftWrap + $giftCard;
-    $totalAmount   = $priceSnapshot;
-
-    $giftMessage = trim($item['gift_msg'] ?? '');
-
-    mysqli_begin_transaction($connection);
+    if ($totalAmount <= 0) {
+        echo json_encode(["success" => false, "message" => "Invalid order amount"]);
+        exit;
+    }
 
     try {
-        /* Insert order */
+        mysqli_begin_transaction($connection);
+
+        /* Create order */
         $stmt = mysqli_prepare(
             $connection,
-            "INSERT INTO `order` (User_Id, Total_Amount, Status)
-             VALUES (?, ?, 'PENDING')"
+            "INSERT INTO `order` (User_Id, Total_Amount, Payment_Method, Status)
+             VALUES (?, ?, ?, 'PENDING')"
         );
-        mysqli_stmt_bind_param($stmt, "id", $userId, $totalAmount);
+        mysqli_stmt_bind_param($stmt, "ids", $userId, $totalAmount, $paymentMethod);
         mysqli_stmt_execute($stmt);
-
         $orderId = mysqli_insert_id($connection);
+
+        /* Create payment (INITIATED) */
+        $stmt = mysqli_prepare(
+            $connection,
+            "INSERT INTO payment_details
+             (Order_Id, Payment_Date, Payment_Method, Amount, Payment_Status)
+             VALUES (?, CURDATE(), ?, ?, 'INITIATED')"
+        );
+        mysqli_stmt_bind_param($stmt, "isd", $orderId, $paymentMethod, $totalAmount);
+        mysqli_stmt_execute($stmt);
 
         /* Insert order item */
         $stmt = mysqli_prepare(
@@ -105,20 +105,17 @@ if (!empty($_SESSION['buy_now'])) {
             "INSERT INTO order_item
             (Order_Id, Product_Id, Quantity, Price_Snapshot,
              Gift_Wrapping, Personalized_Message, Is_Hamper_Suggested)
-             VALUES (?, ?, 1, ?, ?, ?, ?)"
+             VALUES (?, ?, 1, ?, ?, '', ?)"
         );
-
         mysqli_stmt_bind_param(
             $stmt,
-            "iidssi",
+            "iidii",
             $orderId,
             $productId,
-            $priceSnapshot,
-            $giftWrap ? 1 : 0,
-            $giftMessage,
+            $totalAmount,
+            $giftWrap > 0 ? 1 : 0,
             $hamperSelected
         );
-
         mysqli_stmt_execute($stmt);
 
         mysqli_commit($connection);
@@ -130,28 +127,39 @@ if (!empty($_SESSION['buy_now'])) {
 
     } catch (Exception $e) {
         mysqli_rollback($connection);
-        echo json_encode(["success" => false, "error" => $e->getMessage()]);
+        echo json_encode(["success" => false, "message" => $e->getMessage()]);
         exit;
     }
 }
 
-/* ================= CART FLOW ================= */
+/* =======================================================
+   CART FLOW
+   ======================================================= */
+
+$totalAmount = (float) ($_SESSION['total'] ?? 0);
+if ($totalAmount <= 0) {
+    echo json_encode(["success" => false, "message" => "Invalid cart total"]);
+    exit;
+}
 
 /* Fetch cart */
-$stmt = mysqli_prepare($connection, "SELECT Cart_Id FROM cart WHERE User_Id=?");
+$stmt = mysqli_prepare(
+    $connection,
+    "SELECT Cart_Id FROM cart WHERE User_Id=?"
+);
 mysqli_stmt_bind_param($stmt, "i", $userId);
 mysqli_stmt_execute($stmt);
 $cart = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
 
 if (!$cart) {
-    echo json_encode(["success" => false, "error" => "Cart is empty"]);
+    echo json_encode(["success" => false, "message" => "Cart is empty"]);
     exit;
 }
 
-/* Fetch cart items (Price already includes extras) */
+/* Fetch cart items */
 $stmt = mysqli_prepare(
     $connection,
-    "SELECT Product_Id, Quantity, Price, gift_wrap, Custom_Text
+    "SELECT Product_Id, Quantity, Price, Gift_Wrapping, Custom_Text
      FROM customize_cart_details
      WHERE Cart_Id=?"
 );
@@ -159,36 +167,28 @@ mysqli_stmt_bind_param($stmt, "i", $cart['Cart_Id']);
 mysqli_stmt_execute($stmt);
 $res = mysqli_stmt_get_result($stmt);
 
-$totalAmount = 0;
 $items = [];
-
 while ($row = mysqli_fetch_assoc($res)) {
-
-    $price = (float)($row['Price'] ?? 0); // ✅ includes extras
-    $qty   = (int)($row['Quantity'] ?? 1);
-
-    if ($price <= 0 || $qty <= 0) continue;
-
-    $totalAmount += ($price * $qty);
+    if ($row['Quantity'] <= 0 || $row['Price'] <= 0) continue;
 
     $items[] = [
         'product_id' => (int)$row['Product_Id'],
-        'qty'        => $qty,
-        'price'      => $price,
-        'gift_wrap'  => !empty($row['gift_wrap']) ? 1 : 0,
+        'qty'        => (int)$row['Quantity'],
+        'price'      => (float)$row['Price'],
+        'gift_wrap'  => (int)$row['Gift_Wrapping'],
         'message'    => trim($row['Custom_Text'] ?? '')
     ];
 }
 
-if ($totalAmount <= 0 || empty($items)) {
-    echo json_encode(["success" => false, "error" => "Invalid cart total"]);
+if (empty($items)) {
+    echo json_encode(["success" => false, "message" => "No valid cart items"]);
     exit;
 }
 
-mysqli_begin_transaction($connection);
-
 try {
-    /* Insert order */
+    mysqli_begin_transaction($connection);
+
+    /* Create order */
     $stmt = mysqli_prepare(
         $connection,
         "INSERT INTO `order` (User_Id, Total_Amount, Status)
@@ -196,10 +196,19 @@ try {
     );
     mysqli_stmt_bind_param($stmt, "id", $userId, $totalAmount);
     mysqli_stmt_execute($stmt);
-
     $orderId = mysqli_insert_id($connection);
 
-    /* Insert order items */
+    /* Create payment (INITIATED) */
+    $stmt = mysqli_prepare(
+        $connection,
+        "INSERT INTO payment_details
+         (Order_Id, Payment_Date, Payment_Method, Amount, Payment_Status)
+         VALUES (?, CURDATE(), ?, ?, 'INITIATED')"
+    );
+    mysqli_stmt_bind_param($stmt, "isd", $orderId, $paymentMethod, $totalAmount);
+    mysqli_stmt_execute($stmt);
+
+    /* Insert cart items */
     $stmt = mysqli_prepare(
         $connection,
         "INSERT INTO order_item
@@ -211,7 +220,7 @@ try {
     foreach ($items as $i) {
         mysqli_stmt_bind_param(
             $stmt,
-            "iiidssi",
+            "iiidisi",
             $orderId,
             $i['product_id'],
             $i['qty'],
@@ -231,5 +240,5 @@ try {
 
 } catch (Exception $e) {
     mysqli_rollback($connection);
-    echo json_encode(["success" => false, "error" => $e->getMessage()]);
+    echo json_encode(["success" => false, "message" => $e->getMessage()]);
 }
