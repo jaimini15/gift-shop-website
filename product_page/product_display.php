@@ -407,21 +407,11 @@ function updateCartCount() {
 
 
     <!-- BUY NOW -->
-   <form method="POST" action="../view_cart/buy_now_prepare.php">
-
-    <input type="hidden" name="product_id"
-           value="<?= (int)$product['Product_Id'] ?>">
-
-    <input type="hidden" name="gift_wrap" id="bn_giftWrap">
-    <input type="hidden" name="gift_card" id="bn_giftCard">
-    <input type="hidden" name="custom_text" id="bn_customText">
-    <input type="hidden" name="gift_card_msg" id="bn_giftMsg">
-
-    <button type="submit" class="product-btn">
-        Buy Now
-    </button>
-</form>
-
+    <button type="button"
+        onclick="buyNow(<?= (int)$product['Product_Id'] ?>)"
+        class="product-btn">
+    Buy Now
+</button>
 
 
 </div>
@@ -465,32 +455,6 @@ function updateCartCount() {
     </div>
     <div class="credit">created by <span>GiftShop</span> | all right reserved!</div>
 </section>
-<script>
-document.querySelector("form[action='../view_cart/buy_now_prepare.php']")
-.addEventListener("submit", function () {
-
-    document.getElementById("bn_giftWrap").value =
-        document.getElementById("giftWrap").checked ? 1 : 0;
-
-    document.getElementById("bn_giftCard").value =
-        document.getElementById("giftCard").checked ? 1 : 0;
-
-    document.getElementById("bn_giftMsg").value =
-        document.getElementById("giftMsg")?.value || "";
-
-    let finalText = "";
-    let customTextRadio = document.getElementById("customText");
-    let defaultTextRadio = document.getElementById("defaultText");
-
-    if (customTextRadio && customTextRadio.checked) {
-        finalText = document.getElementById("customMessage")?.value || "";
-    } else if (defaultTextRadio && defaultTextRadio.checked) {
-        finalText = document.getElementById("defaultTextVal").value;
-    }
-
-    document.getElementById("bn_customText").value = finalText;
-});
-</script>
 
 <!-- ZOOM EFFECT ON IMAGE -->
 <script>
@@ -657,5 +621,34 @@ document.querySelector("form[action='add_to_cart.php']").addEventListener("submi
 
 
 </script>
+
+
+
+<script>
+function buyNow(productId) {
+    fetch("set_buy_now.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            product_id: productId,
+            gift_wrap: document.getElementById("giftWrap").checked ? 1 : 0,
+            gift_card: document.getElementById("giftCard").checked ? 1 : 0,
+            gift_card_msg: document.getElementById("giftMsg")?.value || ""
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (!data.success) {
+            alert("Failed to prepare order");
+            return;
+        }
+
+        window.location.href =
+            "../view_cart/payment.php?buy_now=1&product_id=" + productId;
+    });
+}
+</script>
+
+
 </body>
 </html>
