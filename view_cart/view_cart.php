@@ -1,11 +1,8 @@
 <?php
 session_start();
-
-$isBuyNow = isset($_GET['buy_now']) && $_GET['buy_now'] == 1
-            && isset($_SESSION['buy_now'], $_SESSION['buy_now_item']);
-
 $currentStep = 1;
 include("checkout_steps.php");
+
 include("../AdminPanel/db.php");
 
 if (!isset($_SESSION['User_Id'])) {
@@ -14,99 +11,40 @@ if (!isset($_SESSION['User_Id'])) {
 }
 
 $uid = $_SESSION['User_Id'];
-$items = [];
+
+/* Fetch Cart */
+$cartRes = mysqli_query($connection, "SELECT Cart_Id FROM cart WHERE User_Id='$uid'");
+$cart = mysqli_fetch_assoc($cartRes);
+
+if (!$cart) {
+    echo "<p class='empty-msg'>Your cart is empty.</p>";
+    exit;
+}
+
+$cartId = $cart['Cart_Id'];
+
+/* Fetch Cart Items */
+$query = "
+    SELECT ccd.*, pd.Product_Name, pd.Product_Image
+    FROM customize_cart_details ccd
+    JOIN product_details pd ON ccd.Product_Id = pd.Product_Id
+    WHERE ccd.Cart_Id = '$cartId'
+";
+$result = mysqli_query($connection, $query);
+
+if (mysqli_num_rows($result) == 0) {
+   header("location: ../home page/index.php");
+    exit;
+}
+
 $subtotal = 0;
-$totalItems = 0;
-$_SESSION['subtotal'] = $subtotal;
-$_SESSION['shipping'] = 0;
-$_SESSION['total']    = $subtotal;
 
-/* ---------- BUY NOW FLOW ---------- */
-if ($isBuyNow) {
-    $item = $_SESSION['buy_now_item'];
 
-    $stmt = mysqli_prepare(
-        $connection,
-        "SELECT Product_Image FROM product_details WHERE Product_Id=? LIMIT 1"
-    );
-    mysqli_stmt_bind_param($stmt, "i", $item['product_id']);
-    mysqli_stmt_execute($stmt);
-    $res = mysqli_stmt_get_result($stmt);
-    $imgRow = mysqli_fetch_assoc($res);
-    mysqli_stmt_close($stmt);
-
-    $items[] = [
-        'product_id'   => $item['product_id'],
-        'Product_Name' => $item['product_name'],
-        'Price'        => $item['price'],
-        'Quantity'     => 1,
-        'Product_Image'=> $imgRow['Product_Image'],
-        'buy_now'      => true,
-        'gift_wrap'    => $item['gift_wrap'] ?? 0,
-        'gift_card'    => $item['gift_card'] ?? 0
-    ];
-}
-
-/* ---------- CART FLOW ---------- */
-else {
-    $cartRes = mysqli_query($connection, "SELECT Cart_Id FROM cart WHERE User_Id='$uid'");
-    $cart = mysqli_fetch_assoc($cartRes);
-
-    if (!$cart) {
-        echo "<p class='empty-msg'>Your cart is empty.</p>";
-        exit;
-    }
-
-    $cartId = $cart['Cart_Id'];
-
-    $query = "
-        SELECT ccd.*, pd.Product_Name, pd.Product_Image
-        FROM customize_cart_details ccd
-        JOIN product_details pd ON ccd.Product_Id = pd.Product_Id
-        WHERE ccd.Cart_Id = '$cartId'
-    ";
-    $result = mysqli_query($connection, $query);
-
-    if (mysqli_num_rows($result) == 0) {
-        echo "<p class='empty-msg'>Your cart is empty.</p>";
-        exit;
-    }
-
-    while ($row = mysqli_fetch_assoc($result)) {
-        $items[] = $row;
-    }
-}
-
-/* ---------- SILENT EXTRA CHARGES ---------- */
-$GIFT_WRAP_PRICE = 39;
-$GIFT_CARD_PRICE = 50;
-$extraCharges = 0;
-
-foreach ($items as $row) {
-    $qty = $row['Quantity'] ?? 1;
-    $price = $row['Price'];
-
-    $extra = 0;
-    if (!empty($row['gift_wrap'])) $extra += $GIFT_WRAP_PRICE;
-    if (!empty($row['gift_card'])) $extra += $GIFT_CARD_PRICE;
-
-    $subtotal += ($price + $extra) * $qty;
-    $totalItems += $qty;
-}
-
-/* ---------- Estimated Delivery ---------- */
+/* Estimated Delivery Date */
 $estimatedDate = date("d M Y", strtotime("+3 days"));
-
-/* ---------- Shipping & Total ---------- */
-$shipping = 0; // example
-$total = max(0, $subtotal - $shipping);
-
-/* ---------- Store in Session ---------- */
-$_SESSION['subtotal'] = $subtotal;
-$_SESSION['shipping'] = $shipping;
-$_SESSION['total']    = $total;
-$_SESSION['extra_charges'] = $extraCharges;
 ?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -115,18 +53,22 @@ $_SESSION['extra_charges'] = $extraCharges;
 <link rel="stylesheet" href="view_cart.css">
 </head>
 <body>
-
+<!-- MAIN -->
 <div class="cart-container">
 
 <!-- LEFT -->
 <div class="cart-left">
 <h2>Product Details</h2>
-
-<?php foreach ($items as $row) :
+<?php 
+$totalItems = 0;
+while ($row = mysqli_fetch_assoc($result)) :
     $img = "data:image/jpeg;base64," . base64_encode($row['Product_Image']);
     $price = $row['Price'];
     $qty   = $row['Quantity'];
+    $subtotal += ($price * $qty);
+     $totalItems += $qty;
 ?>
+<br>
 <div class="cart-box">
     <div class="cart-item">
         <img src="<?= $img ?>" alt="product">
@@ -135,9 +77,7 @@ $_SESSION['extra_charges'] = $extraCharges;
             <p class="price">₹<?= number_format($price) ?></p>
             <p>Qty: <?= $qty ?></p>
             <p class="return">No return No refund</p>
-            <?php if (empty($row['buy_now'])): ?>
             <a href="#" class="remove" data-id="<?= $row['Customize_Id'] ?>">✕ REMOVE</a>
-            <?php endif; ?>
         </div>
     </div>
 
@@ -146,10 +86,21 @@ $_SESSION['extra_charges'] = $extraCharges;
         <span class="date"><?= $estimatedDate ?></span>
     </div>
 </div>
-<?php endforeach; ?>
+
+
+<?php endwhile; ?>
 </div>
 
 <!-- RIGHT -->
+<?php
+$shipping = 0; // example
+$total = max(0, $subtotal - $shipping);
+
+/* STORE IN SESSION */
+$_SESSION['subtotal'] = $subtotal;
+$_SESSION['shipping'] = $shipping;
+$_SESSION['total']    = $total;
+?>
 <div class="cart-right">
 <h3>Price Details</h3>
 
@@ -169,7 +120,6 @@ $_SESSION['extra_charges'] = $extraCharges;
     <span>Order Total</span>
     <span>₹<?= number_format($total) ?></span>
 </div>
-
 <form action="payment.php" method="POST">
     <?php if ($totalItems >= 3): ?>
 <div style="margin:15px 0;">
@@ -180,17 +130,21 @@ $_SESSION['extra_charges'] = $extraCharges;
     </label>
 </div>
 <?php endif; ?>
-    <button type="submit" class="continue-btn">Continue</button>
+    <button type="submit" class="continue-btn">
+        Continue
+    </button>
 </form>
+
 
 <p class="note">Clicking on "Continue" will not deduct any money</p>
 </div>
 
 </div>
-
 <script>
 document.addEventListener("click", function(e) {
+
     if (e.target.classList.contains("remove")) {
+
         e.preventDefault();
         let id = e.target.dataset.id;
 
@@ -207,17 +161,7 @@ document.addEventListener("click", function(e) {
             }
         });
     }
-});
 
-let continueClicked = false;
-document.querySelector(".continue-btn").addEventListener("click", function () {
-    continueClicked = true;
-});
-
-window.addEventListener("beforeunload", function () {
-    if (!continueClicked) {
-        navigator.sendBeacon("../cart/delete_cart.php");
-    }
 });
 </script>
 
