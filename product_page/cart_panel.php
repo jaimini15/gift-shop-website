@@ -49,7 +49,9 @@ $subtotal = 0;
     $subtotal += $row['Price'] * $row['Quantity'];
 ?>
 
-<div class="cart-item" id="item-<?= $row['Customize_Id'] ?>">
+<div class="cart-item" 
+     id="item-<?= $row['Customize_Id'] ?>"
+     data-total="<?= $row['Price'] * $row['Quantity'] ?>">
     <img src="<?= $imgSrc ?>" class="cart-img">
     <div class="cart-info">
         <h4><?= htmlspecialchars($row['Product_Name']) ?></h4>
@@ -62,8 +64,9 @@ $subtotal = 0;
 <?php endwhile; ?>
 
 <div class="subtotal-box">
-    <h3>Subtotal: ₹<?= number_format($subtotal) ?></h3>
+    <h3>Subtotal: ₹<span id="cartSubtotal"><?= number_format($subtotal) ?></span></h3>
 </div>
+
 
 <div class="cart-actions">
     <a href="../view_cart/view_cart.php" class="view-cart-btn">View cart</a>
@@ -153,6 +156,8 @@ $subtotal = 0;
 document.addEventListener("click", function(e) {
     if (e.target.classList.contains("remove-btn")) {
         let id = e.target.dataset.id;
+        let itemDiv = document.getElementById("item-" + id);
+        let itemTotal = parseFloat(itemDiv.dataset.total);
 
         fetch("../cart/remove_cart_item.php", {
             method: "POST",
@@ -162,10 +167,26 @@ document.addEventListener("click", function(e) {
         .then(res => res.text())
         .then(res => {
             if (res.trim() === "success") {
-                document.getElementById("item-" + id).remove();
-                location.reload();
+
+                // Remove item visually
+                itemDiv.nextElementSibling?.remove(); // remove <hr>
+                itemDiv.remove();
+
+                // Update subtotal
+                let subtotalEl = document.getElementById("cartSubtotal");
+                let currentSubtotal = parseFloat(subtotalEl.innerText.replace(/,/g, ""));
+                let newSubtotal = currentSubtotal - itemTotal;
+
+                subtotalEl.innerText = newSubtotal.toLocaleString("en-IN");
+
+                // Optional: show empty cart message
+                if (newSubtotal <= 0) {
+                    document.querySelector(".cart-container").innerHTML =
+                        "<p class='empty-msg'>Your cart is empty.</p>";
+                }
             }
         });
     }
 });
 </script>
+
