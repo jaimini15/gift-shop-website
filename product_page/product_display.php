@@ -20,11 +20,14 @@ mysqli_stmt_bind_param($prodStmt, 'i', $product_id);
 mysqli_stmt_execute($prodStmt);
 $res = mysqli_stmt_get_result($prodStmt);
 $product = mysqli_fetch_assoc($res);
-$ratingRow = mysqli_fetch_assoc(mysqli_query($connection, "
-    SELECT AVG(Rating) AS avg_rating, COUNT(*) AS total_reviews
+$fiveStarRow = mysqli_fetch_assoc(mysqli_query($connection, "
+    SELECT COUNT(*) AS five_star_count
     FROM feedback_details
-    WHERE Product_Id = {$product['Product_Id']}
+    WHERE Product_Id = {$product['Product_Id']} AND Rating = 5
 "));
+
+$fiveStarCount = (int)($fiveStarRow['five_star_count'] ?? 0);
+
 
 mysqli_stmt_close($prodStmt);
 
@@ -308,18 +311,13 @@ function updateCartCount() {
         <!-- RIGHT DETAILS -->
         <div class="col-md-7">
             <h2 class="fw-bold"><?= $productName ?></h2>
-            <?php if (!empty($ratingRow['total_reviews'])): ?>
-<div style="margin:8px 0;">
-    <?php
-    $stars = round($ratingRow['avg_rating']);
-    for ($i = 1; $i <= 5; $i++) {
-        echo $i <= $stars
-            ? '<i class="fa-solid fa-star" style="color:#f5a623;"></i>'
-            : '<i class="fa-regular fa-star" style="color:#f5a623;"></i>';
-    }
-    ?>
+            <?php if ($fiveStarCount > 0): ?>
+<div style="margin:8px 0; display:flex; align-items:center; gap:6px;">
+    <?php for ($i = 1; $i <= 5; $i++): ?>
+        <i class="fa-solid fa-star" style="color:#f5a623;"></i>
+    <?php endfor; ?>
     <span style="color:#e40046;font-size:14px;">
-        (<?= $ratingRow['total_reviews'] ?> customer reviews)
+        (<?= $fiveStarCount ?> customer review<?= $fiveStarCount > 1 ? 's' : '' ?>)
     </span>
 </div>
 <?php endif; ?>
