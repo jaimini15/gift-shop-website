@@ -260,29 +260,7 @@ body{
     color:#374151;
 }
 
-/* =====================
-   ACTION BUTTON
-===================== */
 
-.order-actions{
-    display:flex;
-    justify-content:flex-end;
-    margin-top:10px;
-}
-
-.track-btn{
-    padding:10px 18px;
-    background:#7e2626d5;
-    color:white;
-    border-radius:20px;
-    text-decoration:none;
-    font-weight:600;
-    font-size:14px;
-}
-
-.track-btn:hover{
-    background:black;
-}
 /* =====================
    ORDER SUMMARY BAR
 ===================== */
@@ -403,4 +381,36 @@ body{
     font-size: 16px;
     line-height: 1;
     margin-left: 2px;
+}
+/* =====================
+   ACTION BUTTON
+===================== */
+.order-actions {
+    display: flex;
+    gap: 12px;
+    justify-content:flex-end;
+    margin-top: 12px;
+}
+
+.track-btn,
+.review-btn {
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-size: 14px;
+    text-decoration: none;
+    font-weight: 500;
+    border: 1px solid #7e2626d5;
+    background: #7e2626d5;
+    color:white;
+    transition: all 0.2s ease;
+}
+
+.track-btn:hover,
+.review-btn:hover {
+    background: black;
+}
+
+/* Optional: highlight review button */
+.review-btn {
+    border-color: #7e2626d5;
 }
