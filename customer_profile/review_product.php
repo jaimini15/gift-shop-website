@@ -52,7 +52,7 @@ $activePage = "orders";
 <!-- <div class="account-wrapper"> -->
 
 
-<div class="account-content">
+<!-- <div class="account-content"> -->
 
 <h2>Feedback</h2>
 
@@ -91,7 +91,7 @@ $activePage = "orders";
 
 </form>
 
-</div>
+<!-- </div> -->
 <!-- </div> -->
         </div>
         </div>
