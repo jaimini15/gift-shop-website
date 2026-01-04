@@ -1,7 +1,4 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
 session_start();
 include("../AdminPanel/db.php");
 $currentStep = 2;
@@ -14,12 +11,12 @@ $isBuyNow = isset($_GET['buy_now']) && $_GET['buy_now'] == 1;
 // Validate totals
 if ($isBuyNow) {
 
-    if (empty($_SESSION['buy_now_product_id'])) {
+    if (!isset($_GET['product_id'])) {
         header("Location: ../home page/index.php");
         exit;
     }
 
-    $productId = (int)$_SESSION['buy_now_product_id'];
+    $productId = (int)$_GET['product_id'];
 
     $stmt = mysqli_prepare($connection,
         "SELECT Product_Name, Price FROM Product_Details WHERE Product_Id=?"
@@ -33,23 +30,34 @@ if ($isBuyNow) {
         die("Invalid product");
     }
 
-    // 🔹 READ extras from session (as saved in view_cart.php)
-  $giftWrapPrice = (float) ($_SESSION['buy_now_gift_wrap'] ?? 0);
-$giftCardPrice = (float) ($_SESSION['buy_now_gift_card'] ?? 0);
+    // SINGLE PRODUCT TOTALS
+   $subtotal = $product['Price'];
 
+$giftWrapPrice = 0;
+$giftCardPrice = 0;
 
-    // SINGLE PRODUCT TOTAL
-    $subtotal = $product['Price'] + $giftWrapPrice + $giftCardPrice;
-    $shipping = 0;
-    $total    = $subtotal;
-
-    if (!isset($_SESSION['buy_now'])) {
-        $_SESSION['buy_now'] = true;
-    }
-
-    $_SESSION['buy_now_total'] = $total;
+if (!empty($_SESSION['gift_wrap'])) {
+    $giftWrapPrice = 39; // example price
 }
- else {
+
+if (!empty($_SESSION['gift_card'])) {
+    $giftCardPrice = 50;
+}
+
+$subtotal = $product['Price'];
+
+$giftWrapPrice = !empty($_SESSION['gift_wrap']) ? 39 : 0;
+$giftCardPrice = !empty($_SESSION['gift_card']) ? 50 : 0;
+
+$subtotal += $giftWrapPrice + $giftCardPrice;
+$shipping = 0;
+$total    = $subtotal;
+
+
+    $_SESSION['buy_now'] = true;
+    $_SESSION['buy_now_product_id'] = $productId;
+
+} else {
 
     // CART FLOW (existing)
     if (!isset($_SESSION['subtotal'], $_SESSION['total'])) {
@@ -312,21 +320,15 @@ if (!$userId) {
                     </p>
                     <div class="payment-group">
                         <div class="payment-option">
-                            <!-- UPI (FIRST & DEFAULT) -->
-                        <input type="radio" name="payment_method" id="upi" value="UPI">
-                    <label for="upi">
-                        <img src="upilogo.png" alt="UPI">
-</label>
+                            <input type="radio" name="payment_method" id="phonepe" value="PHONEPE">
+                            <label for="phonepe"><img src="upilogo.png" alt="PhonePe"></label>
                         </div>
                         <div class="payment-desc">All UPI apps, Debit and Credit Cards | Powered by PhonePe</div>
                     </div>
                     <div class="payment-group">
                         <div class="payment-option">
-                            <!-- CARD (SECOND) -->
-<input type="radio" name="payment_method" id="card" value="CARD">
-<label for="card">
-    <img src="cardlogo.png" alt="Card">
-</label>
+                            <input type="radio" name="payment_method" id="razorpay" value="RAZORPAY">
+                            <label for="razorpay"><img src="cardlogo.png" alt="Razorpay"></label>
                         </div>
                         <div class="payment-desc">Secure Payment done by Razorpay</div>
                     </div>
@@ -539,7 +541,7 @@ document.getElementById("placeOrderBtn").addEventListener("click", function(){
 }); // ✅ CLOSE placeOrderBtn click listener
 
 
-document.querySelector("#cardPanel .pay-btn").addEventListener("click", function (e) {
+document.querySelector(".pay-btn").addEventListener("click", function (e) {
     e.preventDefault();
 
     /* ================= VALIDATION ================= */
@@ -652,8 +654,9 @@ document.getElementById("upiPayBtn").addEventListener("click", function () {
 </script>
 
 <script>
-const upiRadio  = document.getElementById("upi");
-const cardRadio = document.getElementById("card");
+const upiRadio  = document.getElementById("phonepe");
+const cardRadio = document.getElementById("razorpay");
+
 const upiPanel  = document.getElementById("upiPanel");
 const cardPanel = document.getElementById("cardPanel");
 
