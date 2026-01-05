@@ -51,29 +51,48 @@ try {
         throw new Exception("Cart empty at payment time");
     }
 
-    /* 4️⃣ INSERT INTO order_item */
-    while ($row = mysqli_fetch_assoc($cartItems)) {
+    /* 4️⃣ INSERT INTO order_item + REDUCE STOCK */
+while ($row = mysqli_fetch_assoc($cartItems)) {
 
-        mysqli_query($connection,"
-            INSERT INTO order_item (
-                Order_Id,
-                Product_Id,
-                Quantity,
-                Price_Snapshot,
-                Custom_Text,
-                Gift_Wrapping,
-                Personalized_Message
-            ) VALUES (
-                $orderId,
-                {$row['Product_Id']},
-                {$row['Quantity']},
-                {$row['Price']},
-                ".($row['Custom_Text'] ? "'".mysqli_real_escape_string($connection,$row['Custom_Text'])."'" : "NULL").",
-                {$row['Gift_Wrapping']},
-                ".($row['Personalized_Message'] ? "'".mysqli_real_escape_string($connection,$row['Personalized_Message'])."'" : "NULL")."
-            )
-        ");
+    $pid = (int)$row['Product_Id'];
+    $qty = (int)$row['Quantity'];
+
+    /* Insert order item */
+    mysqli_query($connection,"
+        INSERT INTO order_item (
+            Order_Id,
+            Product_Id,
+            Quantity,
+            Price_Snapshot,
+            Custom_Text,
+            Gift_Wrapping,
+            Personalized_Message
+        ) VALUES (
+            $orderId,
+            $pid,
+            $qty,
+            {$row['Price']},
+            ".($row['Custom_Text'] ? "'".mysqli_real_escape_string($connection,$row['Custom_Text'])."'" : "NULL").",
+            {$row['Gift_Wrapping']},
+            ".($row['Personalized_Message'] ? "'".mysqli_real_escape_string($connection,$row['Personalized_Message'])."'" : "NULL")."
+        )
+    ");
+
+    /* 🔥 REDUCE STOCK */
+    mysqli_query($connection,"
+        UPDATE stock_details
+        SET Stock_Available = Stock_Available - $qty,
+            Last_Update = NOW()
+        WHERE Product_Id = $pid
+          AND Stock_Available >= $qty
+    ");
+
+    /* ❌ If stock was insufficient → rollback */
+    if (mysqli_affected_rows($connection) === 0) {
+        throw new Exception("Product ID $pid is out of stock");
     }
+}
+
 
     /* 5️⃣ CLEAR CART AFTER INSERT */
     mysqli_query($connection,"
