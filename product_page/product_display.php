@@ -228,58 +228,46 @@ document.getElementById("profileCheckBtn")?.addEventListener("click", () => {
 function removeItem(id) {
     if (!confirm("Remove this item from cart?")) return;
 
-    let itemDiv = document.getElementById("item-" + id);
-    let hr = itemDiv ? itemDiv.nextElementSibling : null;
+    const itemDiv = document.getElementById("item-" + id);
+    const hr = itemDiv?.nextElementSibling;
 
     fetch("../product_page/delete_from_cart.php", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: "id=" + encodeURIComponent(id)
     })
-    .then(res => res.text())
-    .then(text => {
-        const response = text.trim();
-        if (response === "success") {
+    .then(res => res.json())
+    .then(data => {
 
-            if (itemDiv) {
-                itemDiv.style.transition = "opacity 0.25s";
-                itemDiv.style.opacity = "0";
-                setTimeout(() => {
-                    if (itemDiv) itemDiv.remove();
-                    if (hr && hr.tagName === "HR") hr.remove();
-                    updateSubtotal();
-                    updateCartCount();
-                }, 260);
-            } else {
-                updateSubtotal();
-                updateCartCount();
-            }
-
-        } else {
-            alert("Delete failed:\n" + response);
-            console.error("Delete failed response:", response);
+        if (data.status !== "success") {
+            alert("Delete failed");
+            return;
         }
+
+        /* ✅ Remove item from UI */
+        if (itemDiv) itemDiv.remove();
+        if (hr && hr.tagName === "HR") hr.remove();
+
+        /* ✅ UPDATE SUBTOTAL (THIS WAS MISSING) */
+        const subtotalSpan = document.getElementById("cartSubtotal");
+        if (subtotalSpan) {
+            subtotalSpan.innerText = data.subtotal.toLocaleString("en-IN");
+        }
+
+        /* ✅ EMPTY CART MESSAGE */
+        if (data.subtotal <= 0) {
+            document.querySelector(".cart-container").innerHTML =
+                "<p class='empty-msg'>Your cart is empty.</p>";
+        }
+
+        updateCartCount();
     })
     .catch(err => {
-        alert("Network error while deleting. See console.");
         console.error(err);
+        alert("Network error");
     });
 }
 
-
-function updateSubtotal() {
-    const items = document.querySelectorAll(".item-price");
-    let subtotal = 0;
-    items.forEach(item => {
-        const txt = item.innerText; 
-        const qty = parseInt(txt.split("x")[0]) || 0;
-        const price = parseInt((txt.split("₹")[1] || "0").replace(/,/g,"")) || 0;
-        subtotal += qty * price;
-    });
-
-    const el = document.getElementById("subtotal-box");
-    if (el) el.innerText = "₹" + subtotal.toLocaleString();
-}
 
 
 function updateCartCount() {
