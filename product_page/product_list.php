@@ -279,11 +279,19 @@ function updateCartCount() {
 <?php
 // Fetch products for category
 $prodStmt = mysqli_prepare($connection, "
-    SELECT Product_Id, Product_Name, Product_Image, Description, Price
-    FROM product_details
-    WHERE Category_Id = ? AND Status = 'Enabled'
-    ORDER BY Product_Id DESC
+    SELECT 
+        pd.Product_Id,
+        pd.Product_Name,
+        pd.Product_Image,
+        pd.Description,
+        pd.Price,
+        COALESCE(sd.Stock_Available, 0) AS Stock_Available
+    FROM product_details pd
+    LEFT JOIN stock_details sd ON sd.Product_Id = pd.Product_Id
+    WHERE pd.Category_Id = ? AND pd.Status = 'Enabled'
+    ORDER BY pd.Product_Id DESC
 ");
+
 mysqli_stmt_bind_param($prodStmt, 'i', $category_id);
 mysqli_stmt_execute($prodStmt);
 $productResult = mysqli_stmt_get_result($prodStmt);
@@ -305,6 +313,12 @@ if ($productResult && mysqli_num_rows($productResult) > 0) {
                  alt="<?= $pname ?>">
 
             <div class="card-body">
+                <?php if ($product['Stock_Available'] <= 0): ?>
+    <p style="color:red; font-weight:bold; margin-bottom:5px;">
+        OUT OF STOCK
+    </p>
+<?php endif; ?>
+
                 <p class="card-text"><?= $description ?></p>
                 <p class="card-price">₹ <?= $price ?></p>
 
