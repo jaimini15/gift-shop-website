@@ -26,6 +26,7 @@ $stmt = mysqli_prepare($connection, "
 ");
 mysqli_stmt_bind_param($stmt, "ii", $customizeId, $userId);
 mysqli_stmt_execute($stmt);
+unset($_SESSION['stock_popup_shown']);
 
 /* Get updated subtotal */
 $stmt = mysqli_prepare($connection, "
@@ -35,6 +36,7 @@ $stmt = mysqli_prepare($connection, "
 ");
 mysqli_stmt_bind_param($stmt, "i", $userId);
 mysqli_stmt_execute($stmt);
+
 mysqli_stmt_bind_result($stmt, $subtotal);
 mysqli_stmt_fetch($stmt);
 
