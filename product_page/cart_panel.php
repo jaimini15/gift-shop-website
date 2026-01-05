@@ -152,41 +152,4 @@ $subtotal = 0;
 }
 
 </style>
-<script>
-document.addEventListener("click", function(e) {
-    if (e.target.classList.contains("remove-btn")) {
-        let id = e.target.dataset.id;
-        let itemDiv = document.getElementById("item-" + id);
-        let itemTotal = parseFloat(itemDiv.dataset.total);
-
-        fetch("../cart/remove_cart_item.php", {
-            method: "POST",
-            headers: {"Content-Type": "application/x-www-form-urlencoded"},
-            body: "id=" + id
-        })
-        .then(res => res.text())
-        .then(res => {
-            if (res.trim() === "success") {
-
-                // Remove item visually
-                itemDiv.nextElementSibling?.remove(); // remove <hr>
-                itemDiv.remove();
-
-                // Update subtotal
-                let subtotalEl = document.getElementById("cartSubtotal");
-                let currentSubtotal = parseFloat(subtotalEl.innerText.replace(/,/g, ""));
-                let newSubtotal = currentSubtotal - itemTotal;
-
-                subtotalEl.innerText = newSubtotal.toLocaleString("en-IN");
-
-                // Optional: show empty cart message
-                if (newSubtotal <= 0) {
-                    document.querySelector(".cart-container").innerHTML =
-                        "<p class='empty-msg'>Your cart is empty.</p>";
-                }
-            }
-        });
-    }
-});
-</script>
 
