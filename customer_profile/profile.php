@@ -129,13 +129,6 @@ body{
         <p>Change your password</p>
     </div>
 
-    <!-- 4. Feedback -->
-    <div class="account-card" onclick="location.href='feedback.php'">
-        <div class="card-icon feedback"><i class="fa-solid fa-comment-dots"></i></div>
-        <h3>Feedback</h3>
-        <p>Share your experience</p>
-    </div>
-
     <!-- 5. Logout -->
     <div class="account-card" onclick="location.href='../login/logout.php'">
         <div class="card-icon logout"><i class="fa-solid fa-right-from-bracket"></i></div>
