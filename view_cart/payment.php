@@ -75,7 +75,38 @@ if (!$userId) {
     header("Location: login.php");
     exit;
 }
+
+/* ================= STOCK VALIDATION ================= */
+
+$outOfStockProducts = [];
+
+$stockQ = mysqli_query($connection, "
+    SELECT 
+        pd.Product_Name,
+        ccd.Quantity,
+        IFNULL(sd.Stock_Available, 0) AS Stock_Available
+    FROM customize_cart_details ccd
+    JOIN product_details pd ON pd.Product_Id = ccd.Product_Id
+    LEFT JOIN stock_details sd ON sd.Product_Id = ccd.Product_Id
+    JOIN cart c ON c.Cart_Id = ccd.Cart_Id
+    WHERE c.User_Id = $userId
+");
+
+while ($row = mysqli_fetch_assoc($stockQ)) {
+    if ((int)$row['Stock_Available'] < (int)$row['Quantity']) {
+        $outOfStockProducts[] = $row['Product_Name'];
+    }
+}
+
+/* If any out-of-stock item found → stop checkout */
+if (!empty($outOfStockProducts)) {
+    $outOfStockList = json_encode($outOfStockProducts);
+    include("stock_blocker_popup.php");
+    exit;
+}
+
 ?>
+
 <!DOCTYPE html>
 <html>
 <head>
