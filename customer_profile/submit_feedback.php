@@ -1,4 +1,7 @@
 <?php
+if (empty($_POST['rating'])) {
+    die("Please give star rating.");
+}
 session_start();
 include("../AdminPanel/db.php");
 
