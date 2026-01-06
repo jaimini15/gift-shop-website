@@ -7,29 +7,34 @@ if (!isset($_SESSION['User_Id'])) {
     exit;
 }
 
-$uid = $_SESSION['User_Id'];
+$userId = (int) $_SESSION['User_Id'];
 
-// Fetch cart ID
-$getCart = mysqli_query($connection, "SELECT Cart_Id FROM cart WHERE User_Id='$uid'");
-$cart = mysqli_fetch_assoc($getCart);
+// Fetch Cart ID
+$stmt = mysqli_prepare($connection, "SELECT Cart_Id FROM cart WHERE User_Id = ?");
+mysqli_stmt_bind_param($stmt, "i", $userId);
+mysqli_stmt_execute($stmt);
+mysqli_stmt_bind_result($stmt, $cartId);
+mysqli_stmt_fetch($stmt);
+mysqli_stmt_close($stmt);
 
-if (!$cart) {
+if (!$cartId) {
     echo "<p class='empty-msg'>Your cart is empty.</p>";
     exit;
 }
 
-$cartId = $cart['Cart_Id'];
+// Fetch Cart Items
+$stmt = mysqli_prepare(
+    $connection,
+    "SELECT ccd.*, pd.Product_Name, pd.Product_Image
+     FROM customize_cart_details ccd
+     JOIN product_details pd ON ccd.Product_Id = pd.Product_Id
+     WHERE ccd.Cart_Id = ?"
+);
+mysqli_stmt_bind_param($stmt, "i", $cartId);
+mysqli_stmt_execute($stmt);
+$result = mysqli_stmt_get_result($stmt);
 
-$query = "
-    SELECT ccd.*, pd.Product_Name, pd.Product_Image
-    FROM customize_cart_details ccd
-    JOIN product_details pd ON ccd.Product_Id = pd.Product_Id
-    WHERE ccd.Cart_Id = '$cartId'
-";
-
-$result = mysqli_query($connection, $query);
-
-if (mysqli_num_rows($result) == 0) {
+if (mysqli_num_rows($result) === 0) {
     echo "<p class='empty-msg'>Your cart is empty.</p>";
     exit;
 }
@@ -40,37 +45,36 @@ $subtotal = 0;
 <div class="cart-container">
 
 <?php while ($row = mysqli_fetch_assoc($result)) :
-
-    $imgData = base64_encode($row['Product_Image']);
-    $imgSrc  = "data:image/jpeg;base64," . $imgData;
-    $price   = $row['Price'];
-    $qty     = $row['Quantity'];
-    $subtotal += ($price * $qty);
+    $imgSrc  = "data:image/jpeg;base64," . base64_encode($row['Product_Image']);
+    $subtotal += $row['Price'] * $row['Quantity'];
 ?>
 
-    <div class="cart-item" id="item-<?= $row['Customize_Id'] ?>">
-        <img src="<?= $imgSrc ?>" class="cart-img" data-id="<?= $row['Customize_Id'] ?>">
-        <div class="cart-info">
-            <h4 class="item-title"><?= htmlspecialchars($row['Product_Name']) ?></h4>
-            <p class="item-price"><?= $qty ?> x ₹<?= number_format($price) ?></p>
-        </div>
-        <span class="remove-btn" data-id="<?= $row['Customize_Id'] ?>">✕</span>
+<div class="cart-item" 
+     id="item-<?= $row['Customize_Id'] ?>"
+     data-total="<?= $row['Price'] * $row['Quantity'] ?>">
+    <img src="<?= $imgSrc ?>" class="cart-img">
+    <div class="cart-info">
+        <h4><?= htmlspecialchars($row['Product_Name']) ?></h4>
+        <p><?= $row['Quantity'] ?> × ₹<?= number_format($row['Price']) ?></p>
     </div>
-
-    <hr>
+    <span class="remove-btn" data-id="<?= $row['Customize_Id'] ?>">✕</span>
+</div>
+<hr>
 
 <?php endwhile; ?>
 
-    <div class="subtotal-box">
-        <center><h3>Subtotal: <span id="subtotal-box">₹<?= number_format($subtotal) ?></span></h3></center>
-    </div>
-<hr>
-    <div class="cart-actions">
-        <a href="../view_cart/view_cart.php" class="view-cart-btn">View cart</a>
-        <a href="../view_cart/payment.php" class="checkout-btn">Checkout</a>
-    </div>
+<div class="subtotal-box">
+    <h3>Subtotal: ₹<span id="cartSubtotal"><?= number_format($subtotal) ?></span></h3>
+</div>
+
+
+<div class="cart-actions">
+    <a href="../view_cart/view_cart.php" class="view-cart-btn">View cart</a>
+    <a href="../view_cart/payment.php" class="checkout-btn">Checkout</a>
+</div>
 
 </div>
+
 <style>
 .cart-container { 
     padding: 10px; 
@@ -148,26 +152,4 @@ $subtotal = 0;
 }
 
 </style>
-<script>
-document.addEventListener("click", function(e) {
 
-    if (e.target.classList.contains("remove-btn")) {
-
-        let id = e.target.dataset.id;
-
-        fetch("../cart/remove_cart_item.php", {
-            method: "POST",
-            headers: {"Content-Type": "application/x-www-form-urlencoded"},
-            body: "customize_id=" + id
-        })
-        .then(res => res.text())
-        .then(res => {
-            if (res.trim() === "success") {
-                e.target.closest(".cart-item").remove();
-                location.reload();
-            }
-        });
-    }
-
-});
-</script>

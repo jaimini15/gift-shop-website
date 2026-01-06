@@ -163,11 +163,16 @@ $items = mysqli_query(
     <?php endwhile; ?>
 
     <!-- ACTION -->
-    <div class="order-actions">
-        <a href="track_order.php?id=<?= $order['Order_Id'] ?>" class="track-btn">
-            Track package
-        </a>
-    </div>
+<div class="order-actions">
+    <a href="track_order.php?id=<?= $order['Order_Id'] ?>" class="track-btn">
+        Track package
+    </a>
+
+    <a href="review_product.php?order_id=<?= $order['Order_Id'] ?>" class="review-btn">
+        Review product
+    </a>
+</div>
+
 
 </div>
 

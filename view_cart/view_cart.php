@@ -36,6 +36,29 @@ if (mysqli_num_rows($result) == 0) {
    header("location: ../home page/index.php");
     exit;
 }
+$outOfStockProducts = [];
+
+$stockCheckQuery = "
+    SELECT 
+        ccd.Product_Id,
+        pd.Product_Name,
+        sd.Stock_Available,
+        ccd.Quantity
+    FROM customize_cart_details ccd
+    JOIN product_details pd ON pd.Product_Id = ccd.Product_Id
+    LEFT JOIN stock_details sd ON sd.Product_Id = ccd.Product_Id
+    WHERE ccd.Cart_Id = '$cartId'
+";
+
+$stockResult = mysqli_query($connection, $stockCheckQuery);
+
+while ($row = mysqli_fetch_assoc($stockResult)) {
+    $available = (int)($row['Stock_Available'] ?? 0);
+
+    if ($available < $row['Quantity']) {
+        $outOfStockProducts[] = $row['Product_Name'];
+    }
+}
 
 $subtotal = 0;
 
@@ -51,7 +74,78 @@ $estimatedDate = date("d M Y", strtotime("+3 days"));
 <meta charset="UTF-8">
 <title>My Cart</title>
 <link rel="stylesheet" href="view_cart.css">
+<style>
+.stock-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.stock-modal {
+    background: #fff;
+    padding: 25px;
+    width: 360px;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+}
+
+.stock-modal h2 {
+    color: #d32f2f;
+    margin-bottom: 10px;
+}
+
+.stock-modal ul {
+    list-style: none;
+    padding: 0;
+    margin: 15px 0;
+}
+
+.stock-modal li {
+    padding: 6px 0;
+    font-weight: bold;
+}
+
+
+
+.stock-modal button {
+    margin-top: 15px;
+    padding: 10px 25px;
+    border: none;
+    background: #7e2626d5;
+    color: #fff;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.stock-modal button:hover {
+    background:black;
+}
+</style>
 </head>
+<?php if (!empty($outOfStockProducts)): ?>
+<div class="stock-modal-overlay">
+    <div class="stock-modal">
+        <h2>&#9888;Items Out of Stock</h2>
+        <p>Please remove the following product(s) to continue:</p>
+
+        <ul>
+            <?php foreach ($outOfStockProducts as $p): ?>
+                <li><?= htmlspecialchars($p) ?></li>
+            <?php endforeach; ?>
+        </ul>
+
+        <button onclick="closeStockModal()">OK</button>
+    </div>
+</div>
+<?php endif; ?>
+
 <body>
 <!-- MAIN -->
 <div class="cart-container">
@@ -120,6 +214,17 @@ $_SESSION['total']    = $total;
     <span>Order Total</span>
     <span>₹<?= number_format($total) ?></span>
 </div>
+<?php if (!empty($outOfStockProducts)): ?>
+
+
+<style>
+.continue-btn {
+    pointer-events: none;
+    opacity: 0.5;
+}
+</style>
+<?php endif; ?>
+
 <form action="payment.php" method="POST">
     <?php if ($totalItems >= 3): ?>
 <div style="margin:15px 0;">
@@ -163,6 +268,11 @@ document.addEventListener("click", function(e) {
     }
 
 });
+</script>
+<script>
+function closeStockModal() {
+    document.querySelector('.stock-modal-overlay').style.display = 'none';
+}
 </script>
 
 </body>

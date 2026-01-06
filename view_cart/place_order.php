@@ -117,25 +117,60 @@ try {
     $orderId = mysqli_insert_id($connection);
 
     $items = mysqli_prepare($connection,
-        "SELECT Product_Id, Quantity, Price, Custom_Text, Custom_Image
-         FROM customize_cart_details WHERE Cart_Id=?"
-    );
-    mysqli_stmt_bind_param($items,"i",$cart['Cart_Id']);
-    mysqli_stmt_execute($items);
-    $res = mysqli_stmt_get_result($items);
+" SELECT 
+    ccd.Product_Id,
+    ccd.Quantity,
+    ccd.Price,
+    IF(ccd.Custom_Text IS NULL OR ccd.Custom_Text = '', 
+       pd.Product_Default_Text, 
+       ccd.Custom_Text
+    ) AS Final_Custom_Text,
+    ccd.Custom_Image,
+    ccd.Gift_Wrapping,
+    ccd.Personalized_Message
+FROM customize_cart_details ccd
+JOIN product_details pd ON pd.Product_Id = ccd.Product_Id
+WHERE ccd.Cart_Id = ?
+"
+);
+mysqli_stmt_bind_param($items,"i",$cart['Cart_Id']);
+mysqli_stmt_execute($items);
+$res = mysqli_stmt_get_result($items);
+
 
     $ins = mysqli_prepare($connection,
-        "INSERT INTO order_item
-        (Order_Id, Product_Id, Quantity, Price_Snapshot, Custom_Text, Custom_Image, Is_Hamper_Suggested)
-        VALUES (?, ?, ?, ?, ?, ?, ?)"
-    );
+"INSERT INTO order_item
+(
+ Order_Id,
+ Product_Id,
+ Quantity,
+ Price_Snapshot,
+ Custom_Text,
+ Custom_Image,
+ Gift_Wrapping,
+ Personalized_Message,
+ Is_Hamper_Suggested
+)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
+);
+
 
     while ($i = mysqli_fetch_assoc($res)) {
-        mysqli_stmt_bind_param(
-            $ins,"iiidssi",
-            $orderId,$i['Product_Id'],$i['Quantity'],$i['Price'],
-            $i['Custom_Text'],$i['Custom_Image'],$hamperSelected
-        );
+       mysqli_stmt_bind_param(
+    $ins,
+    "iiidssisi",
+    $orderId,
+    $i['Product_Id'],
+    $i['Quantity'],
+    $i['Price'],
+    $i['Final_Custom_Text'],
+    $i['Custom_Image'],
+    $i['Gift_Wrapping'],
+    $i['Personalized_Message'],
+    $hamperSelected
+);
+
+
         mysqli_stmt_execute($ins);
     }
 

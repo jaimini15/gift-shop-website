@@ -20,6 +20,15 @@ mysqli_stmt_bind_param($prodStmt, 'i', $product_id);
 mysqli_stmt_execute($prodStmt);
 $res = mysqli_stmt_get_result($prodStmt);
 $product = mysqli_fetch_assoc($res);
+$fiveStarRow = mysqli_fetch_assoc(mysqli_query($connection, "
+    SELECT COUNT(*) AS five_star_count
+    FROM feedback_details
+    WHERE Product_Id = {$product['Product_Id']} AND Rating = 5
+"));
+
+$fiveStarCount = (int)($fiveStarRow['five_star_count'] ?? 0);
+
+
 mysqli_stmt_close($prodStmt);
 
 if (!$product || strtolower($product['Status']) === 'disabled') {
@@ -163,6 +172,16 @@ if (isset($_SESSION['User_Id'])) {
     cursor: pointer;
     float: right;
 }
+.reviews-section h4 {
+    font-size: 20px;
+    margin-bottom: 15px;
+
+}
+
+.single-review i {
+    margin-right: 2px;
+}
+
 </style>
 
 <div id="sidePanel">
@@ -209,58 +228,46 @@ document.getElementById("profileCheckBtn")?.addEventListener("click", () => {
 function removeItem(id) {
     if (!confirm("Remove this item from cart?")) return;
 
-    let itemDiv = document.getElementById("item-" + id);
-    let hr = itemDiv ? itemDiv.nextElementSibling : null;
+    const itemDiv = document.getElementById("item-" + id);
+    const hr = itemDiv?.nextElementSibling;
 
     fetch("../product_page/delete_from_cart.php", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: "id=" + encodeURIComponent(id)
     })
-    .then(res => res.text())
-    .then(text => {
-        const response = text.trim();
-        if (response === "success") {
+    .then(res => res.json())
+    .then(data => {
 
-            if (itemDiv) {
-                itemDiv.style.transition = "opacity 0.25s";
-                itemDiv.style.opacity = "0";
-                setTimeout(() => {
-                    if (itemDiv) itemDiv.remove();
-                    if (hr && hr.tagName === "HR") hr.remove();
-                    updateSubtotal();
-                    updateCartCount();
-                }, 260);
-            } else {
-                updateSubtotal();
-                updateCartCount();
-            }
-
-        } else {
-            alert("Delete failed:\n" + response);
-            console.error("Delete failed response:", response);
+        if (data.status !== "success") {
+            alert("Delete failed");
+            return;
         }
+
+        /* ✅ Remove item from UI */
+        if (itemDiv) itemDiv.remove();
+        if (hr && hr.tagName === "HR") hr.remove();
+
+        /* ✅ UPDATE SUBTOTAL (THIS WAS MISSING) */
+        const subtotalSpan = document.getElementById("cartSubtotal");
+        if (subtotalSpan) {
+            subtotalSpan.innerText = data.subtotal.toLocaleString("en-IN");
+        }
+
+        /* ✅ EMPTY CART MESSAGE */
+        if (data.subtotal <= 0) {
+            document.querySelector(".cart-container").innerHTML =
+                "<p class='empty-msg'>Your cart is empty.</p>";
+        }
+
+        updateCartCount();
     })
     .catch(err => {
-        alert("Network error while deleting. See console.");
         console.error(err);
+        alert("Network error");
     });
 }
 
-
-function updateSubtotal() {
-    const items = document.querySelectorAll(".item-price");
-    let subtotal = 0;
-    items.forEach(item => {
-        const txt = item.innerText; 
-        const qty = parseInt(txt.split("x")[0]) || 0;
-        const price = parseInt((txt.split("₹")[1] || "0").replace(/,/g,"")) || 0;
-        subtotal += qty * price;
-    });
-
-    const el = document.getElementById("subtotal-box");
-    if (el) el.innerText = "₹" + subtotal.toLocaleString();
-}
 
 
 function updateCartCount() {
@@ -292,6 +299,17 @@ function updateCartCount() {
         <!-- RIGHT DETAILS -->
         <div class="col-md-7">
             <h2 class="fw-bold"><?= $productName ?></h2>
+            <?php if ($fiveStarCount > 0): ?>
+<div style="margin:8px 0; display:flex; align-items:center; gap:6px;">
+    <?php for ($i = 1; $i <= 5; $i++): ?>
+        <i class="fa-solid fa-star" style="color:#f5a623;"></i>
+    <?php endfor; ?>
+    <span style="color:#e40046;font-size:14px;">
+        (<?= $fiveStarCount ?> customer review<?= $fiveStarCount > 1 ? 's' : '' ?>)
+    </span>
+</div>
+<?php endif; ?>
+
 
             <p>
                 <span class="price-new" style="color:#e40000;font-size:24px;font-weight:bold;">₹<?= $price ?></span>
@@ -381,17 +399,12 @@ function updateCartCount() {
     <!-- Gift Wrap -->
     <input type="hidden" id="giftWrapVal" name="gift_wrap" value="0">
 
-    <!-- Gift Card -->
-    <input type="hidden" id="giftCardVal" name="gift_card" value="0">
-
     <!-- Gift Card Message -->
-    <!-- <textarea id="giftCardMsgVal" name="gift_card_msg" style="display:none;"></textarea> -->
-    <textarea id="giftMsg" class="form-control" rows="4"
-          placeholder="Type your Gift Card message..." style="display:none;"></textarea>
+<textarea id="giftCardMsgVal" name="gift_card_msg" style="display:none;"></textarea>
 
+<!-- Custom Text -->
+<input type="hidden" id="customTextVal" name="custom_text">
 
-    <!-- Custom Text -->
-    <input type="hidden" id="customTextVal" name="custom_text" value="">
 
     <!-- Default Text -->
     <input type="hidden" id="defaultTextVal" name="default_text" value="<?= $defaultText ?>">
@@ -399,19 +412,29 @@ function updateCartCount() {
     
     <input type="file" id="realUpload" name="custom_image" style="display:none;">
 
+    <input type="hidden" id="giftCardVal" name="gift_card" value="0">
 
     <button type="submit" class="product-btn" style="padding:0.5rem 2rem;">Add to Cart</button>
 
 </form>
-
-
-
     <!-- BUY NOW -->
     <button type="button"
         onclick="buyNow(<?= (int)$product['Product_Id'] ?>)"
         class="product-btn">
     Buy Now
 </button>
+<?php
+// Fetch reviews for this product
+$reviewsQuery = mysqli_query($connection, "
+    SELECT fd.Comment, fd.Rating, u.First_Name, u.Last_Name
+    FROM feedback_details fd
+    JOIN user_details u ON fd.User_Id = u.User_Id
+    WHERE fd.Product_Id = {$product['Product_Id']}
+    ORDER BY fd.Feedback_Id DESC  -- latest first, assuming you have a PK like Feedback_Id
+");
+
+$reviewCount = mysqli_num_rows($reviewsQuery);
+?>
 
 
 </div>
@@ -419,6 +442,32 @@ function updateCartCount() {
         </div>
 
     </div>
+</div>
+<div class="reviews-section" style="margin-top:40px;margin-left:20px;margin-right:40px;">
+    <h4><?= $reviewCount ?> Reviews for <?= $productName ?></h4>
+
+    <?php if ($reviewCount === 0): ?>
+        <p>No reviews yet. Be the first to review!</p>
+    <?php else: ?>
+        <?php while ($rev = mysqli_fetch_assoc($reviewsQuery)): ?>
+            <div class="single-review" style="border-bottom:1px solid #eee; padding:15px 0;">
+                <div style="display:flex; align-items:center; gap:10px; margin-bottom:5px;">
+                    <div style="width:40px; height:40px; background:#ccc; border-radius:50%;"></div>
+                    <strong><?= htmlspecialchars($rev['First_Name'] . ' ' . $rev['Last_Name']) ?></strong>
+                    <span style="margin-left:auto; color:#f5a623;">
+                        <?php
+                        for ($i=1; $i<=5; $i++) {
+                            echo $i <= $rev['Rating']
+                                ? '<i class="fa-solid fa-star"></i>'
+                                : '<i class="fa-regular fa-star"></i>';
+                        }
+                        ?>
+                    </span>
+                </div>
+                <p style="margin-top:5px;"><?= htmlspecialchars($rev['Comment']) ?></p>
+            </div>
+        <?php endwhile; ?>
+    <?php endif; ?>
 </div>
 
 <!-- FOOTER Starts -->
@@ -553,77 +602,48 @@ if (previewBtn) {
 }
 </script>
 <script>
-document.querySelector("form[action='add_to_cart.php']").addEventListener("submit", function(e) {
+document.querySelector("form[action$='add_to_cart.php']").addEventListener("submit", function(e) {
 
-    let productSupportsPhoto = <?= strtolower($productPhoto) === 'yes' ? 'true' : 'false' ?>;
-    let productSupportsText  = <?= strtolower($productText) === 'yes' ? 'true' : 'false' ?>;
-
-    let fileInput = document.getElementById("realUpload");
-    let uploadedPhoto = fileInput && fileInput.files.length > 0;
-
-    let customTextRadio = document.getElementById("customText");
-    let defaultTextRadio = document.getElementById("defaultText");
-
-    let customTextValue = document.getElementById("customMessage") 
-                          ? document.getElementById("customMessage").value.trim()
-                          : "";
-
-    if (productSupportsPhoto && !uploadedPhoto) {
-        alert("Please upload a photo for customization.");
-        e.preventDefault();
-        return;
-    }
-
-    if (productSupportsText && customTextRadio && customTextRadio.checked) {
-        if (customTextValue.length === 0) {
-            alert("Please enter your custom message.");
-            e.preventDefault();
-            return;
-        }
-    }
-    if (productSupportsPhoto && productSupportsText) {
-        if (customTextRadio && customTextRadio.checked && customTextValue.length === 0) {
-            alert("Please enter custom text.");
-            e.preventDefault();
-            return;
-        }
-        if (!uploadedPhoto) {
-            alert("Please upload a photo for this product.");
-            e.preventDefault();
-            return;
-        }
-    }
     // Gift wrap
     document.getElementById("giftWrapVal").value =
         document.getElementById("giftWrap").checked ? 1 : 0;
 
-    // Gift Card
+    // Gift card
     document.getElementById("giftCardVal").value =
         document.getElementById("giftCard").checked ? 1 : 0;
 
-    // Gift Card Message
-    let cardMsgBox = document.querySelector("#giftCardMessageBox textarea");
-    if (cardMsgBox) {
-        document.getElementById("giftCardMsgVal").value = cardMsgBox.value;
+    // Gift Card Message (VISIBLE → HIDDEN)
+    let visibleGiftMsg = document.querySelector("#giftCardMessageBox textarea");
+    let hiddenGiftMsg  = document.getElementById("giftCardMsgVal");
+
+    if (visibleGiftMsg && document.getElementById("giftCard").checked) {
+        hiddenGiftMsg.value = visibleGiftMsg.value.trim();
+    } else {
+        hiddenGiftMsg.value = "";
     }
 
-    // Final text
-    let finalText = "";
-    if (customTextRadio && customTextRadio.checked) {
-        finalText = customTextValue;
-    } else if (defaultTextRadio && defaultTextRadio.checked) {
-        finalText = document.getElementById("defaultTextVal").value;
-    }
+    // Custom Text
+    let customRadio  = document.getElementById("customText");
+    let defaultRadio = document.getElementById("defaultText");
 
-    document.getElementById("customTextVal").value = finalText;
+    let customMsg = document.getElementById("customMessage")
+        ? document.getElementById("customMessage").value.trim()
+        : "";
+
+    if (customRadio && customRadio.checked) {
+        if (customMsg.length === 0) {
+            alert("Please enter your custom message.");
+            e.preventDefault();
+            return;
+        }
+        document.getElementById("customTextVal").value = customMsg;
+    } else if (defaultRadio && defaultRadio.checked) {
+        document.getElementById("customTextVal").value =
+            document.getElementById("defaultTextVal").value;
+    }
 
 });
-
-
 </script>
-
-
-
 <script>
 function buyNow(productId) {
     fetch("set_buy_now.php", {
