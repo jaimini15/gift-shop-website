@@ -35,6 +35,18 @@ $products = mysqli_query($connection, "
     JOIN product_details pd ON oi.Product_Id = pd.Product_Id
     WHERE oi.Order_Id = $orderId
 ");
+/* CHECK IF ALL PRODUCTS ARE ALREADY RATED */
+$unratedCheck = mysqli_query($connection, "
+    SELECT oi.Product_Id
+    FROM order_item oi
+    LEFT JOIN feedback_details fd 
+        ON fd.Product_Id = oi.Product_Id 
+        AND fd.User_Id = $userId
+    WHERE oi.Order_Id = $orderId
+      AND fd.Rating IS NULL
+");
+
+$hasUnratedProducts = mysqli_num_rows($unratedCheck) > 0;
 
 
 $activePage = "orders";
@@ -49,14 +61,18 @@ $activePage = "orders";
 
 <body>
 <?php include("account_layout.php"); ?>
-<!-- <div class="account-wrapper"> -->
-
-
-<!-- <div class="account-content"> -->
+<?php if ($hasUnratedProducts): ?>
+    <div class="rating-warning">
+         &#11088; Please rate all products in this order.<br>
+        <small>Rating is compulsory. Comment is optional.</small>
+    </div>
+<?php endif; ?>
 
 <h2>Feedback</h2>
-
-<form method="POST" action="submit_feedback.php">
+<div id="ratingError" class="rating-warning" style="display:none;">
+    &#11088; Please give star rating before submitting.
+</div>
+<form method="POST" action="submit_feedback.php" onsubmit="return validateRatings();" novalidate>
 
 <?php while ($p = mysqli_fetch_assoc($products)): ?>
 
@@ -72,8 +88,7 @@ $activePage = "orders";
             <input type="radio"
                    id="star<?= $i ?>_<?= $p['Product_Id'] ?>"
                    name="rating[<?= $p['Product_Id'] ?>]"
-                   value="<?= $i ?>"
-                   required>
+                   value="<?= $i ?>">
             <label for="star<?= $i ?>_<?= $p['Product_Id'] ?>">★</label>
         <?php endfor; ?>
     </div>
@@ -90,12 +105,32 @@ $activePage = "orders";
 </button>
 
 </form>
-
-<!-- </div> -->
-<!-- </div> -->
         </div>
         </div>
 <?php include("../home page/footer.php"); ?>
+<script>
+function validateRatings() {
+    const ratingGroups = document.querySelectorAll('.star-rating');
+    let valid = true;
+
+    ratingGroups.forEach(group => {
+        const radios = group.querySelectorAll('input[type="radio"]');
+        const checked = Array.from(radios).some(r => r.checked);
+
+        if (!checked) {
+            valid = false;
+        }
+    });
+
+    if (!valid) {
+        document.getElementById('ratingError').style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return false; // ❌ stop submit
+    }
+
+    return true; // ✅ allow submit
+}
+</script>
 
 </body>
 </html>
@@ -134,4 +169,14 @@ $activePage = "orders";
 .star-rating label:hover ~ label {
     color: #f5a623;
 }
+.rating-warning {
+    background: #fff3cd;
+    border: 1px solid #ffeeba;
+    color: #856404;
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    font-size: 14px;
+}
+
 </style>
