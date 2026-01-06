@@ -414,3 +414,13 @@ body{
 .review-btn {
     border-color: #7e2626d5;
 }
+/* feedback from customer rating alert */
+.rating-warning {
+    background-color: #fff3cd;
+    border: 1px solid #ffeeba;
+    color: #856404;
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    font-size: 14px;
+}
