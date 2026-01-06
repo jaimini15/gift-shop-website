@@ -63,10 +63,6 @@ if (!isset($activePage)) {
         <i class="fa-solid fa-lock"></i> Change Password
     </a>
 
-    <a href="feedback.php" class="<?= $activePage=='feedback' ? 'active' : '' ?>">
-        <i class="fa-solid fa-comment-dots"></i> Feedback
-    </a>
-
     <a href="../login/logout.php">
         <i class="fa-solid fa-right-from-bracket"></i> Logout
     </a>
