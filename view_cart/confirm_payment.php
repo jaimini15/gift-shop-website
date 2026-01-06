@@ -23,11 +23,24 @@ mysqli_begin_transaction($connection);
 try {
 
     /* 1️⃣ Confirm order */
-    mysqli_query($connection,"
-        UPDATE `order`
-        SET Status='CONFIRM'
-        WHERE Order_Id=$orderId AND User_Id=$userId
-    ");
+   mysqli_query($connection,"
+    UPDATE `order`
+    SET Status='CONFIRM'
+    WHERE Order_Id=$orderId
+      AND User_Id=$userId
+      AND Status='PENDING'
+");
+
+if (mysqli_affected_rows($connection) !== 1) {
+    throw new Exception("Order already confirmed or invalid");
+}
+
+$checkPay = mysqli_query($connection,"
+    SELECT 1 FROM payment_details WHERE Order_Id = $orderId
+");
+if (mysqli_num_rows($checkPay) > 0) {
+    throw new Exception("Payment already recorded");
+}
 
     /* 2️⃣ Insert payment */
     $txn = "TXN".time().rand(1000,9999);
@@ -46,10 +59,13 @@ try {
         JOIN cart ca ON ca.Cart_Id = c.Cart_Id
         WHERE ca.User_Id = $userId
     ");
+if (mysqli_num_rows($cartItems) == 0) {
+    // Cart already processed → do nothing
+    mysqli_commit($connection);
+    echo json_encode(["success"=>true,"order_id"=>$orderId]);
+    exit;
+}
 
-    if (mysqli_num_rows($cartItems) == 0) {
-        throw new Exception("Cart empty at payment time");
-    }
 
     /* 4️⃣ INSERT INTO order_item + REDUCE STOCK */
 while ($row = mysqli_fetch_assoc($cartItems)) {
