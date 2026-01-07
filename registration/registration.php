@@ -8,28 +8,28 @@ if (isset($_SESSION['User_Id'])) {
     exit();
 }
 
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
+// if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
-    $fname    = $_POST['first_name'];
-    $lname    = $_POST['last_name'];
-    $dob      = $_POST['dob'];
-    $phone    = $_POST['phone'];
-    $address  = $_POST['address'];
-    $pincode  = $_POST['pincode'];
-    $email    = $_POST['email'];
-    $password = $_POST['password'];
+//     $fname    = $_POST['first_name'];
+//     $lname    = $_POST['last_name'];
+//     $dob      = $_POST['dob'];
+//     $phone    = $_POST['phone'];
+//     $address  = $_POST['address'];
+//     $pincode  = $_POST['pincode'];
+//     $email    = $_POST['email'];
+//     $password = $_POST['password'];
 
-    // Insert into database
-    $query = "INSERT INTO user_details 
-              (First_Name, Last_Name, DOB, Phone, Address, Pincode, Email, Password, User_Role, Status)
-              VALUES 
-              ('$fname', '$lname', '$dob', '$phone', '$address', '$pincode', '$email', '$password', 'CUSTOMER', 'ENABLE')";
+//     // Insert into database
+//     $query = "INSERT INTO user_details 
+//               (First_Name, Last_Name, DOB, Phone, Address, Pincode, Email, Password, User_Role, Status)
+//               VALUES 
+//               ('$fname', '$lname', '$dob', '$phone', '$address', '$pincode', '$email', '$password', 'CUSTOMER', 'ENABLE')";
 
-    mysqli_query($connection, $query);
+//     mysqli_query($connection, $query);
 
-    header("Location: ../login/login.php");
-    exit();
-}
+//     header("Location: ../login/login.php");
+//     exit();
+// }
 ?>
 <!DOCTYPE html>
 <html lang="en">
