@@ -95,7 +95,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 </head>
 <body>
 
-<?php include("../home page/navbar.php"); ?>  <!-- Navbar stays SAME -->
+<?php include("../home page/navbar.php"); ?>  
 
 <div class="register-box">
 
