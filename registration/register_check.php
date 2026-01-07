@@ -17,7 +17,7 @@ $email      = mysqli_real_escape_string($connection, $_POST['email']);
 $password   = mysqli_real_escape_string($connection, $_POST['password']);
 $role       = "CUSTOMER";
 
-/* 🔍 CHECK EMAIL */
+/* CHECK EMAIL */
 $checkEmail = mysqli_query($connection, "SELECT Email FROM user_details WHERE Email='$email'");
 if (mysqli_num_rows($checkEmail) > 0) {
     echo "<script>
@@ -27,7 +27,7 @@ if (mysqli_num_rows($checkEmail) > 0) {
     exit();
 }
 
-/* 🔍 CHECK PHONE */
+/* CHECK PHONE */
 $checkPhone = mysqli_query($connection, "SELECT Phone FROM user_details WHERE Phone='$phone'");
 if (mysqli_num_rows($checkPhone) > 0) {
     echo "<script>
@@ -37,7 +37,7 @@ if (mysqli_num_rows($checkPhone) > 0) {
     exit();
 }
 
-/* ✅ INSERT USER */
+/* INSERT USER */
 $insert = "INSERT INTO user_details 
 (First_Name, Last_Name, DOB, Phone, Address, Area_Id, Email, Password, User_Role, Create_At)
 VALUES 
