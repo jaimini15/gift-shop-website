@@ -88,9 +88,6 @@ body{
     max-width:900px;
     margin:auto;
 }
-
-
-
 /* ===== SUCCESS ICON ===== */
 .checkmark{
     font-size:60px;
