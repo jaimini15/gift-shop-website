@@ -64,7 +64,6 @@ $activePage = "orders";
 <?php if ($hasUnratedProducts): ?>
     <div class="rating-warning">
          &#11088; Please rate all products in this order.<br>
-        <small>Rating is compulsory. Comment is optional.</small>
     </div>
 <?php endif; ?>
 
