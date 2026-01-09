@@ -34,19 +34,20 @@ try {
     mysqli_stmt_execute($stmt);
 
     $orderId = mysqli_insert_id($connection);
+    $already = mysqli_query($connection,"
+    SELECT 1 FROM order_item
+    WHERE Order_Id = $orderId
+    LIMIT 1
+");
+
+if (mysqli_num_rows($already) > 0) {
+    mysqli_commit($connection);
+    echo json_encode(["success"=>true,"order_id"=>$orderId]);
+    exit;
+}
+
 
     /* Insert Order Items */
-    $items = mysqli_query($connection, "
-        SELECT Product_Id, Quantity, Price, Custom_Text, Custom_Image
-        FROM customize_cart_details
-        WHERE Cart_Id='$cartId'
-    ");
-
-    $itemStmt = mysqli_prepare($connection, "
-        INSERT INTO order_item
-        (Order_Id, Product_Id, Quantity, Price_Snapshot, Custom_Text, Custom_Image)
-        VALUES (?, ?, ?, ?, ?, ?)
-    ");
 
     while ($row = mysqli_fetch_assoc($items)) {
         mysqli_stmt_bind_param(
