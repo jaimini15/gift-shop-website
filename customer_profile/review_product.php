@@ -91,7 +91,7 @@ $activePage = "orders";
             <label for="star<?= $i ?>_<?= $p['Product_Id'] ?>">★</label>
         <?php endfor; ?>
     </div>
-<p style="color:#666;">We’d love to hear from you 💬</p>
+<p style="color:#666;">We'd love to hear from you 💬</p>
     <textarea name="feedback[<?= $p['Product_Id'] ?>]"
         placeholder="Write your feedback..."
         style="width:100%;height:120px;margin-bottom:25px;"></textarea>
