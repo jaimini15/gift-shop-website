@@ -98,12 +98,7 @@ while ($row = mysqli_fetch_assoc($stockQ)) {
     }
 }
 
-/* If any out-of-stock item found → stop checkout */
-if (!empty($outOfStockProducts)) {
-    $outOfStockList = json_encode($outOfStockProducts);
-    include("stock_blocker_popup.php");
-    exit;
-}
+$outOfStockList = json_encode($outOfStockProducts);
 
 ?>
 
@@ -214,7 +209,6 @@ if (!empty($outOfStockProducts)) {
     display: block;
 }
 /* Loading of payment process */
-/* ===== LOADING OVERLAY ===== */
 #loadingOverlay {
     position: fixed;
     inset: 0;
@@ -227,7 +221,6 @@ if (!empty($outOfStockProducts)) {
 
 /* ===== POPUP BOX ===== */
 .loading-content {
-    /* background: #fff; */
     padding: 30px;
     border-radius: 12px;
     text-align: center;
@@ -330,6 +323,60 @@ if (!empty($outOfStockProducts)) {
     margin-top: 10px;
     font-size: 13px;
     color: #777;
+}
+/* ===== OUT OF STOCK OVERLAY ===== */
+.stock-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+.stock-popup {
+    background: #fff;
+    width: 420px;
+    padding: 25px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+    animation: pop 0.3s ease;
+}
+
+@keyframes pop {
+    from { transform: scale(0.9); opacity: 0; }
+    to   { transform: scale(1); opacity: 1; }
+}
+
+.stock-popup h2 {
+    color: #d32f2f;
+    margin-bottom: 10px;
+}
+
+.stock-popup ul {
+    list-style: none;
+    padding: 0;
+    margin: 15px 0;
+}
+
+.stock-popup li {
+    font-weight: 600;
+    padding: 6px 0;
+}
+
+.stock-popup button {
+    margin-top: 15px;
+    padding: 10px 25px;
+    background: #7e2626d5;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.stock-popup button:hover {
+    background: black;
 }
 
 
@@ -527,10 +574,6 @@ function closePopup() {
         window.pendingOrderId = null;
     });
 }
-
-
-
-
 document.getElementById("placeOrderBtn").addEventListener("click", function(){
     const selected = document.querySelector('input[name="payment_method"]:checked');
     if(!selected){ 
@@ -549,27 +592,25 @@ document.getElementById("placeOrderBtn").addEventListener("click", function(){
     .then(res => res.json())
 .then(data => {
 
-    // 🔁 Pending order already exists → resume payment popup
+    // Pending order already exists → resume payment popup
     if (!data.success && data.pending) {
         document.getElementById("paymentOverlay").style.display = "flex";
         document.querySelector(".container").classList.add("blur");
         return;
     }
-
-    // ❌ Real error
     if (!data.success) {
         alert(data.error || data.message || "Order creation failed");
         return;
     }
 
-    // ✅ New order created
+    // New order created
     window.pendingOrderId = data.order_id;
     document.getElementById("paymentOverlay").style.display = "flex";
     document.querySelector(".container").classList.add("blur");
 
 })
 .catch(() => alert("Network error"));
-}); // ✅ CLOSE placeOrderBtn click listener
+}); 
 
 
 document.querySelector(".pay-btn").addEventListener("click", function (e) {
@@ -735,6 +776,39 @@ cardRadio.addEventListener("change", () => {
     </div>
 </div>
 
+<!-- ===== OUT OF STOCK POPUP ===== -->
+<div class="stock-overlay" id="stockOverlay" style="display:none;">
+    <div class="stock-popup">
+
+        <h2>⚠ Items Out of Stock</h2>
+        <p>Please remove the following product(s) to continue:</p>
+
+        <ul id="stockProductList"></ul>
+
+        <button onclick="goHome()">Go to Home</button>
+    </div>
+</div>
+<script>
+const outOfStockProducts = <?= $outOfStockList ?> || [];
+
+if (outOfStockProducts.length > 0) {
+    const ul = document.getElementById("stockProductList");
+
+    outOfStockProducts.forEach(name => {
+        const li = document.createElement("li");
+        li.textContent = name;
+        ul.appendChild(li);
+    });
+
+    // Show popup
+    document.getElementById("stockOverlay").style.display = "flex";
+    document.querySelector(".container").classList.add("blur");
+}
+
+function goHome() {
+    window.location.href = "../home page/index.php";
+}
+</script>
 
 </body>
 </html>
