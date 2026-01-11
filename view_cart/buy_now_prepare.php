@@ -1,6 +1,13 @@
 <?php
 session_start();
+
+
 include("../AdminPanel/db.php");
+// echo '<pre>';
+// var_dump($_FILES);
+// exit;
+// echo $_FILES['custom_image']['size'];
+// exit;
 
 /* -------------------------
    BASIC VALIDATION
@@ -46,8 +53,17 @@ unset(
 );
 
 /* -------------------------
-   STORE BUY NOW DATA
+   HANDLE CUSTOM IMAGE (BUY NOW)
 -------------------------- */
+$customImage = null;
+
+if (
+    isset($_FILES['custom_image']) &&
+    is_uploaded_file($_FILES['custom_image']['tmp_name'])
+) {
+    $customImage = file_get_contents($_FILES['custom_image']['tmp_name']);
+}
+
 $_SESSION['buy_now'] = true;
 
 /* Unified Buy Now Item */
@@ -58,7 +74,8 @@ $_SESSION['buy_now_item'] = [
     'gift_wrap'    => !empty($_POST['gift_wrap']) ? 1 : 0,
     'gift_card'    => !empty($_POST['gift_card']) ? 1 : 0,
     'custom_text'  => trim($_POST['custom_text'] ?? ''),
-    'gift_msg'     => trim($_POST['gift_card_msg'] ?? '')
+    'gift_msg'     => trim($_POST['gift_card_msg'] ?? ''),
+    'custom_image' => $customImage
 ];
 
 /* Compatibility session keys (used in payment.php) */
