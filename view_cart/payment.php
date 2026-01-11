@@ -11,12 +11,13 @@ $isBuyNow = isset($_GET['buy_now']) && $_GET['buy_now'] == 1;
 // Validate totals
 if ($isBuyNow) {
 
-    if (!isset($_GET['product_id'])) {
+    if (empty($_SESSION['buy_now_product_id'])) {
         header("Location: ../home page/index.php");
         exit;
     }
 
-    $productId = (int)$_GET['product_id'];
+    $productId = (int)$_SESSION['buy_now_product_id'];
+
 
     $stmt = mysqli_prepare($connection,
         "SELECT Product_Name, Price FROM Product_Details WHERE Product_Id=?"
@@ -80,23 +81,54 @@ if (!$userId) {
 
 $outOfStockProducts = [];
 
-$stockQ = mysqli_query($connection, "
-    SELECT 
-        pd.Product_Name,
-        ccd.Quantity,
-        IFNULL(sd.Stock_Available, 0) AS Stock_Available
-    FROM customize_cart_details ccd
-    JOIN product_details pd ON pd.Product_Id = ccd.Product_Id
-    LEFT JOIN stock_details sd ON sd.Product_Id = ccd.Product_Id
-    JOIN cart c ON c.Cart_Id = ccd.Cart_Id
-    WHERE c.User_Id = $userId
-");
+/* ================= CART STOCK CHECK (UNCHANGED LOGIC) ================= */
+if (!$isBuyNow) {
 
-while ($row = mysqli_fetch_assoc($stockQ)) {
-    if ((int)$row['Stock_Available'] < (int)$row['Quantity']) {
-        $outOfStockProducts[] = $row['Product_Name'];
+    $stockQ = mysqli_query($connection, "
+        SELECT 
+            pd.Product_Name,
+            ccd.Quantity,
+            IFNULL(sd.Stock_Available, 0) AS Stock_Available
+        FROM customize_cart_details ccd
+        JOIN product_details pd ON pd.Product_Id = ccd.Product_Id
+        LEFT JOIN stock_details sd ON sd.Product_Id = ccd.Product_Id
+        JOIN cart c ON c.Cart_Id = ccd.Cart_Id
+        WHERE c.User_Id = $userId
+    ");
+
+    while ($row = mysqli_fetch_assoc($stockQ)) {
+        if ((int)$row['Stock_Available'] < (int)$row['Quantity']) {
+            $outOfStockProducts[] = $row['Product_Name'];
+        }
+    }
+
+}
+
+/* ================= BUY NOW STOCK CHECK (NEW) ================= */
+else {
+
+    $productId = $_SESSION['buy_now_product_id'] ?? 0;
+
+    if ($productId) {
+
+        $stockQ = mysqli_query($connection, "
+            SELECT 
+                pd.Product_Name,
+                IFNULL(sd.Stock_Available, 0) AS Stock_Available
+            FROM product_details pd
+            LEFT JOIN stock_details sd ON sd.Product_Id = pd.Product_Id
+            WHERE pd.Product_Id = $productId
+            LIMIT 1
+        ");
+
+        $row = mysqli_fetch_assoc($stockQ);
+
+        if (!$row || (int)$row['Stock_Available'] < 1) {
+            $outOfStockProducts[] = $row['Product_Name'] ?? 'Selected product';
+        }
     }
 }
+
 
 $outOfStockList = json_encode($outOfStockProducts);
 
