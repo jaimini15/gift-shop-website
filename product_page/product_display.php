@@ -322,7 +322,10 @@ function updateCartCount() {
                 <label class="label-title" style="font-weight:600;margin-top:20px;">Upload Photo for Customization*</label>
                 <input type="file" id="uploadPhoto" class="form-control mb-2">
              <script>   document.getElementById("uploadPhoto")?.addEventListener("change", function(){
+    // Cart
     document.getElementById("realUpload").files = this.files;
+     // ✅ Buy Now 
+    document.getElementById("bn_realUpload").files = this.files;
 });</script>
 
                 <!-- PREVIEW BUTTON -->
@@ -418,7 +421,10 @@ function updateCartCount() {
 
 </form>
     <!-- BUY NOW -->
-    <form method="POST" action="../view_cart/buy_now_prepare.php">
+   <form method="POST"
+      action="../view_cart/buy_now_prepare.php"
+      enctype="multipart/form-data">
+
 
     <input type="hidden" name="product_id"
            value="<?= (int)$product['Product_Id'] ?>">
@@ -427,6 +433,10 @@ function updateCartCount() {
     <input type="hidden" name="gift_card" id="bn_gift_card">
     <input type="hidden" name="gift_card_msg" id="bn_gift_msg">
     <input type="hidden" name="custom_text" id="bn_custom_text">
+    <input type="file"
+           id="bn_realUpload"
+           name="custom_image"
+           style="display:none;">
 
     <button type="submit" class="product-btn">
         Buy Now
