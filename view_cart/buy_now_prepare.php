@@ -67,7 +67,9 @@ $_SESSION['gift_wrap'] = $_SESSION['buy_now_item']['gift_wrap'];
 $_SESSION['gift_card'] = $_SESSION['buy_now_item']['gift_card'];
 
 /* -------------------------
-   REDIRECT TO CART / CHECKOUT
+   REDIRECT TO Payment page
 -------------------------- */
-header("Location: view_cart.php?buy_now=1");
+header("Location: payment.php?buy_now=1");
 exit;
+
+
