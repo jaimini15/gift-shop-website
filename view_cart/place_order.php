@@ -46,7 +46,18 @@ if ($isBuyNow) {
         exit;
     }
 
-    $totalAmount = (float)$product['Price'];
+    $item = $_SESSION['buy_now_item'] ?? null;
+
+if (!$item) {
+    echo json_encode(["success" => false, "error" => "Buy now item missing"]);
+    exit;
+}
+
+$giftWrapPrice = !empty($item['gift_wrap']) ? 39 : 0;
+$giftCardPrice = !empty($item['gift_card']) ? 50 : 0;
+
+$totalAmount = (float)$item['price'] + $giftWrapPrice + $giftCardPrice;
+
 
 }
 /* ===== CART FLOW ===== */
