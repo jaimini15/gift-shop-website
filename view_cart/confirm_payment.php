@@ -17,6 +17,8 @@ if (empty($data['payment_method'])) {
 $userId  = (int) $_SESSION['User_Id'];
 $orderId = (int) $_SESSION['pending_order_id'];
 $method  = mysqli_real_escape_string($connection, $data['payment_method']);
+$isBuyNow = !empty($_SESSION['buy_now']);
+
 
 mysqli_begin_transaction($connection);
 
@@ -52,65 +54,133 @@ if (mysqli_num_rows($checkPay) > 0) {
         WHERE Order_Id=$orderId
     ");
 
-    /* 3️⃣ FETCH CART ITEMS (CRITICAL) */
+    /* ================= BUY NOW FLOW ================= */
+if ($isBuyNow) {
+
+    $item = $_SESSION['buy_now_item'] ?? null;
+    if (!$item) {
+        throw new Exception("Buy now item missing");
+    }
+
+    $pid = (int)$item['product_id'];
+    $qty = 1;
+    $basePrice = (float)$item['price'];
+
+$giftWrapPrice = !empty($item['gift_wrap']) ? 39 : 0;
+$giftCardPrice = !empty($item['gift_card']) ? 50 : 0;
+
+$priceSnapshot = $basePrice + $giftWrapPrice + $giftCardPrice;
+
+
+   
+    $stmt = mysqli_prepare($connection, "
+    INSERT INTO order_item (
+        Order_Id,
+        Product_Id,
+        Quantity,
+        Price_Snapshot,
+        Custom_Text,
+        Gift_Wrapping,
+        Personalized_Message,
+        Custom_Image
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+");
+
+$customText = $item['custom_text'] ?: null;
+$giftMsg    = $item['gift_msg'] ?: null;
+$customImg  = $item['custom_image']; // BINARY
+$giftWrap   = (int)$item['gift_wrap'];
+$null       = null;
+mysqli_stmt_bind_param(
+    $stmt,
+    "iiidssib",
+    $orderId,
+    $pid,
+    $qty,
+    $priceSnapshot,
+    $customText,
+    $giftWrap,
+    $giftMsg,
+    $null 
+);
+
+mysqli_stmt_send_long_data($stmt, 7, $customImg); // VERY IMPORTANT
+
+mysqli_stmt_execute($stmt);
+mysqli_stmt_close($stmt);
+
+
+    /* Reduce stock */
+    mysqli_query($connection,"
+        UPDATE stock_details
+        SET Stock_Available = Stock_Available - 1,
+            Last_Update = NOW()
+        WHERE Product_Id = $pid
+          AND Stock_Available >= 1
+    ");
+
+    if (mysqli_affected_rows($connection) === 0) {
+        throw new Exception("Product out of stock");
+    }
+
+}
+/* ================= CART FLOW (UNCHANGED) ================= */
+else {
+
     $cartItems = mysqli_query($connection,"
         SELECT c.*
         FROM customize_cart_details c
         JOIN cart ca ON ca.Cart_Id = c.Cart_Id
         WHERE ca.User_Id = $userId
     ");
-if (mysqli_num_rows($cartItems) == 0) {
-    // Cart already processed → do nothing
-    mysqli_commit($connection);
-    echo json_encode(["success"=>true,"order_id"=>$orderId]);
-    exit;
-}
 
-
-    /* 4️⃣ INSERT INTO order_item + REDUCE STOCK */
-while ($row = mysqli_fetch_assoc($cartItems)) {
-
-    $pid = (int)$row['Product_Id'];
-    $qty = (int)$row['Quantity'];
-
-    /* Insert order item */
-    mysqli_query($connection,"
-        INSERT INTO order_item (
-            Order_Id,
-            Product_Id,
-            Quantity,
-            Price_Snapshot,
-            Custom_Text,
-            Gift_Wrapping,
-            Personalized_Message
-        ) VALUES (
-            $orderId,
-            $pid,
-            $qty,
-            {$row['Price']},
-            ".($row['Custom_Text'] ? "'".mysqli_real_escape_string($connection,$row['Custom_Text'])."'" : "NULL").",
-            {$row['Gift_Wrapping']},
-            ".($row['Personalized_Message'] ? "'".mysqli_real_escape_string($connection,$row['Personalized_Message'])."'" : "NULL")."
-        )
-    ");
-
-    /* 🔥 REDUCE STOCK */
-    mysqli_query($connection,"
-        UPDATE stock_details
-        SET Stock_Available = Stock_Available - $qty,
-            Last_Update = NOW()
-        WHERE Product_Id = $pid
-          AND Stock_Available >= $qty
-    ");
-
-    /* ❌ If stock was insufficient → rollback */
-    if (mysqli_affected_rows($connection) === 0) {
-        throw new Exception("Product ID $pid is out of stock");
+    if (mysqli_num_rows($cartItems) == 0) {
+        mysqli_commit($connection);
+        echo json_encode(["success"=>true,"order_id"=>$orderId]);
+        exit;
     }
-}
+
+    while ($row = mysqli_fetch_assoc($cartItems)) {
+
+        $pid = (int)$row['Product_Id'];
+        $priceSnapshot = (float)$row['Price'];
+        $qty = (int)$row['Quantity'];
 
 
-    /* 5️⃣ CLEAR CART AFTER INSERT */
+        mysqli_query($connection,"
+            INSERT INTO order_item (
+                Order_Id,
+                Product_Id,
+                Quantity,
+                Price_Snapshot,
+                Custom_Text,
+                Gift_Wrapping,
+                Personalized_Message
+            ) VALUES (
+                $orderId,
+                $pid,
+                $qty,
+                $priceSnapshot,
+                ".($row['Custom_Text'] ? "'".mysqli_real_escape_string($connection,$row['Custom_Text'])."'" : "NULL").",
+                {$row['Gift_Wrapping']},
+                ".($row['Personalized_Message'] ? "'".mysqli_real_escape_string($connection,$row['Personalized_Message'])."'" : "NULL")."
+            )
+        ");
+
+        mysqli_query($connection,"
+            UPDATE stock_details
+            SET Stock_Available = Stock_Available - $qty,
+                Last_Update = NOW()
+            WHERE Product_Id = $pid
+              AND Stock_Available >= $qty
+        ");
+
+        if (mysqli_affected_rows($connection) === 0) {
+            throw new Exception("Product ID $pid is out of stock");
+        }
+    }
+
+    /* CLEAR CART — CART FLOW ONLY */
     mysqli_query($connection,"
         DELETE c FROM customize_cart_details c
         JOIN cart ca ON ca.Cart_Id = c.Cart_Id
@@ -120,8 +190,11 @@ while ($row = mysqli_fetch_assoc($cartItems)) {
     mysqli_query($connection,"
         DELETE FROM cart WHERE User_Id = $userId
     ");
+}
 
     unset($_SESSION['pending_order_id']);
+    unset($_SESSION['buy_now'], $_SESSION['buy_now_item'], $_SESSION['buy_now_product_id']);
+
 
     mysqli_commit($connection);
 
