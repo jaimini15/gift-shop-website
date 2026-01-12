@@ -90,7 +90,7 @@ $giftWrap   = (int)$item['gift_wrap'];
 $null       = null;
 mysqli_stmt_bind_param(
     $stmt,
-    "iiidssib",
+    "iiidsisb",
     $orderId,
     $pid,
     $qty,
@@ -100,8 +100,9 @@ mysqli_stmt_bind_param(
     $giftMsg,
     $null 
 );
-
-mysqli_stmt_send_long_data($stmt, 7, $customImg); // VERY IMPORTANT
+if (!empty($customImg)) {
+    mysqli_stmt_send_long_data($stmt, 7, $customImg); // ✅ correct index
+}
 
 mysqli_stmt_execute($stmt);
 mysqli_stmt_close($stmt);
@@ -144,25 +145,44 @@ else {
         $qty = (int)$row['Quantity'];
 
 
-        mysqli_query($connection,"
-            INSERT INTO order_item (
-                Order_Id,
-                Product_Id,
-                Quantity,
-                Price_Snapshot,
-                Custom_Text,
-                Gift_Wrapping,
-                Personalized_Message
-            ) VALUES (
-                $orderId,
-                $pid,
-                $qty,
-                $priceSnapshot,
-                ".($row['Custom_Text'] ? "'".mysqli_real_escape_string($connection,$row['Custom_Text'])."'" : "NULL").",
-                {$row['Gift_Wrapping']},
-                ".($row['Personalized_Message'] ? "'".mysqli_real_escape_string($connection,$row['Personalized_Message'])."'" : "NULL")."
-            )
-        ");
+        $stmt = mysqli_prepare($connection, "
+    INSERT INTO order_item (
+        Order_Id,
+        Product_Id,
+        Quantity,
+        Price_Snapshot,
+        Custom_Text,
+        Gift_Wrapping,
+        Personalized_Message,
+        Custom_Image
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+");
+
+$customText = $row['Custom_Text'] ?: null;
+$giftMsg    = $row['Personalized_Message'] ?: null;
+$customImg  = $row['Custom_Image']; // BLOB from customize_cart_details
+$giftWrap   = (int)$row['Gift_Wrapping'];
+$null       = null;
+
+mysqli_stmt_bind_param(
+    $stmt,
+    "iiidsisb",
+    $orderId,
+    $pid,
+    $qty,
+    $priceSnapshot,
+    $customText,
+    $giftWrap,
+    $giftMsg,
+    $null
+);
+
+if (!empty($customImg)) {
+    mysqli_stmt_send_long_data($stmt, 7, $customImg); // ✅ correct index
+}
+mysqli_stmt_execute($stmt);
+mysqli_stmt_close($stmt);
+
 
         mysqli_query($connection,"
             UPDATE stock_details
