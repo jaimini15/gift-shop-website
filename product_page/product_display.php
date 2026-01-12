@@ -181,7 +181,10 @@ if (isset($_SESSION['User_Id'])) {
 .single-review i {
     margin-right: 2px;
 }
-
+.review-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 25px rgba(0,0,0,0.12);
+}
 </style>
 
 <div id="sidePanel">
@@ -464,32 +467,69 @@ $reviewCount = mysqli_num_rows($reviewsQuery);
 
     </div>
 </div>
-<div class="reviews-section" style="margin-top:40px;margin-left:20px;margin-right:40px;">
-    <h4><?= $reviewCount ?> Reviews for <?= $productName ?></h4>
+<div class="reviews-section" style="margin:50px auto; max-width:1300px;">
+    <h4 style="font-size:26px; font-weight:600; margin-bottom:25px; color:#333;">
+        <?= $reviewCount ?> Reviews for <?= $productName ?>
+    </h4>
 
     <?php if ($reviewCount === 0): ?>
-        <p>No reviews yet. Be the first to review!</p>
+        <p style="font-size:16px; color:#555;">No reviews yet. Be the first to review!</p>
     <?php else: ?>
-        <?php while ($rev = mysqli_fetch_assoc($reviewsQuery)): ?>
-            <div class="single-review" style="border-bottom:1px solid #eee; padding:15px 0;">
-                <div style="display:flex; align-items:center; gap:10px; margin-bottom:5px;">
-                    <div style="width:40px; height:40px; background:#ccc; border-radius:50%;"></div>
-                    <strong><?= htmlspecialchars($rev['First_Name'] . ' ' . $rev['Last_Name']) ?></strong>
-                    <span style="margin-left:auto; color:#f5a623;">
-                        <?php
-                        for ($i=1; $i<=5; $i++) {
-                            echo $i <= $rev['Rating']
-                                ? '<i class="fa-solid fa-star"></i>'
-                                : '<i class="fa-regular fa-star"></i>';
-                        }
-                        ?>
-                    </span>
+        <div class="reviews-list" style="display:flex; flex-direction:column; gap:20px;">
+            <?php while ($rev = mysqli_fetch_assoc($reviewsQuery)): ?>
+                <div class="review-card" style="
+                    background:#fff; 
+                    padding:20px; 
+                    border-radius:12px; 
+                    box-shadow:0 5px 15px rgba(0,0,0,0.05);
+                    display:flex; 
+                    flex-direction:column;
+                    gap:10px;
+                    transition: transform 0.2s, box-shadow 0.2s;
+                ">
+                
+                    <div class="review-header" style="display:flex; align-items:center; gap:12px;">
+                        <div style="
+                            width:50px; 
+                            height:50px; 
+                            border-radius:50%; 
+                            background:#ddd;
+                            display:flex; 
+                            justify-content:center; 
+                            align-items:center;
+                            font-weight:bold;
+                            color:#555;
+                            font-size:18px;
+                        ">
+                            <?= strtoupper(substr($rev['First_Name'],0,1)) ?>
+                        </div>
+                        <div style="flex:1;">
+                            <strong style="font-size:16px; color:#333;">
+                                <?= htmlspecialchars($rev['First_Name'] . ' ' . $rev['Last_Name']) ?>
+                            </strong>
+                            <div class="rating-stars" style="color:#f5a623; font-size:16px; margin-top:2px;">
+                                <?php
+                                for ($i=1; $i<=5; $i++) {
+                                    echo $i <= $rev['Rating']
+                                        ? '<i class="fa-solid fa-star"></i>'
+                                        : '<i class="fa-regular fa-star"></i>';
+                                }
+                                ?>
+                            </div>
+                        </div>
+                        <span style="font-size:14px; color:#888;">
+                            <?= date('d M Y') ?> <!-- optionally use feedback date if you have it -->
+                        </span>
+                    </div>
+                    <div class="review-body" style="font-size:15px; color:#555; line-height:1.5;">
+                        <?= htmlspecialchars($rev['Comment']) ?>
+                    </div>
                 </div>
-                <p style="margin-top:5px;"><?= htmlspecialchars($rev['Comment']) ?></p>
-            </div>
-        <?php endwhile; ?>
+            <?php endwhile; ?>
+        </div>
     <?php endif; ?>
 </div>
+
 
 <!-- FOOTER Starts -->
 <section class="footer">
