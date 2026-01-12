@@ -13,15 +13,12 @@ if (empty($data['payment_method'])) {
     echo json_encode(["success"=>false,"error"=>"Payment method missing"]);
     exit;
 }
-
 $userId  = (int) $_SESSION['User_Id'];
 $orderId = (int) $_SESSION['pending_order_id'];
 $method  = mysqli_real_escape_string($connection, $data['payment_method']);
 $isBuyNow = !empty($_SESSION['buy_now']);
 
-
 mysqli_begin_transaction($connection);
-
 try {
 
     /* 1️⃣ Confirm order */
