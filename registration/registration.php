@@ -8,28 +8,6 @@ if (isset($_SESSION['User_Id'])) {
     exit();
 }
 
-// if ($_SERVER["REQUEST_METHOD"] === "POST") {
-
-//     $fname    = $_POST['first_name'];
-//     $lname    = $_POST['last_name'];
-//     $dob      = $_POST['dob'];
-//     $phone    = $_POST['phone'];
-//     $address  = $_POST['address'];
-//     $pincode  = $_POST['pincode'];
-//     $email    = $_POST['email'];
-//     $password = $_POST['password'];
-
-//     // Insert into database
-//     $query = "INSERT INTO user_details 
-//               (First_Name, Last_Name, DOB, Phone, Address, Pincode, Email, Password, User_Role, Status)
-//               VALUES 
-//               ('$fname', '$lname', '$dob', '$phone', '$address', '$pincode', '$email', '$password', 'CUSTOMER', 'ENABLE')";
-
-//     mysqli_query($connection, $query);
-
-//     header("Location: ../login/login.php");
-//     exit();
-// }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -114,7 +92,9 @@ if (isset($_SESSION['User_Id'])) {
 <input type="text" name="phone" placeholder="Phone Number" maxlength="10" 
        required pattern="[0-9]{10}" title="Exactly 10 digits">
 
-<input type="text" name="address" placeholder="Address" required>
+<input type="text" name="address" placeholder="House/Plot No, Apartment/Society Name" required pattern="^.+,.+$"
+    title="Enter address in format: House/Plot No, Apartment or Society Name">
+
 
 <select name="area_id" required>
     <option value="">Select Area</option>
