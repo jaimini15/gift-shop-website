@@ -13,7 +13,7 @@ include(__DIR__ . '/../db.php');
 
     <style>
         body { background: #f4f6f9; font-family: Arial, sans-serif; }
-        .content { margin-left: 120px; padding: 20px; margin-top: 30px; }
+        .content { margin-left: 0px; padding: 0px;  }
         .card-box { background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
         .cat-img { width: 70px; height: 70px; object-fit: cover; border-radius: 8px; }
     </style>
