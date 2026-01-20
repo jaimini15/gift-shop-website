@@ -30,22 +30,9 @@ $result = mysqli_query($connection, $query);
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
     <style>
-        body {
-            background: #f4f6f9;
-            font-family: Arial, sans-serif;
-        }
-
-        .card-box {
-            background: #fff;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .table th {
-            background: #343a40 !important;
-            color: #fff;
-        }
+        body { background: #f4f6f9; font-family: Arial, sans-serif; }
+        .content { margin-left: 0px; padding: 0px;  }
+        .card-box { background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
     </style>
 </head>
 
