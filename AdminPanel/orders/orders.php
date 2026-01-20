@@ -77,11 +77,12 @@ if (isset($_GET['img'])) {
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 
 <style>
-body { background:#f4f6f9; font-family:Arial; }
-.content { margin-left:120px; padding:20px; margin-top:30px; }
-.card-box { background:#fff; padding:20px; border-radius:12px; }
+ body { background: #f4f6f9; font-family: Arial, sans-serif; }
+.content { margin-left: 0px; padding: 0px;  }
+.card-box { background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
 .order-header { background:#212529; color:#fff; padding:15px; border-radius:8px; }
 .product-img { width:60px; height:60px; object-fit:cover; border-radius:6px; }
+.cat-img { width: 70px; height: 70px; object-fit: cover; border-radius: 8px; }
 .badge-yes { background:#198754; }
 .badge-no { background:#dc3545; }
 .date-row {
@@ -92,6 +93,7 @@ body { background:#f4f6f9; font-family:Arial; }
     margin-bottom:15px;
 }
 </style>
+
 </head>
 
 <body>
