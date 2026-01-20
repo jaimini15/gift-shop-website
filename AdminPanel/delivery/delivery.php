@@ -15,16 +15,11 @@ include(__DIR__ . '/../db.php');
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <style>
-        body { background:#f4f6f9; font-family: Arial; }
-        .content { margin-left:120px; padding:20px; margin-top:30px; }
-        .card-box { background:#fff; padding:20px; border-radius:12px; }
-
-        .date-row {
-            background: #e9ecef;
-            font-weight: bold;
-            font-size: 15px;
-        }
+   <style>
+        body { background: #f4f6f9; font-family: Arial, sans-serif; }
+        .content { margin-left: 0px; padding: 0px;  }
+        .card-box { background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+        
     </style>
 </head>
 
@@ -33,7 +28,7 @@ include(__DIR__ . '/../db.php');
 <div class="content">
 <div class="card-box">
 
-<h3 class="fw-bold mb-4">Delivered Orders (Date Wise)</h3>
+<h3 class="fw-bold mb-4">Delivered Orders </h3>
 
 <?php
 $deliveries = mysqli_query($connection, "
