@@ -71,34 +71,11 @@ $recentOrdersQuery = mysqli_query(
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
 <style>
-body {
-    background: #f4f6f9;
-    font-family: Arial, sans-serif;
-}
-.content {
-    margin-left: 120px;
-    padding: 20px;
-    padding-top: 40px;
-}
-@media (max-width: 768px) {
-    .content {
-        margin-left: 0 !important;
-        padding-top: 100px;
-    }
-}
-.card-box {
-    border-radius: 12px;
-    padding: 20px;
-    background: #fff;
-    box-shadow: 0px 2px 6px rgba(0,0,0,0.1);
-    text-align: center;
-}
-table {
-    background: #fff;
-    border-radius: 10px;
-    overflow: hidden;
-}
-</style>
+        body { background: #f4f6f9; font-family: Arial, sans-serif; }
+        .content { margin-left: 0px; padding: 0px;  }
+        .card-box { background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+        .cat-img { width: 70px; height: 70px; object-fit: cover; border-radius: 8px; }
+    </style>
 </head>
 
 <body>
