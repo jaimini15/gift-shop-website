@@ -3,9 +3,12 @@ if (!isset($_SESSION)) session_start();
 include("../AdminPanel/db.php");
 
 /* ================= ADMIN AUTH CHECK ================= */
+if (!isset($_SESSION['User_Id']) || $_SESSION['Role'] !== "ADMIN") {
+    header("Location: ../login/common_login.php?error=Please login first");
+    exit;
+}
 
-
-// $adminId = $_SESSION["admin_id"];
+$adminId = $_SESSION['User_Id'];   // ✅ FIXED
 
 /* ================= FETCH ADMIN DATA ================= */
 $result = mysqli_query(
@@ -77,7 +80,81 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 $activePage = "profile";
 
 ?>
+<style>
+    /* =====================
+   ADMIN PROFILE FORM (SAME AS CUSTOMER)
+===================== */
 
+/* Labels */
+.account-content label {
+    display: block;
+    margin-top: 15px;
+    margin-bottom: 6px;
+    font-weight: 600;
+    font-size: 15px;
+    color: #111827;
+}
+
+/* Inputs & Select */
+.account-content input,
+.account-content select,
+.account-content textarea {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    font-size: 14px;
+    outline: none;
+    transition: 0.2s;
+}
+
+/* Focus effect */
+.account-content input:focus,
+.account-content select:focus,
+.account-content textarea:focus {
+    border-color: #7e2626d5;
+    box-shadow: 0 0 0 2px rgba(126, 38, 38, 0.15);
+}
+
+/* Disabled email */
+.account-content input[disabled] {
+    background: #f3f4f6;
+    cursor: not-allowed;
+}
+
+/* Password section */
+.account-content h3 {
+    margin-top: 25px;
+    font-size: 18px;
+    color: #111827;
+}
+
+/* Button */
+.account-content button {
+    margin-top: 22px;
+    padding: 12px 32px;
+    border: none;
+    background: #7e2626d5;
+    color: white;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 600;
+    transition: 0.2s;
+}
+
+.account-content button:hover {
+    background: black;
+}
+
+/* Horizontal line */
+.account-content hr {
+    margin: 25px 0;
+    border: none;
+    border-top: 1px solid #e5e7eb;
+}
+
+</style>
 <h2>Edit Admin Profile</h2>
 
 <?php if (!empty($error)) { ?>

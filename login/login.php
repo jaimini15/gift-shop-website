@@ -2,21 +2,6 @@
 session_start();
 include("../AdminPanel/db.php");
 
-if (isset($_GET['redirect'])) {
-    $_SESSION['redirect_after_login'] = $_GET['redirect'];
-}
-if (isset($_SESSION['User_Id'])) {
-    $redirect = $_SESSION['redirect_after_login'] ?? '../home page/index.php';
-    unset($_SESSION['redirect_after_login']);
-    
-    // Make sure relative paths for product pages
-    if (!str_starts_with($redirect, '../') && !str_starts_with($redirect, '/')) {
-        $redirect = '../product_page/' . $redirect;
-    }
-    
-    header("Location: $redirect");
-    exit();
-}
 $error = "";
 $rememberedEmail = $_COOKIE['remember_email'] ?? "";
 
@@ -24,48 +9,115 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     $email = mysqli_real_escape_string($connection, $_POST['email']);
     $pass  = mysqli_real_escape_string($connection, $_POST['password']);
+    $role  = mysqli_real_escape_string($connection, $_POST['role']); // NEW
 
-    $sql = "SELECT * FROM user_details WHERE Email='$email' LIMIT 1";
+    $sql = "SELECT * FROM user_details 
+            WHERE Email='$email' AND User_Role='$role' LIMIT 1";
+
     $result = mysqli_query($connection, $sql);
 
     if ($result && mysqli_num_rows($result) === 1) {
         $row = mysqli_fetch_assoc($result);
 
-        // Use plain text password check 
+        // password check (same as your logic)
         if ($pass === $row['Password']) {
 
             $_SESSION['User_Id'] = $row['User_Id'];
             $_SESSION['Email']   = $row['Email'];
+            $_SESSION['Role']    = $row['User_Role']; // store role
 
+            // remember email
             if (isset($_POST['remember'])) {
-                setcookie("remember_email", $email, time() + (86400 * 30), "/"); // 30 days
+                setcookie("remember_email", $email, time() + (86400 * 30), "/");
             } else {
                 setcookie("remember_email", "", time() - 3600, "/");
             }
-            $redirect = $_SESSION['redirect_after_login'] ?? '../home page/index.php';
-            unset($_SESSION['redirect_after_login']);
 
-            if (!str_starts_with($redirect, '../') && !str_starts_with($redirect, '/')) {
-                $redirect = '../product_page/' . $redirect;
+            // ✅ Redirect based on role
+            if ($role == "ADMIN") {
+                header("Location: ../AdminPanel/layout.php");
+                exit();
             }
-
-            header("Location: $redirect");
-            exit();
+            elseif ($role == "DELIVERY_BOY") {
+                header("Location: ../DeliveryBoyPanel/layout.php");
+                exit();
+            }
+            else {
+                header("Location: ../home page/index.php");
+                exit();
+            }
         }
     }
 
-    $error = "Invalid Email or Password!";
+    $error = "Invalid Email, Password or Role!";
 }
-$rememberedEmail = isset($_COOKIE['remember_email']) ? $_COOKIE['remember_email'] : "";
 ?>
 <!DOCTYPE html>
 <html>
 <head>
-     
-    <title>Login</title>
-    <link rel="stylesheet" href="../home page/style.css" />
-     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-    <style>
+<title>Login</title>
+<link rel="stylesheet" href="../home page/style.css" />
+<style>
+
+input, select {
+    width:100%; padding:10px; margin:10px 0;
+    border:1px solid #ccc; border-radius:5px;
+}
+.btn {
+    width:100%; padding:12px; background:#7e2626d5;
+    color:#fff; border:none; border-radius:5px;
+}
+.btn:hover { background:black; }
+.error { color:red; } 
+</style>
+</head>
+<body>
+
+<?php include("../home page/navbar.php"); ?>
+
+<div class="form-box">
+<h2 style="text-align:center;">Login</h2>
+
+<?php if ($error): ?>
+<div class="error"><?= $error ?></div>
+<?php endif; ?>
+
+<form method="POST">
+
+    <!-- ✅ ROLE SELECTION -->
+    <select name="role" required>
+        <option value="">--Select Role-- </option>
+        <option value="CUSTOMER">Customer</option>
+        <option value="ADMIN">Admin</option>
+        <option value="DELIVERY_BOY">Delivery Boy</option>
+    </select>
+
+    <input type="email" name="email" placeholder="Email" required value="<?= $rememberedEmail ?>">
+    <input type="password" name="password" placeholder="Password" required>
+
+    <button class="btn">Login</button>
+
+   <div class="extra-options">
+    <label>
+        <input type="checkbox" name="remember">
+        <span>Remember me</span>
+    </label>
+
+    <a href="forgot_password.php">Forgot Password?</a>
+</div>
+
+</form>
+
+<p style="text-align:center;">
+Don't have an account?
+<a href="../registration/registration.php">Register here</a>
+</p>
+</div>
+
+<?php include("../home page/footer.php"); ?>
+</body>
+</html>
+ <style>
         body { font-family: Arial; background: #f7f7f7; margin:0; }
         .form-box {
             width: 400px; margin: 30px auto; padding: 35px;
@@ -90,8 +142,12 @@ $rememberedEmail = isset($_COOKIE['remember_email']) ? $_COOKIE['remember_email'
         }
         .extra-options label {
             display: flex; align-items:center;
-            gap: 5px; cursor:pointer;
+            gap: 6px; cursor:pointer;
         }
+        .extra-options input[type="checkbox"] {
+    width: auto;    /* important */
+    margin: 0;      /* remove default margin */
+}
         .login-icon {
     text-align: center;
     font-size: 70px;
@@ -108,50 +164,3 @@ $rememberedEmail = isset($_COOKIE['remember_email']) ? $_COOKIE['remember_email'
 }
 
     </style>
-</head>
-<body>
-
-<?php include("../home page/navbar.php"); ?>  
-
-
-<div class="form-box">
-
-    <div class="login-icon">
-        <i class="fa-solid fa-user-circle"></i>
-    </div>
-
-    <h2 class="login-title">Login</h2>
-
-    <?php if ($error): ?>
-        <div class="error"><?= $error ?></div>
-    <?php endif; ?>
-
-    <form method="POST">
-        <input type="email" name="email" placeholder="Email" required value="<?= $rememberedEmail ?>">
-
-        <input type="password" name="password" placeholder="Password" autocomplete="no" required>
-
-        <button class="btn">Login</button>
-
-        <div class="extra-options">
-            <label>
-                <input type="checkbox" name="remember"> Remember me
-            </label>
-
-            <a href="forget_password_customer.php">Forgot Password?</a>
-        </div>
-    </form>
-<br>
-<center>
-    <p>
-        Don't have an account?
-        <a href="../registration/registration.php">Register here</a>
-    </p>
-    </center>
-</div>
-
-
-<?php include("../home page/footer.php"); ?> 
-
-</body>
-</html>
