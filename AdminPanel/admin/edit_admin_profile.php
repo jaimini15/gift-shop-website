@@ -1,208 +1,146 @@
 <?php
 if (!isset($_SESSION)) session_start();
+include("../AdminPanel/db.php");
 
-// Only Admin allowed
-if (!isset($_SESSION['admin_id']) || $_SESSION['admin_role'] !== "ADMIN") {
-    header("Location: ../admin_login/login.php?error=Please login first");
-    exit;
+/* ================= ADMIN AUTH CHECK ================= */
+
+
+// $adminId = $_SESSION["admin_id"];
+
+/* ================= FETCH ADMIN DATA ================= */
+$result = mysqli_query(
+    $connection,
+    "SELECT * FROM user_details WHERE User_Id='$adminId' LIMIT 1"
+);
+$admin = mysqli_fetch_assoc($result);
+
+if (!$admin) {
+    die("Admin not found");
 }
 
-include(__DIR__ . '/../db.php');
+/* ================= FETCH AREAS ================= */
+$areas = mysqli_query($connection, "SELECT Area_Id, Area_Name FROM area_details");
 
-// Fetch admin details with area
-$admin_id = $_SESSION['admin_id'];
-$admin = mysqli_fetch_assoc(mysqli_query(
-    $connection,
-    "SELECT * FROM user_details WHERE User_Id = $admin_id LIMIT 1"
-));
-
-// Fetch all areas
-$areas = mysqli_query($connection, "SELECT * FROM area_details ORDER BY Area_Name");
-
+/* ================= UPDATE PROFILE ================= */
 $error = "";
 
-// Update profile and password
-if (isset($_POST['update'])) {
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
-    $fname    = mysqli_real_escape_string($connection, $_POST['fname']);
-    $lname    = mysqli_real_escape_string($connection, $_POST['lname']);
-    $dob      = $_POST['dob'];
-    $phone    = $_POST['phone'];
-    $address  = mysqli_real_escape_string($connection, $_POST['address']);
-    $area_id  = (int)$_POST['area_id'];
-    $email    = $_POST['email'];
+    $fname   = mysqli_real_escape_string($connection, $_POST['fname']);
+    $lname   = mysqli_real_escape_string($connection, $_POST['lname']);
+    $dob     = $_POST['dob'];
+    $phone   = $_POST['phone'];
+    $address = mysqli_real_escape_string($connection, $_POST['address']);
+    $area_id = (int)$_POST['area_id'];
 
-    // Password fields
-    $current_password = $_POST['current_password'];
-    $new_password     = $_POST['new_password'];
-    $confirm_password = $_POST['confirm_password'];
+    // Password
+    $current = $_POST['current_password'];
+    $new     = $_POST['new_password'];
+    $confirm = $_POST['confirm_password'];
 
-    /* ================= PASSWORD LOGIC (UNCHANGED) ================= */
+    /* ===== PASSWORD LOGIC ===== */
+    if (!empty($current) || !empty($new) || !empty($confirm)) {
 
-    $db_pass = $admin['Password'];
-
-    if (!empty($current_password) || !empty($new_password) || !empty($confirm_password)) {
-
-        if ($current_password !== $db_pass) {
+        if ($current !== $admin['Password']) {
             $error = "Current password is incorrect!";
-        }
-        elseif ($new_password !== $confirm_password) {
-            $error = "New Password and Confirm Password do not match!";
-        }
-        else {
-            $plain_pass = mysqli_real_escape_string($connection, $new_password);
+        } elseif ($new !== $confirm) {
+            $error = "New password and confirm password do not match!";
+        } else {
             mysqli_query(
                 $connection,
-                "UPDATE user_details SET Password='$plain_pass' WHERE User_Id=$admin_id"
+                "UPDATE user_details SET Password='$new' WHERE User_Id='$adminId'"
             );
         }
     }
 
-    /* ================= UPDATE PROFILE ================= */
-
+    /* ===== UPDATE PROFILE ===== */
     if (empty($error)) {
 
         mysqli_query(
             $connection,
-            "UPDATE user_details SET 
+            "UPDATE user_details SET
                 First_Name='$fname',
                 Last_Name='$lname',
                 DOB='$dob',
                 Phone='$phone',
                 Address='$address',
-                Area_Id='$area_id',
-                Email='$email'
-            WHERE User_Id=$admin_id"
+                Area_Id='$area_id'
+            WHERE User_Id='$adminId'"
         );
 
-        header("Location: ../layout.php?view=admin_profile&success=Profile updated successfully");
-        exit;
+        header("Location: admin_edit_profile.php?success=1");
+        exit();
     }
 }
+
+/* ================= LEFT PANEL ACTIVE PAGE ================= */
+$activePage = "profile";
+
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>Edit Profile</title>
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-
-<style>
-.edit-card {
-    max-width: 850px;
-    margin: auto;
-    background: #ffffff;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-}
-.form-label { font-weight: 600; }
-.form-control { height: 45px; border-radius: 8px; }
-.btn-primary { padding: 10px 20px; font-size: 16px; border-radius: 8px; }
-</style>
-</head>
-
-<body>
-
-<div class="container mt-4">
-<div class="edit-card">
-
-<h3 class="text-center mb-4">
-    <i class="fa-solid fa-user-pen"></i> Edit Profile
-</h3>
+<h2>Edit Admin Profile</h2>
 
 <?php if (!empty($error)) { ?>
-    <div class="alert alert-danger text-center"><?php echo $error; ?></div>
+    <p style="color:red"><?= $error ?></p>
 <?php } ?>
 
-<form method="POST">
+<?php if (isset($_GET['success'])) { ?>
+    <p style="color:green">Profile updated successfully</p>
+<?php } ?>
 
-<div class="row">
-    <div class="col-md-6 mb-3">
-        <label class="form-label">First Name</label>
-        <input type="text" name="fname" class="form-control"
-               required pattern="[A-Za-z]+"
-               value="<?= $admin['First_Name']; ?>">
-    </div>
+<form method="post">
 
-    <div class="col-md-6 mb-3">
-        <label class="form-label">Last Name</label>
-        <input type="text" name="lname" class="form-control"
-               required pattern="[A-Za-z]+"
-               value="<?= $admin['Last_Name']; ?>">
-    </div>
+    <label>First Name</label>
+    <input type="text" name="fname"
+           value="<?= htmlspecialchars($admin['First_Name']) ?>" required>
 
-    <div class="col-md-6 mb-3">
-        <label class="form-label">Date of Birth</label>
-        <input type="date" name="dob" class="form-control"
-               max="<?= date('Y-m-d', strtotime('-17 years')) ?>"
-               value="<?= $admin['DOB']; ?>">
-    </div>
+    <label>Last Name</label>
+    <input type="text" name="lname"
+           value="<?= htmlspecialchars($admin['Last_Name']) ?>" required>
 
-    <div class="col-md-6 mb-3">
-        <label class="form-label">Phone</label>
-        <input type="text" name="phone" class="form-control"
-               pattern="[0-9]{10}" maxlength="10"
-               value="<?= $admin['Phone']; ?>">
-    </div>
+    <label>Date of Birth</label>
+    <input type="date" name="dob"
+           value="<?= htmlspecialchars($admin['DOB']) ?>">
 
-    <div class="col-md-12 mb-3">
-        <label class="form-label">Address</label>
-        <input type="text" name="address" class="form-control"
-               value="<?= $admin['Address']; ?>">
-    </div>
+    <label>Email</label>
+    <input type="email"
+           value="<?= htmlspecialchars($admin['Email']) ?>" disabled>
 
-    <!-- ✅ SELECT AREA (ONLY CHANGE) -->
-    <div class="col-md-6 mb-3">
-        <label class="form-label">Select Area</label>
-        <select name="area_id" class="form-control" required>
-            <option value="">-- Select Area --</option>
-            <?php while ($row = mysqli_fetch_assoc($areas)) { ?>
-                <option value="<?= $row['Area_Id']; ?>"
-                    <?= ($row['Area_Id'] == $admin['Area_Id']) ? 'selected' : ''; ?>>
-                    <?= $row['Area_Name']; ?> (<?= $row['Pincode']; ?>)
-                </option>
-            <?php } ?>
-        </select>
-    </div>
+    <label>Phone</label>
+    <input type="text" name="phone"
+           value="<?= htmlspecialchars($admin['Phone']) ?>">
 
-    <div class="col-md-6 mb-3">
-        <label class="form-label">Email</label>
-        <input type="email" name="email" class="form-control"
-               required
-               pattern="[a-zA-Z0-9]+@(gmail|yahoo)\.(com|in)"
-               value="<?= $admin['Email']; ?>">
-    </div>
-</div>
+    <label>Address</label>
+    <input type="text" name="address"
+           value="<?= htmlspecialchars($admin['Address']) ?>">
 
-<hr>
-<h5 class="mt-3">Change Password</h5>
+    <label>Area</label>
+    <select name="area_id" required>
+        <?php while ($area = mysqli_fetch_assoc($areas)) {
+            $selected = ($area['Area_Id'] == $admin['Area_Id']) ? 'selected' : '';
+            echo "<option value='{$area['Area_Id']}' $selected>
+                    {$area['Area_Name']}
+                  </option>";
+        } ?>
+    </select>
 
-<div class="mb-3">
-    <label class="form-label">Current Password</label>
-    <input type="password" name="current_password" class="form-control">
-</div>
+    <hr>
 
-<div class="mb-3">
-    <label class="form-label">New Password</label>
-    <input type="password" name="new_password" class="form-control">
-</div>
+    <h3>Change Password</h3>
 
-<div class="mb-3">
-    <label class="form-label">Confirm New Password</label>
-    <input type="password" name="confirm_password" class="form-control">
-</div>
+    <label>Current Password</label>
+    <input type="password" name="current_password">
 
-<button type="submit" name="update" class="btn btn-primary">
-    <i class="fa-solid fa-check"></i> Save Changes
-</button>
+    <label>New Password</label>
+    <input type="password" name="new_password">
 
+    <label>Confirm New Password</label>
+    <input type="password" name="confirm_password">
+
+    <button type="submit">Save Changes</button>
 </form>
-</div>
-</div>
 
-</body>
-</html>
+</div> <!-- account-content -->
+</div> <!-- account-wrapper -->
+
+<?php require_once '../home page/footer.php'; ?>
