@@ -3,10 +3,11 @@ if (!isset($_SESSION)) session_start();
 include(__DIR__ . '/../db.php');
 
 /* ================= ADMIN CHECK ================= */
-if (!isset($_SESSION['admin_id']) || $_SESSION['admin_role'] !== "ADMIN") {
-    header("Location: ../admin_login/login.php?error=Please login first");
+if (!isset($_SESSION['User_Id']) || $_SESSION['Role'] !== "ADMIN") {
+    header("Location: ../login/common_login.php?error=Please login first");
     exit;
 }
+
 
 if (!isset($_GET['id'])) {
     die("Invalid Request");
