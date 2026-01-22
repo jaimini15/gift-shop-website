@@ -1,32 +1,36 @@
 <?php
-if (!isset($_SESSION)) session_start();
+/********************************************************
+ * INITIAL SETUP (NO OUTPUT BEFORE THIS)
+ ********************************************************/
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 include("../AdminPanel/db.php");
 
-/* ================= ADMIN AUTH CHECK ================= */
+/* ================= AUTH CHECK ================= */
 if (!isset($_SESSION['User_Id']) || $_SESSION['Role'] !== "ADMIN") {
-    header("Location: ../login/common_login.php?error=Please login first");
+    echo "<p style='color:red'>Unauthorized access</p>";
     exit;
 }
 
-$adminId = $_SESSION['User_Id'];   // ✅ FIXED
+$adminId = (int) $_SESSION['User_Id'];
+$error = "";
+$success = false;
 
 /* ================= FETCH ADMIN DATA ================= */
-$result = mysqli_query(
+$adminQuery = mysqli_query(
     $connection,
-    "SELECT * FROM user_details WHERE User_Id='$adminId' LIMIT 1"
+    "SELECT * FROM user_details WHERE User_Id = $adminId LIMIT 1"
 );
-$admin = mysqli_fetch_assoc($result);
+$admin = mysqli_fetch_assoc($adminQuery);
 
 if (!$admin) {
-    die("Admin not found");
+    echo "<p style='color:red'>Admin not found</p>";
+    exit;
 }
 
-/* ================= FETCH AREAS ================= */
-$areas = mysqli_query($connection, "SELECT Area_Id, Area_Name FROM area_details");
-
-/* ================= UPDATE PROFILE ================= */
-$error = "";
-
+/* ================= HANDLE FORM SUBMIT ================= */
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     $fname   = mysqli_real_escape_string($connection, $_POST['fname']);
@@ -34,15 +38,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $dob     = $_POST['dob'];
     $phone   = $_POST['phone'];
     $address = mysqli_real_escape_string($connection, $_POST['address']);
-    $area_id = (int)$_POST['area_id'];
+    $area_id = (int) $_POST['area_id'];
 
-    // Password
-    $current = $_POST['current_password'];
-    $new     = $_POST['new_password'];
-    $confirm = $_POST['confirm_password'];
+    $current = $_POST['current_password'] ?? '';
+    $new     = $_POST['new_password'] ?? '';
+    $confirm = $_POST['confirm_password'] ?? '';
 
-    /* ===== PASSWORD LOGIC ===== */
-    if (!empty($current) || !empty($new) || !empty($confirm)) {
+    /* ===== PASSWORD UPDATE ===== */
+    if ($current || $new || $confirm) {
 
         if ($current !== $admin['Password']) {
             $error = "Current password is incorrect!";
@@ -51,12 +54,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         } else {
             mysqli_query(
                 $connection,
-                "UPDATE user_details SET Password='$new' WHERE User_Id='$adminId'"
+                "UPDATE user_details 
+                 SET Password='$new' 
+                 WHERE User_Id=$adminId"
             );
         }
     }
 
-    /* ===== UPDATE PROFILE ===== */
+    /* ===== PROFILE UPDATE ===== */
     if (empty($error)) {
 
         mysqli_query(
@@ -67,24 +72,30 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 DOB='$dob',
                 Phone='$phone',
                 Address='$address',
-                Area_Id='$area_id'
-            WHERE User_Id='$adminId'"
+                Area_Id=$area_id
+             WHERE User_Id=$adminId"
         );
 
-        header("Location: admin_edit_profile.php?success=1");
-        exit();
+        /* REFRESH DATA */
+        $adminQuery = mysqli_query(
+            $connection,
+            "SELECT * FROM user_details WHERE User_Id = $adminId LIMIT 1"
+        );
+        $admin = mysqli_fetch_assoc($adminQuery);
+
+        $success = true;
     }
 }
 
-/* ================= LEFT PANEL ACTIVE PAGE ================= */
-$activePage = "profile";
-
+/* ================= FETCH AREAS ================= */
+$areas = mysqli_query(
+    $connection,
+    "SELECT Area_Id, Area_Name FROM area_details"
+);
 ?>
-<style>
-    /* =====================
-   ADMIN PROFILE FORM (SAME AS CUSTOMER)
-===================== */
 
+<!-- ===================== ORIGINAL PROFILE CSS ===================== -->
+<style>
 /* Labels */
 .account-content label {
     display: block;
@@ -153,15 +164,17 @@ $activePage = "profile";
     border: none;
     border-top: 1px solid #e5e7eb;
 }
-
 </style>
+
+<!-- ===================== FORM ===================== -->
+
 <h2>Edit Admin Profile</h2>
 
 <?php if (!empty($error)) { ?>
     <p style="color:red"><?= $error ?></p>
 <?php } ?>
 
-<?php if (isset($_GET['success'])) { ?>
+<?php if ($success) { ?>
     <p style="color:green">Profile updated successfully</p>
 <?php } ?>
 
@@ -193,12 +206,12 @@ $activePage = "profile";
 
     <label>Area</label>
     <select name="area_id" required>
-        <?php while ($area = mysqli_fetch_assoc($areas)) {
-            $selected = ($area['Area_Id'] == $admin['Area_Id']) ? 'selected' : '';
-            echo "<option value='{$area['Area_Id']}' $selected>
-                    {$area['Area_Name']}
-                  </option>";
-        } ?>
+        <?php while ($area = mysqli_fetch_assoc($areas)) { ?>
+            <option value="<?= $area['Area_Id'] ?>"
+                <?= ($area['Area_Id'] == $admin['Area_Id']) ? 'selected' : '' ?>>
+                <?= htmlspecialchars($area['Area_Name']) ?>
+            </option>
+        <?php } ?>
     </select>
 
     <hr>
@@ -216,8 +229,3 @@ $activePage = "profile";
 
     <button type="submit">Save Changes</button>
 </form>
-
-</div> <!-- account-content -->
-</div> <!-- account-wrapper -->
-
-<?php require_once '../home page/footer.php'; ?>
