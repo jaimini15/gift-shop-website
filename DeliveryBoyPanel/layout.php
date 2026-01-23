@@ -1,142 +1,165 @@
 <?php
-if (!isset($_SESSION))
+if (session_status() === PHP_SESSION_NONE) {
     session_start();
+}
 
-// Default view
-$view = isset($_GET['view']) ? $_GET['view'] : 'dashboard';
-// Allowed pages
-$allowed = [
-    'dashboard' => 'dashboard/dashboard.php',
-    'assigned_orders' => 'orders/assigned_orders.php',
-    'completed_deliveries' => 'complete_deliveries/completed_deliveries.php',
-    'profile' => 'deliveryboy/deliveryboy_profile.php',
-];
-
-$page = isset($allowed[$view]) ? $allowed[$view] : $allowed['dashboard'];
+/* ================= AUTH CHECK ================= */
+if (!isset($_SESSION['User_Id'])) {
+    header("Location: ../login/login.php");
+    exit;
+}
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
-    <title>Delivery Boy Panel</title>
+    <title>Delivery Boy Panel | GiftShop</title>
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <!-- MAIN SITE CSS -->
+    <link rel="stylesheet" href="../home page/style.css">
+
+    <!-- FONT AWESOME -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
     <style>
         body {
-            margin: 0;
-            padding: 0;
-            background: #f4f6f9;
+            background: #ffffff;
             font-family: Arial, sans-serif;
-        }
-        .sidebar {
-            width: 260px;
-            height: 100vh;
-            background: #343a40;
-            position: fixed;
-            top: 0;
-            left: 0;
-            padding-top: 70px;
-            color: white;
-        }
-        .sidebar a {
-            padding: 12px 20px;
-            display: block;
-            color: #ffffff;
-            font-size: 16px;
-            text-decoration: none;
+            margin: 0;
         }
 
-        .sidebar a.active,
-        .sidebar a:hover {
-            background: #495057;
-        }
-        .sidebar a i {
-            margin-right: 10px;
-        }
-        .header {
-            height: 70px;
-            width: 100%;
-            position: fixed;
-            top: 0;
-            left: 0;
-            padding-left: 260px;
-            background: #fff;
-            border-bottom: 1px solid #ddd;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-right: 20px;
-            z-index: 1000;
+        .delivery-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 10px;
         }
 
-        .content {
-            margin-left: 260px;
-            padding: 90px 20px 20px;
+        .delivery-title {
+            font-size: 26px;
+            font-weight: bold;
+            margin-bottom: 25px;
+        }
+
+        .delivery-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .delivery-card {
+            border: 1px solid #7e2626d5;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+            transition: 0.3s;
+            cursor: pointer;
+            background: #ffffff;
+        }
+
+        .delivery-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .card-icon {
+            font-size: 32px;
+            margin-bottom: 15px;
+        }
+
+        .dashboard { color: #2563eb; }
+        .assigned { color: #f97316; }
+        .completed { color: #16a34a; }
+        .profile { color: #9333ea; }
+        .logout { color: #ef4444; }
+
+        .delivery-card h3 {
+            margin: 0 0 6px;
+            font-size: 18px;
+        }
+
+        .delivery-card p {
+            margin: 0;
+            font-size: 14px;
+            color: #666;
+        }
+
+        @media(max-width:900px) {
+            .delivery-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media(max-width:500px) {
+            .delivery-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 
 <body>
 
-    <!-- HEADER -->
-    <div class="header">
+<?php include("../home page/navbar.php"); ?>
 
-        <div class="fw-bold fs-4">
-            <i class="fa-solid fa-motorcycle text-primary"></i> Delivery Boy Panel
+<div class="delivery-container">
+
+    <div class="delivery-title">
+        Hello, <?= htmlspecialchars($_SESSION['delivery_boy_name'] ?? 'Delivery Boy') ?> 👋
+    </div>
+
+    <div class="delivery-grid">
+
+        <!-- Dashboard -->
+        <div class="delivery-card" onclick="location.href='layout.php?view=dashboard'">
+            <div class="card-icon dashboard">
+                <i class="fa-solid fa-chart-line"></i>
+            </div>
+            <h3>Dashboard</h3>
+            <p>Your delivery overview</p>
         </div>
 
-        <!-- Profile Dropdown -->
-        <div class="dropdown">
-            <a class="dropdown-toggle text-dark text-decoration-none" href="#" role="button" data-bs-toggle="dropdown">
+        <!-- Assigned Orders -->
+        <div class="delivery-card" onclick="location.href='layout.php?view=assigned_orders'">
+            <div class="card-icon assigned">
+                <i class="fa-solid fa-box"></i>
+            </div>
+            <h3>Assigned Orders</h3>
+            <p>Orders waiting for delivery</p>
+        </div>
+
+        <!-- Completed Deliveries -->
+        <div class="delivery-card" onclick="location.href='layout.php?view=completed_deliveries'">
+            <div class="card-icon completed">
+                <i class="fa-solid fa-check-circle"></i>
+            </div>
+            <h3>Completed Deliveries</h3>
+            <p>Delivered order history</p>
+        </div>
+
+        <!-- My Profile -->
+        <div class="delivery-card" onclick="location.href='layout.php?view=profile'">
+            <div class="card-icon profile">
                 <i class="fa-solid fa-user"></i>
-                <?= isset($_SESSION['delivery_boy_name']) ? $_SESSION['delivery_boy_name'] : "Delivery Boy" ?>
-            </a>
-            <ul class="dropdown-menu dropdown-menu-end shadow">
-                <li>
-                    <a class="dropdown-item" href="/GitHub/gift-shop-website/DeliveryBoyPanel/layout.php?view=profile">
-                        <i class="fa-solid fa-id-card"></i> Profile
-                    </a>
-                </li>
+            </div>
+            <h3>My Profile</h3>
+            <p>View & update profile</p>
+        </div>
 
-                <li>
-                    <a class="dropdown-item" href="deliveryboy_login/logout.php">
-                        <i class="fa-solid fa-right-from-bracket"></i> Logout
-                    </a>
-                </li>
-            </ul>
-
+        <!-- Logout -->
+        <div class="delivery-card" onclick="location.href='../AdminPanel/logout.php'">
+            <div class="card-icon logout">
+                <i class="fa-solid fa-right-from-bracket"></i>
+            </div>
+            <h3>Logout</h3>
+            <p>Sign out safely</p>
         </div>
 
     </div>
 
-    <!-- SIDEBAR -->
-    <div class="sidebar">
+</div>
 
-        <a href="layout.php?view=dashboard" class="<?= ($view == 'dashboard') ? 'active' : '' ?>">
-            <i class="fa-solid fa-chart-line"></i> Dashboard
-        </a>
-
-        <a href="layout.php?view=assigned_orders" class="<?= ($view == 'assigned_orders') ? 'active' : '' ?>">
-            <i class="fa-solid fa-box"></i> Assigned Orders
-        </a>
-
-        <a href="layout.php?view=completed_deliveries" class="<?= ($view == 'completed_deliveries') ? 'active' : '' ?>">
-            <i class="fa-solid fa-sync"></i> Complete deliveries
-        </a>
-
-
-    </div>
-
-    <!-- PAGE CONTENT -->
-    <div class="content">
-        <?php include($page); ?>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<?php require_once '../home page/footer.php'; ?>
 
 </body>
-
 </html>
