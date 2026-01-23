@@ -8,11 +8,11 @@ if (!isset($_SESSION)) {
 $view = $_GET['view'] ?? 'dashboard';
 
 $allowed = [
-    'dashboard'            => __DIR__ . '/dashboard/dashboard.php',
-    'assigned_orders'      => __DIR__ . '/orders/assigned_orders.php',
+    'dashboard' => __DIR__ . '/dashboard/dashboard.php',
+    'assigned_orders' => __DIR__ . '/orders/assigned_orders.php',
     'completed_deliveries' => __DIR__ . '/complete_deliveries/completed_deliveries.php',
-    'profile'              => __DIR__ . '/deliveryboy/deliveryboy_profile.php',
-    'account'              => __DIR__ . '/deliveryboy_profile_main.php', // ✅ FIX
+    'profile' => __DIR__ . '/deliveryboy/deliveryboy_profile.php',
+    'account' => __DIR__ . '/deliveryboy_profile_main.php', // ✅ FIX
 ];
 
 $page = $allowed[$view] ?? $allowed['dashboard'];
@@ -153,16 +153,17 @@ ob_end_flush();
             <a href="deliveryboy_profile_main.php" class="<?= $view == 'account' ? 'active' : '' ?>">
                 <i class="fa-solid fa-house"></i> My Account
             </a>
-            
+
             <a href="layout.php?view=dashboard" class="<?= $view == 'dashboard' ? 'active' : '' ?>">
                 <i class="fa-solid fa-chart-line"></i> Dashboard
             </a>
-            
+
             <a href="layout.php?view=assigned_orders" class="<?= $view == 'assigned_orders' ? 'active' : '' ?>">
                 <i class="fa-solid fa-box"></i> Assigned Orders
             </a>
 
-            <a href="layout.php?view=completed_deliveries" class="<?= $view == 'completed_deliveries' ? 'active' : '' ?>">
+            <a href="layout.php?view=completed_deliveries"
+                class="<?= $view == 'completed_deliveries' ? 'active' : '' ?>">
                 <i class="fa-solid fa-check-circle"></i> Completed Deliveries
             </a>
 
@@ -171,7 +172,7 @@ ob_end_flush();
             </a>
 
             <!-- ✅ FIXED LOGOUT PATH -->
-            <a href="../AdminPanel/logout.php">
+            <a href="../login/logout.php">
                 <i class="fa-solid fa-right-from-bracket"></i> Logout
             </a>
 
@@ -186,4 +187,5 @@ ob_end_flush();
     <?php require_once '../home page/footer.php'; ?>
 
 </body>
+
 </html>
