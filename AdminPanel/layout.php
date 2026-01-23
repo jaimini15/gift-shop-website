@@ -47,7 +47,7 @@ ob_end_flush();
 ===================== */
 
         body {
-            background: #ffffff;
+            background: !important white;
             font-family: Arial, sans-serif;
             margin: 0;
         }
@@ -82,7 +82,6 @@ ob_end_flush();
             gap: 25px;
             min-height: 600px;
             background-color: white;
-            background: red !important;
         }
 
         /* =====================
