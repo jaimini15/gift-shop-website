@@ -1,15 +1,19 @@
 <?php
-if (!isset($_SESSION)) session_start();
+/* ================= SESSION ================= */
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
-// Only delivery boy allowed
-if (!isset($_SESSION['delivery_id']) || $_SESSION['delivery_role'] !== "DELIVERY_BOY") {
-    header("Location: ../deliveryboy_login/login.php?error=Please login first");
+/* ================= DB CONNECTION ================= */
+include(__DIR__ . '/../../AdminPanel/db.php');
+
+/* ================= AUTH CHECK ================= */
+if (!isset($_SESSION['User_Id'])) {
+    echo "<div class='alert alert-danger m-3'>Unauthorized access</div>";
     exit;
 }
 
-include(__DIR__ . '/../../AdminPanel/db.php');
-
-$delivery_boy_id = (int)$_SESSION['delivery_id'];
+$deliveryBoyId = (int) $_SESSION['User_Id'];
 
 // Fetch delivery boy
 $res = mysqli_query(
