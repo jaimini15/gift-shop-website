@@ -162,7 +162,7 @@ while ($row = mysqli_fetch_assoc($result)) :
     $subtotal += ($price * $qty);
      $totalItems += $qty;
 ?>
-<br>
+<br/>
 <div class="cart-box">
     <div class="cart-item">
         <img src="<?= $img ?>" alt="product">
@@ -228,10 +228,6 @@ $_SESSION['total']    = $total;
 <button type="button" id="continueBtn" class="continue-btn">
     Continue
 </button>
-<p class="note">Clicking on "Continue" will not deduct any money</p>
-
-
-
 <p class="note">Clicking on "Continue" will not deduct any money</p>
 </div>
 
@@ -304,25 +300,25 @@ document.getElementById("continueBtn").addEventListener("click", function () {
                 description: "Order Payment",
                 order_id: rzp.orderId,
 
-                handler: function (response) {
+               handler: function (response) {
 
-                    // STEP 4: verify payment
-                    fetch("confirm_payment.php", {
-                        method: "POST",
-                        headers: {"Content-Type": "application/json"},
-                        body: JSON.stringify(response)
-                    })
-                    .then(res => res.json())
-                    .then(result => {
-
-                        if (result.success) {
-                            window.location.href =
-                                "order_summary.php?order_id=" + result.order_id;
-                        } else {
-                            alert("Payment verification failed");
-                        }
-                    });
-                },
+    fetch("confirm_payment.php", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+            razorpay_payment_id: response.razorpay_payment_id,
+            order_id: window.pendingOrderId
+        })
+    })
+    .then(res => res.json())
+    .then(result => {
+        if (result.success) {
+            window.location.href = "order_summary.php?order_id=" + result.order_id;
+        } else {
+            alert("Payment failed");
+        }
+    });
+},
 
                 modal: {
                     ondismiss: function () {
