@@ -45,6 +45,7 @@ ob_end_flush();
         /* =====================
    GLOBAL
 ===================== */
+
         body {
             background: #ffffff;
             font-family: Arial, sans-serif;
@@ -80,6 +81,8 @@ ob_end_flush();
             display: flex;
             gap: 25px;
             min-height: 600px;
+            background-color: white;
+            background: red !important;
         }
 
         /* =====================
