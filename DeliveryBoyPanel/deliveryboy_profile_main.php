@@ -67,11 +67,25 @@ if (!isset($_SESSION['User_Id'])) {
             margin-bottom: 15px;
         }
 
-        .dashboard { color: #2563eb; }
-        .assigned { color: #f97316; }
-        .completed { color: #16a34a; }
-        .profile { color: #9333ea; }
-        .logout { color: #ef4444; }
+        .dashboard {
+            color: #2563eb;
+        }
+
+        .assigned {
+            color: #f97316;
+        }
+
+        .completed {
+            color: #16a34a;
+        }
+
+        .profile {
+            color: #9333ea;
+        }
+
+        .logout {
+            color: #ef4444;
+        }
 
         .delivery-card h3 {
             margin: 0 0 6px;
@@ -100,66 +114,69 @@ if (!isset($_SESSION['User_Id'])) {
 
 <body>
 
-<?php include("../home page/navbar.php"); ?>
+    <?php include("../home page/navbar.php"); ?>
 
-<div class="delivery-container">
+    <div class="delivery-container">
 
-    <div class="delivery-title">
-        Hello, <?= htmlspecialchars($_SESSION['delivery_boy_name'] ?? 'Delivery Boy') ?> 👋
+        <div class="delivery-title">
+            Hello, <?= htmlspecialchars($_SESSION['delivery_boy_name'] ?? 'Delivery Boy') ?> 👋
+        </div>
+
+        <div class="delivery-grid">
+
+           
+            <!-- Dashboard -->
+            <div class="delivery-card" onclick="window.location.href='layout.php?view=dashboard'">
+                <div class="card-icon dashboard">
+                    <i class="fa-solid fa-chart-line"></i>
+                </div>
+                <h3>Dashboard</h3>
+                <p>Your delivery overview</p>
+            </div>
+
+
+            <!-- Assigned Orders -->
+            <div class="delivery-card" onclick="window.location.href='layout.php?view=assigned_orders'">
+                <div class="card-icon assigned">
+                    <i class="fa-solid fa-box"></i>
+                </div>
+                <h3>Assigned Orders</h3>
+                <p>Orders waiting for delivery</p>
+            </div>
+
+            <!-- Completed Deliveries -->
+            <div class="delivery-card" onclick="window.location.href='layout.php?view=completed_deliveries'">
+                <div class="card-icon completed">
+                    <i class="fa-solid fa-check-circle"></i>
+                </div>
+                <h3>Completed Deliveries</h3>
+                <p>Delivered order history</p>
+            </div>
+
+            <!-- My Profile -->
+            <div class="delivery-card" onclick="window.location.href='layout.php?view=profile'">
+                <div class="card-icon profile">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+                <h3>My Profile</h3>
+                <p>View & update profile</p>
+            </div>
+
+            <!-- Logout -->
+            <div class="delivery-card" onclick="window.location.href='../login/logout.php'">
+                <div class="card-icon logout">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                </div>
+                <h3>Logout</h3>
+                <p>Sign out safely</p>
+            </div>
+
+        </div>
+
     </div>
 
-    <div class="delivery-grid">
-
-        <!-- Dashboard -->
-        <div class="delivery-card" onclick="location.href='deliveryboy_profile_main.php?view=dashboard'">
-            <div class="card-icon dashboard">
-                <i class="fa-solid fa-chart-line"></i>
-            </div>
-            <h3>Dashboard</h3>
-            <p>Your delivery overview</p>
-        </div>
-
-        <!-- Assigned Orders -->
-        <div class="delivery-card" onclick="location.href='deliveryboy_profile_main.php?view=assigned_orders'">
-            <div class="card-icon assigned">
-                <i class="fa-solid fa-box"></i>
-            </div>
-            <h3>Assigned Orders</h3>
-            <p>Orders waiting for delivery</p>
-        </div>
-
-        <!-- Completed Deliveries -->
-        <div class="delivery-card" onclick="location.href='deliveryboy_profile_main.php?view=completed_deliveries'">
-            <div class="card-icon completed">
-                <i class="fa-solid fa-check-circle"></i>
-            </div>
-            <h3>Completed Deliveries</h3>
-            <p>Delivered order history</p>
-        </div>
-
-        <!-- My Profile -->
-        <div class="delivery-card" onclick="location.href='deliveryboy_profile_main.php?view=profile'">
-            <div class="card-icon profile">
-                <i class="fa-solid fa-user"></i>
-            </div>
-            <h3>My Profile</h3>
-            <p>View & update profile</p>
-        </div>
-
-        <!-- Logout -->
-        <div class="delivery-card" onclick="location.href='login/logout.php'">
-            <div class="card-icon logout">
-                <i class="fa-solid fa-right-from-bracket"></i>
-            </div>
-            <h3>Logout</h3>
-            <p>Sign out safely</p>
-        </div>
-
-    </div>
-
-</div>
-
-<?php require_once '../home page/footer.php'; ?>
+    <?php require_once '../home page/footer.php'; ?>
 
 </body>
+
 </html>
