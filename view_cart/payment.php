@@ -806,7 +806,6 @@ function goHome() {
 
 <script>
 document.getElementById("placeOrderBtn").addEventListener("click", function () {
-alert('0000000',JSON.stringify(result));
     const selected = document.querySelector('input[name="payment_method"]:checked');
     if (!selected) {
         alert("Please select payment method");
