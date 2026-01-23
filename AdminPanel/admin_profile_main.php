@@ -231,6 +231,14 @@ if (!isset($_SESSION))
                 <p>User feedback & reviews</p>
             </div>
 
+            <!-- Logout -->
+            <div class="admin-card" onclick="window.location.href='../login/logout.php'">
+                <div class="card-icon logout">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                </div>
+                <h3>Logout</h3>
+                <p>Sign out safely</p>
+            </div>
         </div>
 
     </div>
