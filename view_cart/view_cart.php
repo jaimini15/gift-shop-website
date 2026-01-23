@@ -225,20 +225,11 @@ $_SESSION['total']    = $total;
 </style>
 <?php endif; ?>
 
-<form action="payment.php" method="POST">
-    <?php if ($totalItems >= 3): ?>
-<div style="margin:15px 0;">
-    <label>
-        <input type="checkbox" name="hamper" value="1"
-            <?= !empty($_SESSION['hamper_selected']) ? 'checked' : '' ?>>
-         🎁 You have 3 or more items. Pack as gift hamper?
-    </label>
-</div>
-<?php endif; ?>
-    <button type="submit" class="continue-btn">
-        Continue
-    </button>
-</form>
+<button type="button" id="continueBtn" class="continue-btn">
+    Continue
+</button>
+<p class="note">Clicking on "Continue" will not deduct any money</p>
+
 
 
 <p class="note">Clicking on "Continue" will not deduct any money</p>
@@ -273,6 +264,84 @@ document.addEventListener("click", function(e) {
 function closeStockModal() {
     document.querySelector('.stock-modal-overlay').style.display = 'none';
 }
+</script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+document.getElementById("continueBtn").addEventListener("click", function () {
+
+    // STEP 1: create pending order in DB
+    fetch("place_order.php", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ payment_method: "RAZORPAY" })
+    })
+    .then(res => res.json())
+    .then(order => {
+
+        if (!order.success && !order.pending) {
+            alert(order.error || "Unable to create order");
+            return;
+        }
+
+        window.pendingOrderId = order.order_id;
+
+        // STEP 2: create Razorpay order
+        fetch("create_razorpay_order.php")
+        .then(res => res.json())
+        .then(rzp => {
+
+            if (!rzp.success) {
+                alert("Unable to start payment");
+                return;
+            }
+
+            // STEP 3: open Razorpay popup
+            var options = {
+                key: rzp.key,
+                amount: rzp.amount,
+                currency: "INR",
+                name: "GiftShop Pvt Ltd",
+                description: "Order Payment",
+                order_id: rzp.orderId,
+
+                handler: function (response) {
+
+                    // STEP 4: verify payment
+                    fetch("confirm_payment.php", {
+                        method: "POST",
+                        headers: {"Content-Type": "application/json"},
+                        body: JSON.stringify(response)
+                    })
+                    .then(res => res.json())
+                    .then(result => {
+
+                        if (result.success) {
+                            window.location.href =
+                                "order_summary.php?order_id=" + result.order_id;
+                        } else {
+                            alert("Payment verification failed");
+                        }
+                    });
+                },
+
+                modal: {
+                    ondismiss: function () {
+                        // cancel pending order if user closes popup
+                        fetch("cancel_order.php", {
+                            method: "POST",
+                            headers: {"Content-Type": "application/json"},
+                            body: JSON.stringify({ order_id: window.pendingOrderId })
+                        });
+                    }
+                },
+
+                theme: { color: "#7e2626" }
+            };
+
+            new Razorpay(options).open();
+        });
+    });
+});
 </script>
 
 </body>
