@@ -532,7 +532,7 @@ $outOfStockList = json_encode($outOfStockProducts);
             </div>
         </div>
 
-        <button class="pay-btn">Proceed</button>
+        <!-- <button class="pay-btn">Proceed</button> -->
         <p id="cardError" class="card-error"></p>
     </div>
 
@@ -543,7 +543,7 @@ $outOfStockList = json_encode($outOfStockProducts);
         <label>UPI ID</label>
         <input type="text" id="upiId" placeholder="example@upi">
 
-        <button class="pay-btn" id="upiPayBtn">Verify & Pay</button>
+        <!-- <button class="pay-btn" id="upiPayBtn">Verify & Pay</button> -->
 
         <p id="upiError" class="card-error"></p>
     </div>
@@ -606,155 +606,116 @@ function closePopup() {
         window.pendingOrderId = null;
     });
 }
-document.getElementById("placeOrderBtn").addEventListener("click", function(){
-    const selected = document.querySelector('input[name="payment_method"]:checked');
-    if(!selected){ 
-        const e=document.getElementById("paymentError");
-        e.style.display="block"; e.innerText="⚠ Please select a payment option";
-        return;
-    }
-    document.getElementById("paymentMethodInput").value = selected.value;
+// document.querySelector(".pay-btn").addEventListener("click", function (e) {
+//     e.preventDefault();
 
-   fetch("place_order.php", {
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body: JSON.stringify({payment_method:selected.value})
-})
+//     /* ================= VALIDATION ================= */
+//     const cardNumber = document.getElementById("cardNumber").value.replace(/\s+/g,"");
+//     const cardName   = document.getElementById("cardName").value.trim();
+//     const expiry     = document.getElementById("expiry").value.trim();
+//     const cvv        = document.getElementById("cvv").value.trim();
 
-    .then(res => res.json())
-.then(data => {
+//     if(!/^\d{16}$/.test(cardNumber)) return alert("Invalid card number");
+//     if(!/^[A-Za-z ]+$/.test(cardName)) return alert("Invalid card holder name");
+//     if(!/^\d{3}$/.test(cvv)) return alert("Invalid CVV");
+//     if(!/^(0[1-9]|1[0-2])\/\d{2}$/.test(expiry)) return alert("Invalid expiry");
 
-    // Pending order already exists → resume payment popup
-    if (!data.success && data.pending) {
-        document.getElementById("paymentOverlay").style.display = "flex";
-        document.querySelector(".container").classList.add("blur");
-        return;
-    }
-    if (!data.success) {
-        alert(data.error || data.message || "Order creation failed");
-        return;
-    }
+//     /* ================= UI SWITCH ================= */
+//     document.getElementById("paymentOverlay").style.display = "none";
 
-    // New order created
-    window.pendingOrderId = data.order_id;
-    document.getElementById("paymentOverlay").style.display = "flex";
-    document.querySelector(".container").classList.add("blur");
+//     const loader = document.getElementById("loadingOverlay");
+//     loader.style.display = "flex";
 
-})
-.catch(() => alert("Network error"));
-}); 
+//     document.getElementById("loadingState").style.display = "block";
+//     document.getElementById("successState").style.display = "none";
 
+//     document.querySelector(".container").classList.add("blur");
 
-document.querySelector(".pay-btn").addEventListener("click", function (e) {
-    e.preventDefault();
+//     /* ================= PAYMENT ================= */
+//     setTimeout(() => {
 
-    /* ================= VALIDATION ================= */
-    const cardNumber = document.getElementById("cardNumber").value.replace(/\s+/g,"");
-    const cardName   = document.getElementById("cardName").value.trim();
-    const expiry     = document.getElementById("expiry").value.trim();
-    const cvv        = document.getElementById("cvv").value.trim();
+//         fetch("confirm_payment.php", {
+//             method: "POST",
+//             headers: { "Content-Type": "application/json" },
+//             body: JSON.stringify({
+//                 order_id: window.pendingOrderId,
+//                 payment_method: document.getElementById("paymentMethodInput").value
+//             })
+//         })
+//         .then(res => res.json())
+//         .then(data => {
 
-    if(!/^\d{16}$/.test(cardNumber)) return alert("Invalid card number");
-    if(!/^[A-Za-z ]+$/.test(cardName)) return alert("Invalid card holder name");
-    if(!/^\d{3}$/.test(cvv)) return alert("Invalid CVV");
-    if(!/^(0[1-9]|1[0-2])\/\d{2}$/.test(expiry)) return alert("Invalid expiry");
+//             if(!data.success){
+//                 loader.style.display="none";
+//                 alert(data.error || "Payment failed");
+//                 return;
+//             }
 
-    /* ================= UI SWITCH ================= */
-    document.getElementById("paymentOverlay").style.display = "none";
+//             /* ✅ SUCCESS STATE */
+//             document.getElementById("loadingState").style.display = "none";
+//             document.getElementById("successState").style.display = "block";
 
-    const loader = document.getElementById("loadingOverlay");
-    loader.style.display = "flex";
+//             setTimeout(() => {
+//                 window.location.href =
+//                     "order_summary.php?order_id=" + data.order_id;
+//             }, 1500);
 
-    document.getElementById("loadingState").style.display = "block";
-    document.getElementById("successState").style.display = "none";
+//         });
 
-    document.querySelector(".container").classList.add("blur");
-
-    /* ================= PAYMENT ================= */
-    setTimeout(() => {
-
-        fetch("confirm_payment.php", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                order_id: window.pendingOrderId,
-                payment_method: document.getElementById("paymentMethodInput").value
-            })
-        })
-        .then(res => res.json())
-        .then(data => {
-
-            if(!data.success){
-                loader.style.display="none";
-                alert(data.error || "Payment failed");
-                return;
-            }
-
-            /* ✅ SUCCESS STATE */
-            document.getElementById("loadingState").style.display = "none";
-            document.getElementById("successState").style.display = "block";
-
-            setTimeout(() => {
-                window.location.href =
-                    "order_summary.php?order_id=" + data.order_id;
-            }, 1500);
-
-        });
-
-    }, 4000); // realistic delay
-});
+//     }, 4000); // realistic delay
+// });
 </script>
 <script>
-document.getElementById("upiPayBtn").addEventListener("click", function () {
+// document.getElementById("upiPayBtn").addEventListener("click", function () {
 
-    const upiId = document.getElementById("upiId").value.trim();
-    const error = document.getElementById("upiError");
+//     const upiId = document.getElementById("upiId").value.trim();
+//     const error = document.getElementById("upiError");
 
-    error.style.visibility = "hidden";
+//     error.style.visibility = "hidden";
 
-    if (!/^[\w.-]+@[\w.-]+$/.test(upiId)) {
-        error.innerText = "Invalid UPI ID";
-        error.style.visibility = "visible";
-        return;
-    }
+//     if (!/^[\w.-]+@[\w.-]+$/.test(upiId)) {
+//         error.innerText = "Invalid UPI ID";
+//         error.style.visibility = "visible";
+//         return;
+//     }
 
-    // Close payment popup
-    document.getElementById("paymentOverlay").style.display = "none";
+//     // Close payment popup
+//     document.getElementById("paymentOverlay").style.display = "none";
 
-    // Show loading overlay
-    document.getElementById("loadingOverlay").style.display = "flex";
-    document.getElementById("loadingState").style.display = "block";
-    document.getElementById("successState").style.display = "none";
+//     // Show loading overlay
+//     document.getElementById("loadingOverlay").style.display = "flex";
+//     document.getElementById("loadingState").style.display = "block";
+//     document.getElementById("successState").style.display = "none";
 
-    setTimeout(() => {
+//     setTimeout(() => {
 
-        fetch("confirm_payment.php", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                order_id: window.pendingOrderId,
-                payment_method: "UPI"
-            })
-        })
-        .then(res => res.json())
-        .then(data => {
+//         fetch("confirm_payment.php", {
+//             method: "POST",
+//             headers: { "Content-Type": "application/json" },
+//             body: JSON.stringify({
+//                 order_id: window.pendingOrderId,
+//                 payment_method: "UPI"
+//             })
+//         })
+//         .then(res => res.json())
+//         .then(data => {
 
-            if (!data.success) {
-                alert("UPI payment failed");
-                return;
-            }
+//             if (!data.success) {
+//                 alert("UPI payment failed");
+//                 return;
+//             }
 
-            document.getElementById("loadingState").style.display = "none";
-            document.getElementById("successState").style.display = "block";
+//             document.getElementById("loadingState").style.display = "none";
+//             document.getElementById("successState").style.display = "block";
 
-            setTimeout(() => {
-                window.location.href =
-                    "order_summary.php?order_id=" + data.order_id;
-            }, 1500);
-        });
+//             setTimeout(() => {
+//                 window.location.href =
+//                     "order_summary.php?order_id=" + data.order_id;
+//             }, 1500);
+//         });
 
-    }, 4000);
-});
+//     }, 4000);
+// });
 </script>
 
 <script>
@@ -840,6 +801,74 @@ if (outOfStockProducts.length > 0) {
 function goHome() {
     window.location.href = "../home page/index.php";
 }
+</script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+document.getElementById("placeOrderBtn").addEventListener("click", function () {
+alert('0000000',JSON.stringify(result));
+    const selected = document.querySelector('input[name="payment_method"]:checked');
+    if (!selected) {
+        alert("Please select payment method");
+        return;
+    }
+
+    fetch("place_order.php", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ payment_method: selected.value })
+    })
+    .then(res => res.json())
+    .then(data => {
+
+        if (!data.success && !data.pending) {
+            alert(data.error || "Order failed");
+            return;
+        }
+
+        window.pendingOrderId = data.order_id;
+
+        fetch("create_razorpay_order.php")
+        .then(res => res.json())
+        .then(rzp => {
+
+            if (!rzp.success) {
+                alert("Unable to start payment");
+                return;
+            }
+
+            var options = {
+                key: rzp.key,
+                amount: rzp.amount,
+                currency: "INR",
+                name: "GiftShop Pvt Ltd",
+                description: "Order Payment",
+                order_id: rzp.orderId,
+                handler: function (response) {
+
+                    fetch("confirm_payment.php", {
+                        method: "POST",
+                        headers: {"Content-Type": "application/json"},
+                        body: JSON.stringify(response)
+                    })
+                    .then(res => res.json())
+                    .then(result => {
+                        alert('.... ',JSON.stringify(result));
+                        if (result.success) {
+                            window.location.href =
+                           3 + result.order_id;
+                        } else {
+                            alert("Payment verification failed");
+                        }
+                    });
+                },
+                theme: { color: "#7e2626" }
+            };
+
+            new Razorpay(options).open();
+        });
+    });
+});
 </script>
 
 </body>
