@@ -15,13 +15,53 @@ $role  = $_SESSION['reset_role'];
 <html>
 <head>
 <title>Create New Password</title>
+
 <style>
-body { font-family: Arial; background: #f5f5f5; }
-.box { width: 350px; background: #fff; padding: 25px; margin: 80px auto; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-input { width: 90%; padding: 10px; margin: 10px 0; font-size: 15px; }
-button { width: 100%; padding: 10px; background: #007bff; border: 0; color: #fff; font-size: 16px; cursor: pointer; border-radius: 4px; }
-.msg { font-size: 15px; margin-bottom: 10px; }
+    body { 
+        font-family: Arial;
+        background: #f5f5f5;  
+    }
+    .box {
+        width: 350px; 
+        background: #fff; 
+        padding: 25px;
+        margin: 80px auto; 
+        border-radius: 8px; 
+        box-shadow: 0 0 10px rgba(0,0,0,0.1); 
+    }
+    input {
+        width: 90%;
+        padding: 10px;
+        margin: 10px 0;
+        font-size: 15px; 
+    }
+    button {
+        width: 100%;
+        padding: 10px;
+        background: #007bff;
+        border: 0;
+        color: #fff;
+        font-size: 16px;
+        cursor: pointer;
+        border-radius: 4px; 
+    }
+    button:hover {
+        background: #0056b3; 
+    }
+    .msg {
+        font-size: 15px;
+        margin-bottom: 10px; 
+    }
+    a {
+        font-size: 14px;
+        text-decoration: none;
+        color: #007bff; 
+    }
+    a:hover { 
+        text-decoration: underline; 
+    }
 </style>
+
 </head>
 <body>
 
@@ -36,13 +76,12 @@ if (isset($_POST['change'])) {
 
     if ($newpass !== $confirmpass) {
         echo "<p class='msg' style='color:red;'>Passwords do not match!</p>";
-    } else {
+    } 
+    else {
 
-        // 🔐 Secure password hashing
-        $hashed = password_hash($newpass, PASSWORD_DEFAULT);
-
-        $stmt = $connection->prepare("UPDATE user_details SET Password=?, otp=NULL, otp_expiry=NULL WHERE Email=? AND User_Role=?");
-        $stmt->bind_param("sss", $hashed, $email, $role);
+        // ✅ plain password (same as your login system)
+        $stmt = $connection->prepare("UPDATE user_details SET Password=?, otp=NULL WHERE Email=? AND User_Role=?");
+        $stmt->bind_param("sss", $newpass, $email, $role);
         $stmt->execute();
         $stmt->close();
 
@@ -60,6 +99,7 @@ if (isset($_POST['change'])) {
     <input type="password" name="confirmpass" placeholder="Confirm Password" required>
     <button type="submit" name="change">Change Password</button>
 </form>
+
 </div>
 
 </body>
