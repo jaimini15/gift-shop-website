@@ -103,7 +103,7 @@ input, select {
         <span>Remember me</span>
     </label>
 
-    <a href="forgot_password.php">Forgot Password?</a>
+    <a href="forget_password.php">Forgot Password?</a>
 </div>
 
 </form>
