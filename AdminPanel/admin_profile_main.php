@@ -162,7 +162,7 @@ if (!isset($_SESSION))
                 <p>Admin overview & stats</p>
             </div>
 
-            <div class="admin-card" onclick="">
+            <div class="admin-card" onclick="location.href='layout.php?view=profile'">
                 <div class="card-icon profile"><i class="fa-solid fa-user"></i></div>
                 <h3>My Profile</h3>
                 <p>View & edit your profile</p>
