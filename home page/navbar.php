@@ -4,6 +4,8 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 include("../AdminPanel/db.php");
 
+// ✅ BASE PATH (change if your folder name is different)
+$BASE = "/GitHub/gift-shop-website/";
 // CART COUNT 
 $cart_count = 0;
 if (isset($_SESSION['User_Id'])) {
@@ -32,8 +34,8 @@ if (isset($_SESSION['User_Id'])) {
 
     <nav>
         <ul>
-            <li><a href="../home page/index.php" class="active">Home</a></li> |
-            <li><a href="../home page/about.php">About us</a></li> |
+           <li><a href="<?= $BASE ?>home page/index.php" class="active">Home</a></li> |
+<li><a href="<?= $BASE ?>home page/about.php">About us</a></li> |
 
             <li class="dropdown">
                 <a href="#">Shop</a>
@@ -52,7 +54,7 @@ if (isset($_SESSION['User_Id'])) {
                 </ul>
             </li> |
 
-            <li><a href="contact.php">Contact</a></li>
+           <li><a href="<?= $BASE ?>home page/contact.php">Contact</a></li>
         </ul>
     </nav>
     <div class="icons">
@@ -65,22 +67,54 @@ if (isset($_SESSION['User_Id'])) {
             </div>
         </a>
 
-        <!-- PROFILE -->
-        <?php if (!isset($_SESSION['User_Id'])): ?>
-            <a href="../login/login.php"><i class="fa-regular fa-user"></i> My Profile</a>
+       <!-- PROFILE -->
+<!-- PROFILE -->
+<?php if (!isset($_SESSION['User_Id'])): ?>
 
-        <?php else: ?>
-            <div class="profile-dropdown">
-                <a class="profile-btn" id="profileBtn">
-                    <i class="fa-regular fa-user"></i> My Profile
+   <a href="<?= $BASE ?>login/login.php">
+        <i class="fa-regular fa-user"></i> My Profile
+    </a>
+
+<?php else: ?>
+
+    <?php
+        // Fetch role from database
+        $uid = $_SESSION['User_Id'];
+        $role = "CUSTOMER"; // default role
+
+        $roleQuery = mysqli_query($connection, "SELECT User_Role FROM user_details WHERE User_Id='$uid'");
+        if ($roleRow = mysqli_fetch_assoc($roleQuery)) {
+            $role = $roleRow['User_Role'];
+        }
+    ?>
+
+    <div class="profile-dropdown">
+        <a class="profile-btn">
+            <i class="fa-regular fa-user"></i> My Profile
+        </a>
+
+        <ul class="profile-menu">
+            <li>
+                <a href="<?php
+                    if ($role == 'ADMIN') {
+                        echo '../AdminPanel/admin_profile_main.php';
+                    } 
+                    elseif ($role == 'DELIVERY_BOY') {
+                        echo '../DeliveryBoyPanel/deliveryboy_profile_main.php';
+                    } 
+                    else {
+                        echo '../customer_profile/profile.php';
+                    }
+                ?>">
+                    Check Profile
                 </a>
+            </li>
+            <li><a href="../login/logout.php">Logout</a></li>
+        </ul>
+    </div>
 
-                <ul class="profile-menu">
-                    <li><a href="javascript:void(0)" id="profileCheckBtn">Check Profile</a></li>
-                    <li><a href="../login/logout.php">Logout</a></li>
-                </ul>
-            </div>
-        <?php endif; ?>
+<?php endif; ?>
+
 
     </div>
 </header>
@@ -144,11 +178,6 @@ document.getElementById("cartBtn").onclick = () => {
 document.getElementById("panelClose").onclick = () => {
     sidePanel.classList.remove("active");
 };
-
-// PROFILE REDIRECT
-document.getElementById("profileCheckBtn")?.addEventListener("click", () => {
-    window.location.href = "../customer_profile/profile.php";
-});
 function removeItem(id) {
     if (!confirm("Remove this item from cart?")) return;
 
