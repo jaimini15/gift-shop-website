@@ -1,16 +1,16 @@
 <?php
-if (!isset($_SESSION)) {
+if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-include("../AdminPanel/db.php");
+include(__DIR__ . '/../../AdminPanel/db.php');
 
-/* ================= AUTH CHECK ================= */
-if (!isset($_SESSION['delivery_id'])) {
-    header("Location: login.php");
-    exit;
+if (!isset($_SESSION['User_Id'])) {
+    echo "<div class='alert alert-danger'>Unauthorized access</div>";
+    return;
 }
-$deliveryBoyId = (int) $_SESSION['delivery_id'];
+
+$deliveryBoyId = (int) $_SESSION['User_Id'];
 /* ============================================== */
 
 

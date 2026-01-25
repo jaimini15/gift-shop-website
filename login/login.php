@@ -107,7 +107,7 @@ input, select {
 </div>
 
 </form>
-
+<br>
 <p style="text-align:center;">
 Don't have an account?
 <a href="../registration/registration.php">Register here</a>

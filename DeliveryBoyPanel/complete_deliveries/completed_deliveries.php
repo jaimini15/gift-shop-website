@@ -1,20 +1,21 @@
 <?php
-if (!isset($_SESSION)) {
+/* ================= SESSION ================= */
+if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-include("../AdminPanel/db.php");
+/* ================= DB CONNECTION ================= */
+include(__DIR__ . '/../../AdminPanel/db.php');
 
 /* ================= AUTH CHECK ================= */
-if (!isset($_SESSION['delivery_id'])) {
-    header("Location: login.php");
+if (!isset($_SESSION['User_Id'])) {
+    echo "<div class='alert alert-danger m-3'>Unauthorized access</div>";
     exit;
 }
-$deliveryBoyId = (int) $_SESSION['delivery_id'];
-/* ============================================== */
 
+$deliveryBoyId = (int) $_SESSION['User_Id'];
 
-/* ========== FETCH ALL COMPLETED DELIVERIES ========= */
+/* ========== FETCH COMPLETED DELIVERIES ========= */
 $orders = mysqli_query($connection, "
     SELECT DISTINCT
         o.Order_Id,
@@ -37,96 +38,86 @@ $orders = mysqli_query($connection, "
         AND DATE(d.Delivery_Date) <= CURDATE()
     ORDER BY d.Delivery_Date DESC
 ");
-/* ================================================= */
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>Completed Deliveries</title>
+<!-- ================= PAGE CONTENT ================= -->
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<div class="container-fluid mt-4">
 
-<style>
-body { background:#f4f6f9; }
-.card { border-radius:12px; }
-.date-row {
-    background:#e9ecef;
-    font-weight:bold;
-}
-</style>
-</head>
+    <h3 class="fw-bold mb-4">Completed Deliveries</h3>
 
-<body>
+    <div class="card shadow-sm">
+        <div class="card-body">
 
-<div class="container mt-4">
-    <h3 class="mb-4 fw-bold">Completed Deliveries</h3>
+            <table class="table table-bordered table-hover align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Customer</th>
+                        <th>Address</th>
+                        <th>Area</th>
+                        <th>Order Date</th>
+                        <th>Total Amount</th>
+                        <th>Phone</th>
+                        <th>Status</th>
+                        <th>Delivered On</th>
+                    </tr>
+                </thead>
 
-    <div class="card p-3">
-        <table class="table table-bordered align-middle">
-            <thead class="table-dark">
-                <tr>
-                    <th>Order ID</th>
-                    <th>Name</th>
-                    <th>Address</th>
-                    <th>Area</th>
-                    <th>Order Date</th>
-                    <th>Total Amount</th>
-                    <th>Phone</th>
-                    <th>Status</th>
-                    <th>Delivered On</th>
-                </tr>
-            </thead>
-            <tbody>
-
-            <?php
-            if (mysqli_num_rows($orders) == 0) {
-                echo '
-                <tr>
-                    <td colspan="9" class="text-center text-muted">
-                        No completed deliveries
-                    </td>
-                </tr>';
-            }
-
-            $lastDate = null;
-
-            while ($row = mysqli_fetch_assoc($orders)) {
-
-                $currentDate = date("Y-m-d", strtotime($row['Delivery_Date']));
-
-                if ($lastDate !== $currentDate) {
-                    echo '
-                    <tr class="date-row">
-                        <td colspan="9">
-                            📅 ' . date("d-m-Y", strtotime($currentDate)) . '
+                <tbody>
+                <?php
+                if (mysqli_num_rows($orders) === 0):
+                ?>
+                    <tr>
+                        <td colspan="9" class="text-center text-muted">
+                            No completed deliveries found
                         </td>
-                    </tr>';
-                    $lastDate = $currentDate;
-                }
-            ?>
-                <tr>
-                    <td><?= $row['Order_Id'] ?></td>
-                    <td><?= htmlspecialchars($row['Customer_Name']) ?></td>
-                    <td><?= htmlspecialchars($row['Address']) ?></td>
-                    <td><?= htmlspecialchars($row['Area_Name']) ?></td>
-                    <td><?= date("d-m-Y", strtotime($row['Order_Date'])) ?></td>
-                    <td>₹<?= number_format($row['Total_Amount'], 2) ?></td>
-                    <td><?= htmlspecialchars($row['Phone']) ?></td>
-                    <td>
-                        <span class="badge bg-success">
-                            <?= $row['Delivery_Status'] ?>
-                        </span>
-                    </td>
-                    <td><?= date("d-m-Y h:i A", strtotime($row['Delivery_Date'])) ?></td>
-                </tr>
-            <?php } ?>
+                    </tr>
+                <?php
+                endif;
 
-            </tbody>
-        </table>
+                $lastDate = null;
+
+                while ($row = mysqli_fetch_assoc($orders)):
+                    $currentDate = date('Y-m-d', strtotime($row['Delivery_Date']));
+
+                    if ($lastDate !== $currentDate):
+                        $lastDate = $currentDate;
+                ?>
+                        <tr class="table-secondary fw-bold">
+                            <td colspan="9">
+                                📅 <?= date('d-m-Y', strtotime($currentDate)) ?>
+                            </td>
+                        </tr>
+                <?php endif; ?>
+
+                    <tr>
+                        <td><?= $row['Order_Id'] ?></td>
+                        <td><?= htmlspecialchars($row['Customer_Name']) ?></td>
+                        <td><?= htmlspecialchars($row['Address']) ?></td>
+                        <td><?= htmlspecialchars($row['Area_Name']) ?></td>
+                        <td><?= date('d-m-Y', strtotime($row['Order_Date'])) ?></td>
+                        <td>₹<?= number_format($row['Total_Amount'], 2) ?></td>
+                        <td><?= htmlspecialchars($row['Phone']) ?></td>
+                        <td>
+                            <span class="badge bg-success">
+                                <?= $row['Delivery_Status'] ?>
+                            </span>
+                        </td>
+                        <td><?= date('d-m-Y h:i A', strtotime($row['Delivery_Date'])) ?></td>
+                    </tr>
+
+                <?php endwhile; ?>
+                </tbody>
+            </table>
+
+        </div>
     </div>
 </div>
 
-</body>
-</html>
+<!-- ================= PAGE CSS ================= -->
+<style>
+        body { background: #f4f6f9; font-family: Arial, sans-serif; }
+        .content { margin-left: 0px; padding: 0px;  }
+        .card-box { background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+</style>

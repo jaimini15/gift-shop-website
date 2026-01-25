@@ -47,7 +47,7 @@ ob_end_flush();
 ===================== */
 
         body {
-            background: #ffffff;
+            background: !important white;
             font-family: Arial, sans-serif;
             margin: 0;
         }
@@ -82,7 +82,6 @@ ob_end_flush();
             gap: 25px;
             min-height: 600px;
             background-color: white;
-            background: red !important;
         }
 
         /* =====================
@@ -157,7 +156,7 @@ ob_end_flush();
             font-size: 15px;
             line-height: 1.6;
 
-            
+
         }
 
 
@@ -210,7 +209,7 @@ ob_end_flush();
             <a href="admin_profile_main.php" class="<?= $view == 'account' ? 'active' : '' ?>">
                 <i class="fa-solid fa-house"></i> My Account
             </a>
-            <a href="layout.php?view=profile" class="<?=$view == 'profile' ? 'active' : '' ?>">
+            <a href="layout.php?view=profile" class="<?= $view == 'profile' ? 'active' : '' ?>">
                 <i class="fa-solid fa-user"></i> My Profile
             </a>
             <a href="layout.php?view=dashboard" class="<?= $view == 'dashboard' ? 'active' : '' ?>">
@@ -252,7 +251,9 @@ ob_end_flush();
             <a href="layout.php?view=feedback" class="<?= $view == 'feedback' ? 'active' : '' ?>">
                 <i class="fa-solid fa-comments"></i> Feedback
             </a>
-
+            <a href="../login/logout.php">
+                <i class="fa-solid fa-right-from-bracket"></i> Logout
+            </a>
         </div>
 
         <!-- ===== RIGHT PANEL ===== -->

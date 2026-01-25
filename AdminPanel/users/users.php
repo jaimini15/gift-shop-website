@@ -41,7 +41,7 @@ $result = mysqli_query($connection, $query);
 <div class="card-box">
 
     <h2 class="fw-bold mb-3">
-        <i class="fa-solid fa-users"></i> Customers
+        Customers
     </h2>
 
     <table class="table table-bordered table-striped">
