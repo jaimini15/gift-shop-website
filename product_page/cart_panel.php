@@ -70,7 +70,9 @@ $subtotal = 0;
 
 <div class="cart-actions">
     <a href="../view_cart/view_cart.php" class="view-cart-btn">View cart</a>
-    <a href="../view_cart/payment.php" class="checkout-btn">Checkout</a>
+    <button class="checkout-btn" onclick="startRazorpay()">Checkout</button>
+
+    
 </div>
 
 </div>
@@ -152,4 +154,59 @@ $subtotal = 0;
 }
 
 </style>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+    document.querySelector('.checkout-btn').addEventListener('click', () => {
+    alert("Button clicked ✅");
+});
+
+function startRazorpay() {
+    alert("checkout");
+
+    fetch("view_cart/create_razorpay_order.php") // 🔥 change path if needed
+    .then(res => res.json())
+    .then(data => {
+
+        if (!data.success) {
+            alert("Order create failed ❌");
+            return;
+        }
+
+        var options = {
+            key: data.key,
+            amount: data.amount,
+            currency: "INR",
+            order_id: data.orderId,
+            name: "My Store",
+            description: "Cart Payment",
+
+            handler: function (response) {
+
+                fetch("view_cart/confirm_payment.php", {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify(response)
+                })
+                .then(res => res.json())
+                .then(result => {
+                    if(result.success){
+                        alert("Payment Successful ✅");
+                        location.reload();
+                    } else {
+                        alert("Payment Failed ❌");
+                    }
+                });
+            }
+        };
+
+        var rzp = new Razorpay(options);
+        rzp.open();
+    })
+    .catch(err => {
+        console.error("Error:", err);
+        alert("Razorpay error ❌ Check console");
+    });
+}
+</script>
 
