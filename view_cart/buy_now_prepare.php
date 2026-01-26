@@ -61,5 +61,9 @@ $_SESSION['BUY_NOW'] = [
     'gift_msg' => $gift_msg
 ];
 
-header("Location: payment.php?order_id=".$order_id);
+// ✅ RETURN JSON (NO REDIRECT)
+echo json_encode([
+    "success" => true,
+    "order_id" => $order_id
+]);
 exit;
