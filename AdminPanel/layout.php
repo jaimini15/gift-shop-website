@@ -169,7 +169,11 @@ ob_end_flush();
             width: 100%;
             table-layout: auto;
         }
-
+        .account-sidebar a:last-child{
+    margin-top:auto;
+    background:#fee2e2;
+    color:#b91c1c;
+}
         /* =====================
    RESPONSIVE
 ===================== */
