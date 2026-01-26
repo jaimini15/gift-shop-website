@@ -1,93 +1,60 @@
 <?php
-session_start();
-
-// $_SESSION['pending_order_id'] = 123;
-// $_SESSION['total'] = 199;
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
 header("Content-Type: application/json");
 
-/* 🔐 Load Razorpay Keys */
-$config = require __DIR__ . "/../config/razorpay.php";
-$keyId     = $config['key_id'];
-$keySecret = $config['key_secret'];
+require_once __DIR__ . '/../vendor/autoload.php';
 
-/* 🛑 Validate session */
-if (
-    !isset($_SESSION['pending_order_id']) ||
-    (!isset($_SESSION['total']) && !isset($_SESSION['subtotal']))
-) {
+use Razorpay\Api\Api;
+
+session_start();
+
+include("../AdminPanel/db.php");
+$config = require __DIR__ . '/../config/razorpay.php';
+
+if (!isset($_SESSION['pending_order_id'], $_SESSION['User_Id'])) {
     echo json_encode([
         "success" => false,
-        "error" => "Session missing"
+        "error" => "No pending order"
     ]);
     exit;
 }
 
-/* 💰 Amount handling */
-$total = $_SESSION['total'] ?? $_SESSION['subtotal'];
-$amount = (int) round($total * 100); // paise
+$orderId = (int) $_SESSION['pending_order_id'];
 
-/* 📦 Razorpay Order Payload */
-$payload = [
-    "amount" => $amount,
-    "currency" => "INR",
-    "receipt" => "ORDER_" . $_SESSION['pending_order_id'],
-    "payment_capture" => 1
-];
+$res = mysqli_query($connection, "
+    SELECT Total_Amount 
+    FROM `order` 
+    WHERE Order_Id = $orderId
+");
 
-/* 🌐 cURL Request */
-$ch = curl_init("https://api.razorpay.com/v1/orders");
+$row = mysqli_fetch_assoc($res);
 
-curl_setopt_array($ch, [
-    CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_POST => true,
-    CURLOPT_USERPWD => $keyId . ":" . $keySecret,
-    CURLOPT_HTTPHEADER => ["Content-Type: application/json"],
-    CURLOPT_POSTFIELDS => json_encode($payload),
-    CURLOPT_SSL_VERIFYPEER => true, // IMPORTANT for localhost
-    CURLOPT_TIMEOUT => 30
+if (!$row) {
+    echo json_encode([
+        "success" => false,
+        "error" => "Order not found in DB"
+    ]);
+    exit;
+}
+
+$amount = (int) ($row['Total_Amount'] * 100); // paise
+
+
+
+$api = new Api($config['key_id'], $config['key_secret']);
+
+$razorpayOrder = $api->order->create([
+    'receipt'  => "order_$orderId",
+    'amount'   => $amount,
+    'currency' => 'INR'
 ]);
-if (empty($keyId) || empty($keySecret)) {
-    echo json_encode([
-        "success" => false,
-        "error" => "Razorpay keys missing",
-        "keyId" => $keyId
-    ]);
-    exit;
-}
 
-$response = curl_exec($ch);
-$httpStatus = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-
-if ($response === false) {
-    echo json_encode([
-        "success" => false,
-        "error" => curl_error($ch)
-    ]);
-    exit;
-}
-
-curl_close($ch);
-
-$data = json_decode($response, true);
-
-/* ❌ Razorpay error */
-if ($httpStatus !== 200 || empty($data['id'])) {
-    echo json_encode([
-        "success" => false,
-        "error" => "Razorpay order creation failed",
-        "razorpay" => $data
-    ]);
-    exit;
-}
-
-/* ✅ Save order ID */
-$_SESSION['razorpay_order_id'] = $data['id'];
-
-/* ✅ Success */
 echo json_encode([
     "success" => true,
-    "key" => $keyId,       // public key only
-    "orderId" => $data['id'],
-    "amount" => $amount
+    "key"     => $config['key_id'],
+    "amount"  => $amount,
+    "orderId" => $razorpayOrder['id']
 ]);
+exit;
