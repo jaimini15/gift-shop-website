@@ -265,33 +265,28 @@ function closeStockModal() {
 <script>
 document.getElementById("continueBtn").addEventListener("click", function () {
 
-    // STEP 1: create pending order in DB
-    fetch("place_order.php", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({ payment_method: "RAZORPAY" })
-    })
+    fetch("create_pending_order.php", { method: "POST" })
     .then(res => res.json())
     .then(order => {
 
-        if (!order.success && !order.pending) {
-            alert(order.error || "Unable to create order");
+        console.log("Pending Order:", order);
+
+        if (!order.success) {
+            alert(order.error || "Order creation failed");
             return;
         }
 
-        window.pendingOrderId = order.order_id;
-
-        // STEP 2: create Razorpay order
-        fetch("create_razorpay_order.php")
+        fetch("create_razorpay_order.php", { method: "POST" })
         .then(res => res.json())
         .then(rzp => {
 
+            console.log("Razorpay Order:", rzp);
+
             if (!rzp.success) {
-                alert("Unable to start payment");
+                alert(rzp.error || "Razorpay order failed");
                 return;
             }
 
-            // STEP 3: open Razorpay popup
             var options = {
                 key: rzp.key,
                 amount: rzp.amount,
@@ -300,38 +295,30 @@ document.getElementById("continueBtn").addEventListener("click", function () {
                 description: "Order Payment",
                 order_id: rzp.orderId,
 
-               handler: function (response) {
+                handler: function (response) {
 
-    fetch("confirm_payment.php", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({
-            razorpay_payment_id: response.razorpay_payment_id,
-            order_id: window.pendingOrderId
-        })
-    })
-    .then(res => res.json())
-    .then(result => {
-        if (result.success) {
-            window.location.href = "order_summary.php?order_id=" + result.order_id;
-        } else {
-            alert("Payment failed");
-        }
-    });
-},
-
-                modal: {
-                    ondismiss: function () {
-                        // cancel pending order if user closes popup
-                        fetch("cancel_order.php", {
-                            method: "POST",
-                            headers: {"Content-Type": "application/json"},
-                            body: JSON.stringify({ order_id: window.pendingOrderId })
-                        });
-                    }
+                    fetch("confirm_payment.php", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            order_id: order.order_id,
+                            razorpay_payment_id: response.razorpay_payment_id,
+                            razorpay_order_id: response.razorpay_order_id,
+                            razorpay_signature: response.razorpay_signature
+                        })
+                    })
+                    .then(res => res.json())
+                    .then(result => {
+                        if (result.success) {
+                            window.location.href =
+                                "order_summary.php?order_id=" + result.order_id;
+                        } else {
+                            alert("Payment verification failed");
+                        }
+                    });
                 },
 
-                theme: { color: "#7e2626" }
+                theme: { color: "" }
             };
 
             new Razorpay(options).open();
@@ -339,6 +326,7 @@ document.getElementById("continueBtn").addEventListener("click", function () {
     });
 });
 </script>
+
 
 </body>
 </html>
