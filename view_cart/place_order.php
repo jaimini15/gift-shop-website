@@ -3,101 +3,107 @@ session_start();
 include("../AdminPanel/db.php");
 header('Content-Type: application/json');
 
-/* ================= AUTH ================= */
-
-if (!isset($_SESSION['User_Id'])) {
-    echo json_encode(["success" => false, "error" => "Login required"]);
+if (!isset($_SESSION['pending_order_id'])) {
+    echo json_encode(["success" => false, "message" => "No pending order"]);
     exit;
 }
 
-$userId  = (int)$_SESSION['User_Id'];
-$isBuyNow = !empty($_SESSION['buy_now']);
-
-/* ================= INPUT ================= */
+$order_id = $_SESSION['pending_order_id'];
+$user_id = $_SESSION['User_Id'];
 
 $data = json_decode(file_get_contents("php://input"), true);
-if (empty($data['payment_method'])) {
-    echo json_encode(["success" => false, "error" => "Payment method required"]);
+$razorpay_payment_id = $data['razorpay_payment_id'] ?? "";
+
+// 1️⃣ Get order total
+$orderQuery = mysqli_query($connection, "SELECT Total_Amount FROM `order` WHERE Order_Id = '$order_id'");
+$orderData = mysqli_fetch_assoc($orderQuery);
+$totalAmount = $orderData['Total_Amount'];
+// ✅ Prevent duplicate payment entry
+$checkPay = mysqli_query($connection, "
+    SELECT Payment_Id FROM payment_details WHERE Order_Id = '$order_id'
+");
+
+if (mysqli_num_rows($checkPay) > 0) {
+    echo json_encode([
+        "success" => true,
+        "message" => "Payment already recorded",
+        "order_id" => $order_id
+    ]);
+    exit;
+}
+// ✅ Insert payment with correct amount
+mysqli_query($connection, "
+    INSERT INTO payment_details (Order_Id, Payment_Date, Payment_Method, Amount, Payment_Status, Transaction_Reference)
+    VALUES ('$order_id', CURDATE(), 'Razorpay', '$newTotal', 'PAID', '$razorpay_payment_id')
+");
+
+// 3️⃣ Insert order items
+$cartItems = mysqli_query($connection, "
+    SELECT * FROM customize_cart_details 
+    WHERE Cart_Id IN (SELECT Cart_Id FROM cart WHERE User_Id = '$user_id')
+");
+$checkItems = mysqli_query($connection, "
+    SELECT Item_Id FROM order_item WHERE Order_Id = '$order_id'
+");
+
+if (mysqli_num_rows($checkItems) > 0) {
+    echo json_encode([
+        "success" => true,
+        "message" => "Order items already inserted",
+        "order_id" => $order_id
+    ]);
     exit;
 }
 
-/* ================= CALCULATE TOTAL ================= */
+while ($item = mysqli_fetch_assoc($cartItems)) {
 
-$totalAmount = 0;
-
-/* ===== BUY NOW FLOW ===== */
-if ($isBuyNow) {
-
-    $productId = $_SESSION['buy_now_product_id'] ?? 0;
-    if (!$productId) {
-        echo json_encode(["success" => false, "error" => "Invalid product"]);
-        exit;
-    }
-
-    $stmt = $connection->prepare(
-        "SELECT Price FROM product_details WHERE Product_Id = ?"
-    );
-    $stmt->bind_param("i", $productId);
-    $stmt->execute();
-    $product = $stmt->get_result()->fetch_assoc();
-
-    if (!$product) {
-        echo json_encode(["success" => false, "error" => "Product not found"]);
-        exit;
-    }
-
-    $item = $_SESSION['buy_now_item'] ?? null;
-
-if (!$item) {
-    echo json_encode(["success" => false, "error" => "Buy now item missing"]);
-    exit;
+    mysqli_query($connection, "
+        INSERT INTO order_item (Order_Id, Product_Id, Quantity, Price_Snapshot, Custom_Text, Custom_Image, Gift_Wrapping, Personalized_Message)
+        VALUES (
+            '$order_id',
+            '{$item['Product_Id']}',
+            '{$item['Quantity']}',
+            '{$item['Price']}',
+            '{$item['Custom_Text']}',
+            '{$item['Custom_Image']}',
+            '{$item['Gift_Wrapping']}',
+            '{$item['Personalized_Message']}'
+        )
+    ");
 }
+// ✅ Recalculate order total from order_item
+$totalQuery = mysqli_query($connection, "
+    SELECT SUM(Quantity * Price_Snapshot) AS total 
+    FROM order_item 
+    WHERE Order_Id = '$order_id'
+");
 
-$giftWrapPrice = !empty($item['gift_wrap']) ? 39 : 0;
-$giftCardPrice = !empty($item['gift_card']) ? 50 : 0;
+$totalRow = mysqli_fetch_assoc($totalQuery);
+$newTotal = $totalRow['total'] ?? 0;
 
-$totalAmount = (float)$item['price'] + $giftWrapPrice + $giftCardPrice;
-
-
-}
-/* ===== CART FLOW ===== */
-else {
-
-    $stmt = $connection->prepare(
-        "SELECT SUM(ccd.Quantity * ccd.Price) AS total
-         FROM customize_cart_details ccd
-         JOIN cart c ON c.Cart_Id = ccd.Cart_Id
-         WHERE c.User_Id = ?"
-    );
-    $stmt->bind_param("i", $userId);
-    $stmt->execute();
-    $row = $stmt->get_result()->fetch_assoc();
-
-    if (($row['total'] ?? 0) <= 0) {
-        echo json_encode(["success" => false, "error" => "Cart empty"]);
-        exit;
-    }
-
-    $totalAmount = (float)$row['total'];
-}
-
-/* ================= CREATE PENDING ORDER ONLY ================= */
-
-$stmt = $connection->prepare(
-    "INSERT INTO `order` (User_Id, Total_Amount, Status)
-     VALUES (?, ?, 'PENDING')"
-);
-$stmt->bind_param("id", $userId, $totalAmount);
-$stmt->execute();
-
-$orderId = $stmt->insert_id;
-
-/* Store pending order */
-$_SESSION['pending_order_id'] = $orderId;
-
-echo json_encode([
-    "success"  => true,
-    "order_id" => $orderId
-]);
+// ✅ Update order total
+mysqli_query($connection, "
+    UPDATE `order` 
+    SET Total_Amount = '$newTotal' 
+    WHERE Order_Id = '$order_id'
+");
 
 
+// 4️⃣ Update order status (IMPORTANT)
+mysqli_query($connection, "
+    UPDATE `order` SET Status = 'CONFIRM' WHERE Order_Id = '$order_id'
+");
+
+// 5️⃣ Clear cart
+mysqli_query($connection, "
+    DELETE FROM customize_cart_details 
+    WHERE Cart_Id IN (SELECT Cart_Id FROM cart WHERE User_Id = '$user_id')
+");
+mysqli_query($connection, "DELETE FROM cart WHERE User_Id = '$user_id'");
+
+// 6️⃣ Clear session (NOW correct place)
+unset($_SESSION['pending_order_id']);
+unset($_SESSION['subtotal']);
+unset($_SESSION['total']);
+
+echo json_encode(["success" => true, "order_id" => $order_id]);
