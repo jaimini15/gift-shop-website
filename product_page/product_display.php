@@ -440,11 +440,7 @@ function updateCartCount() {
            id="bn_realUpload"
            name="custom_image"
            style="display:none;">
-
-    <button type="submit" class="product-btn">
-        Buy Now
-    </button>
-
+<button type="button" onclick="buyNowPay()" class="product-btn">Buy Now</button>
 </form>
 
 <?php
@@ -732,6 +728,79 @@ if (buyNowForm) {
     });
 }
 </script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+function buyNowPay() {
+
+    let form = document.querySelector("form[action$='buy_now_prepare.php']");
+    let formData = new FormData(form);
+
+    fetch("../view_cart/buy_now_prepare.php", {
+        method: "POST",
+        body: formData
+    })
+    .then(res => res.json())
+    .then(prep => {
+
+        console.log("BUY_NOW:", prep);
+
+        if (!prep.success) {
+            alert("Order creation failed");
+            return;
+        }
+
+        fetch("../view_cart/create_razorpay_order_buy_now.php", {
+            method: "POST"
+        })
+        .then(res => res.json())
+        .then(data => {
+
+            console.log("RAZORPAY:", data);
+
+            if (!data.success) {
+                alert(data.error);
+                return;
+            }
+
+            var options = {
+                key: data.key,
+                amount: data.amount,
+                currency: "INR",
+                name: "Gift Shop",
+                description: "Buy Now Payment",
+                order_id: data.orderId,
+
+                handler: function (response) {
+
+                    fetch("../view_cart/confirm_payment_buy_now.php", {
+                        method: "POST",
+                        headers: {"Content-Type": "application/json"},
+                        body: JSON.stringify({
+                            razorpay_payment_id: response.razorpay_payment_id
+                        })
+                    })
+                    .then(res => res.json())
+                    .then(result => {
+                        if(result.success){
+                            alert("Payment Successful ✅");
+                            window.location.href =
+                              "../view_cart/order_success.php?order_id=" + result.order_id;
+                        } else {
+                            alert("Payment failed ❌");
+                        }
+                    });
+                }
+            };
+
+            var rzp = new Razorpay(options);
+            rzp.open();
+        });
+    });
+}
+
+</script>
+
 
 
 </body>
