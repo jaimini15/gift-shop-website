@@ -31,7 +31,7 @@ VALUES (
     '$order_id',
     '{$buy['product_id']}',
     '{$buy['qty']}',
-    '{$buy['price']}',
+    '$totalAmount',
     '".mysqli_real_escape_string($connection, $buy['custom_text'])."',
     '{$buy['custom_image']}',
     '{$buy['gift_wrap']}',
