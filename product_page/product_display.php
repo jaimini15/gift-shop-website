@@ -423,10 +423,8 @@ function updateCartCount() {
     <button type="submit" class="product-btn" style="padding:0.5rem 2rem;">Add to Cart</button>
 
 </form>
-    <!-- BUY NOW -->
-   <form method="POST"
-      action="../view_cart/buy_now_prepare.php"
-      enctype="multipart/form-data">
+ <!-- BUY NOW FORM -->
+<form id="buyNowForm" enctype="multipart/form-data">
 
 
     <input type="hidden" name="product_id"
@@ -436,12 +434,18 @@ function updateCartCount() {
     <input type="hidden" name="gift_card" id="bn_gift_card">
     <input type="hidden" name="gift_card_msg" id="bn_gift_msg">
     <input type="hidden" name="custom_text" id="bn_custom_text">
+
     <input type="file"
            id="bn_realUpload"
            name="custom_image"
            style="display:none;">
-<button type="button" onclick="buyNowPay()" class="product-btn">Buy Now</button>
+
+    <button type="button" onclick="buyNowPay()" class="product-btn">
+        Buy Now
+    </button>
+
 </form>
+
 
 <?php
 // Fetch reviews for this product
@@ -701,39 +705,30 @@ document.querySelector("form[action$='add_to_cart.php']").addEventListener("subm
 
 });
 </script>
-<script>
-const buyNowForm =
-    document.querySelector("form[action$='buy_now_prepare.php']");
 
-if (buyNowForm) {
-    buyNowForm.addEventListener("submit", function () {
-
-        document.getElementById("bn_gift_wrap").value =
-            document.getElementById("giftWrap")?.checked ? 1 : 0;
-
-        document.getElementById("bn_gift_card").value =
-            document.getElementById("giftCard")?.checked ? 1 : 0;
-
-        const giftMsg =
-            document.querySelector("#giftCardMessageBox textarea");
-
-        document.getElementById("bn_gift_msg").value =
-            giftMsg ? giftMsg.value.trim() : "";
-
-        const customText =
-            document.getElementById("customMessage");
-
-        document.getElementById("bn_custom_text").value =
-            customText ? customText.value.trim() : "";
-    });
-}
-</script>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
 <script>
 function buyNowPay() {
 
-    let form = document.querySelector("form[action$='buy_now_prepare.php']");
+    // ✅ SET BUY NOW VALUES
+    document.getElementById("bn_gift_wrap").value =
+        document.getElementById("giftWrap")?.checked ? 1 : 0;
+
+    document.getElementById("bn_gift_card").value =
+        document.getElementById("giftCard")?.checked ? 1 : 0;
+
+    const giftMsg = document.querySelector("#giftCardMessageBox textarea");
+    document.getElementById("bn_gift_msg").value =
+        giftMsg ? giftMsg.value.trim() : "";
+
+    const customText = document.getElementById("customMessage");
+    document.getElementById("bn_custom_text").value =
+        customText ? customText.value.trim() : "";
+
+ 
+
+    let form = document.getElementById("buyNowForm");
     let formData = new FormData(form);
 
     fetch("../view_cart/buy_now_prepare.php", {
@@ -777,17 +772,21 @@ function buyNowPay() {
                         method: "POST",
                         headers: {"Content-Type": "application/json"},
                         body: JSON.stringify({
-                            razorpay_payment_id: response.razorpay_payment_id
+                            razorpay_payment_id: response.razorpay_payment_id,
+                            razorpay_order_id: response.razorpay_order_id,
+                            razorpay_signature: response.razorpay_signature
                         })
                     })
                     .then(res => res.json())
                     .then(result => {
+                        console.log("CONFIRM:", result);
+
                         if(result.success){
-                            alert("Payment Successful ✅");
-                            window.location.href =
-                              "../view_cart/order_success.php?order_id=" + result.order_id;
+                           window.location.href =
+  "../view_cart/order_summary.php?order_id=" + result.order_id;
+
                         } else {
-                            alert("Payment failed ❌");
+                            alert("Payment failed ❌ " + result.error);
                         }
                     });
                 }
@@ -798,7 +797,6 @@ function buyNowPay() {
         });
     });
 }
-
 </script>
 
 
