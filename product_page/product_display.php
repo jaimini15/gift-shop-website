@@ -762,7 +762,7 @@ function buyNowPay() {
                 key: data.key,
                 amount: data.amount,
                 currency: "INR",
-                name: "Gift Shop",
+                name: "GiftShop Pvt Ltd",
                 description: "Buy Now Payment",
                 order_id: data.orderId,
 
