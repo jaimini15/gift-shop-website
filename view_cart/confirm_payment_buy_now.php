@@ -29,6 +29,7 @@ if (!$orderData) {
 }
 
 $totalAmount = $orderData['Total_Amount'];
+mysqli_begin_transaction($connection);
 
 /* ✅ Insert order_item */
 $sql = "
@@ -68,6 +69,28 @@ if (!mysqli_query($connection, $paySql)) {
 
 /* ✅ Update order status */
 mysqli_query($connection, "UPDATE `order` SET Status='CONFIRM' WHERE Order_Id='$order_id'");
+/* ✅ Deduct stock for BUY NOW product */
+$productId = (int)$buy['product_id'];
+$qty       = (int)$buy['qty'];
+
+$updateStock = mysqli_query($connection, "
+    UPDATE stock_details
+    SET Stock_Available = Stock_Available - $qty,
+        Last_Update = CURDATE()
+    WHERE Product_Id = '$productId'
+      AND Stock_Available >= $qty
+");
+
+if (mysqli_affected_rows($connection) === 0) {
+    mysqli_rollback($connection);
+    echo json_encode([
+        "success" => false,
+        "error" => "Insufficient stock"
+    ]);
+    exit;
+}
+mysqli_commit($connection);
+
 
 /* ✅ Clear session */
 unset($_SESSION['BUY_NOW']);
