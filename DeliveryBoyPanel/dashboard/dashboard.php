@@ -18,13 +18,15 @@ $deliveryBoyId = (int) $_SESSION['User_Id'];
 /* ================= STATS ================= */
 
 // Assigned Orders
+// Assigned Orders (Packed + Out for Delivery)
 $assigned = mysqli_fetch_assoc(mysqli_query($connection, "
     SELECT COUNT(DISTINCT d.Order_Id) AS total
     FROM delivery_details d
     JOIN delivery_area_map m ON m.area_id = d.Area_Id
     WHERE m.delivery_boy_id = $deliveryBoyId
-    AND d.Delivery_Status = 'Assigned'
+    AND d.Delivery_Status IN ('Packed', 'Out for Delivery')
 "))['total'] ?? 0;
+
 
 // Completed Orders
 $completed = mysqli_fetch_assoc(mysqli_query($connection, "
