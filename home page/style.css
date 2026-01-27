@@ -1138,3 +1138,25 @@ body {
 
 
 
+/* allow clicks to pass through background when cart is open */
+body.cart-open .hero,
+body.cart-open .slider,
+body.cart-open .homepage-section {
+    pointer-events: none;
+}
+
+/* but allow cart itself */
+.cart-container,
+.cart-container * {
+    pointer-events: auto;
+}
+/* When cart is open, disable background clicks */
+body.cart-open *:not(.cart-container):not(.cart-container *) {
+    pointer-events: none;
+}
+
+/* Allow cart clicks */
+.cart-container,
+.cart-container * {
+    pointer-events: auto;
+}
