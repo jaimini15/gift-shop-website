@@ -1,5 +1,28 @@
 <?php
 session_start();
+
+// Not logged in → go to login
+if (!isset($_SESSION['User_Id'])) {
+    header("Location: ../login/login.php");
+    exit;
+}
+
+$role = $_SESSION['User_Role']; // ✅ correct session key
+
+// Admin → admin dashboard
+if ($role === "ADMIN") {
+    header("Location: ../AdminPanel/admin_profile_main.php");
+    exit;
+}
+
+// Delivery boy → delivery dashboard
+if ($role === "DELIVERY_BOY") {
+    header("Location: ../DeliveryBoyPanel/deliveryboy_profile_main.php");
+    exit;
+}  
+
+
+// Only customer can stay on this page
 include("../AdminPanel/db.php");
 $_SESSION['redirect_after_login'] = $_SERVER['REQUEST_URI'] ?? '/';
 if (!isset($_GET['category_id']) || empty($_GET['category_id'])) {
