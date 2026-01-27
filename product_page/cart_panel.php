@@ -70,11 +70,6 @@ $subtotal = 0;
 
 <div class="cart-actions">
     <a href="../view_cart/view_cart.php" class="view-cart-btn">View cart</a>
-    <button type="button" class="checkout-btn">Checkout</button>
-
-
-
-    
 </div>
 
 </div>
@@ -127,8 +122,7 @@ $subtotal = 0;
     gap: 15px;                   
     margin-top: 20px;            
 }
-.view-cart-btn, 
-.checkout-btn { 
+.view-cart-btn{ 
     flex: 1;                     
     text-align: center;
     padding: 12px 15px; 
@@ -141,14 +135,16 @@ $subtotal = 0;
     color: white; 
 }
 
-.checkout-btn { 
-    background: #7e2626d5;         
-    color: white;
+.view-cart-btn { 
+    background: #7e2626d5;   /* maroon */
+    color: white; 
 }
+
 .view-cart-btn:hover {
-    background: #222;
+    background: #000;       /* black on hover */
     color: white;
 }
+
 
 .checkout-btn:hover {
     background: #5f1d1d;
