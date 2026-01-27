@@ -34,11 +34,11 @@ if (isset($_SESSION['User_Id'])) {
 
     <nav>
         <ul>
-           <li><a href="<?= $BASE ?>home page/index.php" class="active">Home</a></li> |
+           <li><a href="<?= $BASE ?>home page/index.php">Home</a></li> |
 <li><a href="<?= $BASE ?>home page/about.php">About us</a></li> |
 
             <li class="dropdown">
-                <a href="#">Shop</a>
+                <a href="#" data-nav="shop">Shop</a>
                 <ul class="dropdown-content">
                     <?php  
                     $catQuery = "SELECT * FROM category_details WHERE Status='Enabled'";
@@ -60,14 +60,15 @@ if (isset($_SESSION['User_Id'])) {
     <div class="icons">
 
         <!-- CART ICON -->
-        <a href="javascript:void(0)" id="cartBtn" class="cart-wrapper">
-            <div class="cart-box">
-                <i class="fa-solid fa-cart-shopping"></i>
-                <span class="cart-badge"><?= $cart_count ?></span>
-            </div>
-        </a>
+        <?php if (isset($_SESSION['User_Id'])): ?>
+    <a href="javascript:void(0)" id="cartBtn" class="cart-wrapper">
+        <div class="cart-box">
+            <i class="fa-solid fa-cart-shopping"></i>
+            <span class="cart-badge"><?= $cart_count ?></span>
+        </div>
+    </a>
+<?php endif; ?>
 
-       <!-- PROFILE -->
 <!-- PROFILE -->
 <?php if (!isset($_SESSION['User_Id'])): ?>
 
@@ -152,6 +153,39 @@ const sidePanel = document.getElementById("sidePanel");
 const panelContent = document.getElementById("panelContent");
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script src="/GitHub/gift-shop-website/product_page/cart.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const currentPath = window.location.pathname.replace(/\/$/, "");
+
+    // Remove any existing active classes
+    document.querySelectorAll("nav a").forEach(a => {
+        a.classList.remove("active");
+    });
+
+    // Match normal links (Home, About, Contact)
+    document.querySelectorAll("nav ul li a[href]").forEach(link => {
+
+        // Skip Shop (it has #)
+        if (link.getAttribute("href") === "#") return;
+
+        const linkPath = new URL(link.href).pathname.replace(/\/$/, "");
+
+        if (currentPath === linkPath) {
+            link.classList.add("active");
+        }
+    });
+
+    // Highlight Shop ONLY for product pages
+    if (currentPath.includes("/product_page/")) {
+        const shopLink = document.querySelector('a[data-nav="shop"]');
+        if (shopLink) shopLink.classList.add("active");
+    }
+
+});
+</script>
+
 
 
 
