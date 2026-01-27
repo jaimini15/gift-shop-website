@@ -56,6 +56,32 @@ try {
     mysqli_query($connection, "
         UPDATE `order` SET Status = 'CONFIRM' WHERE Order_Id = '$order_id'
     ");
+    /* Deduct stock AFTER successful payment */
+$orderItems = mysqli_query($connection, "
+    SELECT Product_Id, Quantity
+    FROM order_item
+    WHERE Order_Id = '$order_id'
+");
+
+while ($item = mysqli_fetch_assoc($orderItems)) {
+
+    $productId = (int)$item['Product_Id'];
+    $qty       = (int)$item['Quantity'];
+
+    // Deduct stock safely
+    $updateStock = mysqli_query($connection, "
+        UPDATE stock_details
+        SET Stock_Available = Stock_Available - $qty,
+            Last_Update = CURDATE()
+        WHERE Product_Id = '$productId'
+          AND Stock_Available >= $qty
+    ");
+
+    // If stock was insufficient → rollback
+    if (mysqli_affected_rows($connection) === 0) {
+        throw new Exception("Insufficient stock for product ID $productId");
+    }
+}
 
     /* Clear cart */
     mysqli_query($connection, "
