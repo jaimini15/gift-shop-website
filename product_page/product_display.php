@@ -1,5 +1,40 @@
 <?php
 session_start();
+
+// Not logged in → login page
+if (!isset($_SESSION['User_Id'])) {
+    header("Location: ../login/login.php");
+    exit;
+}
+
+// SAFE role fetch (no warning)
+if (!isset($_SESSION['User_Role'])) {
+    // session exists but role not set → force logout
+    session_destroy();
+    header("Location: ../login/login.php");
+    exit;
+}
+
+$role = $_SESSION['User_Role'];
+
+// Admin → admin dashboard
+if ($role === "ADMIN") {
+    header("Location: ../AdminPanel/admin_profile_main.php");
+    exit;
+}
+
+// Delivery boy → delivery dashboard
+if ($role === "DELIVERY_BOY") {
+    header("Location: ../DeliveryBoyPanel/deliveryboy_profile_main.php");
+    exit;
+}
+
+// Only CUSTOMER can stay here
+?>
+<?php
+
+
+// Only customer can stay on this page
 include("../AdminPanel/db.php");
 
 if (!isset($_GET['product_id']) || empty($_GET['product_id'])) {
