@@ -45,16 +45,21 @@ if (!isset($_GET['product_id']) || empty($_GET['product_id'])) {
 $product_id = (int)$_GET['product_id'];
 
 $prodStmt = mysqli_prepare($connection, "
-    SELECT Product_Id, Category_Id, Product_Name, Product_Image, Product_Default_Text,
-           Product_Photo, Product_Text, Description, Price, Status
-    FROM Product_Details
-    WHERE Product_Id = ?
+    SELECT p.Product_Id, p.Category_Id, p.Product_Name, p.Product_Image,
+           p.Product_Default_Text, p.Product_Photo, p.Product_Text,
+           p.Description, p.Price, p.Status,
+           IFNULL(s.Stock_Available, 0) AS Stock_Available
+    FROM Product_Details p
+    LEFT JOIN stock_details s ON p.Product_Id = s.Product_Id
+    WHERE p.Product_Id = ?
     LIMIT 1
 ");
+
 mysqli_stmt_bind_param($prodStmt, 'i', $product_id);
 mysqli_stmt_execute($prodStmt);
 $res = mysqli_stmt_get_result($prodStmt);
 $product = mysqli_fetch_assoc($res);
+$stockAvailable = (int)$product['Stock_Available'];
 $fiveStarRow = mysqli_fetch_assoc(mysqli_query($connection, "
     SELECT COUNT(*) AS five_star_count
     FROM feedback_details
@@ -102,224 +107,10 @@ $imgSrc = img_src_from_blob_single($product['Product_Image'], 'product_mug_buyno
 
 <body>
 
-<!-- Navbar starts -->
-  <?php
-
-// CART COUNT
-$cart_count = 0;
-if (isset($_SESSION['User_Id'])) {
-    $uid = $_SESSION['User_Id'];
-
-    $cartQ = mysqli_query($connection, "SELECT Cart_Id FROM cart WHERE User_Id='$uid'");
-    if (mysqli_num_rows($cartQ) > 0) {
-        $cartIds = [];
-        while ($c = mysqli_fetch_assoc($cartQ)) {
-            $cartIds[] = $c['Cart_Id'];
-        }
-        $cartIdList = implode(",", $cartIds);
-
-        $countQ = mysqli_query(
-            $connection,
-            "SELECT SUM(Quantity) AS total FROM customize_cart_details WHERE Cart_Id IN ($cartIdList)"
-        );
-        $countRow = mysqli_fetch_assoc($countQ);
-        $cart_count = $countRow['total'] ?? 0;
-    }
-}
+<?php
+$ACTIVE_PAGE = "shop"; // 👈 tell navbar which menu is active
+include("../home page/navbar.php");
 ?>
-<header>
-    <div class="logo">GiftShop</div>
-
-    <nav>
-        <ul>
-            <li><a href="../home page/index.php">Home</a></li> |
-            <li><a href="../home page/about.php">About us</a></li> |
-
-            <li class="dropdown">
-                <a href="#" class="active">Shop</a>
-                <ul class="dropdown-content">
-                    <?php  
-                    $catQuery = "SELECT * FROM category_details WHERE Status='Enabled'";
-                    $catResult = mysqli_query($connection, $catQuery);
-
-                    while ($cat = mysqli_fetch_assoc($catResult)) { ?>
-                        <li>
-                            <a href="../product_page/product_list.php?category_id=<?= $cat['Category_Id'] ?>">
-                                <?= $cat['Category_Name'] ?>
-                            </a>
-                        </li>
-                    <?php } ?>
-                </ul>
-            </li> |
-
-            <li><a href="../home page/contact.php">Contact</a></li>
-        </ul>
-    </nav>
-    <div class="icons">
-
-        <!-- CART ICON -->
-        <a href="javascript:void(0)" id="cartBtn" class="cart-wrapper">
-            <div class="cart-box">
-                <i class="fa-solid fa-cart-shopping"></i>
-                <span class="cart-badge"><?= $cart_count ?></span>
-            </div>
-        </a>
-
-        <!-- PROFILE -->
-        <?php if (!isset($_SESSION['User_Id'])): ?>
-            <a href="../login/login.php"><i class="fa-regular fa-user"></i> My Profile</a>
-
-        <?php else: ?>
-            <div class="profile-dropdown">
-                <a class="profile-btn" id="profileBtn">
-                    <i class="fa-regular fa-user"></i> My Profile
-                </a>
-
-                <ul class="profile-menu">
-                    <li><a href="#" id="profileCheckBtn">Check Profile</a></li>
-                    <li><a href="../login/logout.php">Logout</a></li>
-                </ul>
-            </div>
-        <?php endif; ?>
-
-    </div>
-</header>
-<style>
-#sidePanel {
-    position: fixed;
-    top: 0;
-    right: -400px;
-    width: 350px;
-    height: 100%;
-    background: white;
-    box-shadow: -3px 0 10px rgba(0,0,0,0.3);
-    padding: 20px;
-    z-index: 9999;
-    transition: 0.3s ease;
-}
-
-#sidePanel.active {
-    right: 0;
-}
-
-#panelClose {
-    font-size: 28px;
-    cursor: pointer;
-    float: right;
-}
-.reviews-section h4 {
-    font-size: 20px;
-    margin-bottom: 15px;
-
-}
-
-.single-review i {
-    margin-right: 2px;
-}
-.review-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 12px 25px rgba(0,0,0,0.12);
-}
-</style>
-
-<div id="sidePanel">
-    <span id="panelClose">&times;</span>
-    <div id="panelContent" style="margin-top:40px;"></div>
-</div>
-<script>
-const sidePanel = document.getElementById("sidePanel");
-const panelContent = document.getElementById("panelContent");
-
-// Open panel and attach handlers after HTML inject
-document.getElementById("cartBtn").onclick = () => {
-    sidePanel.classList.add("active");
-
-    fetch("../product_page/cart_panel.php")
-        .then(res => res.text())
-        .then(html => {
-            panelContent.innerHTML = html;
-
-            // Attach remove handlers to all remove buttons and images
-            document.querySelectorAll(".remove-btn").forEach(btn => {
-                const id = btn.getAttribute("data-id");
-                btn.addEventListener("click", () => removeItem(id));
-            });
-            document.querySelectorAll(".cart-img[data-id]").forEach(img => {
-                img.addEventListener("click", () => removeItem(img.getAttribute("data-id")));
-            });
-        })
-        .catch(err => {
-            console.error("Failed loading panel:", err);
-        });
-};
-
-// Close panel
-document.getElementById("panelClose").onclick = () => {
-    sidePanel.classList.remove("active");
-};
-
-// PROFILE REDIRECT
-document.getElementById("profileCheckBtn")?.addEventListener("click", () => {
-    window.location.href = "../customer_profile/profile.php";
-});
-
-function removeItem(id) {
-    if (!confirm("Remove this item from cart?")) return;
-
-    const itemDiv = document.getElementById("item-" + id);
-    const hr = itemDiv?.nextElementSibling;
-
-    fetch("../product_page/delete_from_cart.php", {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: "id=" + encodeURIComponent(id)
-    })
-    .then(res => res.json())
-    .then(data => {
-
-        if (data.status !== "success") {
-            alert("Delete failed");
-            return;
-        }
-
-        /* ✅ Remove item from UI */
-        if (itemDiv) itemDiv.remove();
-        if (hr && hr.tagName === "HR") hr.remove();
-
-        /* ✅ UPDATE SUBTOTAL (THIS WAS MISSING) */
-        const subtotalSpan = document.getElementById("cartSubtotal");
-        if (subtotalSpan) {
-            subtotalSpan.innerText = data.subtotal.toLocaleString("en-IN");
-        }
-
-        /* ✅ EMPTY CART MESSAGE */
-        if (data.subtotal <= 0) {
-            document.querySelector(".cart-container").innerHTML =
-                "<p class='empty-msg'>Your cart is empty.</p>";
-        }
-
-        updateCartCount();
-    })
-    .catch(err => {
-        console.error(err);
-        alert("Network error");
-    });
-}
-
-
-
-function updateCartCount() {
-    fetch("../product_page/get_cart_count.php")
-        .then(r => r.text())
-        .then(text => {
-            const num = text.trim();
-            const badge = document.querySelector(".cart-badge");
-            if (badge) badge.innerText = num;
-        })
-        .catch(err => console.error("Failed to update cart count:", err));
-}
-</script>
-<!-- Navbar ends -->
 <!-- PAGE CONTENT -->
 <div class="container container-box" style="padding:40px 0;">
     <div class="row">
@@ -566,40 +357,7 @@ $reviewCount = mysqli_num_rows($reviewsQuery);
 </div>
 
 
-<!-- FOOTER Starts -->
-<section class="footer">
-    <div class="box-container">
-        <div class="box">
-            <h3>Quick links</h3>
-            <a href="../home page/index.php"><i class="fas fa-angle-right"></i>Home</a>
-            <a href="../home page/about.php"><i class="fas fa-angle-right"></i>About Us</a>
-            <a href="../home page/index.php#categories"><i class="fas fa-angle-right"></i>Shop</a>
-            <a href="../home page/contact.php"><i class="fas fa-angle-right"></i>Contact us</a>
-        </div>
-        <div class="box">
-            <h3>Extra links</h3>
-            <a href="#"><i class="fas fa-angle-right"></i>Ask question</a>
-            <a href="#"><i class="fas fa-angle-right"></i>Privacy policy</a>
-            <a href="#"><i class="fas fa-angle-right"></i>Terms of use</a>
-        </div>
-        <div class="box">
-            <h3>Contact info</h3>
-            <a href="#"><i class="fas fa-phone"></i>+123-456-7890</a>
-            <a href="#"><i class="fas fa-phone"></i>+222-333-4523</a>
-            <a href="https://mail.google.com/mail/?view=cm&fs=1&to=giftshopmaninagar@gmail.com" target="_blank">
-                    <i class="fas fa-envelope"></i> giftshopmaninagar@gmail.com</a>
-            <a href="#"><i class="fas fa-map"></i>Maninagar, India - 380008</a>
-        </div>
-        <div class="box">
-            <h3>Follow us</h3>
-            <a href="#"><i class="fab fa-facebook-f"></i>Facebook</a>
-            <a href="#"><i class="fab fa-twitter"></i>Twitter</a>
-            <a href="#"><i class="fab fa-instagram"></i>Instagram</a>
-            <a href="#"><i class="fab fa-linkedin"></i>Linkedin</a>
-        </div>
-    </div>
-    <div class="credit">created by <span>GiftShop</span> | all right reserved!</div>
-</section>
+<?php require_once '../home page/footer.php' ?>
 
 <!-- ZOOM EFFECT ON IMAGE -->
 <script>
@@ -623,6 +381,10 @@ if (img) {
 
 <script src="../home page/script.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+<!-- stock avaiable -->
+<script>
+const STOCK_AVAILABLE = <?= $stockAvailable ?>;
+</script>
 
 <!-- PRICE UPDATE -->
 <script>
@@ -740,12 +502,50 @@ document.querySelector("form[action$='add_to_cart.php']").addEventListener("subm
 
 });
 </script>
+<script>
+function validateCustomization(isBuyNow = false) {
+
+    /* ===== IMAGE REQUIRED CHECK ===== */
+    const uploadInput = isBuyNow
+        ? document.getElementById("bn_realUpload")
+        : document.getElementById("realUpload");
+
+    const photoRequired = <?= json_encode(strtolower($productPhoto) === 'yes') ?>;
+
+    if (photoRequired && (!uploadInput || uploadInput.files.length === 0)) {
+        alert("Please upload an image for customization.");
+        return false;
+    }
+
+    /* ===== CUSTOM TEXT REQUIRED CHECK ===== */
+    const customRadio  = document.getElementById("customText");
+    const defaultRadio = document.getElementById("defaultText");
+    const customMsg    = document.getElementById("customMessage");
+
+    if (customRadio && customRadio.checked) {
+        if (!customMsg || customMsg.value.trim().length === 0) {
+            alert("Please enter your custom message.");
+            return false;
+        }
+    }
+
+    return true;
+}
+</script>
 
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
 <script>
 function buyNowPay() {
+    // 🚫 OUT OF STOCK CHECK
+    if (STOCK_AVAILABLE <= 0) {
+        alert("Sorry! This item is out of stock.");
+        return;
+    }
 
+    if (!validateCustomization(true)) {
+        return;
+    }
     // ✅ SET BUY NOW VALUES
     document.getElementById("bn_gift_wrap").value =
         document.getElementById("giftWrap")?.checked ? 1 : 0;
