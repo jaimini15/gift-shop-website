@@ -24,7 +24,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
             $_SESSION['User_Id'] = $row['User_Id'];
             $_SESSION['Email']   = $row['Email'];
-            $_SESSION['Role']    = $row['User_Role']; // store role
+           $_SESSION['User_Role'] = $row['User_Role']; // ✅ correct // store role
 
             // remember email
             if (isset($_POST['remember'])) {
