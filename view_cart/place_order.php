@@ -49,25 +49,45 @@ try {
     }
 
     /* ✅ 2. Insert order items (NOW orderId exists) */
-    $cartItems = mysqli_query($connection, "
-        SELECT Product_Id, Quantity, Price
-        FROM customize_cart_details
-        WHERE Cart_Id = (
-            SELECT Cart_Id FROM cart WHERE User_Id = '$userId'
-        )
-    ");
+   $cartItems = mysqli_query($connection, "
+    SELECT 
+        Product_Id,
+        Quantity,
+        Price,
+        Custom_Text,
+        Custom_Image,
+        Gift_Wrapping,
+        Personalized_Message,
+        Is_Hamper_Suggested
+    FROM customize_cart_details
+    WHERE Cart_Id = (
+        SELECT Cart_Id FROM cart WHERE User_Id = '$userId'
+    )
+");
+
 
     while ($item = mysqli_fetch_assoc($cartItems)) {
-        mysqli_query($connection, "
-            INSERT INTO order_item
-            (Order_Id, Product_Id, Quantity, Price_Snapshot)
-            VALUES (
-                '$orderId',
-                '{$item['Product_Id']}',
-                '{$item['Quantity']}',
-                '{$item['Price']}'
-            )
-        ");
+        $stmt = $connection->prepare("
+    INSERT INTO order_item
+    (Order_Id, Product_Id, Quantity, Price_Snapshot, Custom_Text, Custom_Image, Gift_Wrapping, Personalized_Message, Is_Hamper_Suggested)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+");
+
+$stmt->bind_param(
+    "iiidssisi",
+    $orderId,
+    $item['Product_Id'],
+    $item['Quantity'],
+    $item['Price'],
+    $item['Custom_Text'],
+    $item['Custom_Image'],
+    $item['Gift_Wrapping'],
+    $item['Personalized_Message'],
+    $item['Is_Hamper_Suggested']
+);
+
+$stmt->execute();
+
     }
 
     /* ✅ 3. Save session */
