@@ -11,7 +11,7 @@ $allowed = [
     'dashboard' => __DIR__ . '/dashboard/dashboard.php',
     'assigned_orders' => __DIR__ . '/orders/assigned_orders.php',
     'completed_deliveries' => __DIR__ . '/complete_deliveries/completed_deliveries.php',
-    'profile' => __DIR__ . '/deliveryboy/deliveryboy_profile.php',
+    'profile' => __DIR__ . '/deliveryboy/edit_deliveryboy_profile.php',
     'account' => __DIR__ . '/deliveryboy_profile_main.php', // ✅ FIX
 ];
 
