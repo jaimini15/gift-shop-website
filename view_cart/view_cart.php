@@ -214,20 +214,29 @@ $_SESSION['total']    = $total;
     <span>Order Total</span>
     <span>₹<?= number_format($total) ?></span>
 </div>
-<?php if (!empty($outOfStockProducts)): ?>
+<?php if ($totalItems >= 3): ?>
+<div style="margin-top:10px;">
+    <label>
+        <input type="checkbox" id="hamperCheckbox">
+        Make this order a gift hamper 🎁
+    </label>
+</div>
+<?php endif; ?>
 
 
 <style>
-.continue-btn {
-    pointer-events: none;
-    opacity: 0.5;
+button:disabled {
+    background: #ccc;
+    cursor: not-allowed;
 }
-</style>
-<?php endif; ?>
 
-<button type="button" id="continueBtn" class="continue-btn">
+</style>
+
+<button type="button" id="continueBtn" class="continue-btn"
+<?php if (!empty($outOfStockProducts)) echo "disabled"; ?>>
     Continue
 </button>
+
 <p class="note">Clicking on "Continue" will not deduct any money</p>
 </div>
 
@@ -261,6 +270,25 @@ function closeStockModal() {
     document.querySelector('.stock-modal-overlay').style.display = 'none';
 }
 </script>
+<!-- hamper js -->
+<script>
+const hamperCheckbox = document.getElementById("hamperCheckbox");
+
+if (hamperCheckbox) {
+    hamperCheckbox.addEventListener("change", function() {
+
+        fetch("view_cart.php", {
+            method: "POST",
+            headers: {"Content-Type": "application/x-www-form-urlencoded"},
+            body: "update_hamper=1&value=" + (this.checked ? 1 : 0)
+        })
+        .then(res => res.text())
+        .then(data => console.log("Hamper update:", data));
+    });
+}
+</script>
+
+
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
 document.getElementById("continueBtn").addEventListener("click", function () {
