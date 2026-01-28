@@ -42,23 +42,40 @@ $stockCheckQuery = "
     SELECT 
         ccd.Product_Id,
         pd.Product_Name,
-        sd.Stock_Available,
-        ccd.Quantity
+        COALESCE(MAX(sd.Stock_Available), 0) AS Stock_Available,
+        SUM(ccd.Quantity) AS Quantity
     FROM customize_cart_details ccd
     JOIN product_details pd ON pd.Product_Id = ccd.Product_Id
     LEFT JOIN stock_details sd ON sd.Product_Id = ccd.Product_Id
     WHERE ccd.Cart_Id = '$cartId'
+    GROUP BY ccd.Product_Id, pd.Product_Name
 ";
+
+
 
 $stockResult = mysqli_query($connection, $stockCheckQuery);
 
 while ($row = mysqli_fetch_assoc($stockResult)) {
     $available = (int)($row['Stock_Available'] ?? 0);
+    $qty = (int)$row['Quantity'];
 
-    if ($available < $row['Quantity']) {
-        $outOfStockProducts[] = $row['Product_Name'];
+    // Case 1: Stock = 0
+    if ($available == 0) {
+        $outOfStockProducts[] = [
+            "name" => $row['Product_Name'],
+            "message" => "Out of stock. Please remove this item."
+        ];
+    }
+    // Case 2: Cart quantity > stock
+    else if ($qty > $available) {
+        $extra = $qty - $available;
+        $outOfStockProducts[] = [
+            "name" => $row['Product_Name'],
+            "message" => "Only $available left in stock. Remove $extra item(s)."
+        ];
     }
 }
+
 
 $subtotal = 0;
 
@@ -137,8 +154,12 @@ $estimatedDate = date("d M Y", strtotime("+3 days"));
 
         <ul>
             <?php foreach ($outOfStockProducts as $p): ?>
-                <li><?= htmlspecialchars($p) ?></li>
-            <?php endforeach; ?>
+    <li>
+        <?= htmlspecialchars($p['name']) ?><br>
+        <small style="color:#555;"><?= htmlspecialchars($p['message']) ?></small>
+    </li>
+<?php endforeach; ?>
+
         </ul>
 
         <button onclick="closeStockModal()">OK</button>
