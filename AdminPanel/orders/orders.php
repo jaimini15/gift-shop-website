@@ -47,25 +47,6 @@ if (isset($_POST['set_packed']) && $_POST['set_packed'] === 'Packed') {
     }
 }
 
-// ================= IMAGE STREAM HANDLER =================
-if (isset($_GET['img'])) {
-    $id = (int) $_GET['img'];
-
-    $q = mysqli_query($connection,
-        "SELECT Custom_Image FROM order_item WHERE Order_Item_Id = $id LIMIT 1");
-
-    if ($q && mysqli_num_rows($q) === 1) {
-        $row = mysqli_fetch_assoc($q);
-        if (!empty($row['Custom_Image'])) {
-            header("Content-Type: image/jpeg");
-            echo $row['Custom_Image'];
-            exit;
-        }
-    }
-
-    http_response_code(404);
-    exit;
-}
 ?>
 
 <!DOCTYPE html>
@@ -217,7 +198,12 @@ while ($item = mysqli_fetch_assoc($items)):
     <td><?= $item['Custom_Text'] ?? 'N/A' ?></td>
     <td>
         <?php if (!empty($item['Custom_Image'])): ?>
-            <img src="orders.php?img=<?= $item['Order_Item_Id'] ?>" class="product-img">
+          <?php if (!empty($item['Custom_Image'])): ?>
+    <img src="../<?= $item['Custom_Image'] ?>" class="product-img">
+<?php else: ?>
+    <span class="text-muted">No Image</span>
+<?php endif; ?>
+
         <?php else: ?>
             <span class="text-muted">No Image</span>
         <?php endif; ?>
