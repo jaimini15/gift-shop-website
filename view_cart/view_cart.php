@@ -50,23 +50,19 @@ $stockCheckQuery = "
     WHERE ccd.Cart_Id = '$cartId'
     GROUP BY ccd.Product_Id, pd.Product_Name
 ";
-
-
-
 $stockResult = mysqli_query($connection, $stockCheckQuery);
 
 while ($row = mysqli_fetch_assoc($stockResult)) {
     $available = (int)($row['Stock_Available'] ?? 0);
     $qty = (int)$row['Quantity'];
 
-    // Case 1: Stock = 0
     if ($available == 0) {
         $outOfStockProducts[] = [
             "name" => $row['Product_Name'],
             "message" => "Out of stock. Please remove this item."
         ];
     }
-    // Case 2: Cart quantity > stock
+    // Cart quantity > stock
     else if ($qty > $available) {
         $extra = $qty - $available;
         $outOfStockProducts[] = [
@@ -75,16 +71,10 @@ while ($row = mysqli_fetch_assoc($stockResult)) {
         ];
     }
 }
-
-
 $subtotal = 0;
-
-
 /* Estimated Delivery Date */
 $estimatedDate = date("d M Y", strtotime("+3 days"));
 ?>
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -129,9 +119,6 @@ $estimatedDate = date("d M Y", strtotime("+3 days"));
     padding: 6px 0;
     font-weight: bold;
 }
-
-
-
 .stock-modal button {
     margin-top: 15px;
     padding: 10px 25px;
@@ -208,7 +195,7 @@ while ($row = mysqli_fetch_assoc($result)) :
 
 <!-- RIGHT -->
 <?php
-$shipping = 0; // example
+$shipping = 0; 
 $total = max(0, $subtotal - $shipping);
 
 /* STORE IN SESSION */
@@ -239,7 +226,7 @@ $_SESSION['total']    = $total;
 <div style="margin-top:10px;">
     <label>
         <input type="checkbox" id="hamperCheckbox">
-        Make this order a gift hamper 🎁
+        Make this order a gift hamper &#x1F381;
     </label>
 </div>
 <?php endif; ?>
@@ -314,7 +301,7 @@ if (hamperCheckbox) {
 <script>
 document.getElementById("continueBtn").addEventListener("click", function () {
 
-    // STEP 1: create pending order in DB
+    // create pending order in DB
     fetch("place_order.php", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
@@ -330,7 +317,7 @@ document.getElementById("continueBtn").addEventListener("click", function () {
 
         window.pendingOrderId = order.order_id;
 
-        // STEP 2: create Razorpay order
+        //  create Razorpay order
         fetch("create_razorpay_order.php")
         .then(res => res.json())
         .then(rzp => {
@@ -340,7 +327,7 @@ document.getElementById("continueBtn").addEventListener("click", function () {
                 return;
             }
 
-            // STEP 3: open Razorpay popup
+            // open Razorpay popup
             var options = {
                 key: rzp.key,
                 amount: rzp.amount,
@@ -380,7 +367,7 @@ document.getElementById("continueBtn").addEventListener("click", function () {
                     }
                 },
 
-                theme: { color: "#7e2626" }
+                theme: { color: "#7e2626d5" }
             };
 
             new Razorpay(options).open();
