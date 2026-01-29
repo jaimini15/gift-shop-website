@@ -2,7 +2,7 @@
 session_start();
 include("../AdminPanel/db.php");
 
-$currentStep = 3; // ✅ FINAL STEP
+$currentStep = 3; 
 include("checkout_steps.php");
 
 if (!isset($_GET['order_id'])) {
@@ -72,14 +72,12 @@ body{
     background:#fff;
 }
 
-/* ===== CONTAINER ===== */
 .container{
     max-width:1200px;
     margin:auto;
     padding:40px;
 }
 
-/* ===== SUMMARY BOX ===== */
 .summary-box{
     border:1px solid #7e2626d5;
     border-radius:8px;
@@ -88,14 +86,12 @@ body{
     max-width:900px;
     margin:auto;
 }
-/* ===== SUCCESS ICON ===== */
+
 .checkmark{
     font-size:60px;
     color:#1aa14a;
     margin-bottom:10px;
 }
-
-/* ===== TITLES ===== */
 .summary-box h2{
     color:#1aa14a;
     margin:10px 0;
@@ -106,7 +102,6 @@ body{
     color:#555;
 }
 
-/* ===== ORDER DETAILS ===== */
 .order-details{
     display:grid;
     grid-template-columns: 200px 1fr;
@@ -119,14 +114,11 @@ body{
     margin:0;
 }
 
-/* ===== DIVIDER ===== */
 hr{
     margin:25px 0;
     border:none;
     border-top:1px solid #7e2626d5;
 }
-
-/* ===== BUTTON ===== */
 .shop-btn{
     display:inline-block;
     margin-top:30px;
@@ -142,8 +134,6 @@ hr{
 .shop-btn:hover{
     background:#000;
 }
-
-/* ===== THANK YOU TEXT ===== */
 .thank-note{
     font-size:15px;
     color:#444;
