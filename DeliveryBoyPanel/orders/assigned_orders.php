@@ -19,11 +19,11 @@ if (isset($_POST['order_id'], $_POST['delivery_status'])) {
     $orderId = (int) $_POST['order_id'];
     $status  = $_POST['delivery_status'];
 
-    if ($status === 'Out of Delivery') {
+    if ($status === 'Out for Delivery') {
 
         mysqli_query($connection, "
             UPDATE delivery_details 
-            SET Delivery_Status = 'Out of Delivery'
+            SET Delivery_Status = 'Out for Delivery'
             WHERE Order_Id = $orderId
         ");
 
@@ -56,7 +56,7 @@ $orders = mysqli_query($connection, "
     WHERE 
         m.delivery_boy_id = $deliveryBoyId
         AND m.status = 'ACTIVE'
-        AND d.Delivery_Status IN ('Packed', 'Out of Delivery')
+        AND d.Delivery_Status IN ('Packed', 'Out for Delivery')
     ORDER BY o.Order_Date DESC
 ");
 ?>
@@ -155,9 +155,9 @@ body { background:#f4f6f9; }
 
                                 <option value="">Select</option>
 
-                                <option value="Out of Delivery"
-                                    <?= $row['Delivery_Status'] == 'Out of Delivery' ? 'selected' : '' ?>>
-                                    Out of Delivery
+                                <option value="Out for Delivery"
+                                    <?= $row['Delivery_Status'] == 'Out for Delivery' ? 'selected' : '' ?>>
+                                    Out for Delivery
                                 </option>
 
                                 <option value="Delivered">
