@@ -3,7 +3,6 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-/* ================= AUTH CHECK ================= */
 if (!isset($_SESSION['User_Id'])) {
     header("Location: ../login/login.php");
     exit;
@@ -17,7 +16,7 @@ if (!isset($_SESSION['User_Id'])) {
     <meta charset="UTF-8">
     <title>Delivery Boy Panel | GiftShop</title>
 
-    <!-- MAIN SITE CSS -->
+    <!-- MAIN CSS -->
     <link rel="stylesheet" href="../home page/style.css">
 
     <!-- FONT AWESOME -->
