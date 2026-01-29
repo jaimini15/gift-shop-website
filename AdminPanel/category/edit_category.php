@@ -21,7 +21,6 @@ if(isset($_POST['update'])){
                       Category_Image='$image'
                   WHERE Category_Id=$id";
     } else {
-        // No new image → keep old one
         $query = "UPDATE Category_Details 
                   SET Category_Name='$name',
                       Description='$desc',
