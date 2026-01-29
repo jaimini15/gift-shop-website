@@ -14,7 +14,7 @@ include("account_layout.php");
 <h2>Change Password</h2>
 
 <?php if (isset($_GET['success'])): ?>
-    <p style="color:green;">Password updated successfully ✅</p>
+    <p style="color:green;">Password updated successfully &#x2705;</p>
 <?php endif; ?>
 <?php if (isset($_GET['error'])): ?>
     <p style="color:red;">
