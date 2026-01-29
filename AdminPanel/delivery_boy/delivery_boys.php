@@ -82,7 +82,7 @@ $result = mysqli_query($connection, $query);
                     <?= $row['Area_Name'] ? $row['Area_Name'] . ', ' . $row['Pincode'] : 'N/A' ?>
                 </td>
 
-                <!-- ✅ ASSIGNED AREAS COLUMN -->
+                <!-- ASSIGNED AREAS COLUMN -->
                 <td>
                     <?= $row['Assigned_Areas'] ?: 'N/A' ?>
                 </td>
