@@ -67,7 +67,7 @@ while ($area = mysqli_fetch_assoc($areas)) {
 
     <button type="submit">Save Changes</button>
 </form>
-</div> <!-- account-content -->
-</div> <!-- account-wrapper -->
+</div> 
+</div> 
 <?php require_once '../home page/footer.php'; ?>
 
