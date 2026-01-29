@@ -28,31 +28,29 @@ if (!$row) {
 
 /* ================= VALIDATIONS ================= */
 
-// 1️⃣ Check current password
+// Check current password
 if ($row['Password'] !== $current) {
     header("Location: change_password.php?error=1");
     exit();
 }
 
-// 2️⃣ Check new & confirm match
+// Check new & confirm match
 if ($new !== $confirm) {
     header("Location: change_password.php?error=2");
     exit();
 }
 
-// 3️⃣ Check new password is NOT same as old password
+// Check new password is NOT same as old password
 if ($new === $row['Password']) {
     header("Location: change_password.php?error=3");
     exit();
 }
 
-/* ================= UPDATE PASSWORD ================= */
+/* UPDATE PASSWORD */
 
 mysqli_query(
     $connection,
     "UPDATE user_details SET Password='$new' WHERE User_Id='$uid'"
 );
-
-// Redirect after success
 header("Location: profile.php?password=success");
 exit();
