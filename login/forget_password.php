@@ -42,7 +42,7 @@ input:focus, select:focus {
 button { 
     width: 100%; 
     padding: 10px; 
-    background: #007bff; 
+    background: #7e2626d5; 
     border: 0; 
     color: #fff; 
     font-size: 16px; 
@@ -50,7 +50,7 @@ button {
     border-radius: 4px; 
 }
 button:hover { 
-    background: #0056b3; 
+    background: black; 
 }
 .msg { 
     font-size: 15px; 
