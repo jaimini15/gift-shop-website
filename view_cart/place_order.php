@@ -73,18 +73,21 @@ try {
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
 ");
 
+$customImage = $item['Custom_Image'] ?? ''; 
+
 $stmt->bind_param(
-    "iiidssisi",
+    "iiidssisi",  
     $orderId,
     $item['Product_Id'],
     $item['Quantity'],
     $item['Price'],
     $item['Custom_Text'],
-    $item['Custom_Image'],
-    $item['Gift_Wrapping'],
+    $customImage,              
+    $item['Gift_Wrapping'],    
     $item['Personalized_Message'],
     $item['Is_Hamper_Suggested']
 );
+
 
 $stmt->execute();
 
