@@ -35,9 +35,6 @@ if (session_status() == PHP_SESSION_NONE) {
         </div>
 
     </div>
-
-
-    <!-- Info Boxes -->
     <div class="contact-info-boxes">
 
         <div class="gift-extra-box">
