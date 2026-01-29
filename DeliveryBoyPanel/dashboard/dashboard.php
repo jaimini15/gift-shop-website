@@ -15,9 +15,7 @@ if (!isset($_SESSION['User_Id'])) {
 
 $deliveryBoyId = (int) $_SESSION['User_Id'];
 
-/* ================= STATS ================= */
 
-// Assigned Orders
 // Assigned Orders (Packed + Out for Delivery)
 $assigned = mysqli_fetch_assoc(mysqli_query($connection, "
     SELECT COUNT(DISTINCT d.Order_Id) AS total
