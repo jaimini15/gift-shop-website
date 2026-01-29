@@ -6,11 +6,9 @@ if (!isset($_SESSION['reset_email']) || !isset($_SESSION['otp_verified'])) {
     header("Location: forgot_password.php");
     exit;
 }
-
 $email = $_SESSION['reset_email'];
 $role  = $_SESSION['reset_role'];
 ?>
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -78,8 +76,6 @@ if (isset($_POST['change'])) {
         echo "<p class='msg' style='color:red;'>Passwords do not match!</p>";
     } 
     else {
-
-        // ✅ plain password (same as your login system)
         $stmt = $connection->prepare("UPDATE user_details SET Password=?, otp=NULL WHERE Email=? AND User_Role=?");
         $stmt->bind_param("sss", $newpass, $email, $role);
         $stmt->execute();
