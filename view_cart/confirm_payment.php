@@ -19,7 +19,6 @@ if (empty($razorpay_payment_id)) {
 $order_id = (int)$_SESSION['pending_order_id'];
 $user_id  = (int)$_SESSION['User_Id'];
 
-/* Prevent duplicate payment */
 $check = mysqli_query($connection, "
     SELECT 1 FROM payment_details WHERE Order_Id = '$order_id' LIMIT 1
 ");
@@ -31,8 +30,6 @@ if (mysqli_num_rows($check) > 0) {
 mysqli_begin_transaction($connection);
 
 try {
-
-    /* Get frozen order total */
     $orderRes = mysqli_query($connection, "
         SELECT Total_Amount FROM `order` WHERE Order_Id = '$order_id'
     ");
@@ -76,8 +73,6 @@ while ($item = mysqli_fetch_assoc($orderItems)) {
         WHERE Product_Id = '$productId'
           AND Stock_Available >= $qty
     ");
-
-    // If stock was insufficient → rollback
     if (mysqli_affected_rows($connection) === 0) {
         throw new Exception("Insufficient stock for product ID $productId");
     }
