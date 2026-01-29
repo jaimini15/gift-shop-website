@@ -91,7 +91,7 @@ $activePage = "orders";
             <label for="star<?= $i ?>_<?= $p['Product_Id'] ?>">★</label>
         <?php endfor; ?>
     </div>
-<p style="color:#666;">We'd love to hear from you 💬</p>
+<p style="color:#666;">We'd love to hear from you </p>
     <textarea name="feedback[<?= $p['Product_Id'] ?>]"
         placeholder="Write your feedback..."
         style="width:100%;height:120px;margin-bottom:25px;"></textarea>
@@ -124,10 +124,10 @@ function validateRatings() {
     if (!valid) {
         document.getElementById('ratingError').style.display = 'block';
         window.scrollTo({ top: 0, behavior: 'smooth' });
-        return false; // ❌ stop submit
+        return false; 
     }
 
-    return true; // ✅ allow submit
+    return true; 
 }
 </script>
 
@@ -150,8 +150,8 @@ function validateRatings() {
 
 .star-rating {
     direction: rtl;
-    display: inline-flex;      /* ⭐ THIS IS THE KEY */
-    gap: 6px;                  /* space between stars */
+    display: inline-flex;      
+    gap: 6px;                  
     font-size: 30px;
     margin-bottom: 20px;
 }
