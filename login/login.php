@@ -19,12 +19,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if ($result && mysqli_num_rows($result) === 1) {
         $row = mysqli_fetch_assoc($result);
 
-        // password check (same as your logic)
+        // password check 
         if ($pass === $row['Password']) {
 
             $_SESSION['User_Id'] = $row['User_Id'];
             $_SESSION['Email']   = $row['Email'];
-           $_SESSION['User_Role'] = $row['User_Role']; // ✅ correct // store role
+           $_SESSION['User_Role'] = $row['User_Role']; 
 
             // remember email
             if (isset($_POST['remember'])) {
@@ -33,7 +33,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 setcookie("remember_email", "", time() - 3600, "/");
             }
 
-            // ✅ Redirect based on role
+            // Redirect based on role
             if ($role == "ADMIN") {
                 header("Location: ../AdminPanel/layout.php");
                 exit();
@@ -84,7 +84,7 @@ input, select {
 
 <form method="POST">
 
-    <!-- ✅ ROLE SELECTION -->
+    <!--  ROLE SELECTION -->
     <select name="role" required>
         <option value="">--Select Role-- </option>
         <option value="CUSTOMER">Customer</option>
@@ -147,22 +147,21 @@ Don't have an account?
             gap: 6px; cursor:pointer;
         }
         .extra-options input[type="checkbox"] {
-    width: auto;    /* important */
-    margin: 0;      /* remove default margin */
-}
+            width: auto;    
+            margin: 0;     
+        }
         .login-icon {
-    text-align: center;
-    font-size: 70px;
-    color: #7e2626d5;
-    margin-bottom: 10px;
-}
+        text-align: center;
+        font-size: 70px;
+        color: #7e2626d5;
+        margin-bottom: 10px;
+        }
 
-.login-title {
-    text-align: center;
-    margin: 0;
-    font-size: 28px;
-    font-weight: bold;
-    color: #333;
-}
-
-    </style>
+        .login-title {
+        text-align: center;
+        margin: 0;
+        font-size: 28px;
+        font-weight: bold;
+        color: #333;
+        }
+</style>
