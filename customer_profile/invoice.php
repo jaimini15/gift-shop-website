@@ -230,7 +230,5 @@ body{background:white;font-family:Arial}
 
 </div>
 </div>
-
-<?php //include("../home page/footer.php"); ?>
 </body>
 </html>
