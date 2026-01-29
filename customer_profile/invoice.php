@@ -83,9 +83,6 @@ while ($row = mysqli_fetch_assoc($itemRes)) {
 $grandTotal = $order['Total_Amount'];
 
 ?>
-
-<?php //include("../home page/navbar.php"); ?>
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -156,7 +153,7 @@ body{background:white;font-family:Arial}
 .product-delivery {
     font-weight:600;
     color:#007600;
-    margin-bottom:10px; /* space between delivery date and product row */
+    margin-bottom:10px; 
 }
 
 </style>
