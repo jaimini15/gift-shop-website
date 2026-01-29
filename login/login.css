@@ -20,8 +20,6 @@ body {
     align-items: center;
     overflow: hidden;
 }
-
-/* Login Card */
 .login-card {
     width: 320px;
     background: #ffffffea;
@@ -60,9 +58,6 @@ body {
     font-size: 15px;
     outline: none;
 }
-
-
-
 .remember {
     font-size: 14px;
     color: #444;
@@ -102,8 +97,8 @@ body {
     font-weight: bold;
 }
 .logo i {
-    font-size: 85px;        /* size of the icon */
-    color: #7e2626;         /* color of the icon */
+    font-size: 85px;        
+    color: #7e2626;         
     margin-bottom: 12px;
 }
 
