@@ -10,8 +10,7 @@ if (!isset($_SESSION['User_Id'])) {
     return;
 }
 
-$deliveryBoyId = (int) $_SESSION['User_Id'];
-/* ============================================== */
+$deliveryBoyId = (int) $_SESSION['User_Id'];/
 
 
 /* ========== UPDATE DELIVERY STATUS ============= */
@@ -38,9 +37,6 @@ if (isset($_POST['order_id'], $_POST['delivery_status'])) {
         ");
     }
 }
-/* ============================================== */
-
-
 /* ========== FETCH ASSIGNED ORDERS ============== */
 $orders = mysqli_query($connection, "
     SELECT 
@@ -63,7 +59,6 @@ $orders = mysqli_query($connection, "
         AND d.Delivery_Status IN ('Packed', 'Out of Delivery')
     ORDER BY o.Order_Date DESC
 ");
-/* ============================================== */
 ?>
 
 <!DOCTYPE html>
