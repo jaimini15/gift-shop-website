@@ -193,6 +193,9 @@ ob_end_flush();
                 margin-right: 10px;
             }
         }
+        body {
+            background: #ffffff !important;
+        }
     </style>
 </head>
 
