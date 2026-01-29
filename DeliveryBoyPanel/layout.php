@@ -38,10 +38,12 @@ ob_end_flush();
 
     <style>
         body {
-            background: #ffffff;
             margin: 0;
             font-family: Arial, sans-serif;
+            background: #ffffff;
+            /* ✅ white page background */
         }
+
 
         .account-wrapper {
             max-width: 1400px;
@@ -49,7 +51,7 @@ ob_end_flush();
             display: flex;
             gap: 25px;
             min-height: 600px;
-            background: #ffffff;
+
         }
 
         .account-sidebar {
@@ -116,11 +118,12 @@ ob_end_flush();
             width: 100%;
             table-layout: auto;
         }
-        .account-sidebar a:last-child{
-    margin-top:auto;
-    background:#fee2e2;
-    color:#b91c1c;
-}
+
+        .account-sidebar a:last-child {
+            margin-top: auto;
+            background: #fee2e2;
+            color: #b91c1c;
+        }
 
         @media (max-width: 900px) {
             .account-wrapper {
@@ -136,6 +139,10 @@ ob_end_flush();
             .account-sidebar a {
                 white-space: nowrap;
             }
+        }
+
+        body {
+            background: #ffffff !important;
         }
     </style>
 
