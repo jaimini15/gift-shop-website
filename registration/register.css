@@ -2,24 +2,22 @@ body {
     margin: 0;
     padding: 0;
     font-family: Arial, sans-serif;
-    height: 100vh; /* full screen height */
+    height: 100vh; 
     background: linear-gradient(to bottom, #f8f3ee, #7e2626d5);
     display: flex;
     justify-content: center;
     align-items: center;
-    overflow: hidden; /* prevent scrolling */
+    overflow: hidden; 
 }
 
 /* Form Card */
 .register-card {
-    width: 330px; /* slightly smaller so fits on any screen */
+    width: 330px; 
     background: #ffffffea;
     padding: 25px;
     border-radius: 20px;
     box-shadow: 0 8px 25px rgba(0,0,0,0.25);
     text-align: center;
-
-    /* ensures form never goes out of screen height */
     max-height: 85vh;
     overflow: hidden;
 }
