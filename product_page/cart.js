@@ -101,7 +101,6 @@ function updateSubtotal(amount) {
  subtotalEl.textContent = "₹" + Number(amount).toLocaleString();
 
 // Update Cart Count 
-
 function updateCartCount() {
     fetch("/GitHub/gift-shop-website/product_page/get_cart_count.php")
         .then(r => r.text())
