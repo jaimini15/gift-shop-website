@@ -6,13 +6,13 @@ if (!isset($_SESSION['admin_id']) || $_SESSION['admin_role'] !== "ADMIN") {
     header("Location: ../admin_login/login.php?error=Please login first");
     exit;
 }
-/* ============================================= */
+
 
 include(__DIR__ . '/../db.php');
 
 $admin_id = (int)$_SESSION['admin_id'];
 
-/* ========== FETCH ADMIN DETAILS ========== */
+/* ========== Admin Details Fetch========== */
 $adminQuery = mysqli_query($connection, "
     SELECT 
         u.*,
@@ -25,9 +25,8 @@ $adminQuery = mysqli_query($connection, "
 ");
 
 $admin = mysqli_fetch_assoc($adminQuery);
-/* ======================================== */
-?>
 
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -82,8 +81,6 @@ $admin = mysqli_fetch_assoc($adminQuery);
 
 <div class="container mt-4">
     <div class="profile-card">
-
-        <!-- SUCCESS MESSAGE -->
         <?php if (isset($_GET['success'])) { ?>
             <div class="alert alert-success text-center">
                 <i class="fa-solid fa-check-circle"></i>
@@ -133,7 +130,7 @@ $admin = mysqli_fetch_assoc($adminQuery);
                 <td><?php echo $admin['Address']; ?></td>
             </tr>
 
-            <!-- AREA + PINCODE IN SAME ROW -->
+            <!-- AREA AND PINCODE  -->
             <tr>
                 <th><i class="fa-solid fa-map-location-dot"></i> Area & Pincode</th>
                 <td>
