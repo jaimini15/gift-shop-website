@@ -135,12 +135,12 @@ $subtotal = 0;
 }
 
 .view-cart-btn { 
-    background: #7e2626d5;   /* maroon */
+    background: #7e2626d5;   
     color: white; 
 }
 
 .view-cart-btn:hover {
-    background: #000;       /* black on hover */
+    background: #000;       
     color: white;
 }
 
