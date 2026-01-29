@@ -10,7 +10,7 @@ if (!isset($_SESSION['User_Id'])) {
     return;
 }
 
-$deliveryBoyId = (int) $_SESSION['User_Id'];/
+$deliveryBoyId = (int) $_SESSION['User_Id'];
 
 
 /* ========== UPDATE DELIVERY STATUS ============= */
