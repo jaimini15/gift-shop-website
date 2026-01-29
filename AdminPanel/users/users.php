@@ -1,10 +1,9 @@
 <?php
-// ================= SESSION & DB =================
 if (!isset($_SESSION)) session_start();
 
 include(__DIR__ . '/../db.php');
 
-// ================= FETCH CUSTOMERS WITH AREA & PINCODE =================
+//FETCH CUSTOMERS WITH AREA & PINCODE 
 $query = "
     SELECT 
         u.*,
@@ -79,7 +78,7 @@ $result = mysqli_query($connection, $query);
                 <td><?= $row['Address'] ?></td>
                 <td><?= $row['DOB'] ?></td>
 
-                <!-- ✅ Area + Pincode logic (same as deliveryboy profile) -->
+                <!--  Area + Pincode logic  -->
                 <td>
                     <?php
                     if (!empty($row['Area_Name'])) {
