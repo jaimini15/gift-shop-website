@@ -9,7 +9,7 @@ if (session_status() === PHP_SESSION_NONE) {
 include("../AdminPanel/db.php");
 
 /* ================= AUTH CHECK ================= */
-if (!isset($_SESSION['User_Id']) || $_SESSION['Role'] !== "ADMIN") {
+if (!isset($_SESSION['User_Id']) ) {
     echo "<p style='color:red'>Unauthorized access</p>";
     exit;
 }
