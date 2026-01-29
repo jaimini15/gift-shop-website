@@ -5,7 +5,6 @@ if (!isset($profileUser) || !is_array($profileUser)) {
 if (!isset($activePage)) {
     $activePage = "";
 }
-// Prevent undefined variable warning
 if (!isset($activePage)) {
     $activePage = "";
 }
