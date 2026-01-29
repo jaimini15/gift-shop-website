@@ -10,7 +10,7 @@ $config = require __DIR__ . "/../config/razorpay.php";
 $keyId     = $config['key_id'];
 $keySecret = $config['key_secret'];
 
-/* ✅ Check BUY NOW session */
+/* Check BUY NOW session */
 if (!isset($_SESSION['BUY_NOW'])) {
     echo json_encode(["success" => false, "error" => "BUY NOW session missing"]);
     exit;
@@ -18,7 +18,6 @@ if (!isset($_SESSION['BUY_NOW'])) {
 
 $orderId = $_SESSION['BUY_NOW']['order_id'];
 
-/* ✅ Get total amount from order table */
 $q = mysqli_query($connection, "SELECT Total_Amount FROM `order` WHERE Order_Id='$orderId'");
 $row = mysqli_fetch_assoc($q);
 
@@ -28,9 +27,9 @@ if (!$row) {
 }
 
 $total = $row['Total_Amount'];
-$amount = (int) round($total * 100); // paise
+$amount = (int) round($total * 100); 
 
-/* ✅ Razorpay payload */
+/* Razorpay payload */
 $payload = [
     "amount" => $amount,
     "currency" => "INR",
@@ -38,7 +37,7 @@ $payload = [
     "payment_capture" => 1
 ];
 
-/* ✅ Create Razorpay order */
+/* Create Razorpay order */
 $ch = curl_init("https://api.razorpay.com/v1/orders");
 
 curl_setopt_array($ch, [
@@ -61,7 +60,6 @@ if (empty($data['id'])) {
 
 $_SESSION['razorpay_order_id'] = $data['id'];
 
-/* ✅ Response */
 echo json_encode([
     "success" => true,
     "key" => $keyId,
