@@ -37,7 +37,7 @@ input, select {
 }
 input:focus, select:focus {
     outline: none;
-    border-color: #007bff;
+    border-color: #7e2626d5;
 }
 button { 
     width: 100%; 
