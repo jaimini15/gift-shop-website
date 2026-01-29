@@ -3,9 +3,7 @@ session_start();
 include("../AdminPanel/db.php");
 header('Content-Type: application/json');
 
-/* =======================
-   AUTH CHECK
-======================= */
+/*  AUTH CHECK*/
 if (!isset($_SESSION['User_Id'])) {
     echo json_encode([
         "success" => false,
@@ -15,7 +13,6 @@ if (!isset($_SESSION['User_Id'])) {
 }
 
 if (!isset($_SESSION['pending_order_id'])) {
-    // Already cancelled — treat as success
     echo json_encode([
         "success" => true
     ]);
@@ -26,16 +23,12 @@ if (!isset($_SESSION['pending_order_id'])) {
 $userId  = $_SESSION['User_Id'];
 $orderId = $_SESSION['pending_order_id'];
 
-/* =======================
-   START TRANSACTION
-======================= */
+/* START TRANSACTION */
 mysqli_begin_transaction($connection);
 
 try {
 
-    /* =======================
-       DELETE ORDER ITEMS (ONLY IF ORDER IS PENDING)
-    ======================= */
+    /* DELETE ORDER ITEMS (ONLY IF ORDER IS PENDING)*/
     $stmt = mysqli_prepare(
         $connection,
         "DELETE oi FROM order_item oi
@@ -45,9 +38,7 @@ try {
     mysqli_stmt_bind_param($stmt, "ii", $orderId, $userId);
     mysqli_stmt_execute($stmt);
 
-    /* =======================
-       DELETE ORDER
-    ======================= */
+    /* DELETE ORDER*/
     $stmt = mysqli_prepare(
         $connection,
         "DELETE FROM `order`
@@ -59,10 +50,6 @@ try {
     if (mysqli_stmt_affected_rows($stmt) === 0) {
         throw new Exception("Pending order not found or already processed");
     }
-
-    /* =======================
-       CLEANUP & COMMIT
-    ======================= */
     unset($_SESSION['pending_order_id']);
     mysqli_commit($connection);
 

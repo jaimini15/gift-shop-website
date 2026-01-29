@@ -17,7 +17,7 @@ if ($customizeId <= 0) {
     exit;
 }
 
-/* Delete item securely */
+/* Delete item */
 $stmt = mysqli_prepare($connection, "
     DELETE ccd
     FROM customize_cart_details ccd
@@ -26,7 +26,7 @@ $stmt = mysqli_prepare($connection, "
 ");
 mysqli_stmt_bind_param($stmt, "ii", $customizeId, $userId);
 mysqli_stmt_execute($stmt);
-mysqli_stmt_close($stmt);  // ✅ Close statement
+mysqli_stmt_close($stmt);  
 
 unset($_SESSION['stock_popup_shown']);
 
@@ -40,9 +40,9 @@ mysqli_stmt_bind_param($stmt, "i", $userId);
 mysqli_stmt_execute($stmt);
 mysqli_stmt_bind_result($stmt, $subtotal);
 mysqli_stmt_fetch($stmt);
-mysqli_stmt_close($stmt);  // ✅ Close statement
+mysqli_stmt_close($stmt);  
 
 echo json_encode([
     "status"   => "success",
-    "subtotal" => (float)$subtotal  // use float
+    "subtotal" => (float)$subtotal  
 ]);

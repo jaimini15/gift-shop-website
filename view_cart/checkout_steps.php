@@ -1,5 +1,4 @@
 <?php
-// Expected: $currentStep = 1 | 2 | 3
 ?>
 
 <header class="cart-header">

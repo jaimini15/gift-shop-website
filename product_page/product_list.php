@@ -7,7 +7,7 @@ if (!isset($_SESSION['User_Id'])) {
     exit;
 }
 
-$role = $_SESSION['User_Role']; // ✅ correct session key
+$role = $_SESSION['User_Role']; 
 
 // Admin → admin dashboard
 if ($role === "ADMIN") {

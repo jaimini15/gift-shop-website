@@ -145,7 +145,7 @@ Perfect for celebrations, corporate gifting, or festive occasions</p>
   <div class="review-container">
     <div class="slide">
       <p>
-       Video provides a powerful way to help you prove your point. When you click Online Video, you can paste in the embed code for the video you want to add. You can also type a keyword to search online for the video that best fits your document.
+      Focused on creating a visually attractive, simple, and responsive website so customers can easily browse products and enjoy a smooth shopping experience on any device.
       </p>
       <h3>Riya Rathod</h3>
       <span>Developer</span>
@@ -154,7 +154,7 @@ Perfect for celebrations, corporate gifting, or festive occasions</p>
 
     <div class="slide">
        <p>
-       Video provides a powerful way to help you prove your point. When you click Online Video, you can paste in the embed code for the video you want to add. You can also type a keyword to search online for the video that best fits your document.
+       Handles all behind-the-scenes operations, including order processing, payments, and data security, ensuring everything works accurately and reliably for customers.
       </p>
       <h3>Jaimini Shah</h3>
       <span>Developer</span>
@@ -163,7 +163,7 @@ Perfect for celebrations, corporate gifting, or festive occasions</p>
 
     <div class="slide">
        <p>
-       Video provides a powerful way to help you prove your point. When you click Online Video, you can paste in the embed code for the video you want to add. You can also type a keyword to search online for the video that best fits your document.
+       Connects design and functionality to make sure every feature works seamlessly, providing customers with a smooth journey from selecting a gift to completing their purchase.
       </p>
       <h3>Prerna Nankani</h3>
       <span>Developer</span>

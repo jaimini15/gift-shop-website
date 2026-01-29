@@ -3,7 +3,6 @@ session_start();
 include("../AdminPanel/db.php");
 header('Content-Type: application/json');
 
-/* ❌ Prevent duplicate pending orders */
 if (isset($_SESSION['pending_order_id'])) {
     echo json_encode([
         "success" => true,
@@ -12,7 +11,7 @@ if (isset($_SESSION['pending_order_id'])) {
     exit;
 }
 
-/* ✅ Auth check */
+/*  Auth check */
 if (!isset($_SESSION['User_Id'])) {
     echo json_encode(["success" => false, "error" => "Login required"]);
     exit;
@@ -20,21 +19,18 @@ if (!isset($_SESSION['User_Id'])) {
 
 $userId = (int)$_SESSION['User_Id'];
 
-/* ✅ Use frozen cart total */
 $totalAmount = $_SESSION['total'] ?? 0;
 if ($totalAmount <= 0) {
     echo json_encode(["success" => false, "error" => "Invalid total"]);
     exit;
 }
 
-/* ======================
-   START TRANSACTION
-====================== */
+/*  START TRANSACTION*/
 mysqli_begin_transaction($connection);
 
 try {
 
-    /* ✅ 1. Create order */
+    /*  Create order */
     $stmt = $connection->prepare(
         "INSERT INTO `order` (User_Id, Total_Amount, Status)
          VALUES (?, ?, 'PENDING')"
@@ -48,7 +44,7 @@ try {
         throw new Exception("Order creation failed");
     }
 
-    /* ✅ 2. Insert order items (NOW orderId exists) */
+    /* Insert order items (NOW orderId exists) */
    $cartItems = mysqli_query($connection, "
     SELECT 
         Product_Id,
@@ -93,7 +89,7 @@ $stmt->execute();
 
     }
 
-    /* ✅ 3. Save session */
+    /* Save session */
     $_SESSION['pending_order_id'] = $orderId;
 
     mysqli_commit($connection);

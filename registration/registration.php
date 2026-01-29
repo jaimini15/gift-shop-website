@@ -2,7 +2,7 @@
 session_start();
 include("../AdminPanel/db.php");
 
-// If already logged in redirect
+// If already logged in redirect to home page
 if (isset($_SESSION['User_Id'])) {
     header("Location: ../home page/index.php");
     exit();
@@ -114,7 +114,6 @@ if (isset($_SESSION['User_Id'])) {
 >
 
 <input type="password" name="password" placeholder="Password" required>
-        <!-- Hidden default role -->
         <input type="hidden" name="user_role" value="CUSTOMER">
 
       <button type="submit">Register</button>
