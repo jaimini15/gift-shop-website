@@ -1,7 +1,5 @@
 <?php
-/********************************************************
- * DELIVERY BOY PROFILE (SAFE + CLEAN)
- ********************************************************/
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -76,8 +74,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 Area_Id=$area_id
              WHERE User_Id=$deliveryBoyId"
         );
-
-        /* REFRESH DATA */
         $result = mysqli_query(
             $connection,
             "SELECT * FROM user_details WHERE User_Id = $deliveryBoyId LIMIT 1"
@@ -95,7 +91,6 @@ $areas = mysqli_query(
 );
 ?>
 <style>
-/* Labels */
 .account-content label {
     display: block;
     margin-top: 15px;
@@ -104,8 +99,6 @@ $areas = mysqli_query(
     font-size: 15px;
     color: #111827;
 }
-
-/* Inputs & Select */
 .account-content input,
 .account-content select,
 .account-content textarea {
@@ -117,29 +110,21 @@ $areas = mysqli_query(
     outline: none;
     transition: 0.2s;
 }
-
-/* Focus effect */
 .account-content input:focus,
 .account-content select:focus,
 .account-content textarea:focus {
     border-color: #7e2626d5;
     box-shadow: 0 0 0 2px rgba(126, 38, 38, 0.15);
 }
-
-/* Disabled email */
 .account-content input[disabled] {
     background: #f3f4f6;
     cursor: not-allowed;
 }
-
-/* Password section */
 .account-content h3 {
     margin-top: 25px;
     font-size: 18px;
     color: #111827;
 }
-
-/* Button */
 .account-content button {
     margin-top: 22px;
     padding: 12px 32px;
@@ -156,8 +141,6 @@ $areas = mysqli_query(
 .account-content button:hover {
     background: black;
 }
-
-/* Horizontal line */
 .account-content hr {
     margin: 25px 0;
     border: none;
