@@ -32,7 +32,6 @@ if (!$profileUser || !is_array($profileUser)) {
 <style>
 body{
     background:white;
-    /* background:#f3f4f6; */
     font-family: Arial, sans-serif;
 }
 
@@ -48,7 +47,6 @@ body{
     margin-bottom:20px;
 }
 
-/* FORCE 3 CARDS PER ROW */
 .account-grid{
     display:grid;
     grid-template-columns: repeat(3, 1fr);
@@ -57,7 +55,6 @@ body{
 
 
 .account-card{
-   /* background: #f3f4f6; */
    border:1px solid #7e2626d5;
     border-radius:12px;
     padding:25px;
@@ -90,7 +87,7 @@ body{
     font-size:14px;
     color:#666;
 }
-.password{ color:#9333ea; } /* Purple */
+.password{ color:#9333ea; } 
 
 </style>
 

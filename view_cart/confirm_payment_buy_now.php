@@ -19,6 +19,19 @@ $razorpay_payment_id = $data['razorpay_payment_id'];
 $order_id = $_SESSION['BUY_NOW']['order_id'];
 $buy = $_SESSION['BUY_NOW'];
 
+// ✅ Fixed code for VARCHAR(255)
+$customImage = $buy['custom_image'] ?? '';            // get value from session
+$customImage = basename($customImage);               // only filename
+$customImage = mysqli_real_escape_string($connection, substr($customImage, 0, 255)); // trim & escape
+
+// Store only the filename to ensure it fits in VARCHAR(255)
+$customImage = basename($customImage);
+// Escape and trim to 255 chars
+$customImage = mysqli_real_escape_string($connection, substr($customImage, 0, 255));
+
+
+
+
 /* ✅ Get total amount */
 $orderQuery = mysqli_query($connection, "SELECT Total_Amount FROM `order` WHERE Order_Id='$order_id'");
 $orderData = mysqli_fetch_assoc($orderQuery);
@@ -41,7 +54,7 @@ VALUES (
     '{$buy['qty']}',
     '$totalAmount',
     '".mysqli_real_escape_string($connection, $buy['custom_text'])."',
-    '{$buy['custom_image']}',
+   '{$customImage}',
     '{$buy['gift_wrap']}',
     '".mysqli_real_escape_string($connection, $buy['gift_msg'])."'
 )";

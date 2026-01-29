@@ -67,7 +67,6 @@ $subtotal = 0;
     <h3>Subtotal: ₹<span id="cartSubtotal"><?= number_format($subtotal) ?></span></h3>
 </div>
 
-
 <div class="cart-actions">
     <a href="../view_cart/view_cart.php" class="view-cart-btn">View cart</a>
 </div>
@@ -136,12 +135,12 @@ $subtotal = 0;
 }
 
 .view-cart-btn { 
-    background: #7e2626d5;   /* maroon */
+    background: #7e2626d5;   
     color: white; 
 }
 
 .view-cart-btn:hover {
-    background: #000;       /* black on hover */
+    background: #000;       
     color: white;
 }
 

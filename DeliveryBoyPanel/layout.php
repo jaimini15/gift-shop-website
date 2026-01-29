@@ -4,7 +4,7 @@ if (!isset($_SESSION)) {
     session_start();
 }
 
-/* ================= VIEW ROUTING ================= */
+/* VIEW ROUTING  */
 $view = $_GET['view'] ?? 'dashboard';
 
 $allowed = [
@@ -27,7 +27,7 @@ ob_end_flush();
     <meta charset="UTF-8">
     <title>Delivery Boy Panel | GiftShop</title>
 
-    <!-- MAIN SITE CSS -->
+    <!-- MAIN CSS -->
     <link rel="stylesheet" href="../home page/style.css">
 
     <!-- ACCOUNT PANEL CSS -->
@@ -41,7 +41,6 @@ ob_end_flush();
             margin: 0;
             font-family: Arial, sans-serif;
             background: #ffffff;
-            /* ✅ white page background */
         }
 
 
@@ -124,23 +123,6 @@ ob_end_flush();
             background: #fee2e2;
             color: #b91c1c;
         }
-
-        @media (max-width: 900px) {
-            .account-wrapper {
-                flex-direction: column;
-            }
-
-            .account-sidebar {
-                width: 100%;
-                flex-direction: row;
-                overflow-x: auto;
-            }
-
-            .account-sidebar a {
-                white-space: nowrap;
-            }
-        }
-
         body {
             background: #ffffff !important;
         }
@@ -158,10 +140,8 @@ ob_end_flush();
         <div class="account-sidebar">
 
             <div class="sidebar-user">
-                Hello, <?= $_SESSION['delivery_boy_name'] ?? 'Delivery Boy' ?> 👋
+                Hello, <?= $_SESSION['delivery_boy_name'] ?? 'Delivery Boy' ?> &#x1F44B;
             </div>
-
-            <!-- ✅ FIXED -->
             <a href="deliveryboy_profile_main.php" class="<?= $view == 'account' ? 'active' : '' ?>">
                 <i class="fa-solid fa-house"></i> My Account
             </a>
@@ -182,8 +162,6 @@ ob_end_flush();
             <a href="layout.php?view=profile" class="<?= $view == 'profile' ? 'active' : '' ?>">
                 <i class="fa-solid fa-user"></i> My Profile
             </a>
-
-            <!-- ✅ FIXED LOGOUT PATH -->
             <a href="../login/logout.php">
                 <i class="fa-solid fa-right-from-bracket"></i> Logout
             </a>

@@ -30,9 +30,11 @@ if (!empty($_FILES['custom_image']['name'])) {
     $target = $folder . $fileName;
 
     if (move_uploaded_file($_FILES['custom_image']['tmp_name'], $target)) {
-        $imagePath = $fileName;
+       // ✅ Store only filename
+       $imagePath = $fileName;
     }
 }
+
 
 // Get product price
 $pq = mysqli_query($connection, "SELECT Price FROM Product_Details WHERE Product_Id='$product_id'");

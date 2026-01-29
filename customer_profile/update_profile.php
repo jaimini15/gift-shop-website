@@ -13,7 +13,7 @@ $fname   = mysqli_real_escape_string($connection, $_POST['fname']);
 $lname   = mysqli_real_escape_string($connection, $_POST['lname']);
 $phone   = mysqli_real_escape_string($connection, $_POST['phone']);
 $address = mysqli_real_escape_string($connection, $_POST['address']);
-$area_id = mysqli_real_escape_string($connection, $_POST['area_id']); // ✅
+$area_id = mysqli_real_escape_string($connection, $_POST['area_id']); // 
 $dob     = mysqli_real_escape_string($connection, $_POST['dob']);
 
 mysqli_query($connection, "
@@ -22,7 +22,7 @@ mysqli_query($connection, "
         Last_Name  = '$lname',
         Phone      = '$phone',
         Address    = '$address',
-        Area_Id    = '$area_id',   -- ✅
+        Area_Id    = '$area_id',   -- 
         DOB        = '$dob'
     WHERE User_Id = '$uid'
 ");

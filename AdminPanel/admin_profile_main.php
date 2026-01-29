@@ -10,7 +10,7 @@ if (!isset($_SESSION))
     <meta charset="UTF-8">
     <title>Admin Panel | GiftShop</title>
 
-    <!-- MAIN SITE CSS -->
+    <!-- MAIN CSS -->
     <link rel="stylesheet" href="../home page/style.css">
 
     <!-- FONT AWESOME -->
@@ -22,37 +22,21 @@ if (!isset($_SESSION))
             font-family: Arial, sans-serif;
             margin: 0;
         }
-
-        /* =====================
-   CONTAINER
-===================== */
         .admin-container {
             max-width: 1200px;
             margin: 40px auto;
             padding: 10px;
         }
-
-        /* =====================
-   TITLE
-===================== */
         .admin-title {
             font-size: 26px;
             font-weight: bold;
             margin-bottom: 25px;
         }
-
-        /* =====================
-   GRID
-===================== */
         .admin-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 20px;
         }
-
-        /* =====================
-   CARD
-===================== */
         .admin-card {
             border: 1px solid #7e2626d5;
             border-radius: 12px;
@@ -66,10 +50,6 @@ if (!isset($_SESSION))
         .admin-card:hover {
             transform: translateY(-4px);
         }
-
-        /* =====================
-   ICONS
-===================== */
         .card-icon {
             font-size: 32px;
             margin-bottom: 15px;
@@ -126,20 +106,6 @@ if (!isset($_SESSION))
             color: #666;
         }
 
-        /* =====================
-   RESPONSIVE
-===================== */
-        @media(max-width:900px) {
-            .admin-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        @media(max-width:500px) {
-            .admin-grid {
-                grid-template-columns: 1fr;
-            }
-        }
     </style>
 </head>
 
@@ -150,7 +116,7 @@ if (!isset($_SESSION))
     <div class="admin-container">
 
         <div class="admin-title">
-            Hello, Admin 👋
+            Hello, Admin &#x1F44B;
         </div>
 
         <div class="admin-grid">

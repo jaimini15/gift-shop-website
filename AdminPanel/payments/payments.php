@@ -4,10 +4,6 @@ if (!isset($_SESSION)) {
 }
 
 include(__DIR__ . '/../db.php');
-
-/* ================= AUTH CHECK ================= */
-/* Add admin / delivery auth here if needed */
-/* ============================================== */
 ?>
 
 <!DOCTYPE html>

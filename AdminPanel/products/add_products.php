@@ -1,7 +1,7 @@
 <?php include("../db.php"); ?>
 
 <?php
-// Fetch enabled categories
+// FETCH ENABLE CATEGORIES
 $cat_query = mysqli_query($connection, "SELECT * FROM Category_Details WHERE Status='Enabled'");
 
 if (isset($_POST['submit'])) {
@@ -15,7 +15,6 @@ if (isset($_POST['submit'])) {
     $text     = $_POST['product_text'];         
     $default  = $_POST['product_default_text']; 
 
-    // IMAGE TO BLOB
     $imageData = file_get_contents($_FILES['product_image']['tmp_name']);
     $imageData = mysqli_real_escape_string($connection, $imageData);
 

@@ -3,9 +3,8 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 include("../AdminPanel/db.php");
-
-// ✅ BASE PATH (change if your folder name is different)
 $BASE = "/GitHub/gift-shop-website/";
+
 // CART COUNT 
 $cart_count = 0;
 if (isset($_SESSION['User_Id'])) {
@@ -159,15 +158,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const currentPath = window.location.pathname.replace(/\/$/, "");
 
-    // Remove any existing active classes
     document.querySelectorAll("nav a").forEach(a => {
         a.classList.remove("active");
     });
 
-    // Match normal links (Home, About, Contact)
+    // Match nlinks (Home, About, Contact)
     document.querySelectorAll("nav ul li a[href]").forEach(link => {
 
-        // Skip Shop (it has #)
+        // Skip Shop
         if (link.getAttribute("href") === "#") return;
 
         const linkPath = new URL(link.href).pathname.replace(/\/$/, "");

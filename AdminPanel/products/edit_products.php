@@ -9,7 +9,7 @@ $product = mysqli_fetch_assoc(mysqli_query(
     "SELECT * FROM Product_Details WHERE Product_Id=$id"
 ));
 
-// Fetch categories for dropdown
+// Fetch categories FROM dropdown
 $categories = mysqli_query(
     $connection,
     "SELECT * FROM Category_Details WHERE Status='Enabled'"
@@ -22,13 +22,11 @@ if(isset($_POST['update'])){
     $desc    = mysqli_real_escape_string($connection, $_POST['description']);
     $price   = mysqli_real_escape_string($connection, $_POST['price']);
     $status  = mysqli_real_escape_string($connection, $_POST['status']);
-
-    // New fields
     $default_text = mysqli_real_escape_string($connection, $_POST['product_default_text']);
     $product_photo = mysqli_real_escape_string($connection, $_POST['product_photo']);
     $product_text  = mysqli_real_escape_string($connection, $_POST['product_text']);
 
-    // IMAGE UPLOAD OF NEW FIELD
+    // IMAGE UPLOAD
     if (!empty($_FILES['product_image']['tmp_name'])) {
         $imageData = file_get_contents($_FILES['product_image']['tmp_name']);
         $imageData = mysqli_real_escape_string($connection, $imageData);

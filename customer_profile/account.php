@@ -9,7 +9,7 @@ if (!isset($_SESSION["User_Id"])) {
 
 $uid = $_SESSION["User_Id"];
 
-// ✅ FETCH USER AS ARRAY
+// FETCH USER 
 $result = mysqli_query(
     $connection,
     "SELECT First_Name FROM user_details WHERE User_Id='$uid' LIMIT 1"
@@ -17,7 +17,6 @@ $result = mysqli_query(
 
 $profileUser = mysqli_fetch_assoc($result);
 
-// ✅ SAFETY CHECK
 if (!$profileUser || !is_array($profileUser)) {
     die("User data not found");
 }
@@ -29,7 +28,7 @@ include("account_layout.php");
 <h2>My Profile</h2>
 <p>Welcome, <?= htmlspecialchars($profileUser['First_Name']) ?></p>
 
-</div> <!-- account-content -->
-</div> <!-- account-wrapper -->
+</div> 
+</div> 
 
 <?php include("../home page/footer.php"); ?>

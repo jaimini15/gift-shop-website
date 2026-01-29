@@ -1,10 +1,8 @@
 <?php
-/* ================= SESSION ================= */
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-/* ================= DB CONNECTION ================= */
 include(__DIR__ . '/../../AdminPanel/db.php');
 
 /* ================= AUTH CHECK ================= */
@@ -115,7 +113,6 @@ $orders = mysqli_query($connection, "
     </div>
 </div>
 
-<!-- ================= PAGE CSS ================= -->
 <style>
         body { background: #f4f6f9; font-family: Arial, sans-serif; }
         .content { margin-left: 0px; padding: 0px;  }

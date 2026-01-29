@@ -7,7 +7,7 @@ if(isset($_POST['submit'])){
     $desc  = $_POST['description'];
     $status = $_POST['status'];
 
-    // IMAGE VALIDATION conversion to BLOB
+    // IMAGE VALIDATION 
     $imageData = null;
 
     if(isset($_FILES['image']) && $_FILES['image']['error'] == 0){

@@ -54,7 +54,7 @@ if (isset($_POST['update'])) {
     $password = mysqli_real_escape_string($connection, $_POST['Password'] ?? '');
     $status   = mysqli_real_escape_string($connection, $_POST['Status'] ?? 'ENABLE');
 
-    /* MAIN AREA (required column) */
+    /* MAIN AREA */
     $main_area = 0;
     if (!empty($_POST['areas'])) {
         $main_area = (int)$_POST['areas'][0];

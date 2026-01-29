@@ -5,7 +5,7 @@ if (isset($_POST['add'])) {
     $product_id = intval($_POST['product_id']);
     $stock      = intval($_POST['stock']);
 
-    // Check if product already has stock
+    // CHECK PRODUCT IS IT HAS STOCK
     $check = mysqli_query($connection, 
         "SELECT * FROM stock_details WHERE Product_Id = $product_id"
     );

@@ -34,7 +34,7 @@ if (!$user) {
     exit;
 }
 
-// Password check (plain text)
+// Password check 
 if ($password === $user['Password']) {
 
     // Save user session

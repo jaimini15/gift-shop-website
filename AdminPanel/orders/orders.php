@@ -4,8 +4,6 @@ ob_start();
 
 // Include database connection
 include(__DIR__ . '/../db.php');
-
-// ================= HANDLE POST BEFORE ANY OUTPUT =================
 if (isset($_POST['set_packed']) && $_POST['set_packed'] === 'Packed') {
 
     $orderId = (int) $_POST['order_id'];
@@ -85,7 +83,7 @@ if (isset($_POST['set_packed']) && $_POST['set_packed'] === 'Packed') {
 <h2 class="fw-bold mb-4">Manage Orders</h2>
 
 <?php
-// ================= FETCH ONLY NEW ORDERS =================
+// ================= FETCH NEW ORDERS =================
 $orders = mysqli_query($connection, "
     SELECT o.*, DATE(o.Order_Date) AS Order_Date_Only
     FROM `order` o

@@ -1,7 +1,7 @@
 <?php
 include("../AdminPanel/db.php");
 
-/* Fetch first enabled category */
+/*FETCH ENABLE CATEGORY*/
 $firstCategoryId = null;
 
 $catQ = mysqli_query(
@@ -17,7 +17,6 @@ if ($row = mysqli_fetch_assoc($catQ)) {
     $firstCategoryId = $row['Category_Id'];
 }
 
-/* Fallback URL if no category exists */
 $shopNowUrl = $firstCategoryId
     ? "../product_page/product_list.php?category_id=" . $firstCategoryId
     : "#";

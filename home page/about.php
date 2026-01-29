@@ -8,6 +8,7 @@ if (session_status() == PHP_SESSION_NONE) {
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GiftShop | Home</title>
+  <!-- MAIN CSS -->
   <link rel="stylesheet" href="style.css" />
    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" 
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
@@ -136,7 +137,7 @@ Perfect for celebrations, corporate gifting, or festive occasions</p>
 
 
 <!-- about our mission ends -->
-<!-- footer section starts here -->
+<!-- Team section starts here -->
 
 <section class="reviews">
   <h1 class="heading-title">Our Team</h1>
@@ -171,7 +172,7 @@ Perfect for celebrations, corporate gifting, or festive occasions</p>
   </div>
 </section>
 
-<!-- footer section ends here -->
+<!-- Team section ends here -->
 
 
 

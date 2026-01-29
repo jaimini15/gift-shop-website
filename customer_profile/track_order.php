@@ -48,7 +48,6 @@ $delivery = mysqli_fetch_assoc($deliveryQ);
 
 $status = $delivery['Delivery_Status'] ?? 'Ordered';
 
-/* Step mapping */
 $stepMap = [
     'Ordered' => 1,
     'Packed' => 2,
@@ -59,7 +58,7 @@ $currentStep = $stepMap[$status] ?? 1;
 ?>
  <?php include("../home page/navbar.php"); ?>
  <title>Track Order|GiftShop</title>
- <!-- MAIN SITE CSS -->
+ <!-- MAIN CSS -->
     <link rel="stylesheet" href="../home page/style.css">
     <!-- FONT AWESOME -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
@@ -119,8 +118,6 @@ $currentStep = $stepMap[$status] ?? 1;
     position: relative;
     align-items: center;
 }
-
-/* FULL GREY LINE */
 .progress-bg {
     position: absolute;
     top: 7px;
@@ -130,8 +127,6 @@ $currentStep = $stepMap[$status] ?? 1;
     background: #ddd;
     z-index: 0;
 }
-
-/* GREEN PROGRESS LINE */
 .progress-fill {
     position: absolute;
     top: 7px;
@@ -141,8 +136,6 @@ $currentStep = $stepMap[$status] ?? 1;
     z-index: 1;
     transition: width 0.5s ease;
 }
-
-/* STEP */
 .step {
     text-align: center;
     width: 25%;
@@ -151,8 +144,6 @@ $currentStep = $stepMap[$status] ?? 1;
     color: #888;
     font-size: 14px;
 }
-
-/* CIRCLE */
 .circle {
     width: 14px;
     height: 14px;
@@ -160,8 +151,6 @@ $currentStep = $stepMap[$status] ?? 1;
     border-radius: 50%;
     margin: 0 auto 8px;
 }
-
-/* ACTIVE / COMPLETED */
 .step.active,
 .step.completed {
     color: #067d62;
@@ -299,8 +288,6 @@ document.addEventListener("DOMContentLoaded", () => {
         if (index >= currentStep) return;
 
         let targetWidth;
-
-        // ✅ LAST STEP → extend line to full width
         if (index === steps.length - 1 && currentStep === steps.length) {
             targetWidth = fullLineWidth;
         } else {

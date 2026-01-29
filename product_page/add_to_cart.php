@@ -1,18 +1,15 @@
 <?php
 session_start();
-include '../AdminPanel/db.php'; // $connection
+// DB CONNECTION
+include '../AdminPanel/db.php'; 
 
 if ($_SERVER["REQUEST_METHOD"] !== "POST") {
     die("Invalid request");
 }
-
-// =======================
 // CHECK USER LOGIN
-// =======================
 if (!isset($_SESSION['User_Id'])) {
     die("User not logged in");
 }
-
 $userId    = (int) $_SESSION['User_Id'];
 $productId = (int) ($_POST['product_id'] ?? 0);
 $quantity  = 1;
@@ -20,10 +17,7 @@ $quantity  = 1;
 if ($productId <= 0) {
     die("Invalid product");
 }
-
-// =======================
-// EXTRA OPTIONS
-// =======================
+// gift wrap and gift card
 $giftWrap = (isset($_POST['gift_wrap']) && $_POST['gift_wrap'] == "1") ? 1 : 0;
 $giftCard = (isset($_POST['gift_card']) && $_POST['gift_card'] == "1") ? 1 : 0;
 
@@ -35,13 +29,10 @@ $customText = (!empty($_POST['custom_text']))
     ? trim($_POST['custom_text'])
     : null;
 
-// =======================
 // PRICE CALCULATION
-// =======================
 $wrapPrice = 39;
 $cardPrice = 50;
 
-// Get product base price
 $stmt = mysqli_prepare(
     $connection,
     "SELECT Price FROM product_details WHERE Product_Id = ? LIMIT 1"
@@ -63,9 +54,7 @@ $totalPrice = $productPrice;
 if ($giftWrap) $totalPrice += $wrapPrice;
 if ($giftCard) $totalPrice += $cardPrice;
 
-// =======================
 // IMAGE UPLOAD
-// =======================
 $uploadPath = null;
 
 if (!empty($_FILES['custom_image']['name'])) {
@@ -83,9 +72,7 @@ if (!empty($_FILES['custom_image']['name'])) {
     }
 }
 
-// =======================
-// GET OR CREATE CART
-// =======================
+// CREATE CART
 $cartId = null;
 
 $stmt = mysqli_prepare(
@@ -108,13 +95,9 @@ if (!$cartId) {
     $cartId = mysqli_insert_id($connection);
     mysqli_stmt_close($stmt);
 }
-
-// 🔥 CRITICAL FIX
 $_SESSION['cart_id'] = $cartId;
 
-// =======================
-// INSERT INTO CART ITEMS
-// =======================
+// INSERT INTO customize_cart_details
 $stmt = mysqli_prepare(
     $connection,
     "INSERT INTO customize_cart_details
@@ -124,7 +107,7 @@ $stmt = mysqli_prepare(
 
 mysqli_stmt_bind_param(
     $stmt,
-    "iiidssss",   // 🔥 FIXED TYPES
+    "iiidssss",   
     $cartId,
     $productId,
     $quantity,
@@ -137,9 +120,5 @@ mysqli_stmt_bind_param(
 
 mysqli_stmt_execute($stmt);
 mysqli_stmt_close($stmt);
-
-// =======================
-// REDIRECT
-// =======================
 header("Location: product_display.php?product_id=$productId&success=1");
 exit;

@@ -17,12 +17,11 @@ $profileUser = mysqli_fetch_assoc(
 /* DELIVERY TEXT FUNCTION (+3 DAYS) */
 function getDeliveryText($orderDate, $deliveryStatus, $deliveryDate = null) {
 
-    // ✅ If delivered → show REAL delivered date
     if ($deliveryStatus === 'Delivered' && $deliveryDate) {
         return "Delivered on " . date('d M Y', strtotime($deliveryDate));
     }
 
-    // 📦 Estimated delivery = order date + 3 days
+    // Estimated delivery = order date + 3 days
     $orderDate = new DateTime($orderDate);
     $estimated = clone $orderDate;
     $estimated->modify('+3 days');
@@ -40,9 +39,6 @@ function getDeliveryText($orderDate, $deliveryStatus, $deliveryDate = null) {
 
     return "Arriving on " . $estimated->format('d M Y');
 }
-
-
-
 /* FETCH ORDERS */
 $orders = mysqli_query(
     $connection,
@@ -124,8 +120,6 @@ $items = mysqli_query(
             <span><?= htmlspecialchars($profileUser['First_Name']) ?></span>
         </div>
 
-
-    <!-- ORDER # LINE -->
    <div class="order-id invoice-wrapper">
     <span class="order-number">
         <span class="label">ORDER #</span>

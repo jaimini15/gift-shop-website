@@ -2,8 +2,6 @@
 ob_start();
 if (!isset($_SESSION))
     session_start();
-
-/* ================= VIEW ROUTING ================= */
 $view = $_GET['view'] ?? 'dashboard';
 
 $allowed = [
@@ -32,29 +30,20 @@ ob_end_flush();
     <meta charset="UTF-8">
     <title>GiftShop Admin Panel</title>
 
-
-    <!-- MAIN SITE CSS -->
+    <!-- MAIN CSS -->
     <link rel="stylesheet" href="../home page/style.css">
 
-    <!-- ACCOUNT PANEL CSS (IMPORTANT) -->
+    <!-- ACCOUNT PANEL CSS -->
     <link rel="stylesheet" href="account.css">
 
     <!-- FONT AWESOME -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <style>
-        /* =====================
-   GLOBAL
-===================== */
-
         body {
             background: !important white;
             font-family: Arial, sans-serif;
             margin: 0;
         }
-
-        /* =====================
-   HEADER
-===================== */
         .admin-header {
             position: fixed;
             top: 0;
@@ -70,32 +59,19 @@ ob_end_flush();
             font-size: 20px;
             font-weight: 700;
         }
-
-        /* =====================
-   MAIN WRAPPER
-===================== */
         .account-wrapper {
             max-width: 1400px;
-            /* WIDER LAYOUT */
             margin: 30px auto 40px;
             display: flex;
             gap: 25px;
             min-height: 600px;
             background-color: white;
         }
-
-        /* =====================
-   LEFT SIDEBAR (SMALLER)
-===================== */
         .account-sidebar {
             width: 300px;
             min-width: 300px;
-            /* 🔒 LOCK WIDTH */
             max-width: 300px;
-            /* 🔒 LOCK WIDTH */
             flex-shrink: 0;
-            /* ❌ DO NOT SHRINK */
-
             background: #ffffff;
             border-radius: 14px;
             border: 1px solid #7e2626d5;
@@ -104,8 +80,6 @@ ob_end_flush();
             display: flex;
             flex-direction: column;
         }
-
-
         .sidebar-user {
             font-size: 18px;
             font-weight: 600;
@@ -125,7 +99,6 @@ ob_end_flush();
             align-items: center;
             gap: 10px;
         }
-
         .account-sidebar a:hover {
             background: #f3f4f6;
         }
@@ -135,32 +108,19 @@ ob_end_flush();
             color: #ffffff;
             font-weight: 600;
         }
-
-        /* =====================
-   RIGHT CONTENT (WIDER + NORMAL TEXT)
-===================== */
         .account-content {
             flex: 1;
             min-width: 0;
-            /* 🔑 REQUIRED for flex layouts */
             overflow-x: auto;
-            /* Horizontal scroll if needed */
-
             background: #ffffff;
             border-radius: 14px;
             border: 1px solid #7e2626d5;
             box-shadow: 2px 5px 10px rgba(0, 0, 0, 0.2);
             padding: 35px;
             min-height: 600px;
-
             font-size: 15px;
             line-height: 1.6;
-
-
         }
-
-
-        /* Prevent small inherited fonts */
         .account-content * {
             font-size: inherit;
         }
@@ -174,28 +134,6 @@ ob_end_flush();
     background:#fee2e2;
     color:#b91c1c;
 }
-        /* =====================
-   RESPONSIVE
-===================== */
-        @media(max-width:900px) {
-            .account-wrapper {
-                flex-direction: column;
-            }
-
-            .account-sidebar {
-                width: 100%;
-                flex-direction: row;
-                overflow-x: auto;
-            }
-
-            .account-sidebar a {
-                white-space: nowrap;
-                margin-right: 10px;
-            }
-        }
-        body {
-            background: #ffffff !important;
-        }
     </style>
 </head>
 

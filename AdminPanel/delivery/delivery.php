@@ -2,9 +2,6 @@
 if (!isset($_SESSION)) session_start();
 
 include(__DIR__ . '/../db.php');
-
-/* ================= AUTH CHECK ================= */
-/* ============================================== */
 ?>
 
 <!DOCTYPE html>
@@ -81,7 +78,6 @@ $lastDate = null;
 
 while ($row = mysqli_fetch_assoc($deliveries)) {
 
-    // If date changes, print date heading row
     if ($lastDate !== $row['Order_Date']) {
         echo '
         <tr class="date-row">

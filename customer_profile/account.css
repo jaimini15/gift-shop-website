@@ -1,6 +1,4 @@
-/* =====================
-   ACCOUNT LAYOUT
-===================== */
+/* ACCOUNT LAYOUT */
 
 body{
     background:white;
@@ -17,9 +15,7 @@ body{
     min-height:550px;
 }
 
-/* =====================
-   SIDEBAR
-===================== */
+/*  SIDEBAR */
 
 .account-sidebar{
     width:300px;
@@ -76,9 +72,7 @@ body{
     background:#fecaca;
 }
 
-/* =====================
-   CONTENT PANEL
-===================== */
+/* CONTENT PANEL*/
 
 .account-content{
     flex:1;
@@ -97,9 +91,7 @@ body{
     font-size:22px;
 }
 
-/* =====================
-   EMPTY STATE (ORDERS)
-===================== */
+/* EMPTY STATE (ORDERS) */
 
 .empty-box{
     text-align:center;
@@ -126,9 +118,7 @@ body{
     background:black;
 }
 
-/* =====================
-   FORM STYLES
-===================== */
+/* ACCOUNT CONTENT CSS */
 
 .account-content label{
     display:block;
@@ -166,35 +156,7 @@ body{
     background:black;
 }
 
-/* =====================
-   RESPONSIVE
-===================== */
-
-@media(max-width:900px){
-    .account-wrapper{
-        flex-direction:column;
-    }
-
-    .account-sidebar{
-        width:100%;
-        flex-direction:row;
-        overflow-x:auto;
-    }
-
-    .account-sidebar a{
-        white-space:nowrap;
-        margin-right:10px;
-    }
-
-    .account-sidebar a:last-child{
-        margin-top:0;
-    }
-}
-
-
-/* =====================
-   ORDER CARD (AMAZON STYLE)
-===================== */
+/* ORDER CARD */
 
 .order-card{
     border:1px solid #e5e7eb;
@@ -217,9 +179,7 @@ body{
     color:#6b7280;
 }
 
-/* =====================
-   ORDER ITEM ROW
-===================== */
+/*ORDER ITEM ROW*/
 
 .order-item{
     display:flex;
@@ -227,8 +187,6 @@ body{
     align-items:flex-start;
     margin-bottom:14px;
 }
-
-/* SMALL IMAGE */
 .order-img{
     width:90px;
     height:90px;
@@ -261,9 +219,7 @@ body{
 }
 
 
-/* =====================
-   ORDER SUMMARY BAR
-===================== */
+/*  ORDER SUMMARY */
 
 .order-summary{
     display:grid;
@@ -293,15 +249,12 @@ body{
     color:#111827;
 }
 
-/* Right aligned order id */
 .order-summary .order-id{
     align-items:flex-end;
     text-align:right;
 }
 
-/* =====================
-   DELIVERY TEXT
-===================== */
+/* DELIVERY TEXT*/
 
 .delivery-text{
     font-size:16px;
@@ -382,9 +335,7 @@ body{
     line-height: 1;
     margin-left: 2px;
 }
-/* =====================
-   ACTION BUTTON
-===================== */
+/* ACTION BUTTON*/
 .order-actions {
     display: flex;
     gap: 12px;
@@ -410,7 +361,6 @@ body{
     background: black;
 }
 
-/* Optional: highlight review button */
 .review-btn {
     border-color: #7e2626d5;
 }
