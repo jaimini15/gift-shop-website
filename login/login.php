@@ -118,11 +118,13 @@ Don't have an account?
 </body>
 </html>
  <style>
-        body { font-family: Arial; background: #f7f7f7; margin:0; }
+        body { font-family: Arial; background: white; margin:0; }
         .form-box {
             width: 400px; margin: 30px auto; padding: 35px;
-            background: #fff; border-radius: 10px;
+             border:1px solid #7e2626d5;;
+            background: white; border-radius: 10px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
+           
         }
         input[type="email"], input[type="password"] {
             width: 100%; padding: 10px; margin: 10px 0;
