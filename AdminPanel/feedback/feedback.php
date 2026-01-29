@@ -4,10 +4,6 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 include(__DIR__ . '/../db.php');
-
-/* ================= AUTH CHECK ================= */
-/* Add admin auth here if needed */
-/* ============================================== */
 ?>
 
 <!DOCTYPE html>
