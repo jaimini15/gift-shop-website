@@ -1,6 +1,4 @@
-// -----------------------------
-// Cart Panel Open / Close
-// -----------------------------
+// Cart Panel Open 
 const sidePanel = document.getElementById("sidePanel");
 const panelContent = document.getElementById("panelContent");
 
@@ -21,10 +19,7 @@ document.getElementById("panelClose").onclick = () => {
     sidePanel.classList.remove("active");
 };
 
-
-// -----------------------------
 // Event Delegation
-// -----------------------------
 document.addEventListener("click", function (e) {
 
     // Remove Item
@@ -77,10 +72,7 @@ function removeItem(id) {
     }
 }
 
-    // ✅ ALWAYS update subtotal
     updateSubtotal(data.subtotal);
-
-    // ✅ Update cart count
     updateCartCount();
 }
 , 260);
@@ -96,11 +88,7 @@ function removeItem(id) {
         console.error(err);
     });
 }
-
-
-// -----------------------------
-// Update Subtotal Dynamically
-// -----------------------------
+// Update Subtotal
 function updateSubtotal(amount) {
     const panel = document.getElementById("panelContent");
     if (!panel) return;
@@ -112,9 +100,8 @@ function updateSubtotal(amount) {
 }
  subtotalEl.textContent = "₹" + Number(amount).toLocaleString();
 
-// -----------------------------
-// Update Cart Count Logic (Same as your logic)
-// -----------------------------
+// Update Cart Count 
+
 function updateCartCount() {
     fetch("/GitHub/gift-shop-website/product_page/get_cart_count.php")
         .then(r => r.text())
