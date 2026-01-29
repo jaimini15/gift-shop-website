@@ -51,8 +51,6 @@ include(__DIR__ . '/../db.php');
                 <tr>
                     <td><?= $row['Category_Id'] ?></td>
                     <td><?= $row['Category_Name'] ?></td>
-
-                    <!-- SHOW IMAGE -->
                     <td>
                         <?php if (!empty($row['Category_Image'])) { ?>
                             <img src="data:image/jpeg;base64,<?= base64_encode($row['Category_Image']); ?>"
