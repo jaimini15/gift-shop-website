@@ -67,7 +67,6 @@ $subtotal = 0;
     <h3>Subtotal: ₹<span id="cartSubtotal"><?= number_format($subtotal) ?></span></h3>
 </div>
 
-
 <div class="cart-actions">
     <a href="../view_cart/view_cart.php" class="view-cart-btn">View cart</a>
 </div>
