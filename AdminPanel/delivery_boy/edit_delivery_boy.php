@@ -188,7 +188,7 @@ if (isset($_POST['update'])) {
 
         <div class="mb-3">
             <label>Password</label>
-            <input type="text" name="Password" class="form-control"
+            <input type="password" name="Password" class="form-control"
                    required maxlength="10"
                    value="<?= $data['Password'] ?>">
         </div>
