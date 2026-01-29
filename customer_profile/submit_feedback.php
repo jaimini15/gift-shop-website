@@ -50,7 +50,5 @@ foreach ($productIds as $productId) {
 
     mysqli_stmt_execute($stmt);
 }
-
-/* Redirect after success */
 header("Location: orders.php");
 exit;
