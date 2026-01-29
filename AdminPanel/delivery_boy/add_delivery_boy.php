@@ -27,8 +27,6 @@ if (isset($_POST['add'])) {
     $email   = mysqli_real_escape_string($connection, $_POST['email']);
     $pass    = mysqli_real_escape_string($connection, $_POST['password']);
     $status  = "ENABLE";
-
-    /* ✅ FIX: SET Area_Id (required column) */
     $area_id_main = 0;
     if (!empty($_POST['areas'])) {
         $area_id_main = (int)$_POST['areas'][0]; // first selected area
@@ -110,7 +108,7 @@ if (isset($_POST['add'])) {
             <textarea name="address" class="form-control" required></textarea>
         </div>
 
-        <!-- AREA ASSIGNMENT (UNCHANGED DESIGN) -->
+        <!-- AREA ASSIGNMENT -->
         <div class="mb-3">
             <label class="form-label">Assign Delivery Areas</label>
             <div class="border rounded p-3">
