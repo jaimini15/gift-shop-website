@@ -172,10 +172,7 @@ hr{
         ₹<?= number_format($order['Total_Amount'], 2); ?>
     </p>
 </div>
-
-
         <hr>
-
         <p class="thank-note">
            &#128150; Thank you for shopping with <strong style="color:#7e2626d5;">GiftShop</strong>.  
             We hope your gift brings happiness and smiles!
