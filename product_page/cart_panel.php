@@ -38,12 +38,10 @@ if (mysqli_num_rows($result) === 0) {
     echo "<p class='empty-msg'>Your cart is empty.</p>";
     exit;
 }
-
 $subtotal = 0;
 ?>
 
 <div class="cart-container">
-
 <?php while ($row = mysqli_fetch_assoc($result)) :
     $imgSrc  = "data:image/jpeg;base64," . base64_encode($row['Product_Image']);
     $subtotal += $row['Price'] * $row['Quantity'];
