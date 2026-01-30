@@ -92,7 +92,6 @@ $imgSrc = img_src_from_blob_single($product['Product_Image'], 'product_mug_buyno
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title><?= $productName ?> | GiftShop</title>
-
     <link rel="stylesheet" href="../home page/style.css" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
@@ -142,7 +141,7 @@ $imgSrc = img_src_from_blob_single($product['Product_Image'], 'product_mug_buyno
                 <!-- Upload Photo (only show if product supports photo customization) -->
                 <?php if (strtolower($productPhoto) === 'yes'): ?>
                     <label class="label-title" style="font-weight:600;margin-top:20px;">Upload Photo for
-                        Customization*</label>
+                        Customization</label>
                     <input type="file" id="uploadPhoto" class="form-control mb-2">
                     <script>
                         document.getElementById("uploadPhoto")?.addEventListener("change", function () {
@@ -165,7 +164,7 @@ $imgSrc = img_src_from_blob_single($product['Product_Image'], 'product_mug_buyno
                 <br>
                 <!-- Text Options (only show if product supports text) -->
                 <?php if (strtolower($productText) === 'yes'): ?>
-                    <label class="label-title" style="font-weight:600;margin-top:20px;">Design & Text Options*</label>
+                    <label class="label-title" style="font-weight:600;margin-top:20px;">Design & Text Options</label>
                     <div class="option-box"
                         style="background:#f9f9f9;padding:15px;border-radius:5px;border:1px solid #eee;margin-bottom:15px;">
                         <div>
@@ -489,14 +488,11 @@ $imgSrc = img_src_from_blob_single($product['Product_Image'], 'product_mug_buyno
             const uploadInput = isBuyNow ?
                 document.getElementById("bn_realUpload") :
                 document.getElementById("realUpload");
-
             const photoRequired = <?= json_encode(strtolower($productPhoto) === 'yes') ?>;
-
             if (photoRequired && (!uploadInput || uploadInput.files.length === 0)) {
                 alert("Please upload an image for customization.");
                 return false;
             }
-
             /* CUSTOM TEXT REQUIRED CHECK */
             const customRadio = document.getElementById("customText");
             const defaultRadio = document.getElementById("defaultText");
