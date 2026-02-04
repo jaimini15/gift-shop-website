@@ -36,7 +36,7 @@ $role  = $_SESSION['reset_role'];
     button {
         width: 100%;
         padding: 10px;
-        background: #007bff;
+        background: #7e2626d5;
         border: 0;
         color: #fff;
         font-size: 16px;
@@ -44,7 +44,7 @@ $role  = $_SESSION['reset_role'];
         border-radius: 4px; 
     }
     button:hover {
-        background: #0056b3; 
+        background:#7e2626d5; 
     }
     .msg {
         font-size: 15px;
@@ -53,7 +53,7 @@ $role  = $_SESSION['reset_role'];
     a {
         font-size: 14px;
         text-decoration: none;
-        color: #007bff; 
+        color: #7e2626d5; 
     }
     a:hover { 
         text-decoration: underline; 
