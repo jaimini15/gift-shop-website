@@ -218,7 +218,7 @@ body{background:white;font-family:Arial}
                 <br><em>Custom Text: <?= htmlspecialchars($item['Custom_Text']) ?></em>
             <?php } ?>
             <?php if (!empty($item['Is_Hamper_Suggested'])) { ?>
-                <br><span style="color:green;font-weight:bold">🎁 Hamper Selected</span>
+                <br><span style="color:green;font-weight:bold"> Hamper Selected</span>
             <?php } ?>
             <br>Qty: <?= $item['Quantity'] ?> | Price: ₹<?= number_format($item['Price_Snapshot'],2) ?>
         </div>
