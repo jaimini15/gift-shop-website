@@ -55,7 +55,6 @@ $result = mysqli_query($connection, $query);
                 <th>Area & Pincode</th>
                 <th>Status</th>
                 <th>Created At</th>
-                <th>Action</th>
             </tr>
         </thead>
 
@@ -95,13 +94,6 @@ $result = mysqli_query($connection, $query);
                     <?= !empty($row['Create_At'])
                         ? date("d-m-Y H:i", strtotime($row['Create_At']))
                         : 'N/A' ?>
-                </td>
-
-                <td>
-                    <a href="edit_user.php?id=<?= $row['User_Id'] ?>"
-                       class="btn btn-warning btn-sm">
-                        Edit
-                    </a>
                 </td>
             </tr>
         <?php } ?>
