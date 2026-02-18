@@ -59,14 +59,28 @@ if (isset($_SESSION['User_Id'])) {
     <div class="icons">
 
         <!-- CART ICON -->
-        <?php if (isset($_SESSION['User_Id'])): ?>
-    <a href="javascript:void(0)" id="cartBtn" class="cart-wrapper">
-        <div class="cart-box">
-            <i class="fa-solid fa-cart-shopping"></i>
-            <span class="cart-badge"><?= $cart_count ?></span>
-        </div>
-    </a>
-<?php endif; ?>
+       <?php
+if (isset($_SESSION['User_Id'])) {
+
+    $uid = $_SESSION['User_Id'];
+    $roleCheck = mysqli_query($connection, 
+        "SELECT User_Role FROM user_details WHERE User_Id='$uid'");
+    $roleRow = mysqli_fetch_assoc($roleCheck);
+    $role = $roleRow['User_Role'] ?? 'CUSTOMER';
+
+    if ($role == 'CUSTOMER') {
+?>
+        <a href="javascript:void(0)" id="cartBtn" class="cart-wrapper">
+            <div class="cart-box">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <span class="cart-badge"><?= $cart_count ?></span>
+            </div>
+        </a>
+<?php
+    }
+}
+?>
+
 
 <!-- PROFILE -->
 <?php if (!isset($_SESSION['User_Id'])): ?>
@@ -89,28 +103,68 @@ if (isset($_SESSION['User_Id'])) {
     ?>
 
     <div class="profile-dropdown">
-        <a class="profile-btn">
-            <i class="fa-regular fa-user"></i> My Profile
-        </a>
+        <?php
+if (!isset($_SESSION['User_Id'])):
+?>
 
-        <ul class="profile-menu">
-            <li>
-                <a href="<?php
-                    if ($role == 'ADMIN') {
-                        echo '../AdminPanel/admin_profile_main.php';
-                    } 
-                    elseif ($role == 'DELIVERY_BOY') {
-                        echo '../DeliveryBoyPanel/deliveryboy_profile_main.php';
-                    } 
-                    else {
-                        echo '../customer_profile/profile.php';
-                    }
-                ?>">
-                    Check Profile
-                </a>
-            </li>
-            <li><a href="../login/logout.php">Logout</a></li>
-        </ul>
+    <a href="<?= $BASE ?>login/login.php">
+        <i class="fa-regular fa-user"></i> My Profile
+    </a>
+
+<?php
+else:
+
+    $uid = $_SESSION['User_Id'];
+
+    $userQuery = mysqli_query($connection,
+        "SELECT First_Name, User_Role FROM user_details WHERE User_Id='$uid'");
+    $userData = mysqli_fetch_assoc($userQuery);
+
+    $firstName = $userData['First_Name'] ?? 'User';
+    $role = $userData['User_Role'] ?? 'CUSTOMER';
+
+    // Decide display name & icon
+    if ($role == 'ADMIN') {
+        $displayName = "Admin";
+        $icon = "fa-user-shield";   // Admin icon
+    }
+    elseif ($role == 'DELIVERY_BOY') {
+        $displayName = $firstName;
+        $icon = "fa-motorcycle";    // Delivery icon
+    }
+    else {
+        $displayName = $firstName;
+        $icon = "fa-user";          // Customer icon
+    }
+?>
+
+<div class="profile-dropdown">
+    <a class="profile-btn">
+        <i class="fa-solid <?= $icon ?>"></i> <?= $displayName ?>
+    </a>
+
+    <ul class="profile-menu">
+        <li>
+            <a href="<?php
+                if ($role == 'ADMIN') {
+                    echo '../AdminPanel/admin_profile_main.php';
+                } 
+                elseif ($role == 'DELIVERY_BOY') {
+                    echo '../DeliveryBoyPanel/deliveryboy_profile_main.php';
+                } 
+                else {
+                    echo '../customer_profile/profile.php';
+                }
+            ?>">
+                Check Profile
+            </a>
+        </li>
+        <li><a href="../login/logout.php">Logout</a></li>
+    </ul>
+</div>
+
+<?php endif; ?>
+
     </div>
 
 <?php endif; ?>
