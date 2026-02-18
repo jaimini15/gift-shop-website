@@ -26,7 +26,12 @@ if (session_status() == PHP_SESSION_NONE) {
 
             <p><i class="fa-solid fa-phone contact-icon"></i> <strong>Phone:</strong> +91 9876543210</p>
             <p><i class="fa-solid fa-location-dot contact-icon"></i> <strong>Location:</strong> Ahmedabad, Gujarat, India</p>
-            <p><i class="fa-solid fa-envelope contact-icon"></i> <strong>Email:</strong> support@giftshop.com</p>
+            <p>
+    <a href="https://mail.google.com/mail/?view=cm&fs=1&to=giftshopmaninagar@gmail.com" target="_blank">
+        <i class="fa-solid fa-envelope contact-icon"></i>
+        <strong>giftshopmaninagar@gmail.com</strong>
+    </a>
+</p>
 
         </div>
 
