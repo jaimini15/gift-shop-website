@@ -1,6 +1,6 @@
 <!--fotter section starts here-->
     <section class="footer">
-        <div class="box-container">
+        <!-- <div class="box-container">
 
                 <div class="box">
                     <h3>Quick links</h3>
@@ -33,9 +33,9 @@
                     <a href="#"><i class="fab fa-instagram"></i>Instagram</a>
                     <a href="#"><i class="fab fa-linkedin"></i>Linkedin</a>
                     
-                </div>
+                </div> -->
                 
-        </div>
-        <div class="credit">created by <span>GiftShop</span> | all right reserved!</div>
+        <!-- </div> -->
+        <div class="credit">&copy; 2025 <span>GiftShop</span> | all right reserved!</div>
     </section>
     <!--fotter section ends here-->
