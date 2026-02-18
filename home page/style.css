@@ -97,11 +97,14 @@ nav ul li.dropdown .dropdown-content li a:hover {
 .icons a {
   text-decoration: none;
   color: var(--grey);
-  font-size: 14px;
+  font-size: 16px;     /* Same as Home */
+  font-weight: 500;
+  letter-spacing: 0.5px;  /* Adds space between letters */
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
 }
+
 .icons a {
   white-space: nowrap;
 }
@@ -691,6 +694,7 @@ body {
   justify-content: center;
   gap: 8px;
   z-index: 2;
+  text-align: justify;
 }
 
 .about-content h2 {
@@ -861,6 +865,7 @@ body {
     font-size: 1rem;
     color: #555;
     margin-bottom: 0.5rem;
+    text-align: justify;
 }
 
 
@@ -908,6 +913,7 @@ body {
   color: var(--light-black);
   line-height: 1.8;
   margin-bottom: 1rem;
+  text-align: justify;
 }
 
 .reviews .slide h3 {
@@ -983,6 +989,8 @@ body {
   line-height: 1.8;
   color:var(--grey);
   max-width: 700px;
+
+  text-align: justify;
 }
 
 /* our mission section ends */
@@ -1070,13 +1078,13 @@ body {
 .profile-dropdown {
     position: relative;
     list-style: none;
+font-size: 18px !important;
 }
-
 .profile-btn {
     display: flex;
     align-items: center;
     gap: 6px;
-    font-size: 15px;
+    font-size: 18px !important;
     font-weight: 500;
     color: var(--grey);
     text-decoration: none;
@@ -1099,6 +1107,9 @@ body {
     padding: 8px 0;
     display: none;
     z-index: 2000;
+}
+.profile-dropdown .profile-btn i {
+    font-size: 16px;
 }
 
 .profile-dropdown .profile-menu li {
