@@ -30,7 +30,7 @@ if (!empty($_FILES['custom_image']['name'])) {
     $target = $folder . $fileName;
 
     if (move_uploaded_file($_FILES['custom_image']['tmp_name'], $target)) {
-       // ✅ Store only filename
+       //Store only filename
        $imagePath = $fileName;
     }
 }
