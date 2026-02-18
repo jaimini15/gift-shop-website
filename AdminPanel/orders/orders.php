@@ -195,17 +195,26 @@ while ($item = mysqli_fetch_assoc($items)):
     <td>₹<?= number_format($item['Price_Snapshot'],2) ?></td>
     <td><?= $item['Custom_Text'] ?? 'N/A' ?></td>
     <td>
-        <?php if (!empty($item['Custom_Image'])): ?>
-          <?php if (!empty($item['Custom_Image'])): ?>
-    <img src="../<?= $item['Custom_Image'] ?>" class="product-img">
-<?php else: ?>
-    <span class="text-muted">No Image</span>
-<?php endif; ?>
+<?php 
+if (!empty($item['Custom_Image'])) {
 
-        <?php else: ?>
-            <span class="text-muted">No Image</span>
-        <?php endif; ?>
-    </td>
+    $img = $item['Custom_Image'];
+
+    // If already contains uploads/, don't add again
+    if (strpos($img, 'uploads/') === 0) {
+        $path = "../" . $img;
+    } else {
+        $path = "../uploads/" . $img;
+    }
+?>
+    <img src="<?= $path ?>" class="product-img">
+<?php 
+} else {
+?>
+    <span class="text-muted">No Image</span>
+<?php } ?>
+</td>
+
 </tr>
 <?php endwhile; ?>
 
