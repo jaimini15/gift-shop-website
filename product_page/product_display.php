@@ -136,7 +136,7 @@ $imgSrc = img_src_from_blob_single($product['Product_Image'], 'product_mug_buyno
                     <span class="price-new" style="color:#e40000;font-size:24px;font-weight:bold;">₹<?= $price ?></span>
                 </p>
 
-                <p><?= $description ?></p>
+                <p><?= nl2br($description) ?></p>
 
                 <!-- Upload Photo (only show if product supports photo customization) -->
                 <?php if (strtolower($productPhoto) === 'yes'): ?>
@@ -604,6 +604,7 @@ $imgSrc = img_src_from_blob_single($product['Product_Image'], 'product_mug_buyno
                                                 alert("Payment failed  " + result.error);
                                             }
                                         });
+                                         
                                 }
                             };
 
