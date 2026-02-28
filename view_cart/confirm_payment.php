@@ -46,7 +46,7 @@ try {
         INSERT INTO payment_details
         (Order_Id, Payment_Date, Payment_Method, Amount, Payment_Status, Transaction_Reference)
         VALUES
-        ('$order_id', CURDATE(), 'Razorpay', '$totalAmount', 'SUCCESS', '$razorpay_payment_id')
+        ('$order_id', CURDATE(), 'RAZORPAY', '$totalAmount', 'SUCCESS', '$razorpay_payment_id')
     ");
 
     /* Confirm order */
