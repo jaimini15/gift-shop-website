@@ -17,15 +17,26 @@ $profileUser = mysqli_fetch_assoc(
 /* DELIVERY TEXT FUNCTION (+3 DAYS) */
 function getDeliveryText($orderDate, $deliveryStatus, $deliveryDate = null) {
 
-    if ($deliveryStatus === 'Delivered' && $deliveryDate) {
-        return "Delivered on " . date('d M Y', strtotime($deliveryDate));
-    }
-
-    // Estimated delivery = order date + 3 days
-    $orderDate = new DateTime($orderDate);
-    $estimated = clone $orderDate;
+    $orderDateObj = new DateTime($orderDate);
+    $estimated = clone $orderDateObj;
     $estimated->modify('+3 days');
 
+    $orderMonth = $orderDateObj->format('m'); // 01 = Jan, 02 = Feb
+
+    // If Delivered
+    if ($deliveryStatus === 'Delivered') {
+
+        // 🔹 For Jan & Feb → show Order Date + 3 days
+        if ($orderMonth == '01' || $orderMonth == '02') {
+            return "Delivered on " . $estimated->format('d M Y');
+        }
+        // 🔹 For March onwards → show real delivery date
+        if (!empty($deliveryDate)) {
+            return "Delivered on " . date('d M Y', strtotime($deliveryDate));
+        }
+    }
+
+    // 🔸 If NOT delivered → show estimated arrival
     $today = new DateTime('today');
 
     if ($today > $estimated) {
