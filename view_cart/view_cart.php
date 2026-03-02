@@ -4,6 +4,40 @@ $currentStep = 1;
 include("checkout_steps.php");
 
 include("../AdminPanel/db.php");
+// ==============================
+// HANDLE HAMPER UPDATE
+// ==============================
+if (isset($_POST['update_hamper'])) {
+
+    if (!isset($_SESSION['User_Id'])) {
+        echo "no_user";
+        exit;
+    }
+
+    $value = ($_POST['value'] == 1) ? 1 : 0;
+    $uid = $_SESSION['User_Id'];
+
+    // Get Cart ID
+    $cartRes = mysqli_query($connection, 
+        "SELECT Cart_Id FROM cart WHERE User_Id='$uid'"
+    );
+    $cart = mysqli_fetch_assoc($cartRes);
+
+    if ($cart) {
+        $cartId = $cart['Cart_Id'];
+
+        mysqli_query($connection, "
+            UPDATE customize_cart_details 
+            SET Is_Hamper_Suggested = '$value'
+            WHERE Cart_Id = '$cartId'
+        ");
+
+        echo "updated";
+    }
+
+    exit; // VERY IMPORTANT
+}
+
 
 if (!isset($_SESSION['User_Id'])) {
     echo "<p class='empty-msg'>Please login to view cart.</p>";
