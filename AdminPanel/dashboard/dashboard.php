@@ -61,6 +61,22 @@ $filteredTotal = mysqli_num_rows(mysqli_query(
     $connection,
     "SELECT Order_Id FROM `order` $where"
 ));
+
+/* ================= TOP SELLING PRODUCTS ================= */
+/* ================= TOP SELLING PRODUCTS ================= */
+$topProductsQuery = mysqli_query($connection, "
+    SELECT 
+        oi.Product_Id,
+        p.Product_Name,
+        SUM(oi.Quantity) AS total_sold,
+        SUM(oi.Quantity * oi.Price_Snapshot) AS total_revenue
+    FROM order_item oi
+    JOIN product_details p 
+        ON oi.Product_Id = p.Product_Id
+    GROUP BY oi.Product_Id, p.Product_Name
+    ORDER BY total_sold DESC
+    LIMIT 5
+");
 ?>
 
 <!DOCTYPE html>
@@ -127,34 +143,85 @@ $filteredTotal = mysqli_num_rows(mysqli_query(
         </div>
 
         <!-- ================= REPORT SECTION ================= -->
-        <div class="mt-5 card p-4">
+        <div class="mt-5 card p-4 shadow">
 
-            <h1>Reports</h1>
+            <h1 class="fw-bold text-center mb-4" style="font-size:38px;">
+                📊 SALES REPORTS
+            </h1>
 
-            <h3>Monthly Sales </h3>
+            <h2 class="fw-bold mb-4 text-primary" style="font-size:28px;">
+                📅 Monthly Sales
+            </h2>
+
             <form method="GET" class="row g-3 mb-4">
                 <div class="col-md-4">
-                    <label>From Date</label>
+                    <label class="fw-semibold">From Date</label>
                     <input type="date" name="from_date" value="<?= $from ?>" class="form-control">
                 </div>
 
                 <div class="col-md-4">
-                    <label>To Date</label>
+                    <label class="fw-semibold">To Date</label>
                     <input type="date" name="to_date" value="<?= $to ?>" class="form-control">
                 </div>
 
                 <div class="col-md-4 d-flex align-items-end">
                     <button class="btn btn-primary me-2">Filter</button>
-                    <a href="dashboard/export_pdf.php?from_date=<?= $from ?>&to_date=<?= $to ?>" target="_blank"
-                        class="btn btn-danger">
+
+                    <a href="dashboard/export_monthly_sale_pdf.php?from_date=<?= $from ?>&to_date=<?= $to ?>"
+                        target="_blank" class="btn btn-danger">
                         Generate PDF
                     </a>
                 </div>
             </form>
 
-            <h5>Total Orders (Filtered): <?= $filteredTotal ?></h5>
+            <h5 class="mb-3">
+                Total Orders (Filtered):
+                <span class="badge bg-success fs-6"><?= $filteredTotal ?></span>
+            </h5>
 
             <canvas id="salesChart" height="100"></canvas>
+
+            <!-- ================= TOP PRODUCTS ================= -->
+            <div class="mt-5">
+
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h2 class="fw-bold text-success" style="font-size:26px;">
+                        🏆 Top Selling Products
+                    </h2>
+
+                    <a href="dashboard/export_top_products_pdf.php" target="_blank" class="btn btn-danger">
+                        Generate PDF
+                    </a>
+                </div>
+
+                <table class="table table-bordered table-striped">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Product Name</th>
+                            <th>Total Quantity Sold</th>
+                            <th>Total Revenue</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if (mysqli_num_rows($topProductsQuery) > 0) { ?>
+                            <?php while ($tp = mysqli_fetch_assoc($topProductsQuery)) { ?>
+                                <tr>
+                                    <td><?= $tp['Product_Name'] ?></td>
+                                    <td><?= $tp['total_sold'] ?></td>
+                                    <td>₹<?= number_format($tp['total_revenue'], 2) ?></td>
+                                </tr>
+                            <?php } ?>
+                        <?php } else { ?>
+                            <tr>
+                                <td colspan="3" class="text-center text-muted">
+                                    No product sales data available
+                                </td>
+                            </tr>
+                        <?php } ?>
+                    </tbody>
+                </table>
+
+            </div>
 
         </div>
 
