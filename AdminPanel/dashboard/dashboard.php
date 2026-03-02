@@ -92,6 +92,25 @@ $lowProductsQuery = mysqli_query($connection, "
     LIMIT 5
 ");
 
+/* ================= YEAR WISE REVENUE ================= */
+$yearQuery = mysqli_query($connection, "
+    SELECT 
+        YEAR(Order_Date) AS year,
+        SUM(Total_Amount) AS total_revenue,
+        COUNT(Order_Id) AS total_orders
+    FROM `order`
+    WHERE Status='CONFIRM'
+    GROUP BY YEAR(Order_Date)
+    ORDER BY YEAR(Order_Date)
+");
+
+$years = [];
+$yearRevenue = [];
+
+while ($row = mysqli_fetch_assoc($yearQuery)) {
+    $years[] = $row['year'];
+    $yearRevenue[] = $row['total_revenue'];
+}
 /* ================= CATEGORY WISE REVENUE ================= */
 $categoryRevenueQuery = mysqli_query($connection, "
     SELECT 
@@ -279,9 +298,6 @@ while ($row = mysqli_fetch_assoc($deliveryStatusQuery)) {
 
                     <div class="col-md-4 d-flex align-items-end">
                         <button class="btn btn-danger me-2">Filter</button>
-
-
-
                     </div>
                 </form>
 
@@ -367,6 +383,21 @@ while ($row = mysqli_fetch_assoc($deliveryStatusQuery)) {
                     </tbody>
                 </table>
 
+            </div>
+<!--Yearly revenue -->
+            <div class="mt-5 card p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h2 class="fw-bold text-danger" style="font-size:26px;">
+                    📊 Year Wise Revenue
+                </h2>
+
+                <a href="dashboard/export_yearly_revenue_pdf.php" target="_blank" class="btn btn-primary mb-3">
+                    Generate PDF
+                </a>
+    </div>
+                <div style="width:600px; margin:auto;">
+                    <canvas id="yearChart"></canvas>
+                </div>
             </div>
             <!-- ================= CATEGORY REVENUE PIE CHART ================= -->
             <div class="mt-5 card p-4">
@@ -526,7 +557,30 @@ while ($row = mysqli_fetch_assoc($deliveryStatusQuery)) {
         </div>
 
     </div>
-
+    <script>
+        new Chart(document.getElementById('yearChart'), {
+            type: 'bar',
+            data: {
+                labels: <?= json_encode($years); ?>,
+                datasets: [{
+                    label: 'Year Wise Revenue',
+                    data: <?= json_encode($yearRevenue); ?>,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 5000
+                        }
+                    }
+                }
+            }
+        });
+    </script>
     <script>
         const categoryLabels = <?= json_encode($categoryNames); ?>;
         const categoryData = <?= json_encode($categoryRevenue); ?>;
