@@ -62,8 +62,8 @@ $filteredTotal = mysqli_num_rows(mysqli_query(
     "SELECT Order_Id FROM `order` $where"
 ));
 
-/* ================= TOP SELLING PRODUCTS ================= */
-/* ================= TOP SELLING PRODUCTS ================= */
+
+/* ================= TOP SELLING PRODUCTS  && LOW SELLING PRODUCTS================= */
 $topProductsQuery = mysqli_query($connection, "
     SELECT 
         oi.Product_Id,
@@ -75,6 +75,20 @@ $topProductsQuery = mysqli_query($connection, "
         ON oi.Product_Id = p.Product_Id
     GROUP BY oi.Product_Id, p.Product_Name
     ORDER BY total_sold DESC
+    LIMIT 5
+");
+$lowProductsQuery = mysqli_query($connection, "
+    SELECT 
+        oi.Product_Id,
+        p.Product_Name,
+        SUM(oi.Quantity) AS total_sold,
+        SUM(oi.Quantity * oi.Price_Snapshot) AS total_revenue
+    FROM order_item oi
+    JOIN product_details p 
+        ON oi.Product_Id = p.Product_Id
+    GROUP BY oi.Product_Id, p.Product_Name
+    HAVING total_sold > 0
+    ORDER BY total_sold ASC
     LIMIT 5
 ");
 
@@ -96,6 +110,80 @@ $categoryRevenue = [];
 while ($row = mysqli_fetch_assoc($categoryRevenueQuery)) {
     $categoryNames[] = $row['Category_Name'];
     $categoryRevenue[] = $row['total_revenue'];
+}
+
+
+/* ================= ORDERS BY AREA ================= */
+$areaQuery = "
+    SELECT 
+        a.Area_Name,
+        COUNT(o.Order_Id) AS total_orders
+    FROM `order` o
+    JOIN user_details u ON o.User_Id = u.User_Id
+    JOIN area_details a ON u.Area_Id = a.Area_Id
+    GROUP BY a.Area_Name
+    ORDER BY total_orders DESC
+";
+
+$areaResult = mysqli_query($connection, $areaQuery);
+
+$areaLabels = [];
+$areaData = [];
+
+while ($row = mysqli_fetch_assoc($areaResult)) {
+    $areaLabels[] = $row['Area_Name'];
+    $areaData[] = $row['total_orders'];
+}
+/* ================= PRODUCTS WITHOUT SALES LOGIC ================= */
+
+$unsoldProductsQuery = mysqli_query($connection, "
+    SELECT 
+        p.Product_Id,
+        p.Product_Name,
+        p.Price
+    FROM product_details p
+    LEFT JOIN order_item oi 
+        ON p.Product_Id = oi.Product_Id
+    WHERE oi.Product_Id IS NULL
+    ORDER BY p.Product_Name ASC
+");
+
+$unsoldCount = mysqli_num_rows($unsoldProductsQuery);
+
+/* ================= LOW STOCK PRODUCTS ================= */
+
+$lowStockQuery = mysqli_query($connection, "
+    SELECT 
+        p.Product_Id,
+        p.Product_Name,
+        p.Price,
+        s.Stock_Available,
+        s.Last_Update
+    FROM stock_details s
+    JOIN product_details p 
+        ON s.Product_Id = p.Product_Id
+    WHERE s.Stock_Available < 5
+    ORDER BY s.Stock_Available ASC
+");
+
+$lowStockCount = mysqli_num_rows($lowStockQuery);
+
+/* ================= DELIVERY STATUS COUNT ================= */
+
+$deliveryStatusQuery = mysqli_query($connection, "
+    SELECT 
+        Delivery_Status,
+        COUNT(*) AS total_count
+    FROM delivery_details
+    GROUP BY Delivery_Status
+");
+
+$statusLabels = [];
+$statusData = [];
+
+while ($row = mysqli_fetch_assoc($deliveryStatusQuery)) {
+    $statusLabels[] = $row['Delivery_Status'];
+    $statusData[] = $row['total_count'];
 }
 ?>
 
@@ -168,53 +256,56 @@ while ($row = mysqli_fetch_assoc($categoryRevenueQuery)) {
             <h1 class="fw-bold text-center mb-4" style="font-size:38px;">
                 📊 SALES REPORTS
             </h1>
-
-            <h2 class="fw-bold mb-4 text-primary" style="font-size:28px;">
-                📅 Monthly Sales
-            </h2>
-
-            <form method="GET" class="row g-3 mb-4">
-                <div class="col-md-4">
-                    <label class="fw-semibold">From Date</label>
-                    <input type="date" name="from_date" value="<?= $from ?>" class="form-control">
-                </div>
-
-                <div class="col-md-4">
-                    <label class="fw-semibold">To Date</label>
-                    <input type="date" name="to_date" value="<?= $to ?>" class="form-control">
-                </div>
-
-                <div class="col-md-4 d-flex align-items-end">
-                    <button class="btn btn-primary me-2">Filter</button>
-
+            <div class="mt-5 card p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h2 class="fw-bold text-danger" style="font-size:26px;">
+                        📅 Monthly Sales
+                    </h2>
                     <a href="dashboard/export_monthly_sale_pdf.php?from_date=<?= $from ?>&to_date=<?= $to ?>"
-                        target="_blank" class="btn btn-danger">
+                        target="_blank" class="btn btn-primary">
                         Generate PDF
                     </a>
                 </div>
-            </form>
+                <form method="GET" class="row g-3 mb-4">
+                    <div class="col-md-4">
+                        <label class="fw-semibold">From Date</label>
+                        <input type="date" name="from_date" value="<?= $from ?>" class="form-control">
+                    </div>
 
-            <h5 class="mb-3">
-                Total Orders (Filtered):
-                <span class="badge bg-success fs-6"><?= $filteredTotal ?></span>
-            </h5>
+                    <div class="col-md-4">
+                        <label class="fw-semibold">To Date</label>
+                        <input type="date" name="to_date" value="<?= $to ?>" class="form-control">
+                    </div>
 
-            <canvas id="salesChart" height="100"></canvas>
+                    <div class="col-md-4 d-flex align-items-end">
+                        <button class="btn btn-danger me-2">Filter</button>
 
-            <!-- ================= TOP PRODUCTS ================= -->
-            <div class="mt-5">
 
+
+                    </div>
+                </form>
+
+                <h5 class="mb-3">
+                    Total Orders (Filtered):
+                    <span class="badge bg-success fs-6"><?= $filteredTotal ?></span>
+                </h5>
+
+                <canvas id="salesChart" height="175"></canvas>
+            </div>
+            <!-- ================= TOP & LOW PRODUCTS ================= -->
+            <div class="mt-5 card p-4">
+
+                <!-- ================= TOP SELLING ================= -->
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h2 class="fw-bold text-success" style="font-size:26px;">
+                    <h2 class="fw-bold text-danger" style="font-size:26px;">
                         🏆 Top Selling Products
                     </h2>
-
-                    <a href="dashboard/export_top_products_pdf.php" target="_blank" class="btn btn-danger">
+                    <a href="dashboard/export_top_low_selling_products_pdf.php" target="_blank" class="btn btn-primary">
                         Generate PDF
                     </a>
                 </div>
 
-                <table class="table table-bordered table-striped">
+                <table class="table table-bordered table-striped mb-5">
                     <thead class="table-dark">
                         <tr>
                             <th>Product Name</th>
@@ -241,26 +332,201 @@ while ($row = mysqli_fetch_assoc($categoryRevenueQuery)) {
                     </tbody>
                 </table>
 
+
+                <!-- ================= LOW SELLING ================= -->
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h2 class="fw-bold text-warning" style="font-size:26px;">
+                        📉 Low Selling Products
+                    </h2>
+                </div>
+
+                <table class="table table-bordered table-striped">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Product Name</th>
+                            <th>Total Quantity Sold</th>
+                            <th>Total Revenue</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if (mysqli_num_rows($lowProductsQuery) > 0) { ?>
+                            <?php while ($lp = mysqli_fetch_assoc($lowProductsQuery)) { ?>
+                                <tr>
+                                    <td><?= $lp['Product_Name'] ?></td>
+                                    <td><?= $lp['total_sold'] ?></td>
+                                    <td>₹<?= number_format($lp['total_revenue'], 2) ?></td>
+                                </tr>
+                            <?php } ?>
+                        <?php } else { ?>
+                            <tr>
+                                <td colspan="3" class="text-center text-muted">
+                                    No low selling product data available
+                                </td>
+                            </tr>
+                        <?php } ?>
+                    </tbody>
+                </table>
+
             </div>
             <!-- ================= CATEGORY REVENUE PIE CHART ================= -->
-            <div class="mt-5 text-center">
-
-                <h2 class="fw-bold text-danger mb-4" style="font-size:24px;">
-                    🥧 Category Wise Revenue Distribution
-                </h2>
-
-
-                <a href="dashboard/export_category_revenue_pdf.php" target="_blank" class="btn btn-danger">
-                    Generate PDF
-                </a>
+            <div class="mt-5 card p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h2 class="fw-bold text-danger" style="font-size:26px;">
+                        Category Wise Revenue Distribution
+                    </h2>
+                    <a href="dashboard/export_category_revenue_pdf.php" target="_blank" class="btn btn-primary">
+                        Generate PDF
+                    </a>
+                </div>
                 <div style="width:400px; margin:auto;">
                     <canvas id="categoryPieChart"></canvas>
                 </div>
+            </div>
 
+            <!-- ================= ORDERS BY DELIVERY AREA PIE CHART ================= -->
+            <div class="mt-5 card p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h2 class="fw-bold text-danger" style="font-size:26px;">
+                        Orders by Delivery Area Distribution
+                    </h2>
+                    <a href="dashboard/export_area_orders_pdf.php" target="_blank" class="btn btn-primary">
+                        Generate PDF
+                    </a>
+                </div>
+                <div style="width:400px; margin:auto;">
+                    <canvas id="areaPieChart"></canvas>
+                </div>
+
+            </div>
+
+            <!-- ================= PRODUCTS WITHOUT SALES ================= -->
+            <div class="mt-5 card p-4">
+
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h2 class="fw-bold text-danger" style="font-size:26px;">
+                        📦 Products Without Sales
+                    </h2>
+
+                    <a href="dashboard/export_products_without_sales_pdf.php" target="_blank" class="btn btn-primary">
+                        Generate PDF
+                    </a>
+                </div>
+
+                <h5>
+                    Total Unsold Products:
+                    <span class="badge bg-danger fs-6">
+                        <?= $unsoldCount ?>
+                    </span>
+                </h5>
+
+                <table class="table table-bordered table-striped mt-3">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Product ID</th>
+                            <th>Product Name</th>
+                            <th>Price</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <?php if ($unsoldCount > 0) { ?>
+
+                            <?php while ($row = mysqli_fetch_assoc($unsoldProductsQuery)) { ?>
+                                <tr>
+                                    <td><?= $row['Product_Id'] ?></td>
+                                    <td><?= $row['Product_Name'] ?></td>
+                                    <td>₹<?= number_format($row['Price'], 2) ?></td>
+                                </tr>
+                            <?php } ?>
+
+                        <?php } else { ?>
+                            <tr>
+                                <td colspan="3" class="text-center text-success">
+                                    All products have sales
+                                </td>
+                            </tr>
+                        <?php } ?>
+                    </tbody>
+                </table>
+
+            </div>
+
+            <!-- ================= LOW STOCK PRODUCTS ================= -->
+            <div class="mt-5 card p-4 shadow">
+
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h2 class="fw-bold text-warning" style="font-size:26px;">
+                        ⚠ Low Stock Products (Less Than 5)
+                    </h2>
+
+                    <a href="dashboard/export_low_stock_pdf.php" target="_blank" class="btn btn-primary">
+                        Generate PDF
+                    </a>
+                </div>
+
+                <h5>
+                    Total Low Stock Products:
+                    <span class="badge bg-warning text-dark fs-6">
+                        <?= $lowStockCount ?>
+                    </span>
+                </h5>
+
+                <table class="table table-bordered table-striped mt-3">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Product ID</th>
+                            <th>Product Name</th>
+                            <th>Price</th>
+                            <th>Stock Available</th>
+                            <th>Last Updated</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <?php if ($lowStockCount > 0) { ?>
+
+                            <?php while ($row = mysqli_fetch_assoc($lowStockQuery)) { ?>
+                                <tr>
+                                    <td><?= $row['Product_Id'] ?></td>
+                                    <td><?= $row['Product_Name'] ?></td>
+                                    <td>₹<?= number_format($row['Price'], 2) ?></td>
+                                    <td class="fw-bold text-danger">
+                                        <?= $row['Stock_Available'] ?>
+                                    </td>
+                                    <td><?= $row['Last_Update'] ?></td>
+                                </tr>
+                            <?php } ?>
+
+                        <?php } else { ?>
+                            <tr>
+                                <td colspan="5" class="text-center text-success">
+                                    All products have sufficient stock 🎉
+                                </td>
+                            </tr>
+                        <?php } ?>
+                    </tbody>
+                </table>
+
+            </div>
+
+            <!-- ================= DELIVERY STATUS PIE CHART ================= -->
+            <div class="mt-5 card p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h2 class="fw-bold text-danger" style="font-size:26px;">
+                        🚚 Order Delivery Status Distribution
+                    </h2>
+                    <a href="dashboard/export_delivery_status_pdf.php" target="_blank" class="btn btn-primary">
+                        Generate PDF
+                    </a>
+                </div>
+                <div style="width:400px; margin:auto;">
+                    <canvas id="deliveryStatusPieChart"></canvas>
+                </div>
             </div>
         </div>
 
     </div>
+
     <script>
         const categoryLabels = <?= json_encode($categoryNames); ?>;
         const categoryData = <?= json_encode($categoryRevenue); ?>;
@@ -310,6 +576,85 @@ while ($row = mysqli_fetch_assoc($categoryRevenueQuery)) {
                 }]
             },
             options: { responsive: true }
+        });
+    </script>
+    <script>
+        const areaLabels = <?= json_encode($areaLabels); ?>;
+        const areaData = <?= json_encode($areaData); ?>;
+
+        // Calculate total orders
+        const totalAreaOrders = areaData.reduce((a, b) => a + parseInt(b), 0);
+
+        new Chart(document.getElementById('areaPieChart'), {
+            type: 'pie',
+            data: {
+                labels: areaLabels,
+                datasets: [{
+                    data: areaData
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'right'
+                    },
+                    datalabels: {
+                        color: 'white',
+                        font: {
+                            weight: 'bold',
+                            size: 12
+                        },
+                        formatter: function (value) {
+                            let percent = ((value / totalAreaOrders) * 100).toFixed(1);
+                            return percent + "%\n" + value + " Orders";
+                        }
+                    }
+                }
+            },
+            plugins: [ChartDataLabels]
+        });
+    </script>
+
+    <script>
+        const deliveryLabels = <?= json_encode($statusLabels); ?>;
+        const deliveryData = <?= json_encode($statusData); ?>;
+
+        const totalDelivery = deliveryData.reduce((a, b) => a + parseInt(b), 0);
+
+        new Chart(document.getElementById('deliveryStatusPieChart'), {
+            type: 'pie',
+            data: {
+                labels: deliveryLabels,
+                datasets: [{
+                    data: deliveryData,
+                    backgroundColor: [
+                        '#ffc107',   // Packed (yellow)
+                        '#17a2b8',   // Out for Delivery (blue)
+                        '#28a745'    // Delivered (green)
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'right'
+                    },
+                    datalabels: {
+                        color: 'white',
+                        font: {
+                            weight: 'bold',
+                            size: 12
+                        },
+                        formatter: function (value) {
+                            let percent = ((value / totalDelivery) * 100).toFixed(1);
+                            return percent + "%\n" + value;
+                        }
+                    }
+                }
+            },
+            plugins: [ChartDataLabels]
         });
     </script>
 
