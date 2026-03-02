@@ -14,7 +14,10 @@ $phone      = mysqli_real_escape_string($connection, $_POST['phone']);
 $address    = mysqli_real_escape_string($connection, $_POST['address']);
 $area_id = mysqli_real_escape_string($connection, $_POST['area_id']);
 $email      = mysqli_real_escape_string($connection, $_POST['email']);
-$password   = mysqli_real_escape_string($connection, $_POST['password']);
+$password_raw = $_POST['password'];
+
+/* HASH PASSWORD */
+$password = password_hash($password_raw, PASSWORD_DEFAULT);
 $role       = "CUSTOMER";
 
 /* CHECK EMAIL */
