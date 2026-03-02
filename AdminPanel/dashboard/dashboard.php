@@ -1,155 +1,180 @@
 <?php
-if (!isset($_SESSION)) session_start();
+if (!isset($_SESSION))
+    session_start();
 include(__DIR__ . '/../db.php');
 
-/* ================= TOTAL CUSTOMERS ================= */
-$totalUsersQuery = mysqli_query(
+/* ================= SUMMARY ================= */
+$totalUsers = mysqli_fetch_assoc(mysqli_query(
     $connection,
-    "SELECT COUNT(*) AS total 
-     FROM user_details 
-     WHERE User_Role='CUSTOMER'"
-);
-$totalUsers = mysqli_fetch_assoc($totalUsersQuery)['total'];
+    "SELECT COUNT(*) AS total FROM user_details WHERE User_Role='CUSTOMER'"
+))['total'];
 
-/* ================= TOTAL PRODUCTS ================= */
-$totalProductsQuery = mysqli_query(
+$totalProducts = mysqli_fetch_assoc(mysqli_query(
     $connection,
-    "SELECT COUNT(*) AS total 
-     FROM product_details"
-);
-$totalProducts = mysqli_fetch_assoc($totalProductsQuery)['total'];
+    "SELECT COUNT(*) AS total FROM product_details"
+))['total'];
 
-/* ================= TOTAL ORDERS ================= */
-$totalOrdersQuery = mysqli_query(
+$totalOrders = mysqli_fetch_assoc(mysqli_query(
     $connection,
-    "SELECT COUNT(*) AS total 
-     FROM `order`"
-);
-$totalOrders = mysqli_fetch_assoc($totalOrdersQuery)['total'];
-
-/* ================= PENDING DELIVERIES ================= */
-$pendingDeliveryQuery = mysqli_query(
-    $connection,
-    "
-    SELECT COUNT(*) AS total
-    FROM `order` o
-    LEFT JOIN delivery_details d 
-        ON o.Order_Id = d.Order_Id
-    WHERE d.Delivery_Id IS NULL
-       OR d.Delivery_Status != 'Delivered'
-    "
-);
-$pendingDelivery = mysqli_fetch_assoc($pendingDeliveryQuery)['total'];
+    "SELECT COUNT(*) AS total FROM `order`"
+))['total'];
 
 /* ================= RECENT ORDERS ================= */
-$recentOrdersQuery = mysqli_query(
-    $connection,
-    "
-    SELECT 
-        o.Order_Id,
-        o.Status,
-        o.Total_Amount,
-        u.First_Name,
-        u.Last_Name
+$recentOrders = mysqli_query($connection, "
+    SELECT o.Order_Id, o.Order_Date, o.Total_Amount,
+           u.First_Name, u.Last_Name
     FROM `order` o
-    LEFT JOIN user_details u 
-        ON o.User_Id = u.User_Id
+    LEFT JOIN user_details u ON o.User_Id = u.User_Id
     ORDER BY o.Order_Date DESC
     LIMIT 5
-    "
-);
+");
+
+/* ================= FILTER ================= */
+$from = $_GET['from_date'] ?? '';
+$to = $_GET['to_date'] ?? '';
+
+$where = "";
+if ($from && $to) {
+    $where = "WHERE DATE(Order_Date) BETWEEN '$from' AND '$to'";
+}
+
+/* ================= MONTHLY SALES ================= */
+$salesQuery = mysqli_query($connection, "
+    SELECT YEAR(Order_Date) as year,
+           MONTH(Order_Date) as month,
+           SUM(Total_Amount) as total_sales
+    FROM `order`
+    $where
+    GROUP BY YEAR(Order_Date), MONTH(Order_Date)
+    ORDER BY YEAR(Order_Date), MONTH(Order_Date)
+");
+
+$months = [];
+$sales = [];
+
+while ($row = mysqli_fetch_assoc($salesQuery)) {
+    $months[] = date("M Y", mktime(0, 0, 0, $row['month'], 1, $row['year']));
+    $sales[] = $row['total_sales'];
+}
+
+$filteredTotal = mysqli_num_rows(mysqli_query(
+    $connection,
+    "SELECT Order_Id FROM `order` $where"
+));
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html>
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GiftShop Admin Panel</title>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-
-<style>
-        body { background: #f4f6f9; font-family: Arial, sans-serif; }
-        .content { margin-left: 0px; padding: 0px;  }
-        .card-box { background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
-        .cat-img { width: 70px; height: 70px; object-fit: cover; border-radius: 8px; }
-    </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
-<body>
+<body style="background:#f4f6f9">
+    <div class="container mt-4">
 
-<div class="content">
+        <h2 class="mb-4">Dashboard Overview</h2>
 
-<h2 class="fw-bold mb-4">Dashboard Overview</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card p-3 text-center">
+                    <h6>Total Users</h6>
+                    <h3><?= $totalUsers ?></h3>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card p-3 text-center">
+                    <h6>Total Products</h6>
+                    <h3><?= $totalProducts ?></h3>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card p-3 text-center">
+                    <h6>Total Orders</h6>
+                    <h3><?= $totalOrders ?></h3>
+                </div>
+            </div>
+        </div>
 
-<div class="row g-4">
+        <!-- ================= RECENT ORDERS ================= -->
+        <div class="mt-5 card p-4">
+            <h4>Recent Orders</h4>
 
-<div class="col-md-3 col-6">
-    <div class="card-box">
-        <h5><i class="fa-solid fa-users"></i> Total Users</h5>
-        <h3><?= $totalUsers ?></h3>
+            <table class="table table-bordered mt-3">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Customer</th>
+                        <th>Date</th>
+                        <th>Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php while ($r = mysqli_fetch_assoc($recentOrders)) { ?>
+                        <tr>
+                            <td><?= $r['Order_Id'] ?></td>
+                            <td><?= $r['First_Name'] . ' ' . $r['Last_Name'] ?></td>
+                            <td><?= $r['Order_Date'] ?></td>
+                            <td>₹<?= number_format($r['Total_Amount'], 2) ?></td>
+                        </tr>
+                    <?php } ?>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ================= REPORT SECTION ================= -->
+        <div class="mt-5 card p-4">
+
+            <h1>Reports</h1>
+
+            <h3>Monthly Sales </h3>
+            <form method="GET" class="row g-3 mb-4">
+                <div class="col-md-4">
+                    <label>From Date</label>
+                    <input type="date" name="from_date" value="<?= $from ?>" class="form-control">
+                </div>
+
+                <div class="col-md-4">
+                    <label>To Date</label>
+                    <input type="date" name="to_date" value="<?= $to ?>" class="form-control">
+                </div>
+
+                <div class="col-md-4 d-flex align-items-end">
+                    <button class="btn btn-primary me-2">Filter</button>
+                    <a href="dashboard/export_pdf.php?from_date=<?= $from ?>&to_date=<?= $to ?>" target="_blank"
+                        class="btn btn-danger">
+                        Generate PDF
+                    </a>
+                </div>
+            </form>
+
+            <h5>Total Orders (Filtered): <?= $filteredTotal ?></h5>
+
+            <canvas id="salesChart" height="100"></canvas>
+
+        </div>
+
     </div>
-</div>
 
-<div class="col-md-3 col-6">
-    <div class="card-box">
-        <h5><i class="fa-solid fa-box"></i> Total Products</h5>
-        <h3><?= $totalProducts ?></h3>
-    </div>
-</div>
-
-<div class="col-md-3 col-6">
-    <div class="card-box">
-        <h5><i class="fa-solid fa-cart-shopping"></i> Orders</h5>
-        <h3><?= $totalOrders ?></h3>
-    </div>
-</div>
-
-<div class="col-md-3 col-6">
-    <div class="card-box">
-        <h5><i class="fa-solid fa-truck"></i> Pending Delivery</h5>
-        <h3><?= $pendingDelivery ?></h3>
-    </div>
-</div>
-
-</div>
-
-<!-- ================= RECENT ORDERS ================= -->
-<div class="mt-5 card-box">
-<h5 class="fw-bold">Recent Orders</h5>
-
-<table class="table table-bordered table-striped mt-3">
-<thead class="table-dark">
-<tr>
-    <th>Order ID</th>
-    <th>User</th>
-    <th>Status</th>
-    <th>Amount</th>
-</tr>
-</thead>
-
-<tbody>
-<?php if (mysqli_num_rows($recentOrdersQuery) == 0) { ?>
-<tr>
-    <td colspan="4" class="text-center text-muted">No recent orders</td>
-</tr>
-<?php } ?>
-
-<?php while ($row = mysqli_fetch_assoc($recentOrdersQuery)) { ?>
-<tr>
-    <td><?= $row['Order_Id'] ?></td>
-    <td><?= $row['First_Name'] . ' ' . $row['Last_Name'] ?></td>
-    <td><?= $row['Status'] ?></td>
-    <td>₹<?= number_format($row['Total_Amount'], 2) ?></td>
-</tr>
-<?php } ?>
-</tbody>
-</table>
-</div>
-
-</div>
+    <script>
+        new Chart(document.getElementById('salesChart'), {
+            type: 'bar',
+            data: {
+                labels: <?= json_encode($months); ?>,
+                datasets: [{
+                    label: 'Monthly Revenue',
+                    data: <?= json_encode($sales); ?>,
+                    borderWidth: 1
+                }]
+            },
+            options: { responsive: true }
+        });
+    </script>
 
 </body>
+
 </html>
