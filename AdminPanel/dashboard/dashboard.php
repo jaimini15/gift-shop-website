@@ -273,12 +273,12 @@ while ($row = mysqli_fetch_assoc($deliveryStatusQuery)) {
         <div class="mt-5 card p-4 shadow">
 
             <h1 class="fw-bold text-center mb-4" style="font-size:38px;">
-                📊 SALES REPORTS
+                SALES REPORTS
             </h1>
             <div class="mt-5 card p-4">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h2 class="fw-bold text-danger" style="font-size:26px;">
-                        📅 Monthly Sales
+                    <h2 class="fw-bold" style="font-size:26px;color:#7e2626;">
+                        Monthly Sales
                     </h2>
                     <a href="dashboard/export_monthly_sale_pdf.php?from_date=<?= $from ?>&to_date=<?= $to ?>"
                         target="_blank" class="btn btn-primary">
@@ -297,7 +297,7 @@ while ($row = mysqli_fetch_assoc($deliveryStatusQuery)) {
                     </div>
 
                     <div class="col-md-4 d-flex align-items-end">
-                        <button class="btn btn-danger me-2">Filter</button>
+                        <button class="btn btn-danger me-2" style="background-color:#7e2626;color:white;">Filter</button>
                     </div>
                 </form>
 
@@ -313,8 +313,8 @@ while ($row = mysqli_fetch_assoc($deliveryStatusQuery)) {
 
                 <!-- ================= TOP SELLING ================= -->
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h2 class="fw-bold text-danger" style="font-size:26px;">
-                        🏆 Top Selling Products
+                    <h2 class="fw-bold" style="font-size:26px;color:#7e2626;">
+                         Top Selling Products
                     </h2>
                     <a href="dashboard/export_top_low_selling_products_pdf.php" target="_blank" class="btn btn-primary">
                         Generate PDF
@@ -351,8 +351,8 @@ while ($row = mysqli_fetch_assoc($deliveryStatusQuery)) {
 
                 <!-- ================= LOW SELLING ================= -->
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h2 class="fw-bold text-warning" style="font-size:26px;">
-                        📉 Low Selling Products
+                    <h2 class="fw-bold" style="font-size:26px;color:#7e2626;">
+                        Low Selling Products
                     </h2>
                 </div>
 
@@ -387,8 +387,8 @@ while ($row = mysqli_fetch_assoc($deliveryStatusQuery)) {
 <!--Yearly revenue -->
             <div class="mt-5 card p-4">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h2 class="fw-bold text-danger" style="font-size:26px;">
-                    📊 Year Wise Revenue
+                    <h2 class="fw-bold" style="font-size:26px;color:#7e2626;">
+                    Year Wise Revenue
                 </h2>
 
                 <a href="dashboard/export_yearly_revenue_pdf.php" target="_blank" class="btn btn-primary mb-3">
@@ -402,7 +402,7 @@ while ($row = mysqli_fetch_assoc($deliveryStatusQuery)) {
             <!-- ================= CATEGORY REVENUE PIE CHART ================= -->
             <div class="mt-5 card p-4">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h2 class="fw-bold text-danger" style="font-size:26px;">
+                    <h2 class="fw-bold" style="font-size:26px;color:#7e2626;">
                         Category Wise Revenue Distribution
                     </h2>
                     <a href="dashboard/export_category_revenue_pdf.php" target="_blank" class="btn btn-primary">
@@ -417,7 +417,7 @@ while ($row = mysqli_fetch_assoc($deliveryStatusQuery)) {
             <!-- ================= ORDERS BY DELIVERY AREA PIE CHART ================= -->
             <div class="mt-5 card p-4">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h2 class="fw-bold text-danger" style="font-size:26px;">
+                    <h2 class="fw-bold" style="font-size:26px;color:#7e2626;">
                         Orders by Delivery Area Distribution
                     </h2>
                     <a href="dashboard/export_area_orders_pdf.php" target="_blank" class="btn btn-primary">
@@ -434,8 +434,8 @@ while ($row = mysqli_fetch_assoc($deliveryStatusQuery)) {
             <div class="mt-5 card p-4">
 
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h2 class="fw-bold text-danger" style="font-size:26px;">
-                        📦 Products Without Sales
+                    <h2 class="fw-bold" style="font-size:26px;color:#7e2626;">
+                        Products Without Sales
                     </h2>
 
                     <a href="dashboard/export_products_without_sales_pdf.php" target="_blank" class="btn btn-primary">
@@ -483,11 +483,11 @@ while ($row = mysqli_fetch_assoc($deliveryStatusQuery)) {
             </div>
 
             <!-- ================= LOW STOCK PRODUCTS ================= -->
-            <div class="mt-5 card p-4 shadow">
+            <div class="mt-5 card p-4">
 
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h2 class="fw-bold text-warning" style="font-size:26px;">
-                        ⚠ Low Stock Products (Less Than 5)
+                    <h2 class="fw-bold " style="font-size:26px;color:#7e2626;">
+                        Low Stock Products (Less Than 5)
                     </h2>
 
                     <a href="dashboard/export_low_stock_pdf.php" target="_blank" class="btn btn-primary">
@@ -521,7 +521,7 @@ while ($row = mysqli_fetch_assoc($deliveryStatusQuery)) {
                                     <td><?= $row['Product_Id'] ?></td>
                                     <td><?= $row['Product_Name'] ?></td>
                                     <td>₹<?= number_format($row['Price'], 2) ?></td>
-                                    <td class="fw-bold text-danger">
+                                    <td class="fw-bold " style="color:#7e2626;">
                                         <?= $row['Stock_Available'] ?>
                                     </td>
                                     <td><?= $row['Last_Update'] ?></td>
@@ -531,7 +531,7 @@ while ($row = mysqli_fetch_assoc($deliveryStatusQuery)) {
                         <?php } else { ?>
                             <tr>
                                 <td colspan="5" class="text-center text-success">
-                                    All products have sufficient stock 🎉
+                                    All products have sufficient stock 
                                 </td>
                             </tr>
                         <?php } ?>
@@ -543,8 +543,8 @@ while ($row = mysqli_fetch_assoc($deliveryStatusQuery)) {
             <!-- ================= DELIVERY STATUS PIE CHART ================= -->
             <div class="mt-5 card p-4">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h2 class="fw-bold text-danger" style="font-size:26px;">
-                        🚚 Order Delivery Status Distribution
+                    <h2 class="fw-bold" style="font-size:26px;color:#7e2626;">
+                        Order Delivery Status Distribution
                     </h2>
                     <a href="dashboard/export_delivery_status_pdf.php" target="_blank" class="btn btn-primary">
                         Generate PDF
