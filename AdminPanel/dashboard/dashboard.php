@@ -204,6 +204,156 @@ while ($row = mysqli_fetch_assoc($deliveryStatusQuery)) {
     $statusLabels[] = $row['Delivery_Status'];
     $statusData[] = $row['total_count'];
 }
+
+/* ================= PRODUCT SALES ANALYTICS ================= */
+
+$productListQuery = mysqli_query($connection, "
+    SELECT Product_Id, Product_Name
+    FROM product_details
+    ORDER BY Product_Name
+");
+
+$productFilter = $_GET['product_id'] ?? '';
+$periodFilter = $_GET['period'] ?? '';
+
+$productLabels = [];
+$productSales = [];
+$productOrders = [];
+$totalOrders = 0;
+
+if ($productFilter && $periodFilter) {
+
+
+    /* ================= DAILY ================= */
+    if ($periodFilter == "daily") {
+
+        $query = "
+    SELECT 
+    DATE(o.Order_Date) AS label,
+    SUM(oi.Quantity * oi.Price_Snapshot) AS revenue,
+    COUNT(DISTINCT o.Order_Id) AS orders
+    FROM order_item oi
+    JOIN `order` o ON oi.Order_Id = o.Order_Id
+    WHERE oi.Product_Id='$productFilter'
+    AND DATE(o.Order_Date) = CURDATE()
+    GROUP BY DATE(o.Order_Date)
+    ";
+
+        $result = mysqli_query($connection, $query);
+
+        if ($result && mysqli_num_rows($result) > 0) {
+            while ($row = mysqli_fetch_assoc($result)) {
+
+                $productLabels[] = "Today";
+                $productSales[] = $row['revenue'];
+                $productOrders[] = $row['orders'];
+
+                $totalOrders += $row['orders'];
+            }
+        }
+    }
+
+    /* ================= WEEKLY ================= */ elseif ($periodFilter == "weekly") {
+
+        $query = "
+        SELECT 
+        DAYNAME(o.Order_Date) AS label,
+        SUM(oi.Quantity * oi.Price_Snapshot) AS revenue,
+        COUNT(DISTINCT o.Order_Id) AS orders
+        FROM order_item oi
+        JOIN `order` o ON oi.Order_Id = o.Order_Id
+        WHERE oi.Product_Id='$productFilter'
+        AND YEARWEEK(o.Order_Date,1) = YEARWEEK(CURDATE(),1)
+        GROUP BY DAYNAME(o.Order_Date)
+        ";
+
+        $result = mysqli_query($connection, $query);
+
+        $weekDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+        $tempRevenue = array_fill_keys($weekDays, 0);
+        $tempOrders = array_fill_keys($weekDays, 0);
+
+        if ($result && mysqli_num_rows($result) > 0) {
+            while ($row = mysqli_fetch_assoc($result)) {
+
+                $tempRevenue[$row['label']] = $row['revenue'];
+                $tempOrders[$row['label']] = $row['orders'];
+
+                $totalOrders += $row['orders'];
+            }
+        }
+
+        $productLabels = array_keys($tempRevenue);
+        $productSales = array_values($tempRevenue);
+        $productOrders = array_values($tempOrders);
+
+    }
+
+    /* ================= MONTHLY ================= */ elseif ($periodFilter == "monthly") {
+
+        $query = "
+    SELECT 
+    DATE_FORMAT(CURDATE(), '%b %Y') AS label,
+    SUM(oi.Quantity * oi.Price_Snapshot) AS revenue,
+    COUNT(DISTINCT o.Order_Id) AS orders
+    FROM order_item oi
+    JOIN `order` o ON oi.Order_Id = o.Order_Id
+    WHERE oi.Product_Id='$productFilter'
+    AND MONTH(o.Order_Date) = MONTH(CURDATE())
+    AND YEAR(o.Order_Date) = YEAR(CURDATE())
+    GROUP BY MONTH(o.Order_Date)
+    ";
+
+        $result = mysqli_query($connection, $query);
+
+        if ($result && mysqli_num_rows($result) > 0) {
+
+            while ($row = mysqli_fetch_assoc($result)) {
+
+                $productLabels[] = $row['label'];
+                $productSales[] = $row['revenue'];
+                $productOrders[] = $row['orders'];
+
+                $totalOrders += $row['orders'];
+            }
+        }
+    }
+
+    /* ================= YEARLY ================= */ else {
+
+        $query = "
+        SELECT 
+        YEAR(o.Order_Date) AS label,
+        SUM(oi.Quantity * oi.Price_Snapshot) AS revenue,
+        COUNT(DISTINCT o.Order_Id) AS orders
+        FROM order_item oi
+        JOIN `order` o ON oi.Order_Id = o.Order_Id
+        WHERE oi.Product_Id='$productFilter'
+        GROUP BY YEAR(o.Order_Date)
+        ORDER BY YEAR(o.Order_Date)
+        ";
+
+        $result = mysqli_query($connection, $query);
+
+        if ($result && mysqli_num_rows($result) > 0) {
+            while ($row = mysqli_fetch_assoc($result)) {
+
+                $productLabels[] = $row['label'];
+                $productSales[] = $row['revenue'];
+                $productOrders[] = $row['orders'];
+
+                $totalOrders += $row['orders'];
+            }
+        }
+
+    }
+
+    if (empty($productLabels)) {
+        $productLabels[] = "No Orders Yet";
+        $productSales[] = 0;
+        $productOrders[] = 0;
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -273,12 +423,12 @@ while ($row = mysqli_fetch_assoc($deliveryStatusQuery)) {
         <div class="mt-5 card p-4 shadow">
 
             <h1 class="fw-bold text-center mb-4" style="font-size:38px;">
-                SALES REPORTS
+                📊 SALES REPORTS
             </h1>
             <div class="mt-5 card p-4">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h2 class="fw-bold" style="font-size:26px;color:#7e2626;">
-                        Monthly Sales
+                    <h2 class="fw-bold text-danger" style="font-size:26px;">
+                        📅 Monthly Sales
                     </h2>
                     <a href="dashboard/export_monthly_sale_pdf.php?from_date=<?= $from ?>&to_date=<?= $to ?>"
                         target="_blank" class="btn btn-primary">
@@ -297,7 +447,7 @@ while ($row = mysqli_fetch_assoc($deliveryStatusQuery)) {
                     </div>
 
                     <div class="col-md-4 d-flex align-items-end">
-                        <button class="btn btn-danger me-2" style="background-color:#7e2626;color:white;">Filter</button>
+                        <button class="btn btn-danger me-2">Filter</button>
                     </div>
                 </form>
 
@@ -308,13 +458,113 @@ while ($row = mysqli_fetch_assoc($deliveryStatusQuery)) {
 
                 <canvas id="salesChart" height="175"></canvas>
             </div>
+
+            <!-- ================= PRODUCT SALES ANALYTICS ================= -->
+
+            <div class="mt-5 card p-4">
+
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h2 class="fw-bold text-danger" style="font-size:26px;">
+                        📈 Product Sales Analytics
+                    </h2>
+                </div>
+
+                <!-- FILTER FORM -->
+
+                <form method="GET" class="row g-3 mb-4">
+
+                    <!-- PRODUCT SELECT -->
+
+                    <div class="col-md-5">
+
+                        <label class="fw-semibold">Select Product</label>
+
+                        <select name="product_id" class="form-control">
+
+                            <option value="">Select Product</option>
+
+                            <?php while ($p = mysqli_fetch_assoc($productListQuery)) { ?>
+
+                                <option value="<?= $p['Product_Id'] ?>" <?= ($productFilter == $p['Product_Id']) ? 'selected' : '' ?>>
+
+                                    <?= $p['Product_Name'] ?>
+
+                                </option>
+
+                            <?php } ?>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- PERIOD SELECT -->
+
+                    <div class="col-md-5">
+
+                        <label class="fw-semibold">Select Period</label>
+
+                        <select name="period" class="form-control">
+
+                            <option value="">Select Period</option>
+
+                            <option value="daily" <?= ($periodFilter == 'daily') ? 'selected' : '' ?>>
+                                Daily
+                            </option>
+
+                            <option value="weekly" <?= ($periodFilter == 'weekly') ? 'selected' : '' ?>>
+                                Weekly
+                            </option>
+
+                            <option value="monthly" <?= ($periodFilter == 'monthly') ? 'selected' : '' ?>>
+                                Monthly
+                            </option>
+
+                            <option value="yearly" <?= ($periodFilter == 'yearly') ? 'selected' : '' ?>>
+                                Yearly
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- FILTER BUTTON -->
+
+                    <div class="col-md-2 d-flex align-items-end">
+
+                        <button class="btn btn-danger w-100">
+                            Filter
+                        </button>
+
+                    </div>
+
+                </form>
+
+
+                <!-- TOTAL ORDERS DISPLAY (Added) -->
+
+                <?php if (isset($totalOrders)) { ?>
+                    <h5 class="mb-3 text-secondary">
+                        Total Orders: <?= $totalOrders ?>
+                    </h5>
+                <?php } ?>
+
+
+                <!-- CHART -->
+
+                
+                    <canvas id="productSalesChart" height="220"></canvas>
+          
+
+            </div>
             <!-- ================= TOP & LOW PRODUCTS ================= -->
             <div class="mt-5 card p-4">
 
                 <!-- ================= TOP SELLING ================= -->
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h2 class="fw-bold" style="font-size:26px;color:#7e2626;">
-                         Top Selling Products
+                    <h2 class="fw-bold text-danger" style="font-size:26px;">
+                        🏆 Top Selling Products
                     </h2>
                     <a href="dashboard/export_top_low_selling_products_pdf.php" target="_blank" class="btn btn-primary">
                         Generate PDF
@@ -351,8 +601,8 @@ while ($row = mysqli_fetch_assoc($deliveryStatusQuery)) {
 
                 <!-- ================= LOW SELLING ================= -->
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h2 class="fw-bold" style="font-size:26px;color:#7e2626;">
-                        Low Selling Products
+                    <h2 class="fw-bold text-warning" style="font-size:26px;">
+                        📉 Low Selling Products
                     </h2>
                 </div>
 
@@ -384,17 +634,17 @@ while ($row = mysqli_fetch_assoc($deliveryStatusQuery)) {
                 </table>
 
             </div>
-<!--Yearly revenue -->
+            <!--Yearly revenue -->
             <div class="mt-5 card p-4">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h2 class="fw-bold" style="font-size:26px;color:#7e2626;">
-                    Year Wise Revenue
-                </h2>
+                    <h2 class="fw-bold text-danger" style="font-size:26px;">
+                        📊 Year Wise Revenue
+                    </h2>
 
-                <a href="dashboard/export_yearly_revenue_pdf.php" target="_blank" class="btn btn-primary mb-3">
-                    Generate PDF
-                </a>
-    </div>
+                    <a href="dashboard/export_yearly_revenue_pdf.php" target="_blank" class="btn btn-primary mb-3">
+                        Generate PDF
+                    </a>
+                </div>
                 <div style="width:600px; margin:auto;">
                     <canvas id="yearChart"></canvas>
                 </div>
@@ -402,7 +652,7 @@ while ($row = mysqli_fetch_assoc($deliveryStatusQuery)) {
             <!-- ================= CATEGORY REVENUE PIE CHART ================= -->
             <div class="mt-5 card p-4">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h2 class="fw-bold" style="font-size:26px;color:#7e2626;">
+                    <h2 class="fw-bold text-danger" style="font-size:26px;">
                         Category Wise Revenue Distribution
                     </h2>
                     <a href="dashboard/export_category_revenue_pdf.php" target="_blank" class="btn btn-primary">
@@ -417,7 +667,7 @@ while ($row = mysqli_fetch_assoc($deliveryStatusQuery)) {
             <!-- ================= ORDERS BY DELIVERY AREA PIE CHART ================= -->
             <div class="mt-5 card p-4">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h2 class="fw-bold" style="font-size:26px;color:#7e2626;">
+                    <h2 class="fw-bold text-danger" style="font-size:26px;">
                         Orders by Delivery Area Distribution
                     </h2>
                     <a href="dashboard/export_area_orders_pdf.php" target="_blank" class="btn btn-primary">
@@ -434,8 +684,8 @@ while ($row = mysqli_fetch_assoc($deliveryStatusQuery)) {
             <div class="mt-5 card p-4">
 
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h2 class="fw-bold" style="font-size:26px;color:#7e2626;">
-                        Products Without Sales
+                    <h2 class="fw-bold text-danger" style="font-size:26px;">
+                        📦 Products Without Sales
                     </h2>
 
                     <a href="dashboard/export_products_without_sales_pdf.php" target="_blank" class="btn btn-primary">
@@ -483,11 +733,11 @@ while ($row = mysqli_fetch_assoc($deliveryStatusQuery)) {
             </div>
 
             <!-- ================= LOW STOCK PRODUCTS ================= -->
-            <div class="mt-5 card p-4">
+            <div class="mt-5 card p-4 shadow">
 
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h2 class="fw-bold " style="font-size:26px;color:#7e2626;">
-                        Low Stock Products (Less Than 5)
+                    <h2 class="fw-bold text-warning" style="font-size:26px;">
+                        ⚠ Low Stock Products (Less Than 5)
                     </h2>
 
                     <a href="dashboard/export_low_stock_pdf.php" target="_blank" class="btn btn-primary">
@@ -521,7 +771,7 @@ while ($row = mysqli_fetch_assoc($deliveryStatusQuery)) {
                                     <td><?= $row['Product_Id'] ?></td>
                                     <td><?= $row['Product_Name'] ?></td>
                                     <td>₹<?= number_format($row['Price'], 2) ?></td>
-                                    <td class="fw-bold " style="color:#7e2626;">
+                                    <td class="fw-bold text-danger">
                                         <?= $row['Stock_Available'] ?>
                                     </td>
                                     <td><?= $row['Last_Update'] ?></td>
@@ -531,7 +781,7 @@ while ($row = mysqli_fetch_assoc($deliveryStatusQuery)) {
                         <?php } else { ?>
                             <tr>
                                 <td colspan="5" class="text-center text-success">
-                                    All products have sufficient stock 
+                                    All products have sufficient stock 🎉
                                 </td>
                             </tr>
                         <?php } ?>
@@ -543,8 +793,8 @@ while ($row = mysqli_fetch_assoc($deliveryStatusQuery)) {
             <!-- ================= DELIVERY STATUS PIE CHART ================= -->
             <div class="mt-5 card p-4">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h2 class="fw-bold" style="font-size:26px;color:#7e2626;">
-                        Order Delivery Status Distribution
+                    <h2 class="fw-bold text-danger" style="font-size:26px;">
+                        🚚 Order Delivery Status Distribution
                     </h2>
                     <a href="dashboard/export_delivery_status_pdf.php" target="_blank" class="btn btn-primary">
                         Generate PDF
@@ -711,7 +961,78 @@ while ($row = mysqli_fetch_assoc($deliveryStatusQuery)) {
             plugins: [ChartDataLabels]
         });
     </script>
+    <script>
 
+const productLabels = <?= json_encode($productLabels); ?>;
+const productSales = <?= json_encode($productSales); ?>;
+const productOrders = <?= json_encode($productOrders); ?>;
+
+const ctx = document.getElementById('productSalesChart');
+
+new Chart(ctx, {
+
+    type: 'bar',
+
+    data: {
+
+        labels: productLabels,
+
+        datasets: [{
+
+            label: 'Product Revenue',
+
+            data: productSales,
+
+            borderWidth: 1,
+
+            barThickness: 80,      // controls bar width
+            maxBarThickness: 80,   // prevents very large bars
+            categoryPercentage: 0.5,
+            barPercentage: 0.5
+
+        }]
+
+    },
+
+    options: {
+
+        responsive: true,
+
+        plugins: {
+
+            legend: {
+                display: true
+            },
+
+            tooltip: {
+                callbacks: {
+                    label: function (context) {
+
+                        const revenue = context.raw;
+                        const orders = productOrders[context.dataIndex];
+
+                        return [
+                            "Revenue: ₹" + revenue,
+                            "Orders: " + orders
+                        ];
+                    }
+                }
+            }
+
+        },
+
+        scales: {
+            y: {
+                beginAtZero: true
+                
+            }
+        }
+
+    }
+
+});
+
+</script>
 </body>
 
 </html>
