@@ -23,12 +23,24 @@ header {
   box-shadow: 0 2px 5px rgba(0,0,0,0.05); 
 }
 
-/* Logo */
+/* Logo container */
 .logo {
-  font-size: 26px;
-  font-weight: 700;
-  color: var(--btn-color);
+    display: flex;
+    align-items: center;   /* vertically center image and text */
+    gap: 0px;             /* space between image and text */
+    font-size: 24px;       /* size of the text */
+    font-weight: 600;
+    color: #7e2626;        /* optional: match your brand color */
 }
+
+/* Logo image */
+.logo img {
+    width: 60px;           /* adjust to your logo size */
+    height: auto;
+    display: block;        /* ensures proper alignment */
+}
+
+
 
 /* Navbar starts */
 nav ul {
