@@ -29,7 +29,11 @@ if (isset($_SESSION['User_Id'])) {
 ?>
 <!-- Navbar Starts -->
 <header>
-    <div class="logo">GiftShop</div>
+    <div class="logo">
+        <a href="index.php">
+    <img src="<?= $BASE ?>home page/logo.svg" alt="Logo"></a>
+    <span>GiftShop</span>
+</div>
 
     <nav>
         <ul>
