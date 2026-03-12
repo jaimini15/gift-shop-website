@@ -447,7 +447,7 @@ if ($productFilter && $periodFilter) {
                     </div>
 
                     <div class="col-md-4 d-flex align-items-end">
-                        <button class="btn me-2" style="color:#7e2626d5;">Filter</button>
+                        <button class="btn me-2" style="background-color:#7e2626d5;color:white;">Filter</button>
                     </div>
                 </form>
 
@@ -533,7 +533,7 @@ if ($productFilter && $periodFilter) {
 
                     <div class="col-md-2 d-flex align-items-end">
 
-                        <button class="btn w-100" style="color:#7e2626d5;">
+                        <button class="btn me-2" style="background-color:#7e2626d5;color:white;">
                             Filter
                         </button>
 
@@ -747,7 +747,7 @@ if ($productFilter && $periodFilter) {
 
                 <h5>
                     Total Low Stock Products:
-                    <span class="badge bg-warning text-dark fs-6">
+                    <span class="badge fs-6" style="background-color:#7e2626d5;color:white;">
                         <?= $lowStockCount ?>
                     </span>
                 </h5>
