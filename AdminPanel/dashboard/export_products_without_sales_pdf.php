@@ -28,13 +28,13 @@ $html = '
     <th>Price </th>
 </tr>';
 
-if(mysqli_num_rows($unsoldQuery) > 0){
-    while($row = mysqli_fetch_assoc($unsoldQuery)){
+if (mysqli_num_rows($unsoldQuery) > 0) {
+    while ($row = mysqli_fetch_assoc($unsoldQuery)) {
         $html .= '
         <tr>
-            <td>'.$row['Product_Id'].'</td>
-            <td>'.$row['Product_Name'].'</td>
-            <td>'.number_format($row['Price'],2).'</td>
+            <td>' . $row['Product_Id'] . '</td>
+            <td>' . $row['Product_Name'] . '</td>
+            <td>' . number_format($row['Price'], 2) . '</td>
         </tr>';
     }
 } else {
