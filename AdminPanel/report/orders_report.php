@@ -324,7 +324,11 @@ background:#faf7f6;
 tr:hover{
 background:#f2e9e8;
 }
-
+tfoot td{
+background:#f8eceb;
+font-weight:600;
+border-top:2px solid #7e2626d5;
+}
 </style>
 
 </head>
@@ -411,13 +415,16 @@ Excel
 
 <table>
 
+<thead>
 <tr>
 <th>Order ID</th>
 <th>Customer Name</th>
 <th>Date</th>
 <th>Amount</th>
 </tr>
+</thead>
 
+<tbody>
 
 <?php while($row=mysqli_fetch_assoc($orderQuery)){ ?>
 
@@ -426,10 +433,20 @@ Excel
 <td><?=$row['First_Name']?> <?=$row['Last_Name']?></td>
 <td><?=date("d/m/Y", strtotime($row['Order_Date']))?></td>
 <td>₹<?=number_format($row['Total_Amount'],2)?></td>
-
 </tr>
 
 <?php } ?>
+
+</tbody>
+
+<tfoot>
+
+<tr style="background:#f2e9e8;font-weight:600;">
+<td colspan="3" style="text-align:right;">Total Revenue</td>
+<td>₹<?=number_format($totalRevenue,2)?></td>
+</tr>
+
+</tfoot>
 
 </table>
 
