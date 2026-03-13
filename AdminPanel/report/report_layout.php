@@ -115,13 +115,6 @@ if (!isset($_SESSION))
             <p>Inventory report</p>
         </div>
 
-        <!-- Yearly Revenue Report -->
-        <div class="report-card" onclick="location.href='report/yearly_revenue_report.php'">
-            <div class="card-icon sales"><i class="fa-solid fa-chart-line"></i></div>
-            <h3>Yearly Revenue Report</h3>
-            <p>Analyze yearly business revenue</p>
-        </div>
-
         <!-- Category Wise Revenue -->
         <div class="report-card" onclick="location.href='report/category_revenue_report.php'">
             <div class="card-icon products"><i class="fa-solid fa-layer-group"></i></div>
