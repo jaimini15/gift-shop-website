@@ -330,19 +330,23 @@ margin-right:auto;
 height:320px;
 }
 
-/* PDF */
-.pdf-btn{
-background:#c0392b;
-color:white;
+/* PDF  and excel*/
+.pdf-btn,
+.excel-btn{
 padding:6px 12px;
 border-radius:4px;
+color:white;
+font-weight:600;
 font-size:13px;
 text-decoration:none;
-font-weight:600;
 }
 
-.pdf-btn:hover{
-background:#922b21;
+.pdf-btn{
+background:#c0392b;
+}
+
+.excel-btn{
+background:#27ae60;
 }
 
 /* TABLE */
@@ -485,7 +489,10 @@ font-size:14px;
 class="pdf-btn">
 PDF
 </a>
-
+<a href="export_product_excel.php?product_id=<?=$productFilter?>&period=<?=$periodFilter?>"
+class="excel-btn">
+Excel
+</a>
 
 </div>
 
