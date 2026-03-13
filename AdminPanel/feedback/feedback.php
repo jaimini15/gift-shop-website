@@ -16,7 +16,7 @@ include(__DIR__ . '/../db.php');
 
 <style>
     body {
-        background: #f4f6f9;
+        background: #ffffff;
         font-family: Arial, sans-serif;
     }
     .content {

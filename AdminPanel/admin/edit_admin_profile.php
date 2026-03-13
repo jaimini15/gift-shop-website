@@ -91,6 +91,7 @@ $areas = mysqli_query(
 );
 ?>
 <style>
+    body {background: #ffffff;font-family: Arial, sans-serif;}
 .account-content label {
     display: block;
     margin-top: 15px;
@@ -147,10 +148,18 @@ $areas = mysqli_query(
     border: none;
     border-top: 1px solid #e5e7eb;
 }
+
+.card-box{
+    background:#fff;
+    padding:20px 25px;
+    border-radius:12px;
+    box-shadow:0 2px 6px rgba(0,0,0,0.1);
+    width:100%;
+}
 </style>
 
 <!-- ===================== FORM ===================== -->
-
+<div class="card-box">
 <h2 style="font-size:26px;font-weight:bold;margin-bottom:25px;">Edit Admin Profile</h2>
 
 <?php if (!empty($error)) { ?>
@@ -199,7 +208,7 @@ $areas = mysqli_query(
 
     <hr>
 
-    <h3>Change Password</h3>
+    <h3 style="font-size:20px;font-weight:bold;margin-bottom:25px;">Change Password</h3>
 
     <label>Current Password</label>
     <input type="password" name="current_password">
@@ -212,3 +221,4 @@ $areas = mysqli_query(
 
     <button type="submit">Save Changes</button>
 </form>
+</div>

@@ -31,12 +31,85 @@ $result = mysqli_query($connection, $query);
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
    <style>
-        body { background: #f4f6f9; font-family: Arial, sans-serif;}
-        .content { margin-left: 0px; padding: 0px;  }
-        .card-box { background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
-        .cat-img { width: 70px; height: 70px; object-fit: cover; border-radius: 8px; }
-        
-    </style>
+
+ body { background: #ffffff; font-family: Arial, sans-serif; }
+
+/* Card container */
+.card-box{
+    background:#fff;
+    padding:20px 25px;
+    border-radius:12px;
+    box-shadow:0 2px 6px rgba(0,0,0,0.1);
+    width:100%;
+}
+
+/* Table layout */
+table{
+    width:100%;
+    font-size:12px;
+}
+
+/* Table cells */
+.table th,
+.table td{
+    padding:6px 8px;
+    vertical-align:middle;
+    overflow-wrap:anywhere;
+    hyphens:auto;
+}
+
+/* Table header */
+.table thead th{
+    font-size:13px;
+    font-weight:600;
+}
+
+/* ID column */
+th:first-child,
+td:first-child{
+    white-space:nowrap;
+    text-align:center;
+}
+
+/* Phone column */
+th:nth-child(4),
+td:nth-child(4){
+    white-space:nowrap;
+}
+
+/* Status column */
+th:nth-child(9),
+td:nth-child(9){
+    white-space:nowrap;
+    min-width:90px;
+    text-align:center;
+}
+
+/* Action column */
+th:last-child,
+td:last-child{
+    white-space:nowrap;
+    text-align:center;
+}
+
+/* Control wide columns */
+td:nth-child(3){max-width:180px;} /* Email */
+td:nth-child(5){max-width:200px;} /* Address */
+td:nth-child(8){max-width:200px;} /* Assigned Areas */
+
+/* Email break control */
+th:nth-child(3),
+td:nth-child(3){
+    word-break:normal;
+}
+
+/* Small buttons */
+.btn-sm{
+    padding:3px 8px;
+    font-size:11px;
+}
+
+</style>
 </head>
 
 <body>
@@ -73,7 +146,7 @@ $result = mysqli_query($connection, $query);
             <tr>
                 <td><?= $row['User_Id'] ?></td>
                 <td><?= $row['First_Name'] . ' ' . $row['Last_Name'] ?></td>
-                <td><?= $row['Email'] ?></td>
+                <td><?= str_replace('@', '@<wbr>', $row['Email']) ?></td>
                 <td><?= $row['Phone'] ?></td>
                 <td><?= $row['Address'] ?></td>
                 <td><?= $row['DOB'] ?></td>
