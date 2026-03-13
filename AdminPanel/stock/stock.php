@@ -22,7 +22,7 @@ include(__DIR__ . '/../db.php');
 
 <div class="content">
     <div class="card-box">
-        <h2 class="fw-bold">Manage Stock</h2>
+        <h2 style="font-size:26px;font-weight:bold;margin-bottom:25px;">Manage Stock</h2>
 
         <a href="stock/add_stock.php" class="btn btn-primary mt-3 mb-3">+ Add Stock</a>
 

@@ -113,6 +113,26 @@ Reports & Analytics
 <p>Track delivered and pending orders</p>
 </div>
 
+<!-- Top & Low Selling Products -->
+<div class="report-card" onclick="location.href='report/top_low_products_report.php'">
+<div class="card-icon sales"><i class="fa-solid fa-chart-simple"></i></div>
+<h3>Product Sales Analysis</h3>
+<p>Top selling & low selling products</p>
+</div>
+
+<!-- Year Wise Revenue Report -->
+<div class="report-card" onclick="location.href='report/year_wise_revenue_report.php'">
+<div class="card-icon sales"><i class="fa-solid fa-chart-column"></i></div>
+<h3>Year Wise Revenue</h3>
+<p>Analyze revenue generated each year</p>
+</div>
+
+<!-- Orders by Delivery Area Distribution -->
+<div class="report-card" onclick="location.href='report/delivery_area_report.php'">
+<div class="card-icon orders"><i class="fa-solid fa-map-location-dot"></i></div>
+<h3>Delivery Area Distribution</h3>
+<p>Orders grouped by delivery location</p>
+</div>
 </div>
 
 </div>

@@ -22,21 +22,25 @@ if (!isset($_SESSION))
             font-family: Arial, sans-serif;
             margin: 0;
         }
+
         .admin-container {
             max-width: 1200px;
             margin: 40px auto;
             padding: 10px;
         }
+
         .admin-title {
             font-size: 26px;
             font-weight: bold;
             margin-bottom: 25px;
         }
+
         .admin-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 20px;
         }
+
         .admin-card {
             border: 1px solid #7e2626d5;
             border-radius: 12px;
@@ -50,6 +54,7 @@ if (!isset($_SESSION))
         .admin-card:hover {
             transform: translateY(-4px);
         }
+
         .card-icon {
             font-size: 32px;
             margin-bottom: 15px;
@@ -105,7 +110,6 @@ if (!isset($_SESSION))
             font-size: 14px;
             color: #666;
         }
-
     </style>
 </head>
 
@@ -121,19 +125,26 @@ if (!isset($_SESSION))
 
         <div class="admin-grid">
 
+
+            <!-- Profile -->
+            <div class="admin-card" onclick="location.href='layout.php?view=profile'">
+                <div class="card-icon profile"><i class="fa-solid fa-user"></i></div>
+                <h3>My Profile</h3>
+                <p>View & edit your profile</p>
+            </div>
             <!-- Dashboard -->
             <div class="admin-card" onclick="location.href='layout.php?view=dashboard'">
                 <div class="card-icon dashboard"><i class="fa-solid fa-chart-line"></i></div>
                 <h3>Dashboard</h3>
                 <p>Admin overview & stats</p>
             </div>
+            <!-- Report -->
 
-            <div class="admin-card" onclick="location.href='layout.php?view=profile'">
-                <div class="card-icon profile"><i class="fa-solid fa-user"></i></div>
-                <h3>My Profile</h3>
-                <p>View & edit your profile</p>
+            <div class="admin-card" onclick="location.href='layout.php?view=report_layout'">
+                <div class="card-icon report"><i class="fa-solid fa-file-lines"></i></div>
+                <h3>Reports</h3>
+                <p>View sales & order reports</p>
             </div>
-
             <!-- Users -->
             <div class="admin-card" onclick="location.href='layout.php?view=users'">
                 <div class="card-icon users"><i class="fa-solid fa-users"></i></div>
@@ -183,6 +194,12 @@ if (!isset($_SESSION))
                 <p>Order delivery status</p>
             </div>
 
+            <!-- Feedback -->
+            <div class="admin-card" onclick="location.href='layout.php?view=feedback'">
+                <div class="card-icon feedback"><i class="fa-solid fa-comments"></i></div>
+                <h3>Feedback</h3>
+                <p>User feedback & reviews</p>
+            </div>
             <!-- Delivery Boys -->
             <div class="admin-card" onclick="location.href='layout.php?view=delivery_boys'">
                 <div class="card-icon deliveryboys"><i class="fa-solid fa-motorcycle"></i></div>
@@ -190,12 +207,7 @@ if (!isset($_SESSION))
                 <p>Manage delivery staff</p>
             </div>
 
-            <!-- Feedback -->
-            <div class="admin-card" onclick="location.href='layout.php?view=feedback'">
-                <div class="card-icon feedback"><i class="fa-solid fa-comments"></i></div>
-                <h3>Feedback</h3>
-                <p>User feedback & reviews</p>
-            </div>
+
 
             <!-- Logout -->
             <div class="admin-card" onclick="window.location.href='../login/logout.php'">
@@ -208,7 +220,7 @@ if (!isset($_SESSION))
         </div>
 
     </div>
-<?php require_once '../home page/footer.php'; ?>
+    <?php require_once '../home page/footer.php'; ?>
 </body>
 
 </html>

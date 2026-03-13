@@ -170,7 +170,7 @@ ob_end_flush();
                 <i class="fa-solid fa-chart-line"></i> Dashboard
             </a>
             <a href="layout.php?view=report_layout" class="<?= $view == 'report_layout' ? 'active' : '' ?>">
-                <i class="fa-solid fa-chart-line"></i> Report
+                <i class="fa-solid fa-file-lines"></i> Report
             </a>
             <a href="layout.php?view=users" class="<?= $view == 'users' ? 'active' : '' ?>">
                 <i class="fa-solid fa-users"></i> Users
@@ -200,13 +200,15 @@ ob_end_flush();
                 <i class="fa-solid fa-truck"></i> Delivery
             </a>
 
+            <a href="layout.php?view=feedback" class="<?= $view == 'feedback' ? 'active' : '' ?>">
+                <i class="fa-solid fa-comments"></i> Feedback
+            </a>
+            
             <a href="layout.php?view=delivery_boys" class="<?= $view == 'delivery_boys' ? 'active' : '' ?>">
                 <i class="fa-solid fa-motorcycle"></i> Delivery Boys
             </a>
 
-            <a href="layout.php?view=feedback" class="<?= $view == 'feedback' ? 'active' : '' ?>">
-                <i class="fa-solid fa-comments"></i> Feedback
-            </a>
+
             <a href="../login/logout.php">
                 <i class="fa-solid fa-right-from-bracket"></i> Logout
             </a>

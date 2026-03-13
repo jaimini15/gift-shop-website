@@ -23,7 +23,7 @@ include(__DIR__ . '/../db.php');
 <div class="content">
     <div class="card-box">
 
-        <h2 class="fw-bold">Manage Products</h2>
+        <h2 style="font-size:26px;font-weight:bold;margin-bottom:25px;">Manage Products</h2>
 
         <a href="products/add_products.php" class="btn btn-primary mt-3 mb-3">+ Add Product</a>
 
