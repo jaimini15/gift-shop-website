@@ -84,18 +84,33 @@ Reports & Analytics
 <p>Product performance</p>
 </div>
 
-<!-- Users Report -->
-<div class="report-card" onclick="location.href='report/users_report.php'">
-<div class="card-icon users"><i class="fa-solid fa-users"></i></div>
-<h3>Users Report</h3>
-<p>Registered users data</p>
-</div>
 
 <!-- Stock Report -->
 <div class="report-card" onclick="location.href='report/stock_report.php'">
 <div class="card-icon stock"><i class="fa-solid fa-boxes-stacked"></i></div>
 <h3>Stock Report</h3>
 <p>Inventory report</p>
+</div>
+
+<!-- Yearly Revenue Report -->
+<div class="report-card" onclick="location.href='report/yearly_revenue_report.php'">
+<div class="card-icon sales"><i class="fa-solid fa-chart-line"></i></div>
+<h3>Yearly Revenue Report</h3>
+<p>Analyze yearly business revenue</p>
+</div>
+
+<!-- Category Wise Revenue -->
+<div class="report-card" onclick="location.href='report/category_revenue_report.php'">
+<div class="card-icon products"><i class="fa-solid fa-layer-group"></i></div>
+<h3>Category Revenue</h3>
+<p>Revenue based on product categories</p>
+</div>
+
+<!-- Delivery Status Report -->
+<div class="report-card" onclick="location.href='report/delivery_status_report.php'">
+<div class="card-icon orders"><i class="fa-solid fa-truck"></i></div>
+<h3>Delivery Status</h3>
+<p>Track delivered and pending orders</p>
 </div>
 
 </div>
