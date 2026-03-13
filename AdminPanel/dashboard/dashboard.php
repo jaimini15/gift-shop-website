@@ -370,7 +370,7 @@ if ($productFilter && $periodFilter) {
 <body style="background:#f4f6f9">
     <div class="container mt-4">
 
-        <h2 class="mb-4">Dashboard Overview</h2>
+        <h2 style="font-size:26px;font-weight:bold;margin-bottom:25px;">Dashboard Overview</h2>
 
         <div class="row g-4">
             <div class="col-md-4">
