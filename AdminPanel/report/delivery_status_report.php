@@ -238,7 +238,7 @@ color:#7e2626d5;
 
 <h1>Delivery Status Report</h1>
 
-<a href="layout.php?view=report_layout" class="back-btn">
+<a href="http://localhost/GitHub/gift-shop-website/AdminPanel/layout.php?view=report_layout" class="back-btn">
 ← Back
 </a>
 
