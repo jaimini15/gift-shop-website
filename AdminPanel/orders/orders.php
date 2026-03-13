@@ -56,7 +56,7 @@ if (isset($_POST['set_packed']) && $_POST['set_packed'] === 'Packed') {
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 
 <style>
- body { background: #f4f6f9; font-family: Arial, sans-serif; }
+ body { background: #ffffff; font-family: Arial, sans-serif; }
 .content { margin-left: 0px; padding: 0px;  }
 .card-box { background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
 .order-header { background:#212529; color:#fff; padding:15px; border-radius:8px; }
