@@ -268,6 +268,30 @@ margin-left:auto;
 margin-right:auto;
 }
 
+/* TITLE ROW */
+
+.title-row{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:12px;
+}
+
+/* BACK BUTTON */
+
+.back-btn{
+text-decoration:none;
+font-size:17px;
+font-weight:600;
+color:#0b6e77;
+padding:6px 12px;
+border-radius:6px;
+transition:0.2s;
+}
+
+.back-btn:hover{
+color:#7e2626d5;
+}
 
 /* TABLE */
 
@@ -309,7 +333,16 @@ background:#f2e9e8;
 
 <div class="container">
 
+<div class="title-row">
+
 <h1>Orders Report</h1>
+
+<a href="http://localhost/GitHub/gift-shop-website/AdminPanel/layout.php?view=report_layout" class="back-btn">
+← Back
+</a>
+
+</div>
+
 
 
 <!-- FILTER -->
