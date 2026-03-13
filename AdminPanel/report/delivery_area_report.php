@@ -1,22 +1,22 @@
 <?php
 if (!isset($_SESSION))
-session_start();
+    session_start();
 
 include(__DIR__ . '/../db.php');
 
 $periodFilter = $_GET['period'] ?? 'yearly';
 $monthFilter = $_GET['month'] ?? '';
 
-$labels=[];
-$data=[];
-$tableData=[];
-$totalOrders=0;
+$labels = [];
+$data = [];
+$tableData = [];
+$totalOrders = 0;
 
 /* ================= DAILY ================= */
 
-if($periodFilter=="daily"){
+if ($periodFilter == "daily") {
 
-$query="
+    $query = "
 SELECT 
 a.Area_Name AS label,
 COUNT(o.Order_Id) AS orders_count
@@ -29,11 +29,9 @@ GROUP BY a.Area_Id
 
 }
 
-/* ================= WEEKLY ================= */
+/* ================= WEEKLY ================= */ elseif ($periodFilter == "weekly") {
 
-elseif($periodFilter=="weekly"){
-
-$query="
+    $query = "
 SELECT 
 a.Area_Name AS label,
 COUNT(o.Order_Id) AS orders_count
@@ -46,11 +44,9 @@ GROUP BY a.Area_Id
 
 }
 
-/* ================= MONTHLY ================= */
+/* ================= MONTHLY ================= */ elseif ($periodFilter == "monthly") {
 
-elseif($periodFilter=="monthly"){
-
-$query="
+    $query = "
 SELECT 
 a.Area_Name AS label,
 COUNT(o.Order_Id) AS orders_count
@@ -64,13 +60,11 @@ GROUP BY a.Area_Id
 
 }
 
-/* ================= YEARLY ================= */
+/* ================= YEARLY ================= */ elseif ($periodFilter == "yearly") {
 
-elseif($periodFilter=="yearly"){
+    if ($monthFilter) {
 
-if($monthFilter){
-
-$query="
+        $query = "
 SELECT 
 a.Area_Name AS label,
 COUNT(o.Order_Id) AS orders_count
@@ -82,11 +76,9 @@ AND MONTH(o.Order_Date)='$monthFilter'
 GROUP BY a.Area_Id
 ";
 
-}
+    } else {
 
-else{
-
-$query="
+        $query = "
 SELECT 
 DATE_FORMAT(o.Order_Date,'%M') AS label,
 MONTH(o.Order_Date) AS month_no,
@@ -97,49 +89,46 @@ GROUP BY month_no,label
 ORDER BY month_no
 ";
 
-}
+    }
 
 }
 
 /* ================= TABLE DATA ================= */
 
-$whereCondition="";
+$whereCondition = "";
 
 /* DAILY */
-if($periodFilter=="daily"){
-$whereCondition="WHERE DATE(o.Order_Date)=CURDATE()";
+if ($periodFilter == "daily") {
+    $whereCondition = "WHERE DATE(o.Order_Date)=CURDATE()";
 }
 
-/* WEEKLY */
-elseif($periodFilter=="weekly"){
-$whereCondition="WHERE YEARWEEK(o.Order_Date,1)=YEARWEEK(CURDATE(),1)";
+/* WEEKLY */ elseif ($periodFilter == "weekly") {
+    $whereCondition = "WHERE YEARWEEK(o.Order_Date,1)=YEARWEEK(CURDATE(),1)";
 }
 
-/* MONTHLY */
-elseif($periodFilter=="monthly"){
-$whereCondition="WHERE MONTH(o.Order_Date)=MONTH(CURDATE()) 
+/* MONTHLY */ elseif ($periodFilter == "monthly") {
+    $whereCondition = "WHERE MONTH(o.Order_Date)=MONTH(CURDATE()) 
 AND YEAR(o.Order_Date)=YEAR(CURDATE())";
 }
 
-/* YEARLY */
-elseif($periodFilter=="yearly"){
+/* YEARLY */ elseif ($periodFilter == "yearly") {
 
-if($monthFilter){
+    if ($monthFilter) {
 
-$whereCondition="WHERE YEAR(o.Order_Date)=YEAR(CURDATE())
+        $whereCondition = "WHERE YEAR(o.Order_Date)=YEAR(CURDATE())
 AND MONTH(o.Order_Date)='$monthFilter'";
 
-}else{
+    } else {
 
-$whereCondition="WHERE YEAR(o.Order_Date)=YEAR(CURDATE())";
+        $whereCondition = "WHERE YEAR(o.Order_Date)=YEAR(CURDATE())";
 
-}
+    }
 
 }
 
 /* TABLE QUERY */
 
-$tableQuery="
+$tableQuery = "
 
 SELECT 
 a.Area_Name,
@@ -157,36 +146,36 @@ ORDER BY a.Area_Name , o.Order_Date DESC
 
 ";
 
-$tableResult = mysqli_query($connection,$tableQuery);
+$tableResult = mysqli_query($connection, $tableQuery);
 
-while($row=mysqli_fetch_assoc($tableResult)){
+while ($row = mysqli_fetch_assoc($tableResult)) {
 
-$tableData[]=$row;
-$totalOrders++;
+    $tableData[] = $row;
+    $totalOrders++;
 
 }
 
 /* ================= EXECUTE CHART QUERY ================= */
 
-$result = mysqli_query($connection,$query);
+$result = mysqli_query($connection, $query);
 
-while($row = mysqli_fetch_assoc($result)){
+while ($row = mysqli_fetch_assoc($result)) {
 
-if(isset($row['label'])){
-$labels[] = $row['label'];
-}
+    if (isset($row['label'])) {
+        $labels[] = $row['label'];
+    }
 
-if(isset($row['orders_count'])){
-$data[] = $row['orders_count'];
-}
+    if (isset($row['orders_count'])) {
+        $data[] = $row['orders_count'];
+    }
 
 }
 
 /* Prevent empty chart */
 
-if(empty($labels)){
-$labels[]="No Data";
-$data[]=0;
+if (empty($labels)) {
+    $labels[] = "No Data";
+    $data[] = 0;
 }
 
 ?>
@@ -196,340 +185,364 @@ $data[]=0;
 
 <head>
 
-<meta charset="UTF-8">
-<title>Delivery Area Report</title>
+    <meta charset="UTF-8">
+    <title>Delivery Area Report</title>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
 
-<style>
+    <style>
+        body {
+            font-family: "Segoe UI", Arial;
+            background: white;
+            margin: 0;
+        }
 
-body{
-font-family:"Segoe UI",Arial;
-background:white;
-margin:0;
-}
+        .container {
+            width: 94%;
+            margin: 15px auto;
+        }
 
-.container{
-width:94%;
-margin:15px auto;
-}
+        h1 {
+            color: #7e2626d5;
+            border-left: 5px solid #7e2626d5;
+            padding-left: 8px;
+        }
 
-h1{
-color:#7e2626d5;
-border-left:5px solid #7e2626d5;
-padding-left:8px;
-}
+        .filter-row {
+            display: flex;
+            gap: 10px;
+            align-items: end;
+            border: 2px solid #7e2626d5;
+            padding: 12px;
+            margin-bottom: 15px;
+        }
 
-.filter-row{
-display:flex;
-gap:10px;
-align-items:end;
-border:2px solid #7e2626d5;
-padding:12px;
-margin-bottom:15px;
-}
+        select {
+            padding: 6px;
+        }
 
-select{
-padding:6px;
-}
+        button {
+            background: #7e2626d5;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            cursor: pointer;
+        }
 
-button{
-background:#7e2626d5;
-color:white;
-border:none;
-padding:6px 12px;
-cursor:pointer;
-}
+        .pdf-btn {
+            background: #c0392b;
+            color: white;
+            padding: 6px 10px;
+            text-decoration: none;
+        }
 
-.pdf-btn{
-background:#c0392b;
-color:white;
-padding:6px 10px;
-text-decoration:none;
-}
+        .summary {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
 
-.summary{
-display:flex;
-gap:15px;
-margin-bottom:15px;
-}
+        .summary div {
+            border-left: 4px solid #7e2626d5;
+            padding: 8px 12px;
+            font-weight: 600;
+        }
 
-.summary div{
-border-left:4px solid #7e2626d5;
-padding:8px 12px;
-font-weight:600;
-}
+        .chart-box {
+            border: 2px solid #7e2626d5;
+            padding: 10px;
+            width: 500px;
+            margin: auto;
+            height: 350px;
+        }
 
-.chart-box{
-border:2px solid #7e2626d5;
-padding:10px;
-width:500px;
-margin:auto;
-height:350px;
-}
+        .title-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
 
-.title-row{
-display:flex;
-justify-content:space-between;
-align-items:center;
-margin-bottom:12px;
-}
+        .back-btn {
+            text-decoration: none;
+            font-size: 17px;
+            font-weight: 600;
+            color: #0b6e77;
+            padding: 6px 12px;
+            border-radius: 6px;
+        }
 
-.back-btn{
-text-decoration:none;
-font-size:17px;
-font-weight:600;
-color:#0b6e77;
-padding:6px 12px;
-border-radius:6px;
-}
+        .back-btn:hover {
+            color: #7e2626d5;
+        }
 
-.back-btn:hover{
-color:#7e2626d5;
-}
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
 
-table{
-width:100%;
-border-collapse:collapse;
-margin-top:20px;
-}
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
 
-th,td{
-border:1px solid #ddd;
-padding:8px;
-text-align:center;
-}
+        th {
+            background: #7e2626d5;
+            color: white;
+        }
 
-th{
-background:#7e2626d5;
-color:white;
-}
+        .area-header {
+            background: #f8f3ee;
+            font-weight: 600;
+            color: #7e2626d5;
+        }
 
-.area-header{
-background:#f8f3ee;
-font-weight:600;
-color:#7e2626d5;
-}
+        /* EXPORT BUTTONS */
 
-</style>
+        .pdf-btn,
+        .excel-btn {
+            padding: 6px 12px;
+            border-radius: 4px;
+            color: white;
+            font-weight: 600;
+            font-size: 13px;
+            text-decoration: none;
+        }
+
+        .pdf-btn {
+            background: #c0392b;
+        }
+
+        .excel-btn {
+            background: #27ae60;
+        }
+    </style>
 
 </head>
 
 <body>
 
-<div class="container">
+    <div class="container">
 
-<div class="title-row">
+        <div class="title-row">
 
-<h1>Delivery Area Orders Report</h1>
+            <h1>Delivery Area Orders Report</h1>
 
-<a href="http://localhost/GitHub/gift-shop-website/AdminPanel/layout.php?view=report_layout" 
-class="back-btn">
-← Back
-</a>
+            <a href="http://localhost/GitHub/gift-shop-website/AdminPanel/layout.php?view=report_layout"
+                class="back-btn">
+                ← Back
+            </a>
 
-</div>
+        </div>
 
-<form method="GET">
+        <form method="GET">
 
-<div class="filter-row">
+            <div class="filter-row">
 
-<label>Period</label>
+                <label>Period</label>
 
-<select name="period">
+                <select name="period">
 
-<option value="daily" <?=($periodFilter=='daily')?'selected':''?>>Daily</option>
-<option value="weekly" <?=($periodFilter=='weekly')?'selected':''?>>Weekly</option>
-<option value="monthly" <?=($periodFilter=='monthly')?'selected':''?>>Monthly</option>
-<option value="yearly" <?=($periodFilter=='yearly')?'selected':''?>>Yearly</option>
+                    <option value="daily" <?= ($periodFilter == 'daily') ? 'selected' : '' ?>>Daily</option>
+                    <option value="weekly" <?= ($periodFilter == 'weekly') ? 'selected' : '' ?>>Weekly</option>
+                    <option value="monthly" <?= ($periodFilter == 'monthly') ? 'selected' : '' ?>>Monthly</option>
+                    <option value="yearly" <?= ($periodFilter == 'yearly') ? 'selected' : '' ?>>Yearly</option>
 
-</select>
+                </select>
 
-<?php if($periodFilter=="yearly"){ ?>
+                <?php if ($periodFilter == "yearly") { ?>
 
-<label>Month</label>
+                    <label>Month</label>
 
-<select name="month">
+                    <select name="month">
 
-<option value="">Select</option>
+                        <option value="">Select</option>
 
-<?php
-for($m=1;$m<=12;$m++){
-$monthName=date("F", mktime(0,0,0,$m,10));
-?>
+                        <?php
+                        for ($m = 1; $m <= 12; $m++) {
+                            $monthName = date("F", mktime(0, 0, 0, $m, 10));
+                            ?>
 
-<option value="<?=$m?>" <?=($monthFilter==$m)?'selected':''?>>
-<?=$monthName?>
-</option>
+                            <option value="<?= $m ?>" <?= ($monthFilter == $m) ? 'selected' : '' ?>>
+                                <?= $monthName ?>
+                            </option>
 
-<?php } ?>
+                        <?php } ?>
 
-</select>
+                    </select>
 
-<?php } ?>
+                <?php } ?>
 
-<button type="submit">Filter</button>
+                <button type="submit">Filter</button>
 
-<a href="export_area_pdf.php?period=<?=$periodFilter?>&month=<?=$monthFilter?>" class="pdf-btn">
-PDF
-</a>
+                <a href="export_delivery_area_pdf.php?period=<?= $periodFilter ?>&month=<?= $monthFilter ?>"
+                    class="pdf-btn">
+                    PDF
+                </a>
+                <a href="export_delivery_area_excel.php?period=<?= $periodFilter ?>&month=<?= $monthFilter ?>"
+                    class="excel-btn">
+                    Excel
+                </a>
+            </div>
 
-</div>
+        </form>
 
-</form>
+        <div class="summary">
 
-<div class="summary">
+            <div>Total Orders : <?= $totalOrders ?></div>
 
-<div>Total Orders : <?=$totalOrders?></div>
+            <div>Total Areas : <?= count($labels) ?></div>
 
-<div>Total Areas : <?=count($labels)?></div>
+        </div>
 
-</div>
+        <div class="chart-box">
 
-<div class="chart-box">
+            <canvas id="areaChart"></canvas>
 
-<canvas id="areaChart"></canvas>
+        </div>
 
-</div>
+        <table>
 
-<table>
+            <thead>
 
-<thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Customer Name</th>
+                    <th>Date of Order</th>
+                </tr>
 
-<tr>
-<th>Order ID</th>
-<th>Customer Name</th>
-<th>Date of Order</th>
-</tr>
+            </thead>
 
-</thead>
+            <tbody>
 
-<tbody>
+                <?php
 
-<?php
+                $currentArea = "";
 
-$currentArea="";
+                foreach ($tableData as $row) {
 
-foreach($tableData as $row){
+                    if ($currentArea != $row['Area_Name']) {
 
-if($currentArea != $row['Area_Name']){
+                        $currentArea = $row['Area_Name'];
 
-$currentArea = $row['Area_Name'];
+                        ?>
 
-?>
+                        <tr class="area-header">
+                            <td colspan="3">
+                                Area : <?= $currentArea ?>
+                            </td>
+                        </tr>
 
-<tr class="area-header">
-<td colspan="3">
-Area : <?=$currentArea?>
-</td>
-</tr>
+                    <?php } ?>
 
-<?php } ?>
+                    <tr>
 
-<tr>
+                        <td><?= $row['Order_Id'] ?></td>
 
-<td><?=$row['Order_Id']?></td>
+                        <td><?= $row['customer'] ?></td>
 
-<td><?=$row['customer']?></td>
+                        <td><?= $row['order_date'] ?></td>
 
-<td><?=$row['order_date']?></td>
+                    </tr>
 
-</tr>
+                <?php } ?>
 
-<?php } ?>
+            </tbody>
 
-</tbody>
+            <tfoot>
 
-<tfoot>
+                <tr style="font-weight:bold;background:#f1f1f1">
 
-<tr style="font-weight:bold;background:#f1f1f1">
+                    <td colspan="2" style="text-align:right">
+                        Total Orders
+                    </td>
 
-<td colspan="2" style="text-align:right">
-Total Orders
-</td>
+                    <td>
+                        <?= $totalOrders ?>
+                    </td>
 
-<td>
-<?=$totalOrders?>
-</td>
+                </tr>
 
-</tr>
+            </tfoot>
 
-</tfoot>
+        </table>
 
-</table>
+    </div>
 
-</div>
+    <script>
 
-<script>
+        const labels = <?= json_encode($labels) ?>;
+        const orders = <?= json_encode($data) ?>;
 
-const labels = <?=json_encode($labels)?>;
-const orders = <?=json_encode($data)?>;
+        const total = orders.reduce((a, b) => Number(a) + Number(b), 0);
 
-const total = orders.reduce((a,b)=> Number(a) + Number(b),0);
+        new Chart(document.getElementById("areaChart"), {
 
-new Chart(document.getElementById("areaChart"),{
+            type: 'pie',
 
-type:'pie',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: orders,
+                    backgroundColor: [
+                        '#7e2626d5',
+                        '#a94442',
+                        '#c97d60',
+                        '#d4a373',
+                        '#e6ccb2',
+                        '#bc4749'
+                    ]
+                }]
+            },
 
-data:{
-labels:labels,
-datasets:[{
-data:orders,
-backgroundColor:[
-'#7e2626d5',
-'#a94442',
-'#c97d60',
-'#d4a373',
-'#e6ccb2',
-'#bc4749'
-]
-}]
-},
+            plugins: [ChartDataLabels],
 
-plugins:[ChartDataLabels],
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
 
-options:{
-responsive:true,
-maintainAspectRatio:false,
+                plugins: {
 
-plugins:{
+                    legend: {
+                        position: 'right'
+                    },
 
-legend:{
-position:'right'
-},
+                    datalabels: {
+                        color: 'white',
+                        font: { weight: 'bold', size: 12 },
 
-datalabels:{
-color:'white',
-font:{weight:'bold',size:12},
+                        formatter: (value) => {
 
-formatter:(value)=>{
+                            value = Number(value);
 
-value = Number(value);
+                            if (!total || total === 0) {
+                                return "0%\n0 Orders";
+                            }
 
-if(!total || total === 0){
-return "0%\n0 Orders";
-}
+                            let percentage = ((value / total) * 100).toFixed(1);
 
-let percentage = ((value / total) * 100).toFixed(1);
+                            if (isNaN(percentage)) {
+                                percentage = 0;
+                            }
 
-if(isNaN(percentage)){
-percentage = 0;
-}
+                            return percentage + "%\n" + value + " Orders";
 
-return percentage + "%\n" + value + " Orders";
+                        }
 
-}
+                    }
 
-}
+                }
 
-}
+            }
 
-}
+        });
 
-});
-
-</script>
+    </script>
 
 </body>
+
 </html>
