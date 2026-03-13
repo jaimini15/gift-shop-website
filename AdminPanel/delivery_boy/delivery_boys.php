@@ -43,7 +43,7 @@ $result = mysqli_query($connection, $query);
 
 <div class="card-box">
 
-    <h2 class="fw-bold mb-3">
+    <h2 style="font-size:26px;font-weight:bold;margin-bottom:25px;">
         <i class="fa-solid fa-motorcycle"></i> Delivery Boys
     </h2>
 
