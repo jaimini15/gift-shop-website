@@ -1,59 +1,32 @@
 <?php
-if (!isset($_SESSION)) session_start();
+date_default_timezone_set("Asia/Kolkata");
 
 require_once '../../dompdf/autoload.inc.php';
-
 use Dompdf\Dompdf;
-use Dompdf\Options;
 
-include(__DIR__ . '/../db.php');
+include("../db.php");
 
-/* ================= USERNAME ================= */
+$type  = $_GET['type'] ?? '';
+$start = $_GET['start'] ?? '';
+$end   = $_GET['end'] ?? '';
 
-$username = $_SESSION['username'] ?? "Admin";
+/* REPORT NAME */
 
-/* ================= FILTER ================= */
+$reportName = "Orders Report";
 
-$from = $_GET['from_date'] ?? '';
-$to   = $_GET['to_date'] ?? '';
+if($type=="daily") $reportName="Daily Orders Report";
+if($type=="weekly") $reportName="Weekly Orders Report";
+if($type=="monthly") $reportName="Monthly Orders Report";
+if($type=="yearly") $reportName="Yearly Orders Report";
 
-$where = "";
-if (!empty($from) && !empty($to)) {
-    $where = "WHERE DATE(o.Order_Date) BETWEEN '$from' AND '$to'";
+/* DATA QUERY */
+$tableWhere = "WHERE 1";
+
+if($type=="weekly"){
+$tableWhere .= " AND YEARWEEK(Order_Date,1)=YEARWEEK(CURDATE(),1)";
 }
 
-/* ================= SUMMARY ================= */
-
-$summaryQuery = mysqli_query($connection,"
-SELECT 
-COUNT(o.Order_Id) total_orders,
-SUM(o.Total_Amount) total_sales
-FROM `order` o
-$where
-");
-
-$summary = mysqli_fetch_assoc($summaryQuery);
-
-$totalOrders = $summary['total_orders'] ?? 0;
-$totalSales  = $summary['total_sales'] ?? 0;
-
-/* ================= MONTHLY DATA ================= */
-
-$monthlyQuery = mysqli_query($connection,"
-SELECT 
-YEAR(o.Order_Date) year,
-MONTH(o.Order_Date) month,
-COUNT(o.Order_Id) total_orders,
-SUM(o.Total_Amount) total_sales
-FROM `order` o
-$where
-GROUP BY YEAR(o.Order_Date), MONTH(o.Order_Date)
-ORDER BY YEAR(o.Order_Date), MONTH(o.Order_Date)
-");
-
-/* ================= ORDER DETAILS ================= */
-
-$orderQuery = mysqli_query($connection,"
+$query = mysqli_query($connection,"
 SELECT 
 o.Order_Id,
 o.Order_Date,
@@ -63,268 +36,173 @@ u.Last_Name
 FROM `order` o
 LEFT JOIN user_details u 
 ON o.User_Id = u.User_Id
-$where
+$tableWhere
 ORDER BY o.Order_Date DESC
+
 ");
 
-/* ================= PATHS ================= */
 
-$logo = __DIR__ . "/../../home page/logo.svg";
-$chart = "../charts/sales_chart.png";
 
-/* ================= HTML ================= */
+$totalOrders=0;
+$totalRevenue=0;
 
-$html = '
+$rows="";
+
+while($row=mysqli_fetch_assoc($query)){
+
+$totalOrders++;
+$totalRevenue+=$row['Total_Amount'];
+
+$rows.="
+<tr>
+<td>{$row['Order_Id']}</td>
+<td>{$row['First_Name']} {$row['Last_Name']}</td>
+<td>{$row['Order_Date']}</td>
+<td>₹".number_format($row['Total_Amount'],2)."</td>
+
+</tr>
+";
+
+}
+$logo = "../../home_page/logo.png";
+
+// $logo = $_SERVER['DOCUMENT_ROOT']."/GitHub/gift-shop-website/home page/logo.png";
+
+/* CHART IMAGE */
+
+$chartImage = "chart.png"; // saved chart image from JS
+
+/* HTML */
+
+$html="
 
 <style>
 
 body{
-font-family:DejaVu Sans;
-font-size:11px;
-margin:25px;
-color:#333;
+font-family:Arial;
+margin:10px;
 }
 
+
 .header{
-border-bottom:2px solid #7e2626;
+display:flex;
+align-items:center;
+border-bottom:2px solid #7e2626d5;
 padding-bottom:10px;
+margin-bottom:20px;
 }
 
 .logo{
-width:80px;
+width:60px;
 }
 
 .company{
-font-size:18px;
-font-weight:bold;
-color:#7e2626;
+margin-left:15px;
 }
 
-.info{
-font-size:10px;
-color:#555;
+.company h2{
+margin:0;
+color:#7e2626d5;
 }
 
-.title{
-margin-top:15px;
-font-size:16px;
-text-align:center;
-font-weight:bold;
-color:#7e2626;
+.meta{
+margin-top:10px;
+font-size:12px;
 }
 
 .summary{
-margin-top:20px;
-}
-
-.summary td{
-border:1px solid #ddd;
+background:#f8f3ee;
 padding:10px;
-text-align:center;
-}
-
-.summary h3{
-margin:0;
-font-size:13px;
-color:#7e2626;
-}
-
-.summary p{
-margin:5px 0 0 0;
-font-size:14px;
-font-weight:bold;
-}
-
-.section{
-margin-top:25px;
-font-size:13px;
-font-weight:bold;
-color:#7e2626;
-border-bottom:1px solid #7e2626;
-padding-bottom:4px;
+margin:15px 0;
 }
 
 table{
 width:100%;
 border-collapse:collapse;
-margin-top:10px;
 }
 
 th{
-background:#7e2626;
-color:#fff;
-padding:6px;
-font-size:11px;
+background:#7e2626d5;
+color:white;
+padding:8px;
 }
 
 td{
-padding:6px;
-border-bottom:1px solid #ddd;
-font-size:10px;
+padding:8px;
+border:1px solid #ddd;
 }
 
-.footer{
-margin-top:30px;
-font-size:9px;
+.chart{
+margin:20px 0;
 text-align:center;
-color:#777;
 }
 
 </style>
 
 
-<table class="header" width="100%">
-<tr>
+<div class='header'>
 
-<td width="15%">
-<img src="'.$logo.'" class="logo">
-</td>
+<img src='$logo' class='logo' width:'60'>
 
-<td width="85%">
-
-<div class="company">GiftShop</div>
-
-<div class="info">
-201/A, Maninagar, Ahmedabad<br>
-Email: giftshopmanigar@gmail.com | Phone: 9876543210
+<div class='company'>
+<h2>GiftShop</h2>
+<div>201/A Maninagar, Ahmedabad</div>
+<div>Email: giftshopmaninagar@gmail.com</div>
+<div>Phone: 9876543210</div>
 </div>
 
-</td>
-
-</tr>
-</table>
+</div>
 
 
-<div class="title">Sales Report</div>
+<h3>$reportName</h3>
+
+<div class='meta'>
+Generated Time: ".date("d M Y h:i A")."
+
+</div>
 
 
-<div style="margin-top:10px;font-size:10px;">
-
-<strong>Generated:</strong> '.date("d M Y H:i").'<br>
-
-<strong>Generated By:</strong> '.$username.'<br>';
-
-if(!empty($from) && !empty($to)){
-$html .= '<strong>Period:</strong> '.$from.' to '.$to;
-}
-
-$html .= '</div>
+<div class='summary'>
+Total Orders: $totalOrders <br>
+Total Revenue: ₹".number_format($totalRevenue,2)."
+</div>
 
 
-<table class="summary">
-
-<tr>
-
-<td>
-<h3>Total Orders</h3>
-<p>'.$totalOrders.'</p>
-</td>
-
-<td>
-<h3>Total Sales</h3>
-<p>₹ '.number_format($totalSales,2).'</p>
-</td>
-
-<td>
-<h3>Report Range</h3>
-<p>'.($from ?: "All Time").'</p>
-</td>
-
-</tr>
-
-</table>
-
-
-<div class="section">Monthly Sales Summary</div>
-
-
-<table>
-
-<tr>
-<th>Month</th>
-<th>Total Orders</th>
-<th>Total Sales</th>
-</tr>';
-
-while($m=mysqli_fetch_assoc($monthlyQuery)){
-
-$monthName=date("F Y",mktime(0,0,0,$m['month'],1,$m['year']));
-
-$html.='
-
-<tr>
-<td>'.$monthName.'</td>
-<td>'.$m['total_orders'].'</td>
-<td>₹ '.number_format($m['total_sales'],2).'</td>
-</tr>';
-
-}
-
-$html.='
-
-</table>
-
-
-<div class="section">Sales Chart</div>
-
-<img src="'.$chart.'" style="width:100%;height:220px;">
-
-
-<div class="section">Order Details</div>
+<div class='chart'>
+<img src='$chartImage' width='500'>
+</div>
 
 
 <table>
 
 <tr>
 <th>Order ID</th>
-<th>User Name</th>
+<th>Customer</th>
 <th>Date</th>
 <th>Amount</th>
-</tr>';
 
-while($o=mysqli_fetch_assoc($orderQuery)){
+</tr>
 
-$user=$o['First_Name']." ".$o['Last_Name'];
+$rows
 
-$html.='
-
-<tr>
-
-<td>'.$o['Order_Id'].'</td>
-<td>'.$user.'</td>
-<td>'.$o['Order_Date'].'</td>
-<td>₹ '.number_format($o['Total_Amount'],2).'</td>
-
-</tr>';
-
-}
-
-$html.='</table>
-
-
-<div class="footer">
-
-GiftShop Sales System Report
-
+</table>
+<div style='text-align:center;font-size:11px;margin-top:20px;color:#666;'>
+Generated by GiftShop Admin Panel
 </div>
-';
 
 
-/* ================= GENERATE PDF ================= */
+";
 
-$options=new Options();
-$options->set('isRemoteEnabled',true);
+/* GENERATE PDF */
 
-$dompdf=new Dompdf($options);
+$dompdf = new Dompdf();
 
 $dompdf->loadHtml($html);
 
-$dompdf->setPaper("A4","portrait");
+$dompdf->setPaper('A4','portrait');
 
 $dompdf->render();
 
-$dompdf->stream("GiftShop_Sales_Report.pdf",["Attachment"=>true]);
-
-exit;
+$dompdf->stream("orders_report.pdf",array("Attachment"=>0));
 
 ?>
