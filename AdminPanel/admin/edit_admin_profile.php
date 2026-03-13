@@ -151,7 +151,7 @@ $areas = mysqli_query(
 
 <!-- ===================== FORM ===================== -->
 
-<h2>Edit Admin Profile</h2>
+<h2 style="font-size:26px;font-weight:bold;margin-bottom:25px;">Edit Admin Profile</h2>
 
 <?php if (!empty($error)) { ?>
     <p style="color:red"><?= $error ?></p>
