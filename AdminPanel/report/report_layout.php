@@ -122,21 +122,12 @@ if (!isset($_SESSION))
             <p>Analyze yearly business revenue</p>
         </div>
 
-<<<<<<< HEAD
         <!-- Category Wise Revenue -->
         <div class="report-card" onclick="location.href='report/category_revenue_report.php'">
             <div class="card-icon products"><i class="fa-solid fa-layer-group"></i></div>
             <h3>Category Revenue</h3>
             <p>Revenue based on product categories</p>
         </div>
-=======
-<!-- Category Wise Revenue -->
-<div class="report-card" onclick="location.href='report/categories_report.php'">
-<div class="card-icon products"><i class="fa-solid fa-layer-group"></i></div>
-<h3>Category Revenue</h3>
-<p>Revenue based on product categories</p>
-</div>
->>>>>>> 7afe0e1e61162053c579a31df3701dd37b330bde
 
         <!-- Delivery Status Report -->
         <div class="report-card" onclick="location.href='report/delivery_status_report.php'">
