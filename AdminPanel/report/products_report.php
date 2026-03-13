@@ -159,6 +159,55 @@ $productOrders[]=0;
 }
 
 
+$productName = "";
+
+if($productFilter){
+    $nameQuery = mysqli_query($connection,"SELECT Product_Name FROM product_details WHERE Product_Id='$productFilter'");
+    if($row=mysqli_fetch_assoc($nameQuery)){
+        $productName = $row['Product_Name'];
+    }
+}
+$periodCondition = "";
+
+if($periodFilter == "daily"){
+    $periodCondition = "AND DATE(o.Order_Date) = CURDATE()";
+}
+elseif($periodFilter == "weekly"){
+    $periodCondition = "AND YEARWEEK(o.Order_Date,1) = YEARWEEK(CURDATE(),1)";
+}
+elseif($periodFilter == "monthly"){
+    $periodCondition = "AND MONTH(o.Order_Date) = MONTH(CURDATE()) 
+                        AND YEAR(o.Order_Date) = YEAR(CURDATE())";
+}
+elseif($periodFilter == "yearly"){
+    $periodCondition = "AND YEAR(o.Order_Date) = YEAR(CURDATE())";
+}
+
+$orderDetails = [];
+
+if($productFilter && $periodFilter){
+
+$detailQuery = mysqli_query($connection,"
+SELECT 
+o.Order_Id,
+CONCAT(u.First_Name,' ',u.Last_Name) AS customer_name,
+o.Order_Date,
+SUM(oi.Quantity * oi.Price_Snapshot) AS revenue
+FROM order_item oi
+JOIN `order` o ON oi.Order_Id = o.Order_Id
+JOIN user_details u ON o.User_Id = u.User_Id
+WHERE oi.Product_Id='$productFilter'
+$periodCondition
+GROUP BY o.Order_Id
+ORDER BY o.Order_Date DESC
+");
+
+while($row=mysqli_fetch_assoc($detailQuery)){
+$orderDetails[] = $row;
+}
+
+}
+
 
 ?>
 
@@ -327,6 +376,43 @@ background:#faf7f6;
 tr:hover{
 background:#f2e9e8;
 }
+table th[colspan]{
+background:#f7eaea;
+color:black;
+font-size:16px;
+text-align:left;
+padding:10px;
+}
+
+/* Back Button */
+/* TITLE ROW */
+
+.title-row{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:12px;
+}
+
+/* BACK BUTTON */
+
+.back-btn{
+text-decoration:none;
+font-size:17px;
+font-weight:600;
+color:#0b6e77;
+padding:6px 12px;
+border-radius:6px;
+transition:0.2s;
+}
+
+.back-btn:hover{
+color:#7e2626d5;
+}
+tfoot td{
+font-size:14px;
+}
+
 
 </style>
 
@@ -336,7 +422,15 @@ background:#f2e9e8;
 
 <div class="container">
 
+<div class="title-row">
 <h1>Product Sales Report</h1>
+
+<a href="http://localhost/GitHub/gift-shop-website/AdminPanel/layout.php?view=report_layout" class="back-btn">
+← Back
+</a>
+
+</div>
+
 
 <!-- FILTER -->
 
@@ -420,24 +514,58 @@ PDF
 <table>
 
 <tr>
-<th>Period</th>
-<th>Orders</th>
+<th colspan="4" style="text-align:left;font-size:15px;">
+Product : <?=$productName?>
+</th>
+</tr>
+
+<tr>
+<th>Order ID</th>
+<th>Customer Name</th>
+<th>Date of Order</th>
 <th>Revenue</th>
 </tr>
 
-<?php for($i=0;$i<count($productLabels);$i++){ ?>
+<?php if(!empty($orderDetails)){ ?>
+
+<?php foreach($orderDetails as $order){ ?>
 
 <tr>
 
-<td><?=$productLabels[$i]?></td>
+<td><?=$order['Order_Id']?></td>
 
-<td><?=$productOrders[$i]?></td>
+<td><?=$order['customer_name']?></td>
 
-<td>₹<?=number_format($productSales[$i],2)?></td>
+<td><?=date("d M Y",strtotime($order['Order_Date']))?></td>
+
+<td>₹<?=number_format($order['revenue'],2)?></td>
 
 </tr>
 
 <?php } ?>
+
+<?php } else { ?>
+
+<tr>
+<td colspan="4">No Orders Found</td>
+</tr>
+
+<?php } ?>
+<tfoot>
+
+<tr>
+
+<td colspan="3" style="text-align:right;font-weight:600;background:#f7eaea;">
+Total Revenue
+</td>
+
+<td style="font-weight:700;background:#f7eaea;">
+₹<?=number_format($totalRevenue,2)?>
+</td>
+
+</tr>
+
+</tfoot>
 
 </table>
 
