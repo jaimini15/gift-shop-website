@@ -29,9 +29,91 @@ $result = mysqli_query($connection, $query);
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
     <style>
-        body { background: #f4f6f9; font-family: Arial, sans-serif; }
-        .content { margin-left: 0px; padding: 0px;  }
-        .card-box { background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+        body { background: #ffffff; font-family: Arial, sans-serif; }
+        /* card container */
+.card-box{
+    background:#fff;
+    padding:20px 25px;
+    border-radius:12px;
+    box-shadow:0 2px 6px rgba(0,0,0,0.1);
+    width:100%;
+}
+
+/* table layout */
+table{
+    width:100%;
+    font-size:12px;
+}
+
+/* table cells */
+.table th,
+.table td{
+    padding:6px 8px;
+    vertical-align:middle;
+    overflow-wrap:anywhere;
+    hyphens:auto;
+}
+
+/* table header */
+.table thead th{
+    font-size:13px;
+    font-weight:600;
+}
+
+/* ID column */
+th:first-child,
+td:first-child{
+    white-space:nowrap;
+    text-align:center;
+}
+
+/* Email column */
+th:nth-child(3),
+td:nth-child(3){
+    word-break:normal;
+    max-width:180px;
+}
+
+/* Phone column */
+th:nth-child(4),
+td:nth-child(4){
+    white-space:nowrap;
+}
+
+/* Address column */
+td:nth-child(5){
+    max-width:200px;
+}
+
+/* DOB column */
+th:nth-child(6),
+td:nth-child(6){
+    white-space:nowrap;
+}
+
+/* Area column */
+td:nth-child(7){
+    max-width:200px;
+}
+
+/* Status column */
+th:nth-child(8),
+td:nth-child(8){
+    white-space:nowrap;
+    min-width:90px;
+    text-align:center;
+}
+
+/* Created At column */
+th:nth-child(9),
+td:nth-child(9){
+    white-space:nowrap;
+}
+
+/* hover effect (admin dashboard style) */
+.table tbody tr:hover{
+    background:#f8f9fa;
+}
     </style>
 </head>
 
