@@ -456,7 +456,7 @@ if ($productFilter && $periodFilter) {
                     <span class="badge bg-success fs-6"><?= $filteredTotal ?></span>
                 </h5>
 
-                <canvas id="salesChart" height="175"></canvas>
+                <canvas id="salesChart" height="400"></canvas>
             </div>
 
             <!-- ================= PRODUCT SALES ANALYTICS ================= -->
@@ -553,9 +553,9 @@ if ($productFilter && $periodFilter) {
 
                 <!-- CHART -->
 
-                
-                    <canvas id="productSalesChart" height="220"></canvas>
-          
+
+                <canvas id="productSalesChart" height="400"></canvas>
+
 
             </div>
             <!-- ================= TOP & LOW PRODUCTS ================= -->
@@ -645,9 +645,9 @@ if ($productFilter && $periodFilter) {
                         Generate PDF
                     </a>
                 </div>
-                <div style="width:600px; margin:auto;">
-                    <canvas id="yearChart"></canvas>
-                </div>
+
+                <canvas id="yearChart" height="400"></canvas>
+
             </div>
             <!-- ================= CATEGORY REVENUE PIE CHART ================= -->
             <div class="mt-5 card p-4">
@@ -815,7 +815,9 @@ if ($productFilter && $periodFilter) {
                 datasets: [{
                     label: 'Year Wise Revenue',
                     data: <?= json_encode($yearRevenue); ?>,
-                    borderWidth: 1
+                    borderWidth: 1,
+                    barThickness: 80,      // controls bar width
+                    maxBarThickness: 80
                 }]
             },
             options: {
@@ -876,7 +878,10 @@ if ($productFilter && $periodFilter) {
                 datasets: [{
                     label: 'Monthly Revenue',
                     data: <?= json_encode($sales); ?>,
-                    borderWidth: 1
+                    borderWidth: 1,
+                    barThickness: 80,      // controls bar width
+                    maxBarThickness: 80
+
                 }]
             },
             options: { responsive: true }
@@ -963,76 +968,76 @@ if ($productFilter && $periodFilter) {
     </script>
     <script>
 
-const productLabels = <?= json_encode($productLabels); ?>;
-const productSales = <?= json_encode($productSales); ?>;
-const productOrders = <?= json_encode($productOrders); ?>;
+        const productLabels = <?= json_encode($productLabels); ?>;
+        const productSales = <?= json_encode($productSales); ?>;
+        const productOrders = <?= json_encode($productOrders); ?>;
 
-const ctx = document.getElementById('productSalesChart');
+        const ctx = document.getElementById('productSalesChart');
 
-new Chart(ctx, {
+        new Chart(ctx, {
 
-    type: 'bar',
+            type: 'bar',
 
-    data: {
+            data: {
 
-        labels: productLabels,
+                labels: productLabels,
 
-        datasets: [{
+                datasets: [{
 
-            label: 'Product Revenue',
+                    label: 'Product Revenue',
 
-            data: productSales,
+                    data: productSales,
 
-            borderWidth: 1,
+                    borderWidth: 1,
 
-            barThickness: 80,      // controls bar width
-            maxBarThickness: 80,   // prevents very large bars
-            categoryPercentage: 0.5,
-            barPercentage: 0.5
+                    barThickness: 80,      // controls bar width
+                    maxBarThickness: 80,   // prevents very large bars
+                    categoryPercentage: 0.5,
+                    barPercentage: 0.5
 
-        }]
+                }]
 
-    },
-
-    options: {
-
-        responsive: true,
-
-        plugins: {
-
-            legend: {
-                display: true
             },
 
-            tooltip: {
-                callbacks: {
-                    label: function (context) {
+            options: {
 
-                        const revenue = context.raw;
-                        const orders = productOrders[context.dataIndex];
+                responsive: true,
 
-                        return [
-                            "Revenue: ₹" + revenue,
-                            "Orders: " + orders
-                        ];
+                plugins: {
+
+                    legend: {
+                        display: true
+                    },
+
+                    tooltip: {
+                        callbacks: {
+                            label: function (context) {
+
+                                const revenue = context.raw;
+                                const orders = productOrders[context.dataIndex];
+
+                                return [
+                                    "Revenue: ₹" + revenue,
+                                    "Orders: " + orders
+                                ];
+                            }
+                        }
+                    }
+
+                },
+
+                scales: {
+                    y: {
+                        beginAtZero: true
+
                     }
                 }
+
             }
 
-        },
+        });
 
-        scales: {
-            y: {
-                beginAtZero: true
-                
-            }
-        }
-
-    }
-
-});
-
-</script>
+    </script>
 </body>
 
 </html>

@@ -17,6 +17,7 @@ $allowed = [
     'feedback' => 'feedback/feedback.php',
     'delivery_boys' => 'delivery_boy/delivery_boys.php',
     'admin_profile' => 'admin/admin_profile.php',
+    'report_layout' => 'report/report_layout.php',
 ];
 
 $page = $allowed[$view] ?? $allowed['dashboard'];
@@ -44,6 +45,7 @@ ob_end_flush();
             font-family: Arial, sans-serif;
             margin: 0;
         }
+
         .admin-header {
             position: fixed;
             top: 0;
@@ -59,6 +61,7 @@ ob_end_flush();
             font-size: 20px;
             font-weight: 700;
         }
+
         .account-wrapper {
             max-width: 1400px;
             margin: 30px auto 40px;
@@ -67,6 +70,7 @@ ob_end_flush();
             min-height: 600px;
             background-color: white;
         }
+
         .account-sidebar {
             width: 300px;
             min-width: 300px;
@@ -80,6 +84,7 @@ ob_end_flush();
             display: flex;
             flex-direction: column;
         }
+
         .sidebar-user {
             font-size: 18px;
             font-weight: 600;
@@ -99,6 +104,7 @@ ob_end_flush();
             align-items: center;
             gap: 10px;
         }
+
         .account-sidebar a:hover {
             background: #f3f4f6;
         }
@@ -108,6 +114,7 @@ ob_end_flush();
             color: #ffffff;
             font-weight: 600;
         }
+
         .account-content {
             flex: 1;
             min-width: 0;
@@ -121,6 +128,7 @@ ob_end_flush();
             font-size: 15px;
             line-height: 1.6;
         }
+
         .account-content * {
             font-size: inherit;
         }
@@ -129,11 +137,12 @@ ob_end_flush();
             width: 100%;
             table-layout: auto;
         }
-        .account-sidebar a:last-child{
-    margin-top:auto;
-    background:#fee2e2;
-    color:#b91c1c;
-}
+
+        .account-sidebar a:last-child {
+            margin-top: auto;
+            background: #fee2e2;
+            color: #b91c1c;
+        }
     </style>
 </head>
 
@@ -160,7 +169,9 @@ ob_end_flush();
             <a href="layout.php?view=dashboard" class="<?= $view == 'dashboard' ? 'active' : '' ?>">
                 <i class="fa-solid fa-chart-line"></i> Dashboard
             </a>
-
+            <a href="layout.php?view=report_layout" class="<?= $view == 'report_layout' ? 'active' : '' ?>">
+                <i class="fa-solid fa-chart-line"></i> Report
+            </a>
             <a href="layout.php?view=users" class="<?= $view == 'users' ? 'active' : '' ?>">
                 <i class="fa-solid fa-users"></i> Users
             </a>
