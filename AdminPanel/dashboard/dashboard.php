@@ -365,10 +365,86 @@ if ($productFilter && $periodFilter) {
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+    <style>
+        .card-box{
+    background:#fff;
+    padding:20px 25px;
+    border-radius:12px;
+    box-shadow:0 2px 6px rgba(0,0,0,0.1);
+    width:100%;
+}
+
+/* dashboard stat cards */
+.card{
+    border:none;
+    border-radius:10px;
+    box-shadow:0 2px 6px rgba(0,0,0,0.08);
+    transition:0.2s ease;
+}
+
+.card:hover{
+    transform:translateY(-3px);
+}
+
+/* card headings */
+.card h6{
+    font-size:14px;
+    color:#666;
+    margin-bottom:8px;
+}
+
+.card h3{
+    font-size:24px;
+    font-weight:bold;
+}
+
+/* table styling */
+table{
+    width:100%;
+    font-size:13px;
+}
+
+.table th,
+.table td{
+    padding:8px 10px;
+    vertical-align:middle;
+}
+
+/* table header */
+.table thead th{
+    font-size:13px;
+    font-weight:600;
+}
+
+/* ID column */
+th:first-child,
+td:first-child{
+    text-align:center;
+    white-space:nowrap;
+}
+
+/* date column */
+th:nth-child(3),
+td:nth-child(3){
+    white-space:nowrap;
+}
+
+/* amount column */
+th:last-child,
+td:last-child{
+    white-space:nowrap;
+    text-align:right;
+}
+
+/* hover effect */
+.table tbody tr:hover{
+    background:#f8f9fa;
+}
+</style>
 </head>
 
-<body style="background:#f4f6f9">
-    <div class="container mt-4">
+<body >
+    <div class="card-box">
 
         <h2 style="font-size:26px;font-weight:bold;margin-bottom:25px;">Dashboard Overview</h2>
 
@@ -395,7 +471,7 @@ if ($productFilter && $periodFilter) {
 
         <!-- ================= RECENT ORDERS ================= -->
         <div class="mt-5 card p-4">
-            <h4>Recent Orders</h4>
+            <h4 style="font-size:20px">Recent Orders</h4>
 
             <table class="table table-bordered mt-3">
                 <thead class="table-dark">
