@@ -57,92 +57,166 @@ $data[]=$row;
 <title>Top / Least Selling Products Report</title>
 
 <style>
-
 body{
-font-family:Segoe UI;
-background:white;
-margin:0;
+    font-family:"Segoe UI",Arial,sans-serif;
+    background:white;
+    margin:0;
+    color:#333;
 }
 
+/* MAIN CONTAINER */
 .container{
-width:95%;
-margin:auto;
-margin-top:20px;
+    width:94%;
+    margin:15px auto;
 }
 
+/* TITLE */
 h1{
-color:#7e2626d5;
-border-left:5px solid #7e2626d5;
-padding-left:8px;
+    color:#7e2626d5;
+    margin-bottom:12px;
+    font-size:24px;
+    font-weight:600;
+    border-left:5px solid #7e2626d5;
+    padding-left:8px;
 }
 
+/* FILTER */
 .filter{
-border:2px solid #7e2626d5;
-padding:10px;
-margin-bottom:20px;
-display:flex;
-gap:10px;
-align-items:end;
+    display:flex;
+    gap:10px;
+    align-items:flex-end;
+    flex-wrap:wrap;
+    background:white;
+    padding:12px 18px;
+    border-radius:6px;
+    box-shadow:0 2px 15px rgba(0,0,0,0.05);
+    margin-bottom:15px;
+    border:2px solid #7e2626d5;
 }
 
-select,button{
-padding:6px;
+.filter label{
+    font-size:18px;
+    font-weight:600;
+    margin-bottom:3px;
+}
+
+.filter select,
+.filter input{
+    padding:6px 8px;
+    border:1px solid #ddd;
+    border-radius:4px;
+    font-size:13px;
+    min-width:120px;
 }
 
 button{
-background:#7e2626d5;
-color:white;
-border:none;
-cursor:pointer;
+    background:#7e2626d5;
+    color:white;
+    border:none;
+    padding:6px 14px;
+    border-radius:4px;
+    cursor:pointer;
+    font-weight:600;
+    font-size:13px;
+    transition:0.2s;
 }
 
+button:hover{
+    background:#5f1d1d;
+}
+
+/* EXPORT BUTTONS */
+.pdf-btn,
+.excel-btn{
+    padding:6px 12px;
+    border-radius:4px;
+    color:white;
+    font-weight:600;
+    font-size:13px;
+    text-decoration:none;
+}
+
+.pdf-btn{
+    background:#c0392b;
+}
+
+.excel-btn{
+    background:#27ae60;
+}
+
+/* TABLE */
 table{
-width:100%;
-border-collapse:collapse;
+    width:100%;
+    border-collapse:collapse;
+    background:white;
+    border:2px solid #7e2626d5;
+    margin-top:20px;
 }
 
 th{
-background:#7e2626d5;
-color:white;
-padding:8px;
-border:1px solid #ddd;
+    background:#7e2626d5;
+    color:white;
+    padding:8px;
+    font-size:13px;
+    border:1px solid #ddd;
 }
 
 td{
-padding:8px;
-border:1px solid #ddd;
-text-align:center;
+    padding:7px;
+    font-size:13px;
+    border:1px solid #ddd;
+    text-align:center;
 }
 
-.category-header{
-background:#f8f3ee;
-font-weight:bold;
-color:#7e2626d5;
+tr:nth-child(even){
+    background:#faf7f6;
+}
+
+tr:hover{
+    background:#f2e9e8;
 }
 
 tfoot td{
-font-weight:bold;
-background:#f1f1f1;
+    background:#f8eceb;
+    font-weight:600;
+    border-top:2px solid #7e2626d5;
 }
 
+/* CATEGORY HEADER ROW */
+.category-header{
+    background:#f8f3ee;
+    font-weight:bold;
+    color:#7e2626d5;
+}
+
+/* CATEGORY TOTAL ROW */
+.category-total{
+    background:#f7eaea;
+    font-weight:bold;
+}
+
+/* TITLE ROW */
 .title-row{
-display:flex;
-justify-content:space-between;
-align-items:center;
-margin-bottom:15px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:15px;
 }
 
+/* BACK BUTTON */
 .back-btn{
-text-decoration:none;
-font-size:16px;
-font-weight:600;
-color:#0b6e77;
+    text-decoration:none;
+    font-size:20px;
+    font-weight:600;
+    color:#0b6e77;
+    padding:6px 12px;
+    border-radius:6px;
+    transition:0.2s;
 }
 
 .back-btn:hover{
-color:#7e2626d5;
+    color:#7e2626d5;
 }
-
 </style>
 
 </head>
@@ -191,7 +265,13 @@ color:#7e2626d5;
 </select>
 
 <button type="submit">Filter</button>
+<a href="export_top_selling_pdf.php?type=<?=$type?>&limit=<?=$limit?>" class="pdf-btn">
+    PDF
+</a>
 
+<a href="export_order_excel.php?type=<?=$type?>&start=<?=$start?>&end=<?=$end?>" class="excel-btn">
+Excel
+</a>
 </div>
 
 </form>
