@@ -499,7 +499,7 @@ font-size:14px;
 </div>
 
 <button type="submit">Filter</button>
-<button type="button" class="pdf-btn" onclick="generatePDF()">PDF</button>
+<button type="button" class="pdf-btn" onclick="generatePDF()" target="_blank">PDF</button>
 <a href="export_product_excel.php?product_id=<?=$productFilter?>&period=<?=$periodFilter?>"
 class="excel-btn">
 Excel
