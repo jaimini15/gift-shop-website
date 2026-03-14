@@ -31,7 +31,7 @@ if (isset($_SESSION['User_Id'])) {
 <header>
     <div class="logo">
         <a href="index.php">
-    <img src="<?= $BASE ?>home page/logo.svg" alt="Logo"></a>
+    <img src="<?= $BASE ?>/home page/logo.svg" alt="Logo"></a>
     <span>GiftShop</span>
 </div>
 

@@ -70,7 +70,7 @@ margin-bottom:15px;
 
 .back-btn{
 text-decoration:none;
-font-size:17px;
+font-size:20px;
 font-weight:600;
 color:#0b6e77;
 }

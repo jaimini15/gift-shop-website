@@ -72,22 +72,57 @@ padding-left:8px;
 
 .filter{
 border:2px solid #7e2626d5;
-padding:10px;
+padding:15px 18px;
+border-radius:6px;
 margin-bottom:20px;
 display:flex;
 gap:10px;
 align-items:end;
 }
-
-select,button{
-padding:6px;
+label{
+    font-size:20px;
+}
+select{
+padding:6px 8px;
+border:1px solid #ddd;
+border-radius:4px;
+font-size:15px;
+min-width:120px;
 }
 
 button{
 background:#7e2626d5;
 color:white;
 border:none;
+padding:6px 14px;
+border-radius:4px;
 cursor:pointer;
+font-weight:600;
+font-size:13px;
+transition:0.2s;
+}
+
+button:hover{
+background:#5f1d1d;
+}
+/* EXPORT BUTTONS */
+
+.pdf-btn,
+.excel-btn{
+padding:6px 12px;
+border-radius:4px;
+color:white;
+font-weight:600;
+font-size:13px;
+text-decoration:none;
+}
+
+.pdf-btn{
+background:#c0392b;
+}
+
+.excel-btn{
+background:#27ae60;
 }
 
 table{
@@ -128,7 +163,7 @@ margin-bottom:15px;
 
 .back-btn{
 text-decoration:none;
-font-size:16px;
+font-size:20px;
 font-weight:600;
 color:#0b6e77;
 }
@@ -201,6 +236,12 @@ background:#27ae60;
 </select>
 
 <button type="submit">Filter</button>
+<a href="export_top_selling_pdf.php?type=<?=$type?>&limit=<?=$limit?>" class="pdf-btn">
+    PDF
+</a>
+<a href="export_order_excel.php?type=<?=$type?>&start=<?=$start?>&end=<?=$end?>" class="excel-btn">
+Excel
+</a>
 
 <a href="export_stock_pdf.php?product_id=<?=$productFilter?>&period=<?=$periodFilter?>" 
 class="pdf-btn">
