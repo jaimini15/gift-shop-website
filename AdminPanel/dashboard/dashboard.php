@@ -16,7 +16,7 @@ $totalProducts = mysqli_fetch_assoc(mysqli_query(
 
 $totalOrders = mysqli_fetch_assoc(mysqli_query(
     $connection,
-    "SELECT COUNT(*) AS total FROM `order`"
+    "SELECT COUNT(*) AS total FROM `order` WHERE DATE(Order_Date) = CURDATE()"
 ))['total'];
 
 /* ================= RECENT ORDERS ================= */
@@ -137,7 +137,7 @@ $recentOrders = mysqli_query($connection, "
             </div>
             <div class="col-md-4">
                 <div class="card p-3 text-center">
-                    <h6>Total Orders</h6>
+                    <h6>Today’s Orders</h6>
                     <h3><?= $totalOrders ?></h3>
                 </div>
             </div>
