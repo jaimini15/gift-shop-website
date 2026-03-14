@@ -191,7 +191,26 @@ border-radius:4px;
 font-size:13px;
 min-width:120px;
 }
+/* TITLE ROW */
 
+.title-row{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:15px;
+}
+/* BACK BUTTON */
+
+.back-btn{
+text-decoration:none;
+font-size:20px;
+font-weight:600;
+color:#0b6e77;
+}
+
+.back-btn:hover{
+color:#7e2626d5;
+}
 /* BUTTONS */
 
 button{
@@ -298,9 +317,12 @@ background:#f2e9e8;
 <body>
 
 <div class="container">
-
+<div class="title-row">
 <h1>Delivery Status Report</h1>
-
+<a href="http://localhost/GitHub/gift-shop-website/AdminPanel/layout.php?view=report_layout" class="back-btn">
+← Back
+</a>
+</div>
 <form method="GET">
 
 <div class="filter-row">
