@@ -14,12 +14,12 @@ $month  = $_GET['month'] ?? '';
 
 /* ================= REPORT NAME ================= */
 
-$reportName = "Category Revenue Report";
+$reportName = "Delivery Area Orders Report";
 
-if($period=="daily")   $reportName="Daily Category Revenue Report";
-if($period=="weekly")  $reportName="Weekly Category Revenue Report";
-if($period=="monthly") $reportName="Monthly Category Revenue Report";
-if($period=="yearly")  $reportName="Yearly Category Revenue Report";
+if($period=="daily")   $reportName="Daily Delivery Area Orders Report";
+if($period=="weekly")  $reportName="Weekly Delivery Area Orders Report";
+if($period=="monthly") $reportName="Monthly Delivery Area Orders Report";
+if($period=="yearly")  $reportName="Yearly Delivery Area Orders Report";
 
 if($period=="yearly" && $month){
 $reportName .= " - ".date("F", mktime(0,0,0,$month,10));
@@ -52,42 +52,38 @@ $whereCondition.=" AND MONTH(o.Order_Date)='$month'";
 
 }
 
-/* ================= FETCH CATEGORY DATA ================= */
+/* ================= FETCH AREA DATA ================= */
 
 $query = mysqli_query($connection,"
 SELECT 
-c.Category_Name,
+a.Area_Name,
 o.Order_Id,
 CONCAT(u.First_Name,' ',u.Last_Name) AS customer,
-DATE(o.Order_Date) AS order_date,
-p.Product_Name,
-(oi.Quantity * oi.Price_Snapshot) AS revenue
-FROM order_item oi
-JOIN product_details p ON oi.Product_Id = p.Product_Id
-JOIN category_details c ON p.Category_Id = c.Category_Id
-JOIN `order` o ON oi.Order_Id = o.Order_Id
+DATE(o.Order_Date) AS order_date
+FROM `order` o
 JOIN user_details u ON o.User_Id = u.User_Id
+JOIN area_details a ON u.Area_Id = a.Area_Id
 $whereCondition
-ORDER BY c.Category_Name , o.Order_Date DESC
+ORDER BY a.Area_Name , o.Order_Date DESC
 ");
 
 /* ================= GENERATE TABLE ROWS ================= */
 
-$currentCategory="";
+$currentArea="";
 $rows="";
-$totalRevenue=0;
+$totalOrders=0;
 
 while($row=mysqli_fetch_assoc($query)){
 
-$totalRevenue += $row['revenue'];
+$totalOrders++;
 
-if($currentCategory != $row['Category_Name']){
+if($currentArea != $row['Area_Name']){
 
-$currentCategory = $row['Category_Name'];
+$currentArea = $row['Area_Name'];
 
 $rows .= "
-<tr class='category-row'>
-<td colspan='5'>Category : $currentCategory</td>
+<tr class='area-row'>
+<td colspan='3'>Area : $currentArea</td>
 </tr>
 ";
 }
@@ -97,8 +93,6 @@ $rows .= "
 <td>{$row['Order_Id']}</td>
 <td>{$row['customer']}</td>
 <td>{$row['order_date']}</td>
-<td>{$row['Product_Name']}</td>
-<td>₹".number_format($row['revenue'],2)."</td>
 </tr>
 ";
 }
@@ -113,7 +107,6 @@ $html="
 
 <style>
 
-/* PAGE MARGIN (bottom space for footer) */
 @page{
 margin:15px 20px 70px 20px;
 }
@@ -183,7 +176,7 @@ tfoot{
 display:table-footer-group;
 }
 
-.category-row{
+.area-row{
 background:#f8f3ee;
 font-weight:bold;
 color:#7e2626;
@@ -210,7 +203,7 @@ text-align:center;
 margin:12px 0;
 }
 
-/* FIXED FOOTER */
+/* FOOTER */
 
 .footer{
 position:fixed;
@@ -224,7 +217,6 @@ border-top:1px solid #ccc;
 }
 
 </style>
-
 
 <div class='header'>
 <div class='company'>
@@ -241,7 +233,7 @@ Generated : ".date("d M Y h:i A")."
 </div>
 
 <div class='summary'>
-<b>Total Revenue :</b> ₹".number_format($totalRevenue,2)."
+<b>Total Orders :</b> $totalOrders
 </div>
 ";
 
@@ -264,8 +256,6 @@ $html .= "
 <th>Order ID</th>
 <th>Customer</th>
 <th>Date</th>
-<th>Product</th>
-<th>Revenue</th>
 </tr>
 </thead>
 
@@ -277,11 +267,11 @@ $rows
 
 <tfoot>
 <tr>
-<td colspan='4' style='text-align:right;font-weight:bold;background:#f8f3ee'>
-Total Revenue
+<td colspan='2' style='text-align:right;font-weight:bold;background:#f8f3ee'>
+Total Orders
 </td>
 <td style='font-weight:bold;background:#f8f3ee'>
-₹".number_format($totalRevenue,2)."
+$totalOrders
 </td>
 </tr>
 </tfoot>
@@ -304,6 +294,5 @@ $dompdf->loadHtml($html);
 $dompdf->setPaper('A4','portrait');
 $dompdf->render();
 
-$dompdf->stream("category_revenue_report.pdf",["Attachment"=>0]);
+$dompdf->stream("delivery_area_orders_report.pdf",["Attachment"=>0]);
 ?>
-

@@ -1,10 +1,10 @@
 <?php
 if (!isset($_SESSION))
-session_start();
+    session_start();
 
 include(__DIR__ . '/../db.php');
 
-$type  = $_GET['type'] ?? '';
+$type = $_GET['type'] ?? '';
 $limit = $_GET['limit'] ?? '';
 
 /* ================= QUERY ================= */
@@ -29,22 +29,20 @@ GROUP BY p.Product_Id
 
 /* FILTER */
 
-if($type=="top" && $limit){
-$query .= " ORDER BY Total_Sold DESC LIMIT $limit";
-}
-elseif($type=="low" && $limit){
-$query .= " ORDER BY Total_Sold ASC LIMIT $limit";
-}
-else{
-$query .= " ORDER BY c.Category_Name, p.Product_Name";
+if ($type == "top" && $limit) {
+    $query .= " ORDER BY Total_Sold DESC LIMIT $limit";
+} elseif ($type == "low" && $limit) {
+    $query .= " ORDER BY Total_Sold ASC LIMIT $limit";
+} else {
+    $query .= " ORDER BY c.Category_Name, p.Product_Name";
 }
 
-$result = mysqli_query($connection,$query);
+$result = mysqli_query($connection, $query);
 
-$data=[];
+$data = [];
 
-while($row=mysqli_fetch_assoc($result)){
-$data[]=$row;
+while ($row = mysqli_fetch_assoc($result)) {
+    $data[] = $row;
 }
 
 ?>
@@ -54,334 +52,341 @@ $data[]=$row;
 
 <head>
 
-<title>Top / Least Selling Products Report</title>
+    <title>Top / Least Selling Products Report</title>
 
-<style>
-body{
-    font-family:"Segoe UI",Arial,sans-serif;
-    background:white;
-    margin:0;
-    color:#333;
-}
+    <style>
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: white;
+            margin: 0;
+            color: #333;
+        }
 
-/* MAIN CONTAINER */
-.container{
-    width:94%;
-    margin:15px auto;
-}
+        /* MAIN CONTAINER */
+        .container {
+            width: 94%;
+            margin: 15px auto;
+        }
 
-/* TITLE */
-h1{
-    color:#7e2626d5;
-    margin-bottom:12px;
-    font-size:24px;
-    font-weight:600;
-    border-left:5px solid #7e2626d5;
-    padding-left:8px;
-}
+        /* TITLE */
+        h1 {
+            color: #7e2626d5;
+            margin-bottom: 12px;
+            font-size: 24px;
+            font-weight: 600;
+            border-left: 5px solid #7e2626d5;
+            padding-left: 8px;
+        }
 
-/* FILTER */
-.filter{
-    display:flex;
-    gap:10px;
-    align-items:flex-end;
-    flex-wrap:wrap;
-    background:white;
-    padding:12px 18px;
-    border-radius:6px;
-    box-shadow:0 2px 15px rgba(0,0,0,0.05);
-    margin-bottom:15px;
-    border:2px solid #7e2626d5;
-}
+        /* FILTER */
+        .filter {
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+            flex-wrap: wrap;
+            background: white;
+            padding: 12px 18px;
+            border-radius: 6px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 15px;
+            border: 2px solid #7e2626d5;
+        }
 
-.filter label{
-    font-size:18px;
-    font-weight:600;
-    margin-bottom:3px;
-}
+        .filter label {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
 
-.filter select,
-.filter input{
-    padding:6px 8px;
-    border:1px solid #ddd;
-    border-radius:4px;
-    font-size:13px;
-    min-width:120px;
-}
+        .filter select,
+        .filter input {
+            padding: 6px 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 13px;
+            min-width: 120px;
+        }
 
-button{
-    background:#7e2626d5;
-    color:white;
-    border:none;
-    padding:6px 14px;
-    border-radius:4px;
-    cursor:pointer;
-    font-weight:600;
-    font-size:13px;
-    transition:0.2s;
-}
+        button {
+            background: #7e2626d5;
+            color: white;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            transition: 0.2s;
+        }
 
-button:hover{
-    background:#5f1d1d;
-}
+        button:hover {
+            background: #5f1d1d;
+        }
 
-/* EXPORT BUTTONS */
-.pdf-btn,
-.excel-btn{
-    padding:6px 12px;
-    border-radius:4px;
-    color:white;
-    font-weight:600;
-    font-size:13px;
-    text-decoration:none;
-}
+        /* EXPORT BUTTONS */
+        .pdf-btn,
+        .excel-btn {
+            padding: 6px 12px;
+            border-radius: 4px;
+            color: white;
+            font-weight: 600;
+            font-size: 13px;
+            text-decoration: none;
+        }
 
-.pdf-btn{
-    background:#c0392b;
-}
+        .pdf-btn {
+            background: #c0392b;
+        }
 
-.excel-btn{
-    background:#27ae60;
-}
+        .excel-btn {
+            background: #27ae60;
+        }
 
-/* TABLE */
-table{
-    width:100%;
-    border-collapse:collapse;
-    background:white;
-    border:2px solid #7e2626d5;
-    margin-top:20px;
-}
+        /* TABLE */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border: 2px solid #7e2626d5;
+            margin-top: 20px;
+        }
 
-th{
-    background:#7e2626d5;
-    color:white;
-    padding:8px;
-    font-size:13px;
-    border:1px solid #ddd;
-}
+        th {
+            background: #7e2626d5;
+            color: white;
+            padding: 8px;
+            font-size: 13px;
+            border: 1px solid #ddd;
+        }
 
-td{
-    padding:7px;
-    font-size:13px;
-    border:1px solid #ddd;
-    text-align:center;
-}
+        td {
+            padding: 7px;
+            font-size: 13px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
 
-tr:nth-child(even){
-    background:#faf7f6;
-}
+        tr:nth-child(even) {
+            background: #faf7f6;
+        }
 
-tr:hover{
-    background:#f2e9e8;
-}
+        tr:hover {
+            background: #f2e9e8;
+        }
 
-tfoot td{
-    background:#f8eceb;
-    font-weight:600;
-    border-top:2px solid #7e2626d5;
-}
+        tfoot td {
+            background: #f8eceb;
+            font-weight: 600;
+            border-top: 2px solid #7e2626d5;
+        }
 
-/* CATEGORY HEADER ROW */
-.category-header{
-    background:#f8f3ee;
-    font-weight:bold;
-    color:#7e2626d5;
-}
+        /* CATEGORY HEADER ROW */
+        .category-header {
+            background: #f8f3ee;
+            font-weight: bold;
+            color: #7e2626d5;
+        }
 
-/* CATEGORY TOTAL ROW */
-.category-total{
-    background:#f7eaea;
-    font-weight:bold;
-}
+        /* CATEGORY TOTAL ROW */
+        .category-total {
+            background: #f7eaea;
+            font-weight: bold;
+        }
 
-/* TITLE ROW */
-.title-row{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:15px;
-}
+        /* TITLE ROW */
+        .title-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
 
-/* BACK BUTTON */
-.back-btn{
-    text-decoration:none;
-    font-size:20px;
-    font-weight:600;
-    color:#0b6e77;
-    padding:6px 12px;
-    border-radius:6px;
-    transition:0.2s;
-}
+        /* BACK BUTTON */
+        .back-btn {
+            text-decoration: none;
+            font-size: 20px;
+            font-weight: 600;
+            color: #0b6e77;
+            padding: 6px 12px;
+            border-radius: 6px;
+            transition: 0.2s;
+        }
 
-.back-btn:hover{
-    color:#7e2626d5;
-}
-</style>
+        .back-btn:hover {
+            color: #7e2626d5;
+        }
+    </style>
 
 </head>
 
 <body>
 
-<div class="container">
+    <div class="container">
 
-<div class="title-row">
+        <div class="title-row">
 
-<h1>Top / Least Selling Products Report</h1>
+            <h1>Top / Least Selling Products Report</h1>
 
-<a href="http://localhost/GitHub/gift-shop-website/AdminPanel/layout.php?view=report_layout" class="back-btn">
-← Back
-</a>
+            <a href="http://localhost/GitHub/gift-shop-website/AdminPanel/layout.php?view=report_layout"
+                class="back-btn">
+                ← Back
+            </a>
 
-</div>
+        </div>
 
-<!-- FILTER -->
+        <!-- FILTER -->
 
-<form method="GET">
+        <form method="GET">
 
-<div class="filter">
+            <div class="filter">
 
-<label>Show</label>
+                <label>Show</label>
 
-<select name="limit">
+                <select name="limit">
+                    <option value="">Select</option>
+                    <option value="2" <?= ($limit == "2") ? "selected" : "" ?>>Top 2</option>
+                    <option value="3" <?= ($limit == "3") ? "selected" : "" ?>>Top 3</option>
+                    <option value="5" <?= ($limit == "5") ? "selected" : "" ?>>Top 5</option>
+                    <option value="10" <?= ($limit == "10") ? "selected" : "" ?>>Top 10</option>
+                </select>
 
-<option value="">Select</option>
+                <select name="type">
 
-<option value="2">Top 2</option>
-<option value="3">Top 3</option>
-<option value="5">Top 5</option>
-<option value="10">Top 10</option>
+                    <option value="">Select Type</option>
 
-</select>
+                    <option value="top" <?= ($type == "top") ? "selected" : "" ?>>Top Selling</option>
 
-<select name="type">
+                    <option value="low" <?= ($type == "low") ? "selected" : "" ?>>Least Selling</option>
 
-<option value="">Select Type</option>
+                </select>
 
-<option value="top" <?=($type=="top")?"selected":""?>>Top Selling</option>
+                <button type="submit">Filter</button>
 
-<option value="low" <?=($type=="low")?"selected":""?>>Least Selling</option>
+        </form>
 
-</select>
+        <form method="POST" action="export_top_low_selling_product_pdf.php?type=<?= $type ?>&limit=<?= $limit ?>"
+            target="_blank" style="display:inline;">
 
-<button type="submit">Filter</button>
-<a href="export_top_low_selling_product_pdf.php?product_id=<?=$productFilter?>&period=<?=$periodFilter?>" 
-class="pdf-btn">
-PDF
-</a>
-<a href="export_top_low_selling_product_excel.php?type=<?=$type?>&limit=<?=$limit?>" class="excel-btn">
-Excel
-</a>
-</div>
+            <button type="submit" class="pdf-btn">
+                PDF
+            </button>
 
-</form>
+        </form>
 
-<!-- TABLE -->
+        <a href="export_top_low_selling_product_excel.php?type=<?= $type ?>&limit=<?= $limit ?>" class="excel-btn">
+            Excel
+        </a>
 
-<table>
+    </div>
+    </form>
 
-<thead>
+    <!-- TABLE -->
 
-<tr>
-<th>Product ID</th>
-<th>Product Name</th>
-<th>Total Sold</th>
-</tr>
+    <table>
 
-</thead>
+        <thead>
 
-<tbody>
+            <tr>
+                <th>Product ID</th>
+                <th>Product Name</th>
+                <th>Total Sold</th>
+            </tr>
 
-<?php
+        </thead>
 
-$currentCategory="";
-$categoryTotal=0;
-$grandTotal=0;
+        <tbody>
 
-foreach($data as $row){
+            <?php
 
-if($currentCategory != $row['Category_Name']){
+            $currentCategory = "";
+            $categoryTotal = 0;
+            $grandTotal = 0;
 
-if($currentCategory!=""){
-?>
+            foreach ($data as $row) {
 
-<tr style="background:#f7eaea;font-weight:bold;">
-<td colspan="2" style="text-align:right">
-Category Total
-</td>
-<td><?=$categoryTotal?></td>
-</tr>
+                if ($currentCategory != $row['Category_Name']) {
 
-<?php
-$categoryTotal=0;
-}
+                    if ($currentCategory != "") {
+                        ?>
 
-$currentCategory=$row['Category_Name'];
-?>
+                        <tr style="background:#f7eaea;font-weight:bold;">
+                            <td colspan="2" style="text-align:right">
+                                Category Total
+                            </td>
+                            <td><?= $categoryTotal ?></td>
+                        </tr>
 
-<tr class="category-header">
+                        <?php
+                        $categoryTotal = 0;
+                    }
 
-<td colspan="3">
-Category : <?=$currentCategory?>
-</td>
+                    $currentCategory = $row['Category_Name'];
+                    ?>
 
-</tr>
+                    <tr class="category-header">
 
-<?php
-}
+                        <td colspan="3">
+                            Category : <?= $currentCategory ?>
+                        </td>
 
-?>
+                    </tr>
 
-<tr>
+                    <?php
+                }
 
-<td><?=$row['Product_Id']?></td>
+                ?>
 
-<td><?=$row['Product_Name']?></td>
+                <tr>
 
-<td><?=$row['Total_Sold']?></td>
+                    <td><?= $row['Product_Id'] ?></td>
 
-</tr>
+                    <td><?= $row['Product_Name'] ?></td>
 
-<?php
+                    <td><?= $row['Total_Sold'] ?></td>
 
-$categoryTotal += $row['Total_Sold'];
-$grandTotal += $row['Total_Sold'];
+                </tr>
 
-}
+                <?php
 
-/* LAST CATEGORY FOOTER */
+                $categoryTotal += $row['Total_Sold'];
+                $grandTotal += $row['Total_Sold'];
 
-if($currentCategory!=""){
-?>
+            }
 
-<tr style="background:#f7eaea;font-weight:bold;">
-<td colspan="2" style="text-align:right">
-Category Total
-</td>
-<td><?=$categoryTotal?></td>
-</tr>
+            /* LAST CATEGORY FOOTER */
 
-<?php } ?>
+            if ($currentCategory != "") {
+                ?>
 
-</tbody>
+                <tr style="background:#f7eaea;font-weight:bold;">
+                    <td colspan="2" style="text-align:right">
+                        Category Total
+                    </td>
+                    <td><?= $categoryTotal ?></td>
+                </tr>
 
-<tfoot>
+            <?php } ?>
 
-<tr>
+        </tbody>
 
-<td colspan="2" style="text-align:right">
-Grand Total Sold
-</td>
+        <tfoot>
 
-<td><?=$grandTotal?></td>
+            <tr>
 
-</tr>
+                <td colspan="2" style="text-align:right">
+                    Grand Total Sold
+                </td>
 
-</tfoot>
+                <td><?= $grandTotal ?></td>
 
-</table>
+            </tr>
 
-</div>
+        </tfoot>
+
+    </table>
+
+    </div>
 
 </body>
+
 </html>
