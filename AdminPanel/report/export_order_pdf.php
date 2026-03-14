@@ -6,25 +6,51 @@ use Dompdf\Dompdf;
 
 include("../db.php");
 
+/* ================= GET FILTER VALUES ================= */
+
 $type  = $_GET['type'] ?? '';
 $start = $_GET['start'] ?? '';
 $end   = $_GET['end'] ?? '';
 
-/* REPORT NAME */
+/* ================= REPORT NAME ================= */
 
 $reportName = "Orders Report";
 
-if($type=="daily") $reportName="Daily Orders Report";
-if($type=="weekly") $reportName="Weekly Orders Report";
+if($type=="daily")   $reportName="Daily Orders Report";
+if($type=="weekly")  $reportName="Weekly Orders Report";
 if($type=="monthly") $reportName="Monthly Orders Report";
-if($type=="yearly") $reportName="Yearly Orders Report";
+if($type=="yearly")  $reportName="Yearly Orders Report";
 
-/* DATA QUERY */
+if($start && $end){
+$reportName = "Orders Report ($start to $end)";
+}
+
+/* ================= FILTER CONDITION ================= */
+
 $tableWhere = "WHERE 1";
 
-if($type=="weekly"){
+if($type=="daily"){
+$tableWhere .= " AND DATE(Order_Date)=CURDATE()";
+}
+
+elseif($type=="weekly"){
 $tableWhere .= " AND YEARWEEK(Order_Date,1)=YEARWEEK(CURDATE(),1)";
 }
+
+elseif($type=="monthly"){
+$tableWhere .= " AND MONTH(Order_Date)=MONTH(CURDATE()) 
+AND YEAR(Order_Date)=YEAR(CURDATE())";
+}
+
+elseif($type=="yearly"){
+$tableWhere .= " AND YEAR(Order_Date)=YEAR(CURDATE())";
+}
+
+elseif($start && $end){
+$tableWhere .= " AND DATE(Order_Date) BETWEEN '$start' AND '$end'";
+}
+
+/* ================= FETCH ORDER DATA ================= */
 
 $query = mysqli_query($connection,"
 SELECT 
@@ -38,41 +64,42 @@ LEFT JOIN user_details u
 ON o.User_Id = u.User_Id
 $tableWhere
 ORDER BY o.Order_Date DESC
-
 ");
 
+/* ================= CALCULATE TOTALS ================= */
 
+$totalOrders = 0;
+$totalRevenue = 0;
 
-$totalOrders=0;
-$totalRevenue=0;
-
-$rows="";
+$rows = "";
 
 while($row=mysqli_fetch_assoc($query)){
 
 $totalOrders++;
-$totalRevenue+=$row['Total_Amount'];
 
-$rows.="
+$totalRevenue += $row['Total_Amount'];
+
+$date = date("d M Y H:i", strtotime($row['Order_Date']));
+
+$rows .= "
 <tr>
 <td>{$row['Order_Id']}</td>
 <td>{$row['First_Name']} {$row['Last_Name']}</td>
-<td>{$row['Order_Date']}</td>
+<td>$date</td>
 <td>₹".number_format($row['Total_Amount'],2)."</td>
-
 </tr>
 ";
-
 }
-$logo = "../../home_page/logo.png";
 
-// $logo = $_SERVER['DOCUMENT_ROOT']."/GitHub/gift-shop-website/home page/logo.png";
+/* ================= LOGO ================= */
 
-/* CHART IMAGE */
+$logo = $_SERVER['DOCUMENT_ROOT'] . "/GitHub/gift-shop-website/home_page/logo.png";
 
-$chartImage = "chart.png"; // saved chart image from JS
+/* ================= CHART IMAGE ================= */
+$chartImage = $_SERVER['DOCUMENT_ROOT'] . "/GitHub/gift-shop-website/AdminPanel/report/chart.png";
+// chart image generated from Chart.js canvas
 
-/* HTML */
+/* ================= HTML FOR PDF ================= */
 
 $html="
 
@@ -80,61 +107,80 @@ $html="
 
 body{
 font-family:Arial;
-margin:10px;
+font-size:12px;
+margin:8px;
+color:#333;
 }
-
 
 .header{
 display:flex;
 align-items:center;
 border-bottom:2px solid #7e2626d5;
-padding-bottom:10px;
-margin-bottom:20px;
+padding-bottom:6px;
+margin-bottom:12px;
 }
 
 .logo{
-width:60px;
+width:50px;
 }
 
 .company{
-margin-left:15px;
+margin-left:10px;
 }
 
 .company h2{
 margin:0;
 color:#7e2626d5;
+font-size:18px;
+}
+
+.company div{
+font-size:11px;
 }
 
 .meta{
-margin-top:10px;
-font-size:12px;
+font-size:11px;
+margin-top:6px;
 }
 
 .summary{
 background:#f8f3ee;
-padding:10px;
-margin:15px 0;
+padding:6px;
+margin:10px 0;
+font-size:12px;
+border-left:4px solid #7e2626d5;
 }
 
 table{
 width:100%;
 border-collapse:collapse;
+margin-top:10px;
 }
 
 th{
 background:#7e2626d5;
 color:white;
-padding:8px;
+padding:5px;
+font-size:12px;
 }
 
 td{
-padding:8px;
+padding:4px;
 border:1px solid #ddd;
+font-size:11px;
+text-align:center;
 }
 
 .chart{
-margin:20px 0;
 text-align:center;
+margin:12px 0;
+}
+
+.footer{
+text-align:center;
+font-size:10px;
+margin-top:12px;
+color:#666;
 }
 
 </style>
@@ -142,7 +188,7 @@ text-align:center;
 
 <div class='header'>
 
-<img src='$logo' class='logo' width:'60'>
+<img src="file://<?=$logo?>" class="logo">
 
 <div class='company'>
 <h2>GiftShop</h2>
@@ -153,25 +199,21 @@ text-align:center;
 
 </div>
 
-
 <h3>$reportName</h3>
 
 <div class='meta'>
-Generated Time: ".date("d M Y h:i A")."
-
+Generated: ".date("d M Y h:i A")."
 </div>
-
 
 <div class='summary'>
-Total Orders: $totalOrders <br>
-Total Revenue: ₹".number_format($totalRevenue,2)."
+<b>Total Orders:</b> $totalOrders
+&nbsp;&nbsp;&nbsp;
+<b>Total Revenue:</b> ₹".number_format($totalRevenue,2)."
 </div>
-
 
 <div class='chart'>
-<img src='$chartImage' width='500'>
+<img src='$chartImage' width='480'>
 </div>
-
 
 <table>
 
@@ -180,29 +222,27 @@ Total Revenue: ₹".number_format($totalRevenue,2)."
 <th>Customer</th>
 <th>Date</th>
 <th>Amount</th>
-
 </tr>
 
 $rows
 
 </table>
-<div style='text-align:center;font-size:11px;margin-top:20px;color:#666;'>
+
+<div class='footer'>
 Generated by GiftShop Admin Panel
 </div>
 
-
 ";
 
-/* GENERATE PDF */
+/* ================= GENERATE PDF ================= */
 
 $dompdf = new Dompdf();
 
+$options = $dompdf->getOptions();
+$options->set('isRemoteEnabled', true);
+$dompdf->setOptions($options);
+
 $dompdf->loadHtml($html);
-
 $dompdf->setPaper('A4','portrait');
-
 $dompdf->render();
-
 $dompdf->stream("orders_report.pdf",array("Attachment"=>0));
-
-?>
