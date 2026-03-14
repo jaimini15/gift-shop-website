@@ -306,3 +306,4 @@ $dompdf->render();
 
 $dompdf->stream("category_revenue_report.pdf",["Attachment"=>0]);
 ?>
+
