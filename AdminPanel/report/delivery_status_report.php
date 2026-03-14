@@ -132,101 +132,188 @@ $totalOrders++;
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
 
 <style>
-
 body{
-font-family:"Segoe UI",Arial;
-margin:0;
-background:white;
+    font-family:"Segoe UI",Arial,sans-serif;
+    background:white;
+    margin:0;
+    color:#333;
 }
 
+/* MAIN CONTAINER */
 .container{
-width:94%;
-margin:15px auto;
+    width:94%;
+    margin:15px auto;
 }
 
+/* TITLE */
 h1{
-color:#7e2626d5;
-border-left:5px solid #7e2626d5;
-padding-left:8px;
+    color:#7e2626d5;
+    margin-bottom:12px;
+    font-size:24px;
+    font-weight:600;
+    border-left:5px solid #7e2626d5;
+    padding-left:8px;
 }
 
+/* FILTER */
 .filter-row{
-display:flex;
-gap:10px;
-align-items:end;
-border:2px solid #7e2626d5;
-padding:12px;
-margin-bottom:15px;
+    display:flex;
+    gap:10px;
+    align-items:flex-end;
+    flex-wrap:wrap;
+    background:white;
+    padding:15px 18px;
+    border-radius:6px;
+    box-shadow: 0 2px 15px rgba(0,0,0,0.05); 
+    margin-bottom:15px;
+    border:2px solid #7e2626d5;
 }
 
-select{
-padding:6px;
+.filter-row label{
+    font-size:18px;
+    font-weight:600;
+    margin-bottom:3px;
 }
 
+.filter-row select,
+.filter-row input{
+    padding:6px 8px;
+    border:1px solid #ddd;
+    border-radius:4px;
+    font-size:13px;
+    min-width:120px;
+}
+
+/* BUTTON */
 button{
-background:#7e2626d5;
-color:white;
-border:none;
-padding:6px 12px;
-cursor:pointer;
+    background:#7e2626d5;
+    color:white;
+    border:none;
+    padding:6px 14px;
+    border-radius:4px;
+    cursor:pointer;
+    font-weight:600;
+    font-size:13px;
+    transition:0.2s;
 }
 
+button:hover{
+    background:#5f1d1d;
+}
+
+/* EXPORT BUTTONS */
+.pdf-btn,
+.excel-btn{
+    padding:6px 12px;
+    border-radius:4px;
+    color:white;
+    font-weight:600;
+    font-size:13px;
+    text-decoration:none;
+}
+
+.pdf-btn{
+    background:#c0392b;
+}
+
+.excel-btn{
+    background:#27ae60;
+}
+
+/* SUMMARY */
 .summary{
-display:flex;
-gap:15px;
-margin-bottom:15px;
+    display:flex;
+    gap:12px;
+    margin-bottom:15px;
 }
 
 .summary div{
-border-left:4px solid #7e2626d5;
-padding:8px 12px;
-font-weight:600;
+    background:white;
+    padding:10px 14px;
+    border-radius:6px;
+    box-shadow:0 2px 6px rgba(0,0,0,0.06);
+    font-size:15px;
+    font-weight:600;
+    border-left:4px solid #7e2626d5;
 }
 
+/* CHART */
 .chart-box{
-border:2px solid #7e2626d5;
-padding:10px;
-width:500px;
-height:350px;
-margin:auto;
+    background:white;
+    padding:10px;
+    border-radius:6px;
+    box-shadow:0 2px 6px rgba(0,0,0,0.06);
+    margin-bottom:18px;
+    border:2px solid #7e2626d5;
+    max-width:800px;
+    margin-left:auto;
+    margin-right:auto;
+    height:350px;
 }
 
-table{
-width:100%;
-border-collapse:collapse;
-margin-top:20px;
-}
-
-th,td{
-border:1px solid #ddd;
-padding:8px;
-text-align:center;
-}
-
-th{
-background:#7e2626d5;
-color:white;
-}
-
+/* TITLE ROW */
 .title-row{
-display:flex;
-justify-content:space-between;
-align-items:center;
-margin-bottom:12px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:12px;
 }
 
+/* BACK BUTTON */
 .back-btn{
-text-decoration:none;
-font-size:17px;
-font-weight:600;
-color:#0b6e77;
+    text-decoration:none;
+    font-size:20px;
+    font-weight:600;
+    color:#0b6e77;
+    padding:6px 12px;
+    border-radius:6px;
+    transition:0.2s;
 }
 
 .back-btn:hover{
-color:#7e2626d5;
+    color:#7e2626d5;
+}
+
+/* TABLE */
+table{
+    width:100%;
+    border-collapse:collapse;
+    background:white;
+    border:2px solid #7e2626d5;
+    margin-top:20px;
+}
+
+th{
+    background:#7e2626d5;
+    color:white;
+    padding:8px;
+    font-size:13px;
+    border:1px solid #ddd;
+}
+
+td{
+    padding:7px;
+    font-size:13px;
+    border:1px solid #ddd;
+    text-align:center;
+}
+
+tr:nth-child(even){
+    background:#faf7f6;
+}
+
+tr:hover{
+    background:#f2e9e8;
+}
+
+tfoot td{
+    background:#f8eceb;
+    font-weight:600;
+    border-top:2px solid #7e2626d5;
 }
 
 </style>
+
 
 </head>
 
@@ -265,7 +352,13 @@ color:#7e2626d5;
 </select>
 
 <button type="submit">Filter</button>
+<a href="export_delivery_status_pdf.php?status=<?=$statusFilter?>" class="pdf-btn">
+    PDF
+</a>
 
+<a href="export_order_excel.php?type=<?=$type?>&start=<?=$start?>&end=<?=$end?>" class="excel-btn">
+Excel
+</a>
 </div>
 
 </form>
