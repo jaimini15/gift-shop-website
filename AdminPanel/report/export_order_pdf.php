@@ -98,7 +98,12 @@ $logo = "http://localhost/GitHub/gift-shop-website/home%20page/logo.png";
 /* ================= CHART IMAGE ================= */
 $chartImage = "http://localhost/GitHub/gift-shop-website/AdminPanel/report/chart.png";
 // chart image generated from Chart.js canvas
+$logoPath = __DIR__ . "/../../home page/logo.svg";
 
+if(file_exists($logoPath)){
+    $logoData = base64_encode(file_get_contents($logoPath));
+    $logoPath = 'data:image/png;base64,' . $logoData;
+}
 /* ================= HTML FOR PDF ================= */
 
 $html="
@@ -120,10 +125,21 @@ color:#333;
 
 .header{
 border-bottom:2px solid #7e2626;
-padding-bottom:6px;
+padding-bottom:8px;
 margin-bottom:12px;
+position:relative;
+padding-left:80px; /* space for logo */
+min-height:70px;
 }
 
+.header img{
+position:absolute;
+left: -10px;
+top: -10px;
+}
+.header img{
+height:50px;
+}
 .company h2{
 margin:0;
 color:#7e2626;
@@ -132,8 +148,8 @@ font-size:18px;
 
 .company div{
 font-size:11px;
+margin-top:2px;
 }
-
 .meta{
 font-size:11px;
 margin-top:6px;
@@ -213,6 +229,7 @@ border-top:1px solid #ccc;
 
 
 <div class='header'>
+<img src='$logoPath'>
 
 <div class='company'>
 <h2>GiftShop</h2>
