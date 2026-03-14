@@ -236,13 +236,6 @@ background:#27ae60;
 </select>
 
 <button type="submit">Filter</button>
-<a href="export_top_selling_pdf.php?type=<?=$type?>&limit=<?=$limit?>" class="pdf-btn">
-    PDF
-</a>
-<a href="export_order_excel.php?type=<?=$type?>&start=<?=$start?>&end=<?=$end?>" class="excel-btn">
-Excel
-</a>
-
 <a href="export_stock_pdf.php?product_id=<?=$productFilter?>&period=<?=$periodFilter?>" 
 class="pdf-btn">
 PDF
