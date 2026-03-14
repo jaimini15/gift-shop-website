@@ -104,11 +104,14 @@ $chartImage = "http://localhost/GitHub/gift-shop-website/AdminPanel/report/chart
 $html="
 
 <style>
-
+@page {
+margin: 10px 20px 25px 20px;
+}
 body{
 font-family: DejaVu Sans, sans-serif;
 font-size:12px;
-margin:8px;
+margin:0;
+padding:0;
 color:#333;
 }
 
@@ -118,6 +121,7 @@ align-items:center;
 border-bottom:2px solid #7e2626d5;
 padding-bottom:6px;
 margin-bottom:12px;
+margin-top:0px;
 }
 
 .logo{
@@ -155,6 +159,7 @@ table{
 width:100%;
 border-collapse:collapse;
 margin-top:10px;
+margin-bottom:15px;
 }
 
 th{
@@ -177,12 +182,17 @@ margin:12px 0;
 }
 
 .footer{
-text-align:center;
+position: fixed;
+bottom: 0;
+left: 0;
+right: 0;
+text-align: center;
 font-size:10px;
-margin-top:12px;
 color:#666;
+border-top:1px solid #ccc;
 }
-
+thead { display: table-header-group; }
+tfoot { display: table-footer-group; }
 </style>
 
 
@@ -210,17 +220,37 @@ Generated: ".date("d M Y h:i A")."
 <div class='chart'>
 <img src='".$chartImage."' width='480'>
 </div>
+<table >
 
-<table>
-
+<thead>
 <tr>
 <th>Order ID</th>
 <th>Customer</th>
 <th>Date</th>
 <th>Amount</th>
 </tr>
+</thead>
+
+<tbody>
 
 $rows
+
+</tbody>
+
+<tfoot>
+
+<tr>
+<td colspan='3' style='text-align:right;font-weight:bold;background:#f8f3ee'>
+Total Revenue
+</td>
+
+<td style='font-weight:bold;background:#f8f3ee'>
+₹".number_format($totalRevenue,2)."
+</td>
+
+</tr>
+
+</tfoot>
 
 </table>
 
