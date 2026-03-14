@@ -221,7 +221,7 @@ $orderDetails[] = $row;
 <title>Product Sales Report</title>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
 <style>
 
 body{
@@ -591,13 +591,12 @@ Total Revenue
 </table>
 
 </div>
-
 <script>
-
 const labels = <?=json_encode($productLabels)?>;
 const revenue = <?=json_encode($productSales)?>;
 const orders = <?=json_encode($productOrders)?>;
-
+const maxOrders = Math.max(...orders);
+const yAxisMax = maxOrders + 1;
 const ctx = document.getElementById("productSalesChart");
 
 new Chart(ctx, {
@@ -607,8 +606,8 @@ type: 'bar',
 data: {
     labels: labels,
     datasets: [{
-        label: 'Revenue',
-        data: revenue,
+        label: 'Orders',
+        data: orders,
         backgroundColor: '#7e2626d5',
         borderColor: '#7e2626d5',
         borderWidth: 1,
@@ -616,42 +615,66 @@ data: {
     }]
 },
 
-options: {
-    responsive: true,
-    maintainAspectRatio: false,
+plugins: [ChartDataLabels],
 
-    plugins: {
-        tooltip: {
-            callbacks: {
-                label: function(context){
-                    return [
-                        "Revenue: ₹" + context.raw,
-                        "Orders: " + orders[context.dataIndex]
-                    ];
-                }
-            }
-        }
+options: {
+
+responsive:true,
+maintainAspectRatio:false,
+layout:{
+padding:{ top:20 }
+},
+plugins: {
+
+legend:{display:false},
+
+tooltip:{
+callbacks:{
+label:function(context){
+return [
+"Orders: "+context.raw,
+"Revenue: ₹"+revenue[context.dataIndex]
+];
+}
+}
+},
+datalabels:{
+    anchor:'end',
+    align:'top',
+
+    color:'#000',
+
+    font:{
+        weight:'bold',
+        size:12
     },
 
-    scales: {
-        x: {
-            ticks: {
-                font: {
-                    size: 11
-                }
-            }
-        },
-        y: {
-            beginAtZero: true
-        }
+    formatter:function(value,context){
+        return "₹"+revenue[context.dataIndex];
     }
+}
+},
+
+scales:{
+
+y:{
+beginAtZero:true,
+max:yAxisMax,
+ticks:{
+stepSize:1
+},
+title:{
+display:true,
+text:"Number of Orders"
+}
+}
+
+}
 
 }
 
 });
-
 </script>
-
 
 </body>
 
