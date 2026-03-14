@@ -499,10 +499,7 @@ font-size:14px;
 </div>
 
 <button type="submit">Filter</button>
-<a href="export_product_pdf.php?product_id=<?=$productFilter?>&period=<?=$periodFilter?>" 
-class="pdf-btn">
-PDF
-</a>
+<button type="button" class="pdf-btn" onclick="generatePDF()">PDF</button>
 <a href="export_product_excel.php?product_id=<?=$productFilter?>&period=<?=$periodFilter?>"
 class="excel-btn">
 Excel
@@ -529,7 +526,9 @@ Excel
 <canvas id="productSalesChart"></canvas>
 
 </div>
-
+<form id="pdfForm" method="POST" action="export_product_pdf.php?product_id=<?=$productFilter?>&period=<?=$periodFilter?>">
+<input type="hidden" name="chart_image" id="chart_image">
+</form>
 <!-- TABLE -->
 
 <table>
@@ -675,7 +674,19 @@ text:"Number of Orders"
 
 });
 </script>
+<script>
+    function generatePDF(){
 
+const canvas = document.getElementById("productSalesChart");
+
+const image = canvas.toDataURL("image/png");
+
+document.getElementById("chart_image").value = image;
+
+document.getElementById("pdfForm").submit();
+
+}
+    </script>
 </body>
 
 </html>
