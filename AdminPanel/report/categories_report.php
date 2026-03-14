@@ -488,9 +488,17 @@ $monthName=date("F", mktime(0,0,0,$m,10));
 
 <button type="submit">Filter</button>
 
-<a href="export_category_pdf.php?period=<?=$periodFilter?>&month=<?=$monthFilter?>" class="pdf-btn">
-PDF
-</a>
+</form> <!-- CLOSE GET FORM -->
+
+<form method="POST" action="export_category_pdf.php?period=<?=$periodFilter?>&month=<?=$monthFilter?>" target="_blank">
+
+<input type="hidden" name="chart_image" id="chartImage">
+
+<button type="submit" class="pdf-btn" onclick="saveChart()">PDF</button>
+
+</form>
+
+
 <a href="export_category_revenue_excel.php?period=<?=$periodFilter?>&month=<?=$monthFilter?>" class="excel-btn">
 Excel
 </a>
@@ -655,7 +663,15 @@ return percentage + "%\n₹" + value.toLocaleString();
 }
 
 });
+function saveChart(){
 
+const chart = document.getElementById("categoryChart");
+
+const image = chart.toDataURL("image/png");
+
+document.getElementById("chartImage").value=image;
+
+}
 
 </script>
 
