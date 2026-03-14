@@ -60,6 +60,7 @@ $label = "DATE(Order_Date)";
 
 $labels = [];
 $orders = [];
+$revenues = [];
 $totalOrders = 0;
 $totalRevenue = 0;
 
@@ -84,6 +85,7 @@ while($row=mysqli_fetch_assoc($query)){
 
 $labels[] = $row['label'];
 $orders[] = $row['total_orders'];
+$revenues[] = $row['revenue'];
 
 $totalOrders += $row['total_orders'];
 $totalRevenue += $row['revenue'];
@@ -140,6 +142,7 @@ ORDER BY o.Order_Date DESC
 <title>Order Report</title>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
 
 <style>
 
@@ -464,6 +467,9 @@ window.open("export_order_pdf.php?type=<?=$type?>&start=<?=$start?>&end=<?=$end?
 
 const labels = <?=json_encode($labels)?>;
 const orders = <?=json_encode($orders)?>;
+const revenues = <?=json_encode($revenues)?>;
+
+Chart.register(ChartDataLabels);
 
 const ctx = document.getElementById("salesChart");
 
@@ -473,27 +479,89 @@ data:{
 labels:labels,
 datasets:[{
 label:'Orders',
-data:orders,
-backgroundColor:'#7e2626d5',   // bar color
+data:orders,   // bar height = number of orders
+backgroundColor:'#7e2626d5',
 borderColor:'#7e2626d5',
 borderWidth:1,
-barThickness:80                // bar width
+barThickness:80
 }]
 },
 options:{
 responsive:true,
 plugins:{
+
+title:{
+display:true,
+text:'Orders & Revenue Report',
+font:{size:18}
+},
+
 legend:{
 display:true
+},
+
+/* BAR LABEL = REVENUE */
+
+datalabels:{
+color:'#000',
+anchor:'end',
+align:'top',
+font:{
+weight:'bold',
+size:12
+},
+formatter:function(value,context){
+
+let revenue = revenues[context.dataIndex];
+
+return "₹"+revenue;
+
 }
 },
+
+/* HOVER TOOLTIP */
+
+tooltip:{
+callbacks:{
+label:function(context){
+
+let index = context.dataIndex;
+
+let order = orders[index];
+let revenue = revenues[index];
+
+return [
+"Orders : "+order,
+"Revenue : ₹"+revenue
+];
+
+}
+}
+}
+
+},
+
 scales:{
 y:{
-beginAtZero:true
+beginAtZero:true,
+title:{
+display:true,
+text:'Number of Orders'
+}
+},
+x:{
+title:{
+display:true,
+text:'Time Period'
 }
 }
 }
+
+}
+
 });
+
+/* SAVE CHART FOR PDF */
 
 setTimeout(function(){
 
@@ -509,7 +577,8 @@ headers:{
 body: JSON.stringify({image:image})
 });
 
-},2000);
+},3000);
+
 </script>
 
 </body>
