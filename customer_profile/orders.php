@@ -15,29 +15,48 @@ $profileUser = mysqli_fetch_assoc(
 );
 
 /* DELIVERY TEXT FUNCTION (+3 DAYS) */
-function getDeliveryText($orderDate, $deliveryStatus, $deliveryDate = null) {
+function getDeliveryText($orderDate, $deliveryStatus, $deliveryDate = null, $orderId=null) {
 
     $orderDateObj = new DateTime($orderDate);
+
+    // For Dec, Jan, Feb → fixed random 3/4/5 days
+    $randomDays = 3 + ($orderId % 3);
+
+    $orderMonth = $orderDateObj->format('m');
+    $orderYear  = $orderDateObj->format('Y');
+
+    // Default estimated delivery = +4 days
     $estimated = clone $orderDateObj;
-    $estimated->modify('+3 days');
+    $estimated->modify('+4 days');
 
-    $orderMonth = $orderDateObj->format('m'); // 01 = Jan, 02 = Feb
+    // Special months
+    if (($orderMonth == '12' && $orderYear == '2025') || $orderMonth == '01' || $orderMonth == '02') {
+        $estimated = clone $orderDateObj;
+        $estimated->modify("+$randomDays days");
+    }
 
-    // If Delivered
+    $today = new DateTime('today');
+
+    /* DELIVERED */
     if ($deliveryStatus === 'Delivered') {
 
-        // 🔹 For Jan & Feb → show Order Date + 3 days
-        if ($orderMonth == '01' || $orderMonth == '02') {
+        // Dec-Jan-Feb show estimated
+        if (($orderMonth == '12' && $orderYear == '2025') || $orderMonth == '01' || $orderMonth == '02') {
             return "Delivered on " . $estimated->format('d M Y');
         }
-        // 🔹 For March onwards → show real delivery date
+
+        // Normal months show real date
         if (!empty($deliveryDate)) {
             return "Delivered on " . date('d M Y', strtotime($deliveryDate));
         }
     }
 
-    // 🔸 If NOT delivered → show estimated arrival
-    $today = new DateTime('today');
+    /* OUT FOR DELIVERY */
+    if ($deliveryStatus === 'Out for Delivery') {
+        return "Arriving soon";
+    }
+
+    /* NOT DELIVERED FLOW */
 
     if ($today > $estimated) {
         return "Arriving soon";
@@ -45,11 +64,14 @@ function getDeliveryText($orderDate, $deliveryStatus, $deliveryDate = null) {
 
     $diff = $today->diff($estimated)->days;
 
-    if ($diff === 0) return "Arriving today";
-    if ($diff === 1) return "Arriving tomorrow";
+    if ($diff == 0) return "Arriving today";
+    if ($diff == 1) return "Arriving tomorrow";
 
     return "Arriving on " . $estimated->format('d M Y');
 }
+
+
+
 /* FETCH ORDERS */
 $orders = mysqli_query(
     $connection,
@@ -93,8 +115,10 @@ include("account_layout.php");
 $deliveryText = getDeliveryText(
     $order['Order_Date'],
     $order['Delivery_Status'] ?? '',
-    $order['Delivery_Date'] ?? null
+    $order['Delivery_Date'] ?? null,
+    $order['Order_Id']
 );
+
 
 
 /* FETCH ORDER ITEMS WITH PRODUCT DATA */
