@@ -9,8 +9,8 @@ include("../db.php");
 
 /* ================= GET FILTER VALUES ================= */
 
-$period = $_GET['period'] ?? '';
-$month  = $_GET['month'] ?? '';
+$period = $_POST['period'] ?? '';
+$month  = $_POST['month'] ?? '';
 
 /* ================= REPORT NAME ================= */
 
