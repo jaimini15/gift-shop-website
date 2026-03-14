@@ -102,7 +102,9 @@ body{background:white;font-family:Arial}
      box-shadow: 0px 4px 12px rgba(0,0,0,0.2);}
 
 .invoice-header{display:flex;justify-content:space-between;align-items:center;color:#7e2626d5;}
-.print-btn{background:#ffd814;border:none;padding:8px 18px;border-radius:20px;font-weight:600;cursor:pointer}
+.print-btn{background:#ffd814;border:none;padding:8px 18px;
+border-radius:20px;
+font-weight:600;cursor:pointer;text-decoration:none;color:black;}
 
 .order-meta{margin-top:6px;color:#555;font-size:14px}
 .order-meta span{margin-right:15px} /* GAP between Order placed and Order # */
@@ -167,7 +169,11 @@ body{background:white;font-family:Arial}
 <!-- HEADER -->
 <div class="invoice-header">
     <h2>Order Summary</h2>
-    <button class="print-btn" onclick="window.print()">Print</button>
+    <a href="export_invoice_pdf.php?id=<?= $order['Order_Id'] ?>" 
+   class="print-btn" 
+   target="_blank">
+Print
+</a>
 </div>
 
 <!-- ORDER META -->
