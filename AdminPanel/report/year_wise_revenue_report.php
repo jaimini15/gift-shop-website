@@ -6,9 +6,12 @@ include(__DIR__ . '/../db.php');
 
 /* ================= YEAR WISE REVENUE ================= */
 
+/* ================= YEAR WISE REVENUE ================= */
+
 $yearQuery = mysqli_query($connection,"
 SELECT 
 YEAR(Order_Date) AS year,
+COUNT(Order_Id) AS total_orders,
 SUM(Total_Amount) AS total_revenue
 FROM `order`
 WHERE Status='CONFIRM'
@@ -18,11 +21,19 @@ ORDER BY YEAR(Order_Date)
 
 $years = [];
 $yearRevenue = [];
+$yearOrders = [];
+
+$totalOrders = 0;
+$totalRevenue = 0;
 
 while($row=mysqli_fetch_assoc($yearQuery)){
 
 $years[] = $row['year'];
 $yearRevenue[] = $row['total_revenue'];
+$yearOrders[] = $row['total_orders'];
+
+$totalOrders += $row['total_orders'];
+$totalRevenue += $row['total_revenue'];
 
 }
 ?>
@@ -88,7 +99,62 @@ width:800px;
 height:420px;
 margin:auto;
 }
+/* SUMMARY */
 
+.summary{
+display:flex;
+gap:12px;
+margin-bottom:15px;
+}
+
+.summary div{
+background:white;
+padding:10px 14px;
+border-radius:6px;
+box-shadow:0 2px 6px rgba(0,0,0,0.06);
+font-size:15px;
+font-weight:600;
+border-left:4px solid #7e2626d5;
+}
+
+/* TABLE */
+
+table{
+width:100%;
+border-collapse:collapse;
+background:white;
+border:2px solid #7e2626d5;
+margin-top:20px;
+}
+
+th{
+background:#7e2626d5;
+color:white;
+padding:8px;
+font-size:13px;
+border:1px solid #ddd;
+}
+
+td{
+padding:7px;
+font-size:13px;
+border:1px solid #ddd;
+text-align:center;
+}
+
+tr:nth-child(even){
+background:#faf7f6;
+}
+
+tr:hover{
+background:#f2e9e8;
+}
+
+tfoot td{
+background:#f8eceb;
+font-weight:600;
+border-top:2px solid #7e2626d5;
+}
 </style>
 
 </head>
@@ -106,7 +172,15 @@ margin:auto;
 </a>
 
 </div>
+<!-- SUMMARY -->
 
+<div class="summary">
+
+<div>Total Orders : <?=$totalOrders?></div>
+
+<div>Total Revenue : ₹<?=number_format($totalRevenue,2)?></div>
+
+</div>
 <!-- CHART -->
 
 <div class="chart-box">
@@ -116,7 +190,44 @@ margin:auto;
 </div>
 
 </div>
+<!-- TABLE -->
 
+<table>
+
+<thead>
+<tr>
+<th>Year</th>
+<th>Orders</th>
+<th>Revenue</th>
+</tr>
+</thead>
+
+<tbody>
+
+<?php
+for($i=0;$i<count($years);$i++){
+?>
+
+<tr>
+<td><?=$years[$i]?></td>
+<td><?=$yearOrders[$i]?></td>
+<td>₹<?=number_format($yearRevenue[$i],2)?></td>
+</tr>
+
+<?php } ?>
+
+</tbody>
+
+<tfoot>
+
+<tr>
+<td colspan="2" style="text-align:right;">Total Revenue</td>
+<td>₹<?=number_format($totalRevenue,2)?></td>
+</tr>
+
+</tfoot>
+
+</table>
 <script>
 
 const labels = <?=json_encode($years)?>;
