@@ -46,6 +46,7 @@ $totalRevenue += $row['total_revenue'];
 <title>Year Wise Revenue Report</title>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
 
 <style>
 
@@ -199,10 +200,10 @@ background:#27ae60;
 
 <div>Total Revenue : ₹<?=number_format($totalRevenue,2)?></div>
 
-<a href="export_product_pdf.php?product_id=<?=$productFilter?>&period=<?=$periodFilter?>" 
-class="pdf-btn">
+<a href="export_year_revenue_pdf.php" class="pdf-btn">
 PDF
 </a>
+
 <a href="export_year_revenue_excel.php" class="excel-btn">
 Excel
 </a>
@@ -257,7 +258,14 @@ for($i=0;$i<count($years);$i++){
 <script>
 
 const labels = <?=json_encode($years)?>;
-const data = <?=json_encode($yearRevenue)?>;
+const orders = <?=json_encode($yearOrders)?>;
+const revenues = <?=json_encode($yearRevenue)?>;
+
+const maxOrders = Math.max(...orders);
+const yAxisMax = maxOrders + 1;
+
+
+Chart.register(ChartDataLabels);
 
 new Chart(document.getElementById("yearChart"),{
 
@@ -266,8 +274,8 @@ type:'bar',
 data:{
 labels:labels,
 datasets:[{
-label:'Revenue',
-data:data,
+label:'Orders',
+data:orders,
 backgroundColor:'#7e2626d5',
 borderColor:'#7e2626d5',
 borderWidth:1,
@@ -278,17 +286,81 @@ barThickness:80
 options:{
 responsive:true,
 maintainAspectRatio:false,
-plugins:{
-legend:{display:true}
+
+layout:{
+padding:{ top:20 }
 },
-scales:{
-y:{
-beginAtZero:true
+plugins:{
+
+legend:{display:false},
+
+/* BAR LABEL = REVENUE */
+
+datalabels:{
+color:'#000',
+anchor:'end',
+align:'top',
+font:{
+weight:'bold',
+size:12
+},
+formatter:function(value,context){
+
+let revenue = revenues[context.dataIndex];
+
+return "₹"+revenue;
+
+}
+},
+
+/* TOOLTIP */
+
+tooltip:{
+callbacks:{
+label:function(context){
+
+let index = context.dataIndex;
+
+let order = orders[index];
+let revenue = revenues[index];
+
+return [
+"Orders : "+order,
+"Revenue : ₹"+revenue
+];
+
 }
 }
 }
 
+},
+
+scales:{
+y:{
+beginAtZero:true,
+max:yAxisMax,
+ticks:{
+stepSize:1
+},
+title:{
+display:true,
+text:"Number of Orders"
+}
+},
+
+x:{
+title:{
+display:true,
+text:"Year"
+}
+}
+
+}
+
+}
+
 });
+
 
 </script>
 
