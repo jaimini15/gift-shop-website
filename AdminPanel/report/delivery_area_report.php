@@ -445,10 +445,10 @@ tfoot td{
 
                 <button type="submit">Filter</button>
 
-                <a href="export_delivery_area_pdf.php?period=<?= $periodFilter ?>&month=<?= $monthFilter ?>"
-                    class="pdf-btn">
-                    PDF
-                </a>
+                <button type="button" onclick="downloadPDF()" class="pdf-btn">
+PDF
+</button>
+
                 <a href="export_delivery_area_excel.php?period=<?= $periodFilter ?>&month=<?= $monthFilter ?>"
                     class="excel-btn">
                     Excel
@@ -456,6 +456,13 @@ tfoot td{
             </div>
 
         </form>
+<form id="pdfForm" method="POST" action="export_delivery_area_pdf.php" target="_blank">
+    
+<input type="hidden" name="period" value="<?= $periodFilter ?>">
+<input type="hidden" name="month" value="<?= $monthFilter ?>">
+<input type="hidden" name="chart_image" id="chartImage">
+
+</form>
 
         <div class="summary">
 
@@ -606,6 +613,17 @@ tfoot td{
             }
 
         });
+function downloadPDF(){
+
+const canvas = document.getElementById("areaChart");
+
+const image = canvas.toDataURL("image/png");
+
+document.getElementById("chartImage").value = image;
+
+document.getElementById("pdfForm").submit();
+
+}
 
     </script>
 
