@@ -488,7 +488,21 @@ beginAtZero:true
 }
 });
 
+setTimeout(function(){
 
+const canvas = document.getElementById("salesChart");
+
+const image = canvas.toDataURL("image/png");
+
+fetch("save_chart.php",{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body: JSON.stringify({image:image})
+});
+
+},1000);
 </script>
 
 </body>
