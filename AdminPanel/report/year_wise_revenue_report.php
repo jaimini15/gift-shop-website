@@ -155,6 +155,25 @@ background:#f8eceb;
 font-weight:600;
 border-top:2px solid #7e2626d5;
 }
+
+.pdf-btn,
+.excel-btn{
+padding:6px 18px;
+border-radius:4px;
+color:white;
+font-weight:600;
+font-size:16px;
+text-decoration:none;
+}
+
+.pdf-btn{
+background:#c0392b;
+}
+
+.excel-btn{
+background:#27ae60;
+}
+
 </style>
 
 </head>
@@ -180,6 +199,13 @@ border-top:2px solid #7e2626d5;
 
 <div>Total Revenue : ₹<?=number_format($totalRevenue,2)?></div>
 
+<a href="export_product_pdf.php?product_id=<?=$productFilter?>&period=<?=$periodFilter?>" 
+class="pdf-btn">
+PDF
+</a>
+<a href="export_year_revenue_excel.php" class="excel-btn">
+Excel
+</a>
 </div>
 <!-- CHART -->
 
