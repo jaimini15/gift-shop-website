@@ -378,9 +378,7 @@ border-top:2px solid #7e2626d5;
 
 <button type="submit">Filter</button>
 
-<a href="export_order_pdf.php?type=<?=$type?>&start=<?=$start?>&end=<?=$end?>" class="pdf-btn">
-PDF
-</a>
+<a href="#" class="pdf-btn" onclick="generatePDF()">PDF</a>
 
 <a href="export_order_excel.php?type=<?=$type?>&start=<?=$start?>&end=<?=$end?>" class="excel-btn">
 Excel
@@ -452,7 +450,16 @@ Excel
 
 </div>
 
+<script>
+function generatePDF(){
 
+setTimeout(function(){
+
+window.open("export_order_pdf.php?type=<?=$type?>&start=<?=$start?>&end=<?=$end?>","_blank");
+
+},3000);
+
+}</script>
 <script>
 
 const labels = <?=json_encode($labels)?>;
@@ -502,7 +509,7 @@ headers:{
 body: JSON.stringify({image:image})
 });
 
-},1000);
+},2000);
 </script>
 
 </body>
