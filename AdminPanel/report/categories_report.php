@@ -491,7 +491,7 @@ $monthName=date("F", mktime(0,0,0,$m,10));
 <a href="export_category_pdf.php?period=<?=$periodFilter?>&month=<?=$monthFilter?>" class="pdf-btn">
 PDF
 </a>
-<a href="export_order_excel.php?type=<?=$type?>&start=<?=$start?>&end=<?=$end?>" class="excel-btn">
+<a href="export_category_revenue_excel.php?period=<?=$periodFilter?>&month=<?=$monthFilter?>" class="excel-btn">
 Excel
 </a>
 </div>
