@@ -1,241 +1,308 @@
 <?php
-session_start();
+date_default_timezone_set("Asia/Kolkata");
 
 require_once '../../dompdf/autoload.inc.php';
 use Dompdf\Dompdf;
+use Dompdf\Options;
 
-include(__DIR__ . '/../db.php');
+include("../db.php");
+
+/* ================= GET FILTER VALUES ================= */
 
 $period = $_GET['period'] ?? '';
 $month  = $_GET['month'] ?? '';
-$chart  = $_POST['chart_image'] ?? '';
 
-/* ================= REPORT RANGE ================= */
+/* ================= REPORT NAME ================= */
 
-$reportRange = "All Time";
+$reportName = "Category Revenue Report";
 
-if($period == "daily"){
-    $reportRange = "Today";
-}
-elseif($period == "weekly"){
-    $reportRange = "This Week";
-}
-elseif($period == "monthly"){
-    $reportRange = "This Month";
-}
-elseif($period == "yearly"){
+if($period=="daily")   $reportName="Daily Category Revenue Report";
+if($period=="weekly")  $reportName="Weekly Category Revenue Report";
+if($period=="monthly") $reportName="Monthly Category Revenue Report";
+if($period=="yearly")  $reportName="Yearly Category Revenue Report";
 
-    if($month){
-        $reportRange = date("F", mktime(0,0,0,$month,10))." ".date("Y");
-    }else{
-        $reportRange = "Year ".date("Y");
-    }
-
+if($period=="yearly" && $month){
+$reportName .= " - ".date("F", mktime(0,0,0,$month,10));
 }
 
-/* ================= WHERE CONDITION ================= */
+/* ================= FILTER CONDITION ================= */
 
-$whereCondition = "";
+$whereCondition="WHERE 1";
 
 if($period=="daily"){
-    $whereCondition = "WHERE DATE(o.Order_Date)=CURDATE()";
+$whereCondition.=" AND DATE(o.Order_Date)=CURDATE()";
 }
 
 elseif($period=="weekly"){
-    $whereCondition = "WHERE YEARWEEK(o.Order_Date,1)=YEARWEEK(CURDATE(),1)";
+$whereCondition.=" AND YEARWEEK(o.Order_Date,1)=YEARWEEK(CURDATE(),1)";
 }
 
 elseif($period=="monthly"){
-    $whereCondition = "WHERE MONTH(o.Order_Date)=MONTH(CURDATE()) 
-                       AND YEAR(o.Order_Date)=YEAR(CURDATE())";
+$whereCondition.=" AND MONTH(o.Order_Date)=MONTH(CURDATE())
+AND YEAR(o.Order_Date)=YEAR(CURDATE())";
 }
 
 elseif($period=="yearly"){
 
-    if($month){
-        $whereCondition = "WHERE YEAR(o.Order_Date)=YEAR(CURDATE())
-                           AND MONTH(o.Order_Date)='$month'";
-    }
-    else{
-        $whereCondition = "WHERE YEAR(o.Order_Date)=YEAR(CURDATE())";
-    }
+$whereCondition.=" AND YEAR(o.Order_Date)=YEAR(CURDATE())";
+
+if($month){
+$whereCondition.=" AND MONTH(o.Order_Date)='$month'";
+}
 
 }
 
-/* ================= CATEGORY REVENUE ================= */
+/* ================= FETCH CATEGORY DATA ================= */
 
-$query="
-
+$query = mysqli_query($connection,"
 SELECT 
 c.Category_Name,
-SUM(oi.Quantity * oi.Price_Snapshot) AS revenue
-
+o.Order_Id,
+CONCAT(u.First_Name,' ',u.Last_Name) AS customer,
+DATE(o.Order_Date) AS order_date,
+p.Product_Name,
+(oi.Quantity * oi.Price_Snapshot) AS revenue
 FROM order_item oi
 JOIN product_details p ON oi.Product_Id = p.Product_Id
 JOIN category_details c ON p.Category_Id = c.Category_Id
 JOIN `order` o ON oi.Order_Id = o.Order_Id
-
+JOIN user_details u ON o.User_Id = u.User_Id
 $whereCondition
+ORDER BY c.Category_Name , o.Order_Date DESC
+");
 
-GROUP BY c.Category_Id
-ORDER BY revenue DESC
+/* ================= GENERATE TABLE ROWS ================= */
 
-";
+$currentCategory="";
+$rows="";
+$totalRevenue=0;
 
-$result = mysqli_query($connection,$query);
+while($row=mysqli_fetch_assoc($query)){
 
-$totalRevenue = 0;
-$rows = [];
+$totalRevenue += $row['revenue'];
 
-while($r = mysqli_fetch_assoc($result)){
+if($currentCategory != $row['Category_Name']){
 
-    $rows[] = $r;
-    $totalRevenue += $r['revenue'];
+$currentCategory = $row['Category_Name'];
 
-}
-
-/* ================= TABLE HTML ================= */
-
-$tableRows = "";
-
-foreach($rows as $r){
-
-$tableRows .= "
-
-<tr>
-<td>{$r['Category_Name']}</td>
-<td>₹".number_format($r['revenue'],2)."</td>
+$rows .= "
+<tr class='category-row'>
+<td colspan='5'>Category : $currentCategory</td>
 </tr>
-
 ";
-
 }
 
-/* ================= CHART ================= */
-
-$chartHTML = "";
-
-if($chart){
-
-$chartHTML = "<img src='$chart' style='width:450px;margin:20px auto;display:block;'>";
-
+$rows .= "
+<tr>
+<td>{$row['Order_Id']}</td>
+<td>{$row['customer']}</td>
+<td>{$row['order_date']}</td>
+<td>{$row['Product_Name']}</td>
+<td>₹".number_format($row['revenue'],2)."</td>
+</tr>
+";
 }
 
-/* ================= HTML TEMPLATE ================= */
+/* ================= CHART IMAGE ================= */
 
-$html = "
+$chartImage = $_POST['chart_image'] ?? "";
+
+/* ================= PDF HTML ================= */
+
+$html="
 
 <style>
 
+/* PAGE MARGIN (bottom space for footer) */
+@page{
+margin:15px 20px 70px 20px;
+}
+
 body{
-font-family: Arial, sans-serif;
+font-family: DejaVu Sans, sans-serif;
+font-size:12px;
 color:#333;
 }
 
+/* HEADER */
+
 .header{
-text-align:left;
-margin-bottom:10px;
+border-bottom:2px solid #7e2626;
+padding-bottom:6px;
+margin-bottom:12px;
 }
 
-.title{
+.company h2{
+margin:0;
 color:#7e2626;
-font-size:22px;
-margin-top:10px;
+font-size:18px;
 }
+
+.company div{
+font-size:11px;
+}
+
+.meta{
+font-size:11px;
+margin-top:6px;
+}
+
+/* SUMMARY */
 
 .summary{
-margin-top:10px;
+background:#f8f3ee;
+padding:6px;
+margin:10px 0;
+font-size:12px;
+border-left:4px solid #7e2626;
 }
+
+/* TABLE */
 
 table{
 width:100%;
 border-collapse:collapse;
-margin-top:15px;
+margin-top:10px;
+page-break-inside:auto;
+}
+
+tr{
+page-break-inside:avoid;
+page-break-after:auto;
+}
+
+td,th{
+page-break-inside:avoid;
+}
+
+thead{
+display:table-header-group;
+}
+
+tfoot{
+display:table-footer-group;
+}
+
+.category-row{
+background:#f8f3ee;
+font-weight:bold;
+color:#7e2626;
 }
 
 th{
 background:#7e2626;
 color:white;
-padding:8px;
-border:1px solid #ddd;
+padding:6px;
+font-size:12px;
 }
 
 td{
-padding:7px;
+padding:5px;
 border:1px solid #ddd;
+font-size:11px;
 text-align:center;
+}
+
+/* CHART */
+
+.chart{
+text-align:center;
+margin:12px 0;
+}
+
+/* FIXED FOOTER */
+
+.footer{
+position:fixed;
+bottom:-40px;
+left:0;
+right:0;
+text-align:center;
+font-size:10px;
+color:#666;
+border-top:1px solid #ccc;
 }
 
 </style>
 
+
 <div class='header'>
-
+<div class='company'>
 <h2>GiftShop</h2>
-
-<p>
-201/A, Maninagar, Ahmedabad<br>
-Email: giftshopmanigar@gmail.com | Phone: 9876543210
-</p>
-
+<div>201/A, Maninagar, Ahmedabad</div>
+<div>Email: giftshopmaninagar@gmail.com | Phone: 9876543210</div>
+</div>
 </div>
 
-<hr>
+<h3>$reportName</h3>
 
-<div class='title'>
-Category Revenue Report
+<div class='meta'>
+Generated : ".date("d M Y h:i A")."
 </div>
 
-<p>
-Generated: ".date("d M Y H:i")."<br>
-Generated By: Admin
-</p>
-
-<table>
-
-<tr>
-<th>Total Revenue</th>
-<th>Report Range</th>
-</tr>
-
-<tr>
-<td>₹".number_format($totalRevenue,2)."</td>
-<td>$reportRange</td>
-</tr>
-
-</table>
-
-$chartHTML
-
-<h3>Category Revenue</h3>
-
-<table>
-
-<tr>
-<th>Category</th>
-<th>Revenue</th>
-</tr>
-
-$tableRows
-
-<tr>
-<td style='font-weight:bold'>Total</td>
-<td style='font-weight:bold'>₹".number_format($totalRevenue,2)."</td>
-</tr>
-
-</table>
-
+<div class='summary'>
+<b>Total Revenue :</b> ₹".number_format($totalRevenue,2)."
+</div>
 ";
 
-/* ================= PDF ================= */
+/* ================= ADD CHART ================= */
 
-$dompdf = new Dompdf();
+if($chartImage){
+$html .= "
+<div class='chart'>
+<img src='$chartImage' width='420'>
+</div>
+";
+}
+
+$html .= "
+
+<table>
+
+<thead>
+<tr>
+<th>Order ID</th>
+<th>Customer</th>
+<th>Date</th>
+<th>Product</th>
+<th>Revenue</th>
+</tr>
+</thead>
+
+<tbody>
+
+$rows
+
+</tbody>
+
+<tfoot>
+<tr>
+<td colspan='4' style='text-align:right;font-weight:bold;background:#f8f3ee'>
+Total Revenue
+</td>
+<td style='font-weight:bold;background:#f8f3ee'>
+₹".number_format($totalRevenue,2)."
+</td>
+</tr>
+</tfoot>
+
+</table>
+
+<div class='footer'>
+Generated by GiftShop Admin Panel
+</div>
+";
+
+/* ================= GENERATE PDF ================= */
+
+$options = new Options();
+$options->set('isRemoteEnabled', true);
+
+$dompdf = new Dompdf($options);
 
 $dompdf->loadHtml($html);
-
 $dompdf->setPaper('A4','portrait');
-
 $dompdf->render();
 
 $dompdf->stream("category_revenue_report.pdf",["Attachment"=>0]);
-
 ?>
