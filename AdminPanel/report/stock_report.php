@@ -171,7 +171,25 @@ color:#0b6e77;
 .back-btn:hover{
 color:#7e2626d5;
 }
+/* EXPORT BUTTONS */
 
+.pdf-btn,
+.excel-btn{
+padding:6px 12px;
+border-radius:4px;
+color:white;
+font-weight:600;
+font-size:13px;
+text-decoration:none;
+}
+
+.pdf-btn{
+background:#c0392b;
+}
+
+.excel-btn{
+background:#27ae60;
+}
 </style>
 
 </head>
@@ -222,6 +240,16 @@ color:#7e2626d5;
     PDF
 </a>
 <a href="export_order_excel.php?type=<?=$type?>&start=<?=$start?>&end=<?=$end?>" class="excel-btn">
+Excel
+</a>
+
+<a href="export_stock_pdf.php?product_id=<?=$productFilter?>&period=<?=$periodFilter?>" 
+class="pdf-btn">
+PDF
+</a>
+
+<a href="export_stock_excel.php?type=<?=$filterType?>&limit=<?=$limit?>"
+class="excel-btn">
 Excel
 </a>
 

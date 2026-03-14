@@ -312,6 +312,26 @@ tfoot td{
     border-top:2px solid #7e2626d5;
 }
 
+/* EXPORT BUTTONS */
+
+.pdf-btn,
+.excel-btn{
+padding:6px 12px;
+border-radius:4px;
+color:white;
+font-weight:600;
+font-size:13px;
+text-decoration:none;
+}
+
+.pdf-btn{
+background:#c0392b;
+}
+
+.excel-btn{
+background:#27ae60;
+}
+
 </style>
 
 
@@ -352,11 +372,12 @@ tfoot td{
 </select>
 
 <button type="submit">Filter</button>
-<a href="export_delivery_status_pdf.php?status=<?=$statusFilter?>" class="pdf-btn">
-    PDF
+<a href="export_delivery_status_pdf.php?product_id=<?=$productFilter?>&period=<?=$periodFilter?>" 
+class="pdf-btn">
+PDF
 </a>
-
-<a href="export_order_excel.php?type=<?=$type?>&start=<?=$start?>&end=<?=$end?>" class="excel-btn">
+<a href="export_delivery_status_excel.php?status=<?=$statusFilter?>" 
+class="excel-btn">
 Excel
 </a>
 </div>
