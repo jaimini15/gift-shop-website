@@ -184,7 +184,7 @@ border:2px solid #7e2626d5;
 }
 
 .filter-row label{
-font-size:12px;
+font-size:18px;
 font-weight:600;
 margin-bottom:3px;
 }
@@ -281,7 +281,7 @@ margin-bottom:12px;
 
 .back-btn{
 text-decoration:none;
-font-size:17px;
+font-size:20px;
 font-weight:600;
 color:#0b6e77;
 padding:6px 12px;
