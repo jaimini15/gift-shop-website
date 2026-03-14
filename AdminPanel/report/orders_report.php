@@ -468,7 +468,8 @@ window.open("export_order_pdf.php?type=<?=$type?>&start=<?=$start?>&end=<?=$end?
 const labels = <?=json_encode($labels)?>;
 const orders = <?=json_encode($orders)?>;
 const revenues = <?=json_encode($revenues)?>;
-
+const maxOrders = Math.max(...orders);
+const yAxisMax = maxOrders + 1;
 Chart.register(ChartDataLabels);
 
 const ctx = document.getElementById("salesChart");
@@ -542,12 +543,16 @@ return [
 },
 
 scales:{
-y:{
-beginAtZero:true,
-title:{
-display:true,
-text:'Number of Orders'
-}
+y: {
+    beginAtZero: true,
+    max: yAxisMax,
+    ticks: {
+        stepSize: 1
+    },
+    title:{
+        display:true,
+        text:"Number of Orders"
+    }
 },
 x:{
 title:{
