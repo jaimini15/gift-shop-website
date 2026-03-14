@@ -116,7 +116,7 @@ if (!isset($_SESSION))
         </div>
 
         <!-- Category Wise Revenue -->
-        <div class="report-card" onclick="location.href='report/category_revenue_report.php'">
+        <div class="report-card" onclick="location.href='report/categories_report.php'">
             <div class="card-icon products"><i class="fa-solid fa-layer-group"></i></div>
             <h3>Category Revenue</h3>
             <p>Revenue based on product categories</p>
