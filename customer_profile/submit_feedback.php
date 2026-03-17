@@ -35,9 +35,9 @@ foreach ($productIds as $productId) {
 
     /* Insert review */
     $stmt = mysqli_prepare($connection, "
-        INSERT INTO feedback_details (User_Id, Product_Id, Rating, Comment)
-        VALUES (?, ?, ?, ?)
-    ");
+    INSERT INTO feedback_details (User_Id, Product_Id, Rating, Comment, Feedback_Date)
+    VALUES (?, ?, ?, ?, NOW())
+");
 
     mysqli_stmt_bind_param(
         $stmt,
