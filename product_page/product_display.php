@@ -91,7 +91,7 @@ $imgSrc = img_src_from_blob_single($product['Product_Image'], 'product_mug_buyno
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title><?= $productName ?> | GiftShop</title>
+    <title>GiftShop | <?= $productName ?></title>
     <link rel="stylesheet" href="../home page/style.css" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
