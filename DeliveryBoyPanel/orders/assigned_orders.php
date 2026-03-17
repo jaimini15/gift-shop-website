@@ -17,7 +17,7 @@ $deliveryBoyId = (int) $_SESSION['User_Id'];
 if (isset($_POST['order_id'], $_POST['delivery_status'])) {
 
     $orderId = (int) $_POST['order_id'];
-    $status  = $_POST['delivery_status'];
+    $status = $_POST['delivery_status'];
 
     if ($status === 'Out for Delivery') {
 
@@ -63,117 +63,137 @@ $orders = mysqli_query($connection, "
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<title>Assigned Orders</title>
+    <meta charset="UTF-8">
+    <title>Assigned Orders</title>
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
-<style>
-body { background:#f4f6f9; }
-.card { border-radius:12px; }
-.date-row {
-    background:#e9ecef;
-    font-weight:bold;
-}
-</style>
+    <style>
+        body {
+            background: #f4f6f9;
+        }
+
+        .card {
+            border-radius: 12px;
+        }
+
+        .date-row {
+            background: #e9ecef;
+            font-weight: bold;
+        }
+    </style>
 </head>
 
 <body>
 
-<div class="container mt-4">
-    <h3 class="mb-4 fw-bold">Assigned Orders</h3>
+    <div class="container mt-4">
+        <h3 class="mb-4 fw-bold">Assigned Orders</h3>
 
-    <div class="card p-3">
-        <table class="table table-bordered align-middle">
-            <thead class="table-dark">
-                <tr>
-                    <th>Order ID</th>
-                    <th>Name</th>
-                    <th>Address</th>
-                    <th>Area</th>
-                    <th>Order Date</th>
-                    <th>Total Amount</th>
-                    <th>Phone</th>
-                    <th>Status</th>
-                    <th>Update Status</th>
-                </tr>
-            </thead>
-            <tbody>
+        <div class="card p-3">
+            <table class="table table-bordered align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Name</th>
+                        <th>Address</th>
+                        <th>Area</th>
+                        <th>Order Date</th>
+                        <th>Total Amount</th>
+                        <th>Phone</th>
+                        <th>Status</th>
+                        <th>Update Status</th>
+                    </tr>
+                </thead>
+                <tbody>
 
-            <?php
-            if (mysqli_num_rows($orders) == 0) {
-                echo '
+                    <?php
+                    if (mysqli_num_rows($orders) == 0) {
+                        echo '
                 <tr>
                     <td colspan="9" class="text-center text-muted">
                         No assigned orders
                     </td>
                 </tr>';
-            }
+                    }
 
-            $lastDate = null;
+                    $lastDate = null;
 
-            while ($row = mysqli_fetch_assoc($orders)) {
+                    while ($row = mysqli_fetch_assoc($orders)) {
 
-                if ($lastDate !== $row['Order_Date']) {
-                    echo '
+                        if ($lastDate !== $row['Order_Date']) {
+                            echo '
                     <tr class="date-row">
                         <td colspan="9">
                             📅 ' . date("d-m-Y", strtotime($row['Order_Date'])) . '
                         </td>
                     </tr>';
-                    $lastDate = $row['Order_Date'];
-                }
-            ?>
-                <tr>
-                    <td><?= $row['Order_Id'] ?></td>
+                            $lastDate = $row['Order_Date'];
+                        }
+                        ?>
+                        <tr>
+                            <td><?= $row['Order_Id'] ?></td>
 
-                    <td><?= htmlspecialchars($row['Customer_Name']) ?></td>
+                            <td><?= htmlspecialchars($row['Customer_Name']) ?></td>
 
-                    <td><?= htmlspecialchars($row['Address']) ?></td>
+                            <td><?= htmlspecialchars($row['Address']) ?></td>
 
-                    <td><?= htmlspecialchars($row['Area_Name']) ?></td>
+                            <td><?= htmlspecialchars($row['Area_Name']) ?></td>
 
-                    <td><?= date("d-m-Y", strtotime($row['Order_Date'])) ?></td>
+                            <td><?= date("d-m-Y", strtotime($row['Order_Date'])) ?></td>
 
-                    <td>₹<?= number_format($row['Total_Amount'], 2) ?></td>
+                            <td>₹<?= number_format($row['Total_Amount'], 2) ?></td>
 
-                    <td><?= htmlspecialchars($row['Phone']) ?></td>
+                            <td><?= htmlspecialchars($row['Phone']) ?></td>
 
-                    <td>
-                        <span class="badge bg-primary">
-                            <?= $row['Delivery_Status'] ?>
-                        </span>
-                    </td>
+                            <td>
+                                <?php
+                                $statusClass = '';
 
-                    <td>
-                        <form method="post">
-                            <input type="hidden" name="order_id" value="<?= $row['Order_Id'] ?>">
-                            <select name="delivery_status"
-                                    class="form-select form-select-sm"
-                                    onchange="this.form.submit()">
+                                if ($row['Delivery_Status'] === 'Delivered') {
+                                    $statusClass = 'bg-success';
+                                } elseif ($row['Delivery_Status'] === 'Packed') {
+                                    $statusClass = 'bg-warning text-dark';
+                                } elseif ($row['Delivery_Status'] === 'Out for Delivery') {
+                                    $statusClass = 'bg-primary';
+                                } else {
+                                    $statusClass = 'bg-secondary';
+                                }
+                                ?>
 
-                                <option value="">Select</option>
+                                <span class="badge <?= $statusClass ?>">
+                                    <?= $row['Delivery_Status'] ?>
+                                </span>
+                            </td>
 
-                                <option value="Out for Delivery"
-                                    <?= $row['Delivery_Status'] == 'Out for Delivery' ? 'selected' : '' ?>>
-                                    Out for Delivery
-                                </option>
+                            <td>
+                                <form method="post">
+                                    <input type="hidden" name="order_id" value="<?= $row['Order_Id'] ?>">
+                                    <select name="delivery_status" class="form-select form-select-sm"
+                                        onchange="this.form.submit()">
 
-                                <option value="Delivered">
-                                    Delivered
-                                </option>
+                                        <option value="">Select</option>
 
-                            </select>
-                        </form>
-                    </td>
-                </tr>
-            <?php } ?>
+                                        <option value="Out for Delivery" <?= $row['Delivery_Status'] == 'Out for Delivery' ? 'selected' : '' ?>>
+                                            Out for Delivery
+                                        </option>
 
-            </tbody>
-        </table>
+                                        <option value="Delivered">
+                                            Delivered
+                                        </option>
+
+                                    </select>
+                                </form>
+                            </td>
+                        </tr>
+                    <?php } ?>
+
+                </tbody>
+            </table>
+        </div>
     </div>
-</div>
 
 </body>
+
 </html>
