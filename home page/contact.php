@@ -25,7 +25,7 @@ if (session_status() == PHP_SESSION_NONE) {
             <p class="contact-subtitle">We are here to meet any business need and to help you with your gifting solutions.</p>
 
             <p><i class="fa-solid fa-phone contact-icon"></i> <strong>Phone:</strong> +91 9876543210</p>
-            <p><i class="fa-solid fa-location-dot contact-icon"></i> <strong>Location:</strong> Ahmedabad, Gujarat, India</p>
+            <p><i class="fa-solid fa-location-dot contact-icon"></i> <strong>Location:</strong>201/A, Business Park, Maninagar, Ahmedabad.</p>
             <p>
     <a href="https://mail.google.com/mail/?view=cm&fs=1&to=giftshopmaninagar@gmail.com" target="_blank">
         <i class="fa-solid fa-envelope contact-icon"></i>
@@ -51,7 +51,7 @@ if (session_status() == PHP_SESSION_NONE) {
         <div class="gift-extra-box">
             <i class="fa-solid fa-location-dot"></i>
             <h3>LOCATION</h3>
-            <p>GiftShop, Maninagar<br>Ahmedabad, Gujarat</p>
+            <p>201/A,Business Park,GiftShop, Maninagar<br>Ahmedabad, Gujarat</p>
         </div>
 
         <div class="gift-extra-box">
