@@ -93,6 +93,9 @@ o.Order_Id,
 CONCAT(u.First_Name,' ',u.Last_Name) AS customer,
 d.Delivery_Address,
 a.Area_Name,
+
+CONCAT(db.First_Name,' ',db.Last_Name) AS delivery_boy,
+
 DATE(o.Order_Date) AS order_date,
 o.Total_Amount,
 
@@ -113,12 +116,18 @@ ON o.User_Id=u.User_Id
 
 LEFT JOIN area_details a
 ON d.Area_Id=a.Area_Id
+LEFT JOIN delivery_area_map dam
+ON dam.area_id = d.Area_Id AND dam.status='ACTIVE'
+
+LEFT JOIN user_details db
+ON dam.delivery_boy_id = db.User_Id
 
 $whereCondition
 
 ORDER BY o.Order_Date DESC
 
 ";
+
 
 $tableResult=mysqli_query($connection,$tableQuery);
 
@@ -386,6 +395,7 @@ Excel
 <th>Customer</th>
 <th>Address</th>
 <th>Area</th>
+<th>Delivery Boy</th>
 <th>Order Date</th>
 <th>Amount</th>
 <th>Status</th>
@@ -403,6 +413,9 @@ Excel
 <td><?=$row['customer']?></td>
 <td><?=$row['Delivery_Address'] ?? '-'?></td>
 <td><?=$row['Area_Name'] ?? '-'?></td>
+<td>
+<?= $row['delivery_boy'] ? $row['delivery_boy'] : '<span style="color:red;">Not Assigned</span>' ?>
+</td>
 <td><?=$row['order_date']?></td>
 <td>₹<?=number_format($row['Total_Amount'],2)?></td>
 <td><?=$row['status']?></td>
