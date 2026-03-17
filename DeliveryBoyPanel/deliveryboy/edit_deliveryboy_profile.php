@@ -148,7 +148,7 @@ $areas = mysqli_query(
 }
 </style>
 
-<h3>Edit Delivery Boy Profile</h3>
+<h3 style="font-size:26px;font-weight:bold;margin-bottom:25px;">Edit Delivery Boy Profile</h3>
 
 <?php if ($error): ?>
     <p style="color:red"><?= $error ?></p>
