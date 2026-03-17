@@ -15,7 +15,7 @@ if (!isset($activePage)) {
 
 <head>
     <meta charset="UTF-8">
-    <title>My Account | GiftShop</title>
+    <title>GiftShop | My Account </title>
 
     <!-- MAIN SITE CSS -->
     <link rel="stylesheet" href="../home page/style.css">
