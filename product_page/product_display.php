@@ -261,7 +261,7 @@ $imgSrc = img_src_from_blob_single($product['Product_Image'], 'product_mug_buyno
                     <?php
                     // Fetch reviews for this product
                     $reviewsQuery = mysqli_query($connection, "
-    SELECT fd.Comment, fd.Rating, u.First_Name, u.Last_Name
+    SELECT fd.Comment, fd.Rating, fd.Feedback_Date, u.First_Name, u.Last_Name
     FROM feedback_details fd
     JOIN user_details u ON fd.User_Id = u.User_Id
     WHERE fd.Product_Id = {$product['Product_Id']}
@@ -324,7 +324,7 @@ $imgSrc = img_src_from_blob_single($product['Product_Image'], 'product_mug_buyno
                                 </div>
                             </div>
                             <span style="font-size:14px; color:#888;">
-                                <?= date('d M Y') ?>
+                                <?= date('d M Y', strtotime($rev['Feedback_Date'])) ?>
                             </span>
                         </div>
                         <div class="review-body" style="font-size:15px; color:#555; line-height:1.5;">
