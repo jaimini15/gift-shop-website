@@ -257,11 +257,11 @@ $_SESSION['total']    = $total;
     <span>₹<?= number_format($total) ?></span>
 </div>
 <?php if ($totalItems >= 3): ?>
-<div style="margin-top:10px;">
+<div style="margin-top:10px;font-size:20px;font-weight:500;">
     <label>
         <input type="checkbox" id="hamperCheckbox">
         Make this order a gift hamper &#x1F381;
-    </label>
+    </label><br>
 </div>
 <?php endif; ?>
 
