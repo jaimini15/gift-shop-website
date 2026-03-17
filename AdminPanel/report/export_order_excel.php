@@ -3,7 +3,7 @@ include("../db.php");
 
 /* UTF-8 FIX */
 header("Content-Type: application/vnd.ms-excel; charset=UTF-8");
-header("Content-Disposition: attachment; filename=orders_report.xls");
+header("Content-Disposition: attachment; filename=sales_report.xls");
 echo "\xEF\xBB\xBF";
 
 $type  = $_GET['type'] ?? '';
@@ -11,34 +11,34 @@ $start = $_GET['start'] ?? '';
 $end   = $_GET['end'] ?? '';
 
 $tableWhere = "WHERE 1";
-$title = "Orders Report";
+$title = "Sales Report";
 
 /* ===== FILTER LOGIC ===== */
 
 if($type=="daily"){
 $tableWhere .= " AND DATE(Order_Date)=CURDATE()";
-$title = "Daily Orders Report";
+$title = "Daily Sales Report";
 }
 
 elseif($type=="weekly"){
 $tableWhere .= " AND YEARWEEK(Order_Date,1)=YEARWEEK(CURDATE(),1)";
-$title = "Weekly Orders Report";
+$title = "Weekly Sales Report";
 }
 
 elseif($type=="monthly"){
 $tableWhere .= " AND MONTH(Order_Date)=MONTH(CURDATE()) 
 AND YEAR(Order_Date)=YEAR(CURDATE())";
-$title = "Monthly Orders Report";
+$title = "Monthly Sales Report";
 }
 
 elseif($type=="yearly"){
 $tableWhere .= " AND YEAR(Order_Date)=YEAR(CURDATE())";
-$title = "Yearly Orders Report";
+$title = "Yearly Sales Report";
 }
 
 elseif($start && $end){
 $tableWhere .= " AND DATE(Order_Date) BETWEEN '$start' AND '$end'";
-$title = "Orders Report ($start to $end)";
+$title = "Sales Report ($start to $end)";
 }
 
 /* ===== QUERY ===== */
