@@ -14,11 +14,11 @@ SELECT
 c.Category_Name,
 p.Product_Id,
 p.Product_Name,
-SUM(oi.Quantity) AS Total_Sold
+COALESCE(SUM(oi.Quantity), 0) AS Total_Sold
 
-FROM order_item oi
+FROM product_details p
 
-JOIN product_details p 
+LEFT JOIN order_item oi 
 ON oi.Product_Id = p.Product_Id
 
 JOIN category_details c 
@@ -26,6 +26,7 @@ ON p.Category_Id = c.Category_Id
 
 GROUP BY p.Product_Id
 ";
+
 
 /* FILTER */
 
