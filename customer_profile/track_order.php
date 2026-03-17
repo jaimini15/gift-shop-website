@@ -48,10 +48,12 @@ $delivery = mysqli_fetch_assoc($deliveryQ);
 
 $status = $delivery['Delivery_Status'] ?? 'Ordered';
 
+
+
 $stepMap = [
     'Ordered' => 1,
     'Packed' => 2,
-    'Out of Delivery' => 3,
+    'Out for Delivery' => 3, // ✅ FIXED
     'Delivered' => 4
 ];
 $currentStep = $stepMap[$status] ?? 1;
