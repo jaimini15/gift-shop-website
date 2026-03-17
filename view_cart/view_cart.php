@@ -107,7 +107,7 @@ while ($row = mysqli_fetch_assoc($stockResult)) {
 }
 $subtotal = 0;
 /* Estimated Delivery Date */
-$estimatedDate = date("d M Y", strtotime("+3 days"));
+$estimatedDate = date("d M Y", strtotime("+4 days"));
 ?>
 <!DOCTYPE html>
 <html lang="en">
