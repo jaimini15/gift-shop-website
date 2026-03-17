@@ -237,7 +237,7 @@ background:#27ae60;
 
 <button type="submit">Filter</button>
 <a href="export_stock_pdf.php?type=<?=$filterType?>&limit=<?=$limit?>" 
-class="pdf-btn">
+class="pdf-btn" target="_blank">
 PDF
 </a>
 

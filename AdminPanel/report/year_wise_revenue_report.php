@@ -200,7 +200,7 @@ background:#27ae60;
 
 <div>Total Revenue : ₹<?=number_format($totalRevenue,2)?></div>
 
-<a href="export_year_revenue_pdf.php" class="pdf-btn">
+<a href="export_year_revenue_pdf.php" class="pdf-btn" target="_blank">
 PDF
 </a>
 

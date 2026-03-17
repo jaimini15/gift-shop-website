@@ -127,7 +127,13 @@ $rows.="
 ";
 
 }
+// LOGO 
+$logoPath = __DIR__ . "/../../home page/logo.svg";
 
+if(file_exists($logoPath)){
+$logoData=base64_encode(file_get_contents($logoPath));
+$logoPath='data:image/png;base64,'.$logoData;
+}
 /* ================= PDF HTML ================= */
 
 $html="
@@ -148,8 +154,18 @@ color:#333;
 
 .header{
 border-bottom:2px solid #7e2626;
-padding-bottom:6px;
+padding-bottom:8px;
 margin-bottom:12px;
+position:relative;
+padding-left:80px;
+min-height:70px;
+}
+
+.header img{
+position:absolute;
+left:-10px;
+top:-10px;
+height:50px;
 }
 
 .company h2{
@@ -160,8 +176,8 @@ font-size:18px;
 
 .company div{
 font-size:11px;
+margin-top:2px;
 }
-
 .meta{
 font-size:11px;
 margin-top:6px;
@@ -245,10 +261,16 @@ border-top:1px solid #ccc;
 
 <div class='header'>
 
+<img src='$logoPath'>
+
 <div class='company'>
+
 <h2>GiftShop</h2>
+
 <div>201/A, Maninagar, Ahmedabad</div>
+
 <div>Email: giftshopmaninagar@gmail.com | Phone: 9876543210</div>
+
 </div>
 
 </div>

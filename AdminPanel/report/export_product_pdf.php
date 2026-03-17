@@ -8,55 +8,115 @@ use Dompdf\Options;
 
 include("../db.php");
 
-/* ================= FETCH DATA ================= */
+/* ================= GET VALUES ================= */
 
-$query = mysqli_query($connection,"
-SELECT 
-YEAR(Order_Date) AS year,
-COUNT(Order_Id) AS total_orders,
-SUM(Total_Amount) AS total_revenue
-FROM `order`
-WHERE Status='CONFIRM'
-GROUP BY YEAR(Order_Date)
-ORDER BY YEAR(Order_Date)
+$productFilter = $_GET['product_id'] ?? '';
+$periodFilter  = $_GET['period'] ?? '';
+$chartImage    = $_POST['chart_image'] ?? '';
+
+/* ================= PRODUCT NAME ================= */
+
+$productName = "";
+
+if($productFilter){
+
+$q = mysqli_query($connection,"
+SELECT Product_Name 
+FROM product_details 
+WHERE Product_Id='$productFilter'
 ");
 
-$rows = "";
-$totalOrders = 0;
-$totalRevenue = 0;
+if($row=mysqli_fetch_assoc($q)){
+$productName=$row['Product_Name'];
+}
+
+}
+
+/* ================= REPORT NAME ================= */
+
+$reportName = "Product Sales Report";
+
+if($periodFilter=="daily")   $reportName="Daily Product Sales Report";
+if($periodFilter=="weekly")  $reportName="Weekly Product Sales Report";
+if($periodFilter=="monthly") $reportName="Monthly Product Sales Report";
+if($periodFilter=="yearly")  $reportName="Yearly Product Sales Report";
+
+/* ================= PERIOD CONDITION ================= */
+
+$periodCondition="";
+
+if($periodFilter=="daily"){
+$periodCondition="AND DATE(o.Order_Date)=CURDATE()";
+}
+
+elseif($periodFilter=="weekly"){
+$periodCondition="AND YEARWEEK(o.Order_Date,1)=YEARWEEK(CURDATE(),1)";
+}
+
+elseif($periodFilter=="monthly"){
+$periodCondition="AND MONTH(o.Order_Date)=MONTH(CURDATE())
+AND YEAR(o.Order_Date)=YEAR(CURDATE())";
+}
+
+elseif($periodFilter=="yearly"){
+$periodCondition="AND YEAR(o.Order_Date)=YEAR(CURDATE())";
+}
+
+/* ================= FETCH ORDERS ================= */
+
+$query=mysqli_query($connection,"
+SELECT 
+o.Order_Id,
+CONCAT(u.First_Name,' ',u.Last_Name) AS customer,
+o.Order_Date,
+SUM(oi.Quantity * oi.Price_Snapshot) AS revenue
+FROM order_item oi
+JOIN `order` o ON oi.Order_Id=o.Order_Id
+JOIN user_details u ON o.User_Id=u.User_Id
+WHERE oi.Product_Id='$productFilter'
+$periodCondition
+GROUP BY o.Order_Id
+ORDER BY o.Order_Date DESC
+");
+
+/* ================= CALCULATE TOTAL ================= */
+
+$totalOrders=0;
+$totalRevenue=0;
+
+$rows="";
 
 while($row=mysqli_fetch_assoc($query)){
 
-$year = $row['year'];
-$orders = $row['total_orders'];
-$revenue = $row['total_revenue'];
+$totalOrders++;
 
-$totalOrders += $orders;
-$totalRevenue += $revenue;
+$totalRevenue += $row['revenue'];
 
-$rows .= "
+$date=date("d M Y H:i",strtotime($row['Order_Date']));
+
+$rows.="
 <tr>
-<td>$year</td>
-<td>$orders</td>
-<td>₹".number_format($revenue,2)."</td>
+<td>{$row['Order_Id']}</td>
+<td>{$row['customer']}</td>
+<td>$date</td>
+<td>₹".number_format($row['revenue'],2)."</td>
 </tr>
 ";
+
 }
 
-/* ================= CHART IMAGE ================= */
+/* ================= LOGO ================= */
 
-$chartImage = $_POST['chart_image'] ?? "";
-
-/* ================= HTML ================= */
 $logoPath = __DIR__ . "/../../home page/logo.svg";
 
 if(file_exists($logoPath)){
-    $logoData = base64_encode(file_get_contents($logoPath));
-    $logoPath = 'data:image/png;base64,' . $logoData;
+$logoData=base64_encode(file_get_contents($logoPath));
+$logoPath='data:image/png;base64,'.$logoData;
 }
 
+/* ================= HTML ================= */
 
-$html = "
+$html="
 
 <style>
 
@@ -74,8 +134,18 @@ color:#333;
 
 .header{
 border-bottom:2px solid #7e2626;
-padding-bottom:6px;
+padding-bottom:8px;
 margin-bottom:12px;
+position:relative;
+padding-left:80px;
+min-height:70px;
+}
+
+.header img{
+position:absolute;
+left:-10px;
+top:-10px;
+height:50px;
 }
 
 .company h2{
@@ -86,9 +156,8 @@ font-size:18px;
 
 .company div{
 font-size:11px;
+margin-top:2px;
 }
-
-/* META */
 
 .meta{
 font-size:11px;
@@ -105,32 +174,12 @@ font-size:12px;
 border-left:4px solid #7e2626;
 }
 
-/* CHART */
-
-.chart{
-text-align:center;
-margin:12px 0;
-}
-
 /* TABLE */
 
 table{
 width:100%;
 border-collapse:collapse;
 margin-top:10px;
-page-break-inside:auto;
-}
-
-tr{
-page-break-inside:avoid;
-}
-
-thead{
-display:table-header-group;
-}
-
-tfoot{
-display:table-footer-group;
 }
 
 th{
@@ -147,6 +196,13 @@ font-size:11px;
 text-align:center;
 }
 
+/* CHART */
+
+.chart{
+text-align:center;
+margin:12px 0;
+}
+
 /* FOOTER */
 
 .footer{
@@ -159,70 +215,70 @@ font-size:10px;
 color:#666;
 border-top:1px solid #ccc;
 }
-.header img{
-display:block;
-}
 
 </style>
 
+
 <div class='header'>
 
-<div class='header-box'>
-
-<div class='logo'>
 <img src='$logoPath'>
-</div>
 
 <div class='company'>
+
 <h2>GiftShop</h2>
+
 <div>201/A, Maninagar, Ahmedabad</div>
-<div>Email: giftshopmaninagar@gmail.com</div>
-<div>Phone: 9876543210</div>
-</div>
+
+<div>Email: giftshopmaninagar@gmail.com | Phone: 9876543210</div>
 
 </div>
 
 </div>
 
 
-
-
-<h3>Year Wise Revenue Report</h3>
+<h3>$reportName</h3>
 
 <div class='meta'>
 Generated : ".date("d M Y h:i A")."
 </div>
 
+
 <div class='summary'>
+
+<b>Product :</b> $productName
+&nbsp;&nbsp;&nbsp;
+
 <b>Total Orders :</b> $totalOrders
 &nbsp;&nbsp;&nbsp;
+
 <b>Total Revenue :</b> ₹".number_format($totalRevenue,2)."
+
 </div>
-";
-
-/* ================= ADD CHART ================= */
 
 
-if($chartImage){
-
-$html .= "
 <div class='chart'>
+
 <img src='$chartImage' width='420'>
+
 </div>
-";
 
-}
-
-$html .= "
 
 <table>
 
 <thead>
+
 <tr>
-<th>Year</th>
-<th>Orders</th>
+
+<th>Order ID</th>
+
+<th>Customer</th>
+
+<th>Date</th>
+
 <th>Revenue</th>
+
 </tr>
+
 </thead>
 
 <tbody>
@@ -231,15 +287,21 @@ $rows
 
 </tbody>
 
+
 <tfoot>
 
 <tr>
-<td colspan='2' style='text-align:right;font-weight:bold;background:#f8f3ee'>
+
+<td colspan='3' style='text-align:right;font-weight:bold;background:#f8f3ee'>
+
 Total Revenue
+
 </td>
 
 <td style='font-weight:bold;background:#f8f3ee'>
+
 ₹".number_format($totalRevenue,2)."
+
 </td>
 
 </tr>
@@ -248,25 +310,33 @@ Total Revenue
 
 </table>
 
+
 <div class='footer'>
+
 Generated by GiftShop Admin Panel
+
 </div>
 
 ";
 
 /* ================= GENERATE PDF ================= */
+
 $options = new Options();
+
 $options->set('isRemoteEnabled', true);
+
 $options->set('isHtml5ParserEnabled', true);
 
+$options->set('isPhpEnabled', true);
 
 $dompdf = new Dompdf($options);
 
 $dompdf->loadHtml($html);
+
 $dompdf->setPaper('A4','portrait');
 
 $dompdf->render();
 
-$dompdf->stream("year_revenue_report.pdf",["Attachment"=>0]);
+$dompdf->stream("product_sales_report.pdf",["Attachment"=>0]);
 
 ?>

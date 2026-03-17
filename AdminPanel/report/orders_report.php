@@ -131,6 +131,16 @@ $tableWhere
 ORDER BY o.Order_Date DESC
 ");
 
+/* ===== TOTAL REVENUE FIX ===== */
+
+$totalQuery = mysqli_query($connection, "
+SELECT SUM(Total_Amount) as total
+FROM `order`
+$tableWhere
+");
+
+$totalRow = mysqli_fetch_assoc($totalQuery);
+$totalRevenue = $totalRow['total'] ?? 0;
 
 ?>
 
