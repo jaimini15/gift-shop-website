@@ -352,7 +352,7 @@ border-top:2px solid #7e2626d5;
 
 <div class="title-row">
 
-<h1>Orders Report</h1>
+<h1>Sales Report</h1>
 
 <a href="http://localhost/GitHub/gift-shop-website/AdminPanel/layout.php?view=report_layout" class="back-btn">
 ← Back
