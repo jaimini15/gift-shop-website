@@ -52,11 +52,11 @@ $orders = mysqli_query($connection, "
                     <tr>
                         <th>Order ID</th>
                         <th>Customer</th>
-                        <th>Address</th>
+                        
                         <th>Area</th>
                         <th>Order Date</th>
                         <th>Total Amount</th>
-                        <th>Phone</th>
+                        
                         <th>Status</th>
                         <th>Delivered On</th>
                     </tr>
@@ -92,11 +92,11 @@ $orders = mysqli_query($connection, "
                     <tr>
                         <td><?= $row['Order_Id'] ?></td>
                         <td><?= htmlspecialchars($row['Customer_Name']) ?></td>
-                        <td><?= htmlspecialchars($row['Address']) ?></td>
+                       
                         <td><?= htmlspecialchars($row['Area_Name']) ?></td>
                         <td><?= date('d-m-Y', strtotime($row['Order_Date'])) ?></td>
                         <td>₹<?= number_format($row['Total_Amount'], 2) ?></td>
-                        <td><?= htmlspecialchars($row['Phone']) ?></td>
+                        
                         <td>
                             <span class="badge bg-success">
                                 <?= $row['Delivery_Status'] ?>
