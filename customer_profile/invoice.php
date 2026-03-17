@@ -20,24 +20,61 @@ $profileUser = mysqli_fetch_assoc(
 );
 
 /* DELIVERY TEXT FUNCTION (+3 DAYS) */
-function getDeliveryText($orderDate, $deliveryStatus, $deliveryDate = null) {
-    if ($deliveryStatus === 'Delivered' && $deliveryDate) {
-        return "Delivered on " . date('d M Y', strtotime($deliveryDate));
+function getDeliveryText($orderDate, $deliveryStatus, $deliveryDate = null, $orderId=null) {
+
+    $orderDateObj = new DateTime($orderDate);
+
+    // Random 3/4/5 days (same as orders.php)
+    $randomDays = 3 + ($orderId % 3);
+
+    $orderMonth = $orderDateObj->format('m');
+    $orderYear  = $orderDateObj->format('Y');
+
+    // Default = +4 days
+    $estimated = clone $orderDateObj;
+    $estimated->modify('+4 days');
+
+    // Special months (Dec 2025, Jan, Feb)
+    if (($orderMonth == '12' && $orderYear == '2025') || $orderMonth == '01' || $orderMonth == '02') {
+        $estimated = clone $orderDateObj;
+        $estimated->modify("+$randomDays days");
     }
 
-    $orderDate = new DateTime($orderDate);
-    $estimated = clone $orderDate;
-    $estimated->modify('+3 days');
     $today = new DateTime('today');
 
-    if ($today > $estimated) return "Arriving soon";
+    /* DELIVERED */
+    if ($deliveryStatus === 'Delivered') {
+
+        // Special months → show estimated
+        if (($orderMonth == '12' && $orderYear == '2025') || $orderMonth == '01' || $orderMonth == '02') {
+            return "Delivered on " . $estimated->format('d M Y');
+        }
+
+        // Normal → show actual date
+        if (!empty($deliveryDate)) {
+            return "Delivered on " . date('d M Y', strtotime($deliveryDate));
+        }
+    }
+
+    /* OUT FOR DELIVERY */
+    if ($deliveryStatus === 'Out for Delivery') {
+        return "Arriving soon";
+    }
+
+    /* NOT DELIVERED */
+
+    if ($today > $estimated) {
+        return "Arriving soon";
+    }
+
     $diff = $today->diff($estimated)->days;
 
-    if ($diff === 0) return "Arriving today";
-    if ($diff === 1) return "Arriving tomorrow";
+    if ($diff == 0) return "Arriving today";
+    if ($diff == 1) return "Arriving tomorrow";
 
     return "Arriving on " . $estimated->format('d M Y');
 }
+
 
 /* FETCH ORDER */
 $orderId = (int)($_GET['id'] ?? 0);
@@ -209,7 +246,13 @@ Print
 <!-- ORDER ITEMS WITH ARRIVAL DATE -->
 <div class="arrival-box">
 <?php foreach ($items as $item) { 
-    $deliveryText = getDeliveryText($order['Order_Date'], $order['Delivery_Status'] ?? '', $order['Delivery_Date'] ?? null);
+   $deliveryText = getDeliveryText(
+    $order['Order_Date'],
+    $order['Delivery_Status'] ?? '',
+    $order['Delivery_Date'] ?? null,
+    $order['Order_Id']
+);
+
 ?>
 <div class="product-box">
     <!-- Delivery date row -->
