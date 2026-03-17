@@ -96,14 +96,14 @@ if (!isset($_SESSION))
         <!-- Orders Report -->
         <div class="report-card" onclick="location.href='report/orders_report.php'">
             <div class="card-icon orders"><i class="fa-solid fa-cart-shopping"></i></div>
-            <h3>Orders Report</h3>
+            <h3>Sales Report</h3>
             <p>Track all customer orders</p>
         </div>
 
         <!-- Products Report -->
         <div class="report-card" onclick="location.href='report/products_report.php'">
             <div class="card-icon products"><i class="fa-solid fa-box"></i></div>
-            <h3>Products Report</h3>
+            <h3>Product Report</h3>
             <p>Product performance</p>
         </div>
 
