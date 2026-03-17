@@ -119,28 +119,41 @@ $recentOrders = mysqli_query($connection, "
             </thead>
 
             <tbody>
-            <?php if (mysqli_num_rows($recentOrders) === 0): ?>
-                <tr>
-                    <td colspan="5" class="text-center text-muted">
-                        No recent orders
-                    </td>
-                </tr>
-            <?php endif; ?>
+                <?php if (mysqli_num_rows($recentOrders) === 0): ?>
+                    <tr>
+                        <td colspan="5" class="text-center text-muted">
+                            No recent orders
+                        </td>
+                    </tr>
+                <?php endif; ?>
 
-            <?php while ($row = mysqli_fetch_assoc($recentOrders)): ?>
-                <tr>
-                    <td><?= $row['Order_Id'] ?></td>
-                    <td><?= htmlspecialchars($row['Customer']) ?></td>
-                    <td><?= htmlspecialchars($row['Area_Name']) ?></td>
-                    <td>₹<?= number_format($row['Total_Amount'], 2) ?></td>
-                    <td>
-                        <span class="badge 
-                            <?= $row['Delivery_Status'] === 'Delivered' ? 'bg-success' : 'bg-warning' ?>">
-                            <?= $row['Delivery_Status'] ?>
-                        </span>
-                    </td>
-                </tr>
-            <?php endwhile; ?>
+                <?php while ($row = mysqli_fetch_assoc($recentOrders)): ?>
+                    <tr>
+                        <td><?= $row['Order_Id'] ?></td>
+                        <td><?= htmlspecialchars($row['Customer']) ?></td>
+                        <td><?= htmlspecialchars($row['Area_Name']) ?></td>
+                        <td>₹<?= number_format($row['Total_Amount'], 2) ?></td>
+                        <td>
+                            <?php
+                            $statusClass = '';
+
+                            if ($row['Delivery_Status'] === 'Delivered') {
+                                $statusClass = 'bg-success';
+                            } elseif ($row['Delivery_Status'] === 'Packed') {
+                                $statusClass = 'bg-warning text-dark';
+                            } elseif ($row['Delivery_Status'] === 'Out for Delivery') {
+                                $statusClass = 'bg-primary';
+                            } else {
+                                $statusClass = 'bg-secondary';
+                            }
+                            ?>
+
+                            <span class="badge <?= $statusClass ?>">
+                                <?= $row['Delivery_Status'] ?>
+                            </span>
+                        </td>
+                    </tr>
+                <?php endwhile; ?>
             </tbody>
 
         </table>
