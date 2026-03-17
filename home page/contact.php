@@ -7,7 +7,7 @@ if (session_status() == PHP_SESSION_NONE) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact Us | GiftShop</title>
+    <title>GiftShop | Contact Us</title>
     <link rel="stylesheet" href="../home page/style.css" />
     <link rel="stylesheet" href="contact.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
