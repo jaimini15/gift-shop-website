@@ -233,8 +233,8 @@ border-top:1px solid #ccc;
 
 <div class='company'>
 <h2>GiftShop</h2>
-<div>201/A, Maninagar, Ahmedabad</div>
-<div>Email: giftshopmaninagar@gmail.com | Phone: 9876543210</div>
+<div>201/A,Business Park,GiftShop,Maninagar,Ahmedabad,Gujarat</div>
+<div>Email: giftshopmaninagar@gmail.com | Phone:+91 9876543210</div>
 </div>
 
 </div>
