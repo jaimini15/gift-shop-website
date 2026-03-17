@@ -27,20 +27,23 @@ body {
     border-radius: 8px; 
     box-shadow: 0 0 10px rgba(0,0,0,0.1); 
 }
-input, select { 
-    width: 95%; 
+input,select { 
+    width: 105%; 
     padding: 10px; 
     margin: 10px 0; 
     font-size: 15px; 
     border: 1px solid #ccc;
     border-radius: 4px;
 }
+input{
+    width:99%;
+}
 input:focus, select:focus {
     outline: none;
     border-color: #7e2626d5;
 }
 button { 
-    width: 100%; 
+    width: 105%; 
     padding: 10px; 
     background: #7e2626d5; 
     border: 0; 
