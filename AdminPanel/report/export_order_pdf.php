@@ -14,15 +14,15 @@ $end   = $_GET['end'] ?? '';
 
 /* ================= REPORT NAME ================= */
 
-$reportName = "Orders Report";
+$reportName = "Sales Report";
 
-if($type=="daily")   $reportName="Daily Orders Report";
-if($type=="weekly")  $reportName="Weekly Orders Report";
-if($type=="monthly") $reportName="Monthly Orders Report";
-if($type=="yearly")  $reportName="Yearly Orders Report";
+if($type=="daily")   $reportName="Daily Sales Report";
+if($type=="weekly")  $reportName="Weekly Sales Report";
+if($type=="monthly") $reportName="Monthly Sales Report";
+if($type=="yearly")  $reportName="Yearly Sales Report";
 
 if($start && $end){
-$reportName = "Orders Report ($start to $end)";
+$reportName = "Sales Report ($start to $end)";
 }
 
 /* ================= FILTER CONDITION ================= */
@@ -308,4 +308,4 @@ $dompdf = new Dompdf($options);
 $dompdf->loadHtml($html);
 $dompdf->setPaper('A4','portrait');
 $dompdf->render();
-$dompdf->stream("orders_report.pdf",array("Attachment"=>0));
+$dompdf->stream("Sales_report.pdf",array("Attachment"=>0));
