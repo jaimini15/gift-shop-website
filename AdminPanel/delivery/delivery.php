@@ -25,7 +25,7 @@ include(__DIR__ . '/../db.php');
 <div class="content">
 <div class="card-box">
 
-<h3 style="font-size:26px;font-weight:bold;margin-bottom:25px;">Delivered Orders </h3>
+<h3 style="font-size:26px;font-weight:bold;margin-bottom:25px;">Delivered Order</h3>
 
 <?php
 $deliveries = mysqli_query($connection, "
