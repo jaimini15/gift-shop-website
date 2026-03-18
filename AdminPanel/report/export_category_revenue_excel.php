@@ -10,24 +10,24 @@ $period = $_GET['period'] ?? '';
 $month  = $_GET['month'] ?? '';
 
 $where = "";
-$title = "Category Revenue Report";
+$title = "Category-wise Revenue Report";
 
 /* ================= FILTER ================= */
 
 if($period=="daily"){
 $where="WHERE DATE(o.Order_Date)=CURDATE()";
-$title="Daily Category Revenue Report";
+$title="Daily Category-wise Revenue Report";
 }
 
 elseif($period=="weekly"){
 $where="WHERE YEARWEEK(o.Order_Date,1)=YEARWEEK(CURDATE(),1)";
-$title="Weekly Category Revenue Report";
+$title="Weekly Category-wise Revenue Report";
 }
 
 elseif($period=="monthly"){
 $where="WHERE MONTH(o.Order_Date)=MONTH(CURDATE())
 AND YEAR(o.Order_Date)=YEAR(CURDATE())";
-$title="Monthly Category Revenue Report";
+$title="Monthly Category-wise Revenue Report";
 }
 
 elseif($period=="yearly"){
@@ -35,11 +35,11 @@ elseif($period=="yearly"){
 if($month){
 $where="WHERE YEAR(o.Order_Date)=YEAR(CURDATE())
 AND MONTH(o.Order_Date)='$month'";
-$title="Category Revenue Report (Month $month)";
+$title="Category-wise Revenue Report (Month $month)";
 }
 else{
 $where="WHERE YEAR(o.Order_Date)=YEAR(CURDATE())";
-$title="Yearly Category Revenue Report";
+$title="Yearly Category-wise Revenue Report";
 }
 
 }
