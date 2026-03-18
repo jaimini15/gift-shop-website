@@ -235,7 +235,7 @@ $data[]=0;
 <head>
 
 <meta charset="UTF-8">
-<title>Category Revenue Report</title>
+<title>Category-wise Revenue Report</title>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
@@ -436,7 +436,7 @@ tfoot td{
 
 <div class="title-row">
 
-<h1>Category Revenue Report</h1>
+<h1>Category-wise Revenue Report</h1>
 
 <a href="http://localhost/GitHub/gift-shop-website/AdminPanel/layout.php?view=report_layout" 
 class="back-btn">
