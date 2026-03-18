@@ -23,7 +23,7 @@ include(__DIR__ . '/../db.php');
 <div class="content">
     <div class="card-box">
 
-        <h2 style="font-size:26px;font-weight:bold;margin-bottom:25px;">Manage Products</h2>
+        <h2 style="font-size:26px;font-weight:bold;margin-bottom:25px;">Products</h2>
 
         <a href="products/add_products.php" class="btn btn-primary mt-3 mb-3">+ Add Product</a>
 
@@ -47,7 +47,7 @@ include(__DIR__ . '/../db.php');
         <table class="table table-bordered table-striped">
             <thead class="table-dark">
                 <tr>
-                    <th>ID</th>
+                    <th>Sr. No</th>
                     <th>Category</th>
                     <th>Image</th>
                     <th>Default Text</th>
@@ -62,9 +62,11 @@ include(__DIR__ . '/../db.php');
             </thead>
 
             <tbody>
-                <?php while($row = mysqli_fetch_assoc($result)){ ?>
+                <?php 
+                 $sr = 1;
+                while($row = mysqli_fetch_assoc($result)){ ?>
                 <tr>
-                    <td><?= $row['Product_Id'] ?></td>
+                   <td><?= $sr++ ?></td>
                     <td><?= $row['Category_Name'] ?></td>
 
                     <td>
