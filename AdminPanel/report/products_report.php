@@ -218,7 +218,7 @@ $orderDetails[] = $row;
 
 <meta charset="UTF-8">
 
-<title>Product Sales Report</title>
+<title>Product-wise Sales Report</title>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
@@ -441,7 +441,7 @@ font-size:14px;
 <div class="container">
 
 <div class="title-row">
-<h1>Product Sales Report</h1>
+<h1>Product-wise Sales Report</h1>
 
 <a href="http://localhost/GitHub/gift-shop-website/AdminPanel/layout.php?view=report_layout" class="back-btn">
 ← Back
