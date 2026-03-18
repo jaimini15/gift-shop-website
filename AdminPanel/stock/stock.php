@@ -46,7 +46,7 @@ include(__DIR__ . '/../db.php');
         <table class="table table-bordered table-striped">
             <thead class="table-dark">
                 <tr>
-                    <th>Stock ID</th>
+                    <th>Sr. No</th>
                     <th>Product Name</th>
                     <th>Image</th>
                     <th>Available Stock</th>
@@ -56,9 +56,11 @@ include(__DIR__ . '/../db.php');
             </thead>
 
             <tbody>
-                <?php while ($row = mysqli_fetch_assoc($result)) { ?>
+                <?php
+                 $sr = 1;
+                while ($row = mysqli_fetch_assoc($result)) { ?>
                 <tr>
-                    <td><?= $row['Stock_Id'] ?></td>
+                   <td><?= $sr++ ?></td>
                     <td><?= $row['Product_Name'] ?></td>
 
                     <td>
