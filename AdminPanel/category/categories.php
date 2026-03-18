@@ -22,7 +22,7 @@ include(__DIR__ . '/../db.php');
 
 <div class="content">
     <div class="card-box">
-        <h2 style="font-size:26px;font-weight:bold;margin-bottom:25px;">Manage Categories</h2>
+        <h2 style="font-size:26px;font-weight:bold;margin-bottom:25px;">Categories</h2>
         <a href="category/add_category.php" class="btn btn-primary mt-3 mb-3">+ Add Category</a>
 
         <?php
@@ -38,7 +38,7 @@ include(__DIR__ . '/../db.php');
         <table class="table table-bordered table-striped">
             <thead class="table-dark">
                 <tr>
-                    <th>ID</th>
+                    <th>Sr. No</th>
                     <th>Category Name</th>
                     <th>Image</th> 
                     <th>Description</th>
@@ -47,9 +47,11 @@ include(__DIR__ . '/../db.php');
                 </tr>
             </thead>
             <tbody>
-                <?php while($row = mysqli_fetch_assoc($result)){ ?>
+                <?php 
+                 $sr = 1;
+                while($row = mysqli_fetch_assoc($result)){ ?>
                 <tr>
-                    <td><?= $row['Category_Id'] ?></td>
+                   <td><?= $sr++ ?></td>
                     <td><?= $row['Category_Name'] ?></td>
                     <td>
                         <?php if (!empty($row['Category_Image'])) { ?>
