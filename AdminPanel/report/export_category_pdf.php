@@ -14,12 +14,12 @@ $month  = $_GET['month'] ?? '';
 
 /* ================= REPORT NAME ================= */
 
-$reportName = "Category Revenue Report";
+$reportName = "Category-wise Revenue Report";
 
-if($period=="daily")   $reportName="Daily Category Revenue Report";
-if($period=="weekly")  $reportName="Weekly Category Revenue Report";
-if($period=="monthly") $reportName="Monthly Category Revenue Report";
-if($period=="yearly")  $reportName="Yearly Category Revenue Report";
+if($period=="daily")   $reportName="Daily Category-wise Revenue Report";
+if($period=="weekly")  $reportName="Weekly Category-wise Revenue Report";
+if($period=="monthly") $reportName="Monthly Category-wise Revenue Report";
+if($period=="yearly")  $reportName="Yearly Category-wise Revenue Report";
 
 if($period=="yearly" && $month){
 $reportName .= " - ".date("F", mktime(0,0,0,$month,10));
