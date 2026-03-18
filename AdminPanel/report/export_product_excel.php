@@ -9,30 +9,30 @@ echo "\xEF\xBB\xBF"; // for ₹ symbol
 $productFilter = $_GET['product_id'] ?? '';
 $periodFilter  = $_GET['period'] ?? '';
 
-$title = "Product Sales Report";
+$title = "Product-wise Sales Report";
 $periodCondition = "";
 
 /* FILTER LOGIC */
 
 if($periodFilter=="daily"){
 $periodCondition = "AND DATE(o.Order_Date)=CURDATE()";
-$title = "Daily Product Sales Report";
+$title = "Daily Product-wise Sales Report";
 }
 
 elseif($periodFilter=="weekly"){
 $periodCondition = "AND YEARWEEK(o.Order_Date,1)=YEARWEEK(CURDATE(),1)";
-$title = "Weekly Product Sales Report";
+$title = "Weekly Product-wise Sales Report";
 }
 
 elseif($periodFilter=="monthly"){
 $periodCondition = "AND MONTH(o.Order_Date)=MONTH(CURDATE()) 
                     AND YEAR(o.Order_Date)=YEAR(CURDATE())";
-$title = "Monthly Product Sales Report";
+$title = "Monthly Product-wise Sales Report";
 }
 
 elseif($periodFilter=="yearly"){
 $periodCondition = "AND YEAR(o.Order_Date)=YEAR(CURDATE())";
-$title = "Yearly Product Sales Report";
+$title = "Yearly Product-wise Sales Report";
 }
 
 
