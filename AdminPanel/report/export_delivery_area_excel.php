@@ -10,21 +10,21 @@ $period = $_GET['period'] ?? 'yearly';
 $month  = $_GET['month'] ?? '';
 
 $where = "";
-$title = "Delivery Area Orders Report";
+$title = "Area-wise Orders Report";
 
 /* ================= FILTER ================= */
 
 if($period=="daily"){
 
 $where = "WHERE DATE(o.Order_Date)=CURDATE()";
-$title = "Daily Delivery Area Orders Report";
+$title = "Daily Area-wise Orders Report";
 
 }
 
 elseif($period=="weekly"){
 
 $where = "WHERE YEARWEEK(o.Order_Date,1)=YEARWEEK(CURDATE(),1)";
-$title = "Weekly Delivery Area Orders Report";
+$title = "Weekly Area-wise Orders Report";
 
 }
 
@@ -33,7 +33,7 @@ elseif($period=="monthly"){
 $where = "WHERE MONTH(o.Order_Date)=MONTH(CURDATE())
 AND YEAR(o.Order_Date)=YEAR(CURDATE())";
 
-$title = "Monthly Delivery Area Orders Report";
+$title = "Monthly Area-wise Orders Report";
 
 }
 
@@ -44,13 +44,13 @@ if($month){
 $where = "WHERE YEAR(o.Order_Date)=YEAR(CURDATE())
 AND MONTH(o.Order_Date)='$month'";
 
-$title = "Delivery Area Orders Report (Month $month)";
+$title = "Area-wise Orders Report (Month $month)";
 
 }else{
 
 $where = "WHERE YEAR(o.Order_Date)=YEAR(CURDATE())";
 
-$title = "Yearly Delivery Area Orders Report";
+$title = "Yearly Area-wise Orders Report";
 
 }
 
