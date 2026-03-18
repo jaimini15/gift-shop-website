@@ -79,9 +79,7 @@ if (isset($_POST['set_packed']) && $_POST['set_packed'] === 'Packed') {
 
 <div class="content">
 <div class="card-box">
-
-<h2 style="font-size:26px;font-weight:bold;margin-bottom:25px;">Manage Orders</h2>
-
+<h2 style="font-size:26px;font-weight:bold;margin-bottom:25px;">Orders</h2>
 <?php
 // ================= FETCH NEW ORDERS =================
 $orders = mysqli_query($connection, "
