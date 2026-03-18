@@ -14,12 +14,12 @@ $month  = $_POST['month'] ?? '';
 
 /* ================= REPORT NAME ================= */
 
-$reportName = "Delivery Area Orders Report";
+$reportName = "Area-wise Orders Report";
 
-if($period=="daily")   $reportName="Daily Delivery Area Orders Report";
-if($period=="weekly")  $reportName="Weekly Delivery Area Orders Report";
-if($period=="monthly") $reportName="Monthly Delivery Area Orders Report";
-if($period=="yearly")  $reportName="Yearly Delivery Area Orders Report";
+if($period=="daily")   $reportName="Daily Area-wise Orders Report";
+if($period=="weekly")  $reportName="Weekly Area-wise Orders Report";
+if($period=="monthly") $reportName="Monthly Area-wise Orders Report";
+if($period=="yearly")  $reportName="Yearly Area-wise Orders Report";
 
 if($period=="yearly" && $month){
 $reportName .= " - ".date("F", mktime(0,0,0,$month,10));
@@ -319,5 +319,5 @@ $dompdf->loadHtml($html);
 $dompdf->setPaper('A4','portrait');
 $dompdf->render();
 
-$dompdf->stream("delivery_area_orders_report.pdf",["Attachment"=>0]);
+$dompdf->stream("area-wise_orders_report.pdf",["Attachment"=>0]);
 ?>
