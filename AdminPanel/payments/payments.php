@@ -55,7 +55,7 @@ $payments = mysqli_query($connection, "
 <table class="table table-bordered align-middle">
 <thead class="table-dark">
 <tr>
-    <th>Payment ID</th>
+    <th>Sr. No</th>
     <th>Order ID</th>
     <th>Customer</th>
     <th>Phone</th>
@@ -71,6 +71,7 @@ $payments = mysqli_query($connection, "
 <tbody>
 
 <?php
+ $sr = 1;
 if (mysqli_num_rows($payments) == 0) {
     echo '
     <tr>
@@ -97,7 +98,7 @@ while ($row = mysqli_fetch_assoc($payments)) {
     }
 ?>
 <tr>
-    <td><?= $row['Payment_Id'] ?></td>
+    <td><?= $sr++ ?></td>
     <td><?= $row['Order_Id'] ?></td>
     <td><?= htmlspecialchars($row['Customer_Name']) ?></td>
     <td><?= htmlspecialchars($row['Phone']) ?></td>
