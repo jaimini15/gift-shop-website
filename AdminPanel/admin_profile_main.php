@@ -148,8 +148,8 @@ if (!isset($_SESSION))
             <!-- Users -->
             <div class="admin-card" onclick="location.href='layout.php?view=users'">
                 <div class="card-icon users"><i class="fa-solid fa-users"></i></div>
-                <h3>Users</h3>
-                <p>Manage registered users</p>
+                <h3>Customers</h3>
+                <p>View registered Customers</p>
             </div>
 
             <!-- Categories -->
@@ -177,7 +177,7 @@ if (!isset($_SESSION))
             <div class="admin-card" onclick="location.href='layout.php?view=orders'">
                 <div class="card-icon orders"><i class="fa-solid fa-cart-shopping"></i></div>
                 <h3>Orders</h3>
-                <p>Customer orders</p>
+                <p>Customer order</p>
             </div>
 
             <!-- Payments -->
@@ -198,7 +198,7 @@ if (!isset($_SESSION))
             <div class="admin-card" onclick="location.href='layout.php?view=feedback'">
                 <div class="card-icon feedback"><i class="fa-solid fa-comments"></i></div>
                 <h3>Feedback</h3>
-                <p>User feedback & reviews</p>
+                <p>Customer feedback & reviews</p>
             </div>
             <!-- Delivery Boys -->
             <div class="admin-card" onclick="location.href='layout.php?view=delivery_boys'">
@@ -206,8 +206,6 @@ if (!isset($_SESSION))
                 <h3>Delivery Boys</h3>
                 <p>Manage delivery staff</p>
             </div>
-
-
 
             <!-- Logout -->
             <div class="admin-card" onclick="window.location.href='../login/logout.php'">
