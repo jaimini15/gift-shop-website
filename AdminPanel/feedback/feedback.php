@@ -69,7 +69,7 @@ $feedbacks = mysqli_query($connection, "
 <table class="table table-bordered align-middle">
 <thead class="table-dark">
 <tr>
-    <th>Feedback ID</th>
+    <th>Sr. No</th>
     <th>User Name</th>
     <th>Product</th>
     <th>Image</th>
@@ -81,6 +81,7 @@ $feedbacks = mysqli_query($connection, "
 <tbody>
 
 <?php
+ $sr = 1;
 if (mysqli_num_rows($feedbacks) == 0) {
     echo '
     <tr>
@@ -93,7 +94,7 @@ if (mysqli_num_rows($feedbacks) == 0) {
 while ($row = mysqli_fetch_assoc($feedbacks)) {
 ?>
 <tr>
-    <td><?= $row['Feedback_Id'] ?></td>
+    <td><?= $sr++ ?></td>
 
     <td><?= htmlspecialchars($row['User_Name'] ?? 'Unknown User') ?></td>
 

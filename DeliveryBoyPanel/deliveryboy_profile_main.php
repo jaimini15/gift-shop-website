@@ -123,7 +123,14 @@ if (!isset($_SESSION['User_Id'])) {
 
         <div class="delivery-grid">
 
-           
+            <!-- My Profile -->
+            <div class="delivery-card" onclick="window.location.href='layout.php?view=profile'">
+                <div class="card-icon profile">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+                <h3>My Profile</h3>
+                <p>View & update profile</p>
+            </div>
             <!-- Dashboard -->
             <div class="delivery-card" onclick="window.location.href='layout.php?view=dashboard'">
                 <div class="card-icon dashboard">
@@ -152,14 +159,7 @@ if (!isset($_SESSION['User_Id'])) {
                 <p>Delivered order history</p>
             </div>
 
-            <!-- My Profile -->
-            <div class="delivery-card" onclick="window.location.href='layout.php?view=profile'">
-                <div class="card-icon profile">
-                    <i class="fa-solid fa-user"></i>
-                </div>
-                <h3>My Profile</h3>
-                <p>View & update profile</p>
-            </div>
+           
 
             <!-- Logout -->
             <div class="delivery-card" onclick="window.location.href='../login/logout.php'">

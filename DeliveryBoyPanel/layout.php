@@ -145,7 +145,9 @@ ob_end_flush();
             <a href="deliveryboy_profile_main.php" class="<?= $view == 'account' ? 'active' : '' ?>">
                 <i class="fa-solid fa-house"></i> My Account
             </a>
-
+            <a href="layout.php?view=profile" class="<?= $view == 'profile' ? 'active' : '' ?>">
+                <i class="fa-solid fa-user"></i> My Profile
+            </a>
             <a href="layout.php?view=dashboard" class="<?= $view == 'dashboard' ? 'active' : '' ?>">
                 <i class="fa-solid fa-chart-line"></i> Dashboard
             </a>
@@ -157,10 +159,6 @@ ob_end_flush();
             <a href="layout.php?view=completed_deliveries"
                 class="<?= $view == 'completed_deliveries' ? 'active' : '' ?>">
                 <i class="fa-solid fa-check-circle"></i> Completed Deliveries
-            </a>
-
-            <a href="layout.php?view=profile" class="<?= $view == 'profile' ? 'active' : '' ?>">
-                <i class="fa-solid fa-user"></i> My Profile
             </a>
             <a href="../login/logout.php">
                 <i class="fa-solid fa-right-from-bracket"></i> Logout

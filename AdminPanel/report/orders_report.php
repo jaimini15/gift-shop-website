@@ -503,7 +503,7 @@ plugins:{
 
 title:{
 display:true,
-text:'Orders & Revenue Report',
+text:'Sales & Revenue Report',
 font:{size:18}
 },
 

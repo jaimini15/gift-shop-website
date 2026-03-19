@@ -34,12 +34,12 @@ $productName=$row['Product_Name'];
 
 /* ================= REPORT NAME ================= */
 
-$reportName = "Product Sales Report";
+$reportName = "Product-wise Sales Report";
 
-if($periodFilter=="daily")   $reportName="Daily Product Sales Report";
-if($periodFilter=="weekly")  $reportName="Weekly Product Sales Report";
-if($periodFilter=="monthly") $reportName="Monthly Product Sales Report";
-if($periodFilter=="yearly")  $reportName="Yearly Product Sales Report";
+if($periodFilter=="daily")   $reportName="Daily Product-wise Sales Report";
+if($periodFilter=="weekly")  $reportName="Weekly Product-wise Sales Report";
+if($periodFilter=="monthly") $reportName="Monthly Product-wise Sales Report";
+if($periodFilter=="yearly")  $reportName="Yearly Product-wise Sales Report";
 
 /* ================= PERIOD CONDITION ================= */
 

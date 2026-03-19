@@ -173,7 +173,7 @@ ob_end_flush();
                 <i class="fa-solid fa-file-lines"></i> Report
             </a>
             <a href="layout.php?view=users" class="<?= $view == 'users' ? 'active' : '' ?>">
-                <i class="fa-solid fa-users"></i> Users
+                <i class="fa-solid fa-users"></i> Customers
             </a>
 
             <a href="layout.php?view=categories" class="<?= $view == 'categories' ? 'active' : '' ?>">

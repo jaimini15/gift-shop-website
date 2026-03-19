@@ -121,7 +121,7 @@ td:nth-child(9) {
 <table class="table table-bordered table-striped">
 <thead class="table-dark">
 <tr>
-    <th>ID</th>
+    <th>Sr. No</th>
     <th>Name</th>
     <th>Email</th>
     <th>Phone</th>
@@ -143,9 +143,11 @@ td:nth-child(9) {
 </tr>
 <?php endif; ?>
 
-<?php while ($row = mysqli_fetch_assoc($result)): ?>
+<?php 
+ $sr = 1;
+while ($row = mysqli_fetch_assoc($result)): ?>
 <tr>
-    <td><?= $row['User_Id'] ?></td>
+   <td><?= $sr++ ?></td>
 
     <td>
         <?= htmlspecialchars($row['First_Name'] . ' ' . $row['Last_Name']) ?>

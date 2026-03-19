@@ -186,7 +186,7 @@ if (empty($labels)) {
 <head>
 
     <meta charset="UTF-8">
-    <title>Delivery Area Report</title>
+    <title>Area-wise Orders Report</title>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
@@ -396,7 +396,7 @@ tfoot td{
 
         <div class="title-row">
 
-            <h1>Delivery Area Orders Report</h1>
+            <h1>Area-wise Orders Report</h1>
 
             <a href="http://localhost/GitHub/gift-shop-website/AdminPanel/layout.php?view=report_layout"
                 class="back-btn">

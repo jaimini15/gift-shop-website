@@ -117,7 +117,7 @@ td:nth-child(3){
 <div class="card-box">
 
     <h2 style="font-size:26px;font-weight:bold;margin-bottom:25px;">
-        <i class="fa-solid fa-motorcycle"></i> Delivery Boys
+        <i class="fa-solid fa-motorcycle"></i> Delivery Boy
     </h2>
 
     <a href="delivery_boy/add_delivery_boy.php" class="btn btn-primary mb-3">
@@ -127,7 +127,7 @@ td:nth-child(3){
     <table class="table table-bordered table-striped">
         <thead class="table-dark">
             <tr>
-                <th>ID</th>
+                <th>Sr. No</th>
                 <th>Name</th>
                 <th>Email</th>
                 <th>Phone</th>
@@ -142,9 +142,11 @@ td:nth-child(3){
         </thead>
 
         <tbody>
-        <?php while ($row = mysqli_fetch_assoc($result)) { ?>
+        <?php 
+        $sr = 1;
+        while ($row = mysqli_fetch_assoc($result)) { ?>
             <tr>
-                <td><?= $row['User_Id'] ?></td>
+                <td><?= $sr++ ?></td>
                 <td><?= $row['First_Name'] . ' ' . $row['Last_Name'] ?></td>
                 <td><?= str_replace('@', '@<wbr>', $row['Email']) ?></td>
                 <td><?= $row['Phone'] ?></td>
