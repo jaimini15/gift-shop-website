@@ -44,7 +44,7 @@ include(__DIR__ . '/../db.php');
 <div class="content">
 <div class="card-box">
 
-<h3 style="font-size:26px;font-weight:bold;margin-bottom:25px;">Feedback Details</h3>
+<h3 style="font-size:26px;font-weight:bold;margin-bottom:25px;">Feedback Detail</h3>
 
 <?php
 $feedbacks = mysqli_query($connection, "
@@ -70,7 +70,7 @@ $feedbacks = mysqli_query($connection, "
 <thead class="table-dark">
 <tr>
     <th>Sr. No</th>
-    <th>User Name</th>
+    <th>Customer Name</th>
     <th>Product</th>
     <th>Image</th>
     <th>Rating</th>
