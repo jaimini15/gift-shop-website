@@ -68,7 +68,7 @@ $orders = mysqli_query($connection, "
                 ?>
                     <tr>
                         <td colspan="9" class="text-center text-muted">
-                            No completed deliveries found
+                           No completed delivery records found
                         </td>
                     </tr>
                 <?php
