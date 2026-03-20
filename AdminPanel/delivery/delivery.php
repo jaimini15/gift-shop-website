@@ -12,11 +12,25 @@ include(__DIR__ . '/../db.php');
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
-   <style>
-        body { background: #ffffff;font-family: Arial, sans-serif; }
-        .content { margin-left: 0px; padding: 0px;  }
-        .card-box { background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
-        
+    <style>
+        body {
+            background: #ffffff;
+            font-family: Arial, sans-serif;
+        }
+        .content {
+            margin-left: 0;
+            padding: 0;
+        }
+        .card-box {
+            background: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+        .date-row td {
+            background: #f8f9fa;
+            font-weight: bold;
+        }
     </style>
 </head>
 
@@ -48,7 +62,7 @@ $deliveries = mysqli_query($connection, "
     JOIN user_details u ON u.User_Id = o.User_Id
     LEFT JOIN area_details a ON a.Area_Id = d.Area_Id
 
-    WHERE d.Delivery_Status IN ('Packed','Out of Delivery','Delivered')
+    WHERE d.Delivery_Status IN ('Packed','Out for Delivery','Delivered')
     ORDER BY o.Order_Date DESC
 ");
 ?>
@@ -78,6 +92,7 @@ $lastDate = null;
 
 while ($row = mysqli_fetch_assoc($deliveries)) {
 
+    // Date grouping
     if ($lastDate !== $row['Order_Date']) {
         echo '
         <tr class="date-row">
@@ -86,6 +101,20 @@ while ($row = mysqli_fetch_assoc($deliveries)) {
             </td>
         </tr>';
         $lastDate = $row['Order_Date'];
+    }
+
+    // Status badge logic
+    $status = $row['Delivery_Status'];
+    $badge = '';
+
+    if ($status === 'Packed') {
+        $badge = '<span class="badge bg-warning text-dark">Packed</span>';
+    } elseif ($status === 'Out for Delivery') {
+        $badge = '<span class="badge bg-primary">Out for Delivery</span>';
+    } elseif ($status === 'Delivered') {
+        $badge = '<span class="badge bg-success">Delivered</span>';
+    } else {
+        $badge = '<span class="badge bg-secondary">Unknown</span>';
     }
 ?>
         <tr>
@@ -96,17 +125,7 @@ while ($row = mysqli_fetch_assoc($deliveries)) {
             <td><?= date("d-m-Y", strtotime($row['Order_Date'])) ?></td>
             <td>₹<?= number_format($row['Total_Amount'], 2) ?></td>
             <td><?= htmlspecialchars($row['Phone']) ?></td>
-            <td>
-                <?php
-                if ($row['Delivery_Status'] === 'Packed') {
-                    echo '<span class="badge bg-warning text-dark">Packed</span>';
-                } elseif ($row['Delivery_Status'] === 'Out of Delivery') {
-                    echo '<span class="badge bg-primary">Out of Delivery</span>';
-                } else {
-                    echo '<span class="badge bg-success">Delivered</span>';
-                }
-                ?>
-            </td>
+            <td><?= $badge ?></td>
             <td>
                 <?= $row['Delivery_Date']
                     ? date("d-m-Y h:i A", strtotime($row['Delivery_Date']))
