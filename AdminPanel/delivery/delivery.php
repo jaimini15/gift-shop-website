@@ -8,7 +8,7 @@ include(__DIR__ . '/../db.php');
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Delivered Orders</title>
+    <title>Delivery Status</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
@@ -25,7 +25,7 @@ include(__DIR__ . '/../db.php');
 <div class="content">
 <div class="card-box">
 
-<h3 style="font-size:26px;font-weight:bold;margin-bottom:25px;">Delivered Order</h3>
+<h3 style="font-size:26px;font-weight:bold;margin-bottom:25px;">Delivery Status</h3>
 
 <?php
 $deliveries = mysqli_query($connection, "
