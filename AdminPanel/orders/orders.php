@@ -51,7 +51,7 @@ if (isset($_POST['set_packed']) && $_POST['set_packed'] === 'Packed') {
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Orders - Admin Panel</title>
+<title>Order - Admin Panel</title>
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 
@@ -79,7 +79,7 @@ if (isset($_POST['set_packed']) && $_POST['set_packed'] === 'Packed') {
 
 <div class="content">
 <div class="card-box">
-<h2 style="font-size:26px;font-weight:bold;margin-bottom:25px;">Orders</h2>
+<h2 style="font-size:26px;font-weight:bold;margin-bottom:25px;">Order</h2>
 <?php
 // ================= FETCH NEW ORDERS =================
 $orders = mysqli_query($connection, "
@@ -133,7 +133,7 @@ $lastDate = null;
 <div class="order-header mb-3">
 <div class="row mb-2">
     <div class="col-md-3"><strong>Order ID:</strong> <?= $order['Order_Id'] ?></div>
-    <div class="col-md-3"><strong>User ID:</strong> <?= $order['User_Id'] ?></div>
+    <div class="col-md-3"><strong>Customer ID:</strong> <?= $order['User_Id'] ?></div>
     <div class="col-md-3"><strong>Date:</strong> <?= $order['Order_Date'] ?></div>
     <div class="col-md-3"><strong>Status:</strong> <?= $order['Status'] ?></div>
 </div>
@@ -171,7 +171,7 @@ $lastDate = null;
 <table class="table table-bordered mb-5">
 <thead>
 <tr>
-    <th>Item ID</th>
+    <th>Sr. No</th>
     <th>Product ID</th>
     <th>Qty</th>
     <th>Price</th>
@@ -182,12 +182,14 @@ $lastDate = null;
 <tbody>
 
 <?php
+$sr = 1;
+
 $items = mysqli_query($connection,
     "SELECT * FROM order_item WHERE Order_Id = {$order['Order_Id']}");
 while ($item = mysqli_fetch_assoc($items)):
 ?>
 <tr>
-    <td><?= $item['Order_Item_Id'] ?></td>
+    <td><?= $sr++ ?></td>
     <td><?= $item['Product_Id'] ?></td>
     <td><?= $item['Quantity'] ?></td>
     <td>₹<?= number_format($item['Price_Snapshot'],2) ?></td>
