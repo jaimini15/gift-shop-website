@@ -136,34 +136,34 @@ if (!isset($_SESSION))
             <div class="admin-card" onclick="location.href='layout.php?view=dashboard'">
                 <div class="card-icon dashboard"><i class="fa-solid fa-chart-line"></i></div>
                 <h3>Dashboard</h3>
-                <p>Admin overview & stats</p>
+                <p>Admin overview </p>
             </div>
             <!-- Report -->
 
             <div class="admin-card" onclick="location.href='layout.php?view=report_layout'">
                 <div class="card-icon report"><i class="fa-solid fa-file-lines"></i></div>
-                <h3>Reports</h3>
-                <p>View sales & order reports</p>
+                <h3>Report</h3>
+                <p>View sales & order report</p>
             </div>
             <!-- Users -->
             <div class="admin-card" onclick="location.href='layout.php?view=users'">
                 <div class="card-icon users"><i class="fa-solid fa-users"></i></div>
-                <h3>Customers</h3>
-                <p>View registered Customers</p>
+                <h3>Customer</h3>
+                <p>View registered Customer</p>
             </div>
 
             <!-- Categories -->
             <div class="admin-card" onclick="location.href='layout.php?view=categories'">
                 <div class="card-icon categories"><i class="fa-solid fa-layer-group"></i></div>
-                <h3>Categories</h3>
-                <p>Manage product categories</p>
+                <h3>Category</h3>
+                <p>Manage product category</p>
             </div>
 
             <!-- Products -->
             <div class="admin-card" onclick="location.href='layout.php?view=products'">
                 <div class="card-icon products"><i class="fa-solid fa-box"></i></div>
-                <h3>Products</h3>
-                <p>Add & manage products</p>
+                <h3>Product</h3>
+                <p>Add & manage product</p>
             </div>
 
             <!-- Stock -->
@@ -176,15 +176,15 @@ if (!isset($_SESSION))
             <!-- Orders -->
             <div class="admin-card" onclick="location.href='layout.php?view=orders'">
                 <div class="card-icon orders"><i class="fa-solid fa-cart-shopping"></i></div>
-                <h3>Orders</h3>
+                <h3>Order</h3>
                 <p>Customer order</p>
             </div>
 
             <!-- Payments -->
             <div class="admin-card" onclick="location.href='layout.php?view=payments'">
                 <div class="card-icon payments"><i class="fa-solid fa-credit-card"></i></div>
-                <h3>Payments</h3>
-                <p>Transaction details</p>
+                <h3>Payment</h3>
+                <p>Transaction detail</p>
             </div>
 
             <!-- Delivery -->
@@ -198,12 +198,12 @@ if (!isset($_SESSION))
             <div class="admin-card" onclick="location.href='layout.php?view=feedback'">
                 <div class="card-icon feedback"><i class="fa-solid fa-comments"></i></div>
                 <h3>Feedback</h3>
-                <p>Customer feedback & reviews</p>
+                <p>Customer feedback & review</p>
             </div>
             <!-- Delivery Boys -->
             <div class="admin-card" onclick="location.href='layout.php?view=delivery_boys'">
                 <div class="card-icon deliveryboys"><i class="fa-solid fa-motorcycle"></i></div>
-                <h3>Delivery Boys</h3>
+                <h3>Delivery Boy</h3>
                 <p>Manage delivery staff</p>
             </div>
 
