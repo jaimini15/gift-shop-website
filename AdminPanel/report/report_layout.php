@@ -87,7 +87,7 @@ if (!isset($_SESSION))
 <div class="report-container">
 
     <div class="report-title">
-        Reports & Analytics
+        Report & Analysis
     </div>
 
     <div class="report-grid">
@@ -97,13 +97,13 @@ if (!isset($_SESSION))
         <div class="report-card" onclick="location.href='report/orders_report.php'">
             <div class="card-icon orders"><i class="fa-solid fa-cart-shopping"></i></div>
             <h3>Sales Report</h3>
-            <p>Track all customer orders</p>
+            <p>Track all customer order</p>
         </div>
 
         <!-- Products Report -->
         <div class="report-card" onclick="location.href='report/products_report.php'">
             <div class="card-icon products"><i class="fa-solid fa-box"></i></div>
-            <h3>Product Report</h3>
+            <h3>Product-wise Sales Report</h3>
             <p>Product performance</p>
         </div>
 
@@ -118,15 +118,15 @@ if (!isset($_SESSION))
         <!-- Category Wise Revenue -->
         <div class="report-card" onclick="location.href='report/categories_report.php'">
             <div class="card-icon products"><i class="fa-solid fa-layer-group"></i></div>
-            <h3>Category Revenue</h3>
-            <p>Revenue based on product categories</p>
+            <h3>Category-wise Revenue</h3>
+            <p>Revenue based on product category</p>
         </div>
 
         <!-- Delivery Status Report -->
         <div class="report-card" onclick="location.href='report/delivery_status_report.php'">
             <div class="card-icon orders"><i class="fa-solid fa-truck"></i></div>
             <h3>Delivery Status</h3>
-            <p>Track delivered and pending orders</p>
+            <p>Track delivered and pending order</p>
         </div>
 
         <!-- Top & Low Selling Products -->
@@ -147,7 +147,7 @@ if (!isset($_SESSION))
         <div class="report-card" onclick="location.href='report/delivery_area_report.php'">
             <div class="card-icon orders"><i class="fa-solid fa-map-location-dot"></i></div>
             <h3>Delivery Area Distribution</h3>
-            <p>Orders grouped by delivery location</p>
+            <p>Order grouped by delivery location</p>
         </div>
     </div>
 

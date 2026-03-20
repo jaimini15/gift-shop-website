@@ -104,13 +104,13 @@ if (isset($_POST['add'])) {
         </div>
 
         <div class="mb-3">
-            <label class="form-label">Full Address</label>
+            <label class="form-label">Address</label>
             <textarea name="address" class="form-control" required></textarea>
         </div>
 
         <!-- AREA ASSIGNMENT -->
         <div class="mb-3">
-            <label class="form-label">Assign Delivery Areas</label>
+            <label class="form-label">Allocate Delivery Area</label>
             <div class="border rounded p-3">
                 <?php while ($row = mysqli_fetch_assoc($areas)) { ?>
                     <div class="form-check">

@@ -173,15 +173,15 @@ ob_end_flush();
                 <i class="fa-solid fa-file-lines"></i> Report
             </a>
             <a href="layout.php?view=users" class="<?= $view == 'users' ? 'active' : '' ?>">
-                <i class="fa-solid fa-users"></i> Customers
+                <i class="fa-solid fa-users"></i> Customer
             </a>
 
             <a href="layout.php?view=categories" class="<?= $view == 'categories' ? 'active' : '' ?>">
-                <i class="fa-solid fa-layer-group"></i> Categories
+                <i class="fa-solid fa-layer-group"></i> Category
             </a>
 
             <a href="layout.php?view=products" class="<?= $view == 'products' ? 'active' : '' ?>">
-                <i class="fa-solid fa-box"></i> Products
+                <i class="fa-solid fa-box"></i> Product
             </a>
 
             <a href="layout.php?view=stock" class="<?= $view == 'stock' ? 'active' : '' ?>">
@@ -189,11 +189,11 @@ ob_end_flush();
             </a>
 
             <a href="layout.php?view=orders" class="<?= $view == 'orders' ? 'active' : '' ?>">
-                <i class="fa-solid fa-cart-shopping"></i> Orders
+                <i class="fa-solid fa-cart-shopping"></i> Order
             </a>
 
             <a href="layout.php?view=payments" class="<?= $view == 'payments' ? 'active' : '' ?>">
-                <i class="fa-solid fa-credit-card"></i> Payments
+                <i class="fa-solid fa-credit-card"></i> Payment
             </a>
 
             <a href="layout.php?view=delivery" class="<?= $view == 'delivery' ? 'active' : '' ?>">
@@ -205,7 +205,7 @@ ob_end_flush();
             </a>
             
             <a href="layout.php?view=delivery_boys" class="<?= $view == 'delivery_boys' ? 'active' : '' ?>">
-                <i class="fa-solid fa-motorcycle"></i> Delivery Boys
+                <i class="fa-solid fa-motorcycle"></i> Delivery Boy
             </a>
 
 

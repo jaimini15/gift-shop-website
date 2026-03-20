@@ -22,7 +22,7 @@ include(__DIR__ . '/../db.php');
 
 <div class="content">
     <div class="card-box">
-        <h2 style="font-size:26px;font-weight:bold;margin-bottom:25px;">Categories</h2>
+        <h2 style="font-size:26px;font-weight:bold;margin-bottom:25px;">Category</h2>
         <a href="category/add_category.php" class="btn btn-primary mt-3 mb-3">+ Add Category</a>
 
         <?php

@@ -160,7 +160,7 @@ $areas = mysqli_query(
 
 <!-- ===================== FORM ===================== -->
 <div class="card-box">
-<h2 style="font-size:26px;font-weight:bold;margin-bottom:25px;">Edit Admin Profile</h2>
+<h2 style="font-size:26px;font-weight:bold;margin-bottom:25px;">Edit Profile</h2>
 
 <?php if (!empty($error)) { ?>
     <p style="color:red"><?= $error ?></p>

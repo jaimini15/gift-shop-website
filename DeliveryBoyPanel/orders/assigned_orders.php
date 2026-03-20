@@ -66,7 +66,7 @@ $orders = mysqli_query($connection, "
 
 <head>
     <meta charset="UTF-8">
-    <title>Assigned Orders</title>
+    <title>Assign Orders</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
@@ -89,7 +89,7 @@ $orders = mysqli_query($connection, "
 <body>
 
     <div class="container mt-4">
-        <h3 style="font-size:26px;font-weight:bold;margin-bottom:25px;">Assigned Orders</h3>
+        <h3 style="font-size:26px;font-weight:bold;margin-bottom:25px;">Assigned Order</h3>
 
         <div class="card p-3">
             <table class="table table-bordered align-middle">
@@ -113,7 +113,7 @@ $orders = mysqli_query($connection, "
                         echo '
                 <tr>
                     <td colspan="9" class="text-center text-muted">
-                        No assigned orders
+                        No order aasign
                     </td>
                 </tr>';
                     }

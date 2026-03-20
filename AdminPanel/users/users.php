@@ -115,7 +115,7 @@ td:nth-child(9) {
 <div class="card-box">
 
 <h2 style="font-size:26px;font-weight:bold;margin-bottom:25px;">
-    Customers
+    Customer
 </h2>
 
 <table class="table table-bordered table-striped">

@@ -153,7 +153,7 @@ ob_end_flush();
             </a>
 
             <a href="layout.php?view=assigned_orders" class="<?= $view == 'assigned_orders' ? 'active' : '' ?>">
-                <i class="fa-solid fa-box"></i> Assigned Orders
+                <i class="fa-solid fa-box"></i> Assign Order
             </a>
 
             <a href="layout.php?view=completed_deliveries"

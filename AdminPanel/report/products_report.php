@@ -567,7 +567,7 @@ Product : <?=$productName?>
 <?php } else { ?>
 
 <tr>
-<td colspan="4">No Orders Found</td>
+<td colspan="4">No Order Found</td>
 </tr>
 
 <?php } ?>
