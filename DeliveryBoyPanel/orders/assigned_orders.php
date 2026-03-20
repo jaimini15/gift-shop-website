@@ -89,7 +89,7 @@ $orders = mysqli_query($connection, "
 <body>
 
     <div class="container mt-4">
-        <h3 class="mb-4 fw-bold">Assigned Orders</h3>
+        <h3 style="font-size:26px;font-weight:bold;margin-bottom:25px;">Assigned Orders</h3>
 
         <div class="card p-3">
             <table class="table table-bordered align-middle">
