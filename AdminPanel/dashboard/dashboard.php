@@ -125,19 +125,19 @@ $recentOrders = mysqli_query($connection, "
         <div class="row g-4">
             <div class="col-md-4">
                 <div class="card p-3 text-center">
-                    <h6>Total Users</h6>
+                    <h6>Total Customer</h6>
                     <h3><?= $totalUsers ?></h3>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="card p-3 text-center">
-                    <h6>Total Products</h6>
+                    <h6>Total Product</h6>
                     <h3><?= $totalProducts ?></h3>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="card p-3 text-center">
-                    <h6>Today’s Orders</h6>
+                    <h6>Today's Order</h6>
                     <h3><?= $totalOrders ?></h3>
                 </div>
             </div>
@@ -145,7 +145,7 @@ $recentOrders = mysqli_query($connection, "
 
         <!-- ================= RECENT ORDERS ================= -->
         <div class="mt-5 card p-4">
-            <h4 style="font-size:20px">Recent Orders</h4>
+            <h4 style="font-size:20px">Recent Order</h4>
 
             <table class="table table-bordered mt-3">
                 <thead class="table-dark">
