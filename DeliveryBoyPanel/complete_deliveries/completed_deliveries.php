@@ -42,7 +42,7 @@ $orders = mysqli_query($connection, "
 
 <div class="container-fluid mt-4">
 
-    <h3 style="font-size:26px;font-weight:bold;margin-bottom:25px;">Completed Deliveries</h3>
+    <h3 style="font-size:26px;font-weight:bold;margin-bottom:25px;">Delivery History</h3>
 
     <div class="card shadow-sm">
         <div class="card-body">
