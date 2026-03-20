@@ -158,7 +158,7 @@ ob_end_flush();
 
             <a href="layout.php?view=completed_deliveries"
                 class="<?= $view == 'completed_deliveries' ? 'active' : '' ?>">
-                <i class="fa-solid fa-check-circle"></i> Completed Deliveries
+                <i class="fa-solid fa-check-circle"></i> Delivery History
             </a>
             <a href="../login/logout.php">
                 <i class="fa-solid fa-right-from-bracket"></i> Logout
