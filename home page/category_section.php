@@ -1,10 +1,9 @@
 <?php include("../AdminPanel/db.php"); ?>
 
 <section class="home-package" id="categories" style="padding-top:20px">
-    <h1 class="heading-title" style="">Our Categories</h1>
+    <h1 class="heading-title" style="">Start Exploring</h1>
 
     <div class="box-container" style="max-height:450px;">
-
         <?php
         $query = "SELECT * FROM category_details WHERE Status='Enabled'";
         $result = mysqli_query($connection, $query);
