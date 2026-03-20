@@ -160,7 +160,7 @@ if (isset($_POST['update'])) {
 
         <!-- AREA ASSIGNMENT -->
         <div class="mb-3">
-            <label>Assign Delivery Areas</label>
+            <label>Allocate Delivery Area</label>
             <div class="border rounded p-3">
                 <?php while ($row = mysqli_fetch_assoc($areas)) { ?>
                     <div class="form-check">
