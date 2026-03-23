@@ -12,8 +12,7 @@ $data=[];
 $tableData=[];
 $totalRevenue=0;
 
-/* ================= DEFAULT REPORT ================= */
-/* TOTAL CATEGORY REVENUE */
+/* TOTAL CATEGORY-WISE REVENUE */
 
 if(!$periodFilter){
 
@@ -36,7 +35,7 @@ ORDER BY c.Category_Name,o.Order_Date DESC
 
 }
 
-/* ================= DAILY ================= */
+/*DAILY */
 
 elseif($periodFilter=="daily"){
 
@@ -54,7 +53,7 @@ GROUP BY c.Category_Id
 
 }
 
-/* ================= WEEKLY ================= */
+/*WEEKLY */
 
 elseif($periodFilter=="weekly"){
 
@@ -72,7 +71,7 @@ GROUP BY c.Category_Id
 
 }
 
-/* ================= MONTHLY ================= */
+/*MONTHLY */
 
 elseif($periodFilter=="monthly"){
 
@@ -91,7 +90,7 @@ GROUP BY c.Category_Id
 
 }
 
-/* ================= YEARLY ================= */
+/* YEARLY*/
 
 elseif($periodFilter=="yearly"){
 
@@ -133,7 +132,7 @@ ORDER BY month_no
 }
 
 }
-/* ================= TABLE DATA ================= */
+/* TABLE */
 
 $whereCondition="";
 
@@ -204,7 +203,7 @@ $tableData[]=$row;
 $totalRevenue += $row['revenue'];
 
 }
-/* ================= EXECUTE CHART QUERY ================= */
+/* EXECUTE CHART QUERY  */
 
 $result = mysqli_query($connection,$query);
 
@@ -247,14 +246,10 @@ body{
     margin:0;
     color:#333;
 }
-
-/* MAIN CONTAINER */
 .container{
     width:94%;
     margin:15px auto;
 }
-
-/* TITLE */
 h1{
     color:#7e2626d5;
     margin-bottom:12px;
@@ -263,8 +258,6 @@ h1{
     border-left:5px solid #7e2626d5;
     padding-left:8px;
 }
-
-/* FILTER */
 .filter-row{
     display:flex;
     gap:10px;
@@ -292,8 +285,6 @@ h1{
     font-size:13px;
     min-width:120px;
 }
-
-/* BUTTON */
 button{
     background:#7e2626d5;
     color:white;
@@ -309,8 +300,6 @@ button{
 button:hover{
     background:#5f1d1d;
 }
-
-/* EXPORT BUTTONS */
 .pdf-btn,
 .excel-btn{
     padding:6px 12px;
@@ -328,8 +317,6 @@ button:hover{
 .excel-btn{
     background:#27ae60;
 }
-
-/* SUMMARY */
 .summary{
     display:flex;
     gap:12px;
@@ -358,8 +345,6 @@ button:hover{
     margin-left:auto;
     margin-right:auto;
 }
-
-/* TITLE ROW */
 .title-row{
     display:flex;
     justify-content:space-between;
