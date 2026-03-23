@@ -12,7 +12,7 @@ $data = [];
 $tableData = [];
 $totalOrders = 0;
 
-/* ================= DAILY ================= */
+/* DAILY */
 
 if ($periodFilter == "daily") {
 
@@ -29,7 +29,7 @@ GROUP BY a.Area_Id
 
 }
 
-/* ================= WEEKLY ================= */ elseif ($periodFilter == "weekly") {
+/* WEEKLY*/ elseif ($periodFilter == "weekly") {
 
     $query = "
 SELECT 
@@ -44,7 +44,7 @@ GROUP BY a.Area_Id
 
 }
 
-/* ================= MONTHLY ================= */ elseif ($periodFilter == "monthly") {
+/* MONTHLY */ elseif ($periodFilter == "monthly") {
 
     $query = "
 SELECT 
@@ -60,7 +60,8 @@ GROUP BY a.Area_Id
 
 }
 
-/* ================= YEARLY ================= */ elseif ($periodFilter == "yearly") {
+/*YEARLY */ 
+elseif ($periodFilter == "yearly") {
 
     if ($monthFilter) {
 
@@ -93,7 +94,7 @@ ORDER BY month_no
 
 }
 
-/* ================= TABLE DATA ================= */
+/*TABLE DATA */
 
 $whereCondition = "";
 
@@ -155,7 +156,7 @@ while ($row = mysqli_fetch_assoc($tableResult)) {
 
 }
 
-/* ================= EXECUTE CHART QUERY ================= */
+/*EXECUTE CHART QUERY */
 
 $result = mysqli_query($connection, $query);
 
@@ -200,14 +201,10 @@ body{
     margin:0;
     color:#333;
 }
-
-/* MAIN CONTAINER */
 .container{
     width:94%;
     margin:15px auto;
 }
-
-/* TITLE */
 h1{
     color:#7e2626d5;
     margin-bottom:12px;
@@ -272,7 +269,7 @@ button:hover{
     text-decoration:none;
     background:#c0392b;
 }
-/* EXPORT BUTTONS */
+/* PDF AND EXCEL BUTTONS*/
 
 .pdf-btn,
 .excel-btn{
@@ -317,8 +314,6 @@ background:#27ae60;
     margin-right:auto;
     height:350px;
 }
-
-/* TITLE ROW */
 .title-row{
     display:flex;
     justify-content:space-between;
