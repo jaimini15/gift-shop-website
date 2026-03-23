@@ -5,7 +5,7 @@ if (!isset($_SESSION)) {
 
 include(__DIR__ . '/../db.php');
 
-/* ================= STATUS FILTER ================= */
+/* STATUS FILTER */
 
 $statusFilter = $_GET['status'] ?? '';
 
@@ -15,7 +15,7 @@ $tableData = [];
 $totalOrders = 0;
 
 
-/* ================= CHART QUERY ================= */
+/* CHART QUERY  */
 
 $chartWhere = "";
 
@@ -68,7 +68,7 @@ $data[]=0;
 }
 
 
-/* ================= TABLE FILTER ================= */
+/* TABLE FILTER */
 
 $whereCondition="";
 
@@ -84,7 +84,7 @@ $whereCondition="WHERE d.Delivery_Status='$statusFilter'";
 }
 
 
-/* ================= TABLE QUERY ================= */
+/* TABLE QUERY */
 
 $tableQuery="
 
@@ -200,8 +200,6 @@ border-radius:4px;
 font-size:13px;
 min-width:120px;
 }
-/* TITLE ROW */
-
 .title-row{
 display:flex;
 justify-content:space-between;
@@ -237,7 +235,7 @@ button:hover{
 background:#5f1d1d;
 }
 
-/* EXPORT BUTTONS */
+/* PDF AND EXCEL BUTTONS */
 
 .pdf-btn{
 background:#c0392b;
