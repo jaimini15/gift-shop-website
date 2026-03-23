@@ -1,7 +1,5 @@
 <?php
 include("../db.php");
-
-/* UTF-8 FIX */
 header("Content-Type: application/vnd.ms-excel; charset=UTF-8");
 header("Content-Disposition: attachment; filename=sales_report.xls");
 echo "\xEF\xBB\xBF";
@@ -12,8 +10,6 @@ $end   = $_GET['end'] ?? '';
 
 $tableWhere = "WHERE 1";
 $title = "Sales Report";
-
-/* ===== FILTER LOGIC ===== */
 
 if($type=="daily"){
 $tableWhere .= " AND DATE(Order_Date)=CURDATE()";
@@ -41,8 +37,6 @@ $tableWhere .= " AND DATE(Order_Date) BETWEEN '$start' AND '$end'";
 $title = "Sales Report ($start to $end)";
 }
 
-/* ===== QUERY ===== */
-
 $query = mysqli_query($connection,"
 SELECT 
 o.Order_Id,
@@ -57,7 +51,7 @@ $tableWhere
 ORDER BY o.Order_Date DESC
 ");
 
-/* ===== TABLE ===== */
+/*TABLE*/
 
 echo "<table border='1' style='border-collapse:collapse;font-family:Segoe UI;'>";
 
