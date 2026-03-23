@@ -1,7 +1,5 @@
 <?php
 include("../db.php");
-
-/* UTF-8 FIX */
 header("Content-Type: application/vnd.ms-excel; charset=UTF-8");
 header("Content-Disposition: attachment; filename=delivery_status_report.xls");
 echo "\xEF\xBB\xBF"; // for ₹ symbol
@@ -37,7 +35,7 @@ CONCAT(u.First_Name,' ',u.Last_Name) AS customer,
 d.Delivery_Address,
 a.Area_Name,
 
-/* ✅ DELIVERY BOY */
+/* DELIVERY BOY */
 CONCAT(db.First_Name,' ',db.Last_Name) AS delivery_boy,
 
 DATE(o.Order_Date) AS order_date,
@@ -61,7 +59,6 @@ ON o.User_Id=u.User_Id
 LEFT JOIN area_details a
 ON d.Area_Id=a.Area_Id
 
-/* 🔥 DELIVERY BOY JOIN */
 LEFT JOIN delivery_area_map dam
 ON dam.area_id = d.Area_Id AND dam.status='ACTIVE'
 
