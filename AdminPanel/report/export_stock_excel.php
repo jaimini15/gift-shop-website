@@ -1,7 +1,5 @@
 <?php
 include("../db.php");
-
-/* UTF-8 FIX */
 header("Content-Type: application/vnd.ms-excel; charset=UTF-8");
 header("Content-Disposition: attachment; filename=stock_report.xls");
 echo "\xEF\xBB\xBF";
