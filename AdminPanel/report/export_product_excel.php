@@ -1,7 +1,5 @@
 <?php
 include("../db.php");
-
-/* UTF-8 FIX */
 header("Content-Type: application/vnd.ms-excel; charset=UTF-8");
 header("Content-Disposition: attachment; filename=product_sales_report.xls");
 echo "\xEF\xBB\xBF"; // for ₹ symbol
@@ -11,8 +9,6 @@ $periodFilter  = $_GET['period'] ?? '';
 
 $title = "Product-wise Sales Report";
 $periodCondition = "";
-
-/* FILTER LOGIC */
 
 if($periodFilter=="daily"){
 $periodCondition = "AND DATE(o.Order_Date)=CURDATE()";
