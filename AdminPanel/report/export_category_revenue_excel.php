@@ -1,7 +1,5 @@
 <?php
 include("../db.php");
-
-/* UTF-8 FIX for ₹ symbol */
 header("Content-Type: application/vnd.ms-excel; charset=UTF-8");
 header("Content-Disposition: attachment; filename=category_revenue_report.xls");
 echo "\xEF\xBB\xBF";
@@ -12,7 +10,7 @@ $month  = $_GET['month'] ?? '';
 $where = "";
 $title = "Category-wise Revenue Report";
 
-/* ================= FILTER ================= */
+/* FILTER */
 
 if($period=="daily"){
 $where="WHERE DATE(o.Order_Date)=CURDATE()";
@@ -44,8 +42,6 @@ $title="Yearly Category-wise Revenue Report";
 
 }
 
-/* ================= QUERY ================= */
-
 $query=mysqli_query($connection,"
 
 SELECT 
@@ -76,7 +72,7 @@ ORDER BY c.Category_Name , o.Order_Date DESC
 
 ");
 
-/* ================= TABLE ================= */
+/* TABLE */
 
 echo "<table border='1' style='border-collapse:collapse;font-family:Segoe UI;'>";
 
