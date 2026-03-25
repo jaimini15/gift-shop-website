@@ -7,8 +7,6 @@ include(__DIR__ . '/../db.php');
 $filterType = $_GET['type'] ?? '';
 $limit = $_GET['limit'] ?? '';
 
-/* ================= QUERY ================= */
-
 $query = "
 SELECT 
 c.Category_Name,
@@ -20,8 +18,6 @@ FROM stock_details s
 JOIN product_details p ON s.Product_Id = p.Product_Id
 JOIN category_details c ON p.Category_Id = c.Category_Id
 ";
-
-/* FILTER */
 
 if($filterType=="high" && $limit){
 $query .= " ORDER BY s.Stock_Available DESC LIMIT $limit";
@@ -105,7 +101,6 @@ transition:0.2s;
 button:hover{
 background:#5f1d1d;
 }
-/* EXPORT BUTTONS */
 
 .pdf-btn,
 .excel-btn{
@@ -171,7 +166,6 @@ color:#0b6e77;
 .back-btn:hover{
 color:#7e2626d5;
 }
-/* EXPORT BUTTONS */
 
 .pdf-btn,
 .excel-btn{
@@ -327,7 +321,7 @@ $grandTotal += $row['Stock_Available'];
 
 }
 
-/* LAST CATEGORY FOOTER */
+/* LAST CATEGORY */
 
 if($currentCategory!=""){
 ?>
