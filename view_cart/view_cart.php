@@ -2,11 +2,9 @@
 session_start();
 $currentStep = 1;
 include("checkout_steps.php");
-
 include("../AdminPanel/db.php");
-// ==============================
-// HANDLE HAMPER UPDATE
-// ==============================
+
+// HAMPER UPDATE
 if (isset($_POST['update_hamper'])) {
 
     if (!isset($_SESSION['User_Id'])) {
@@ -35,7 +33,7 @@ if (isset($_POST['update_hamper'])) {
         echo "updated";
     }
 
-    exit; // VERY IMPORTANT
+    exit; 
 }
 
 
@@ -189,9 +187,7 @@ $estimatedDate = date("d M Y", strtotime("+4 days"));
 <?php endif; ?>
 
 <body>
-<!-- MAIN -->
 <div class="cart-container">
-
 <!-- LEFT -->
 <div class="cart-left">
 <h2>Product Details</h2>
