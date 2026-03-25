@@ -6,7 +6,7 @@ if (!isset($_SESSION['User_Id'])) {
     exit;
 }
 
-// SAFE role fetch (no warning)
+// SAFE role fetch 
 if (!isset($_SESSION['User_Role'])) {
     session_destroy();
     header("Location: ../login/login.php");
@@ -75,8 +75,6 @@ function img_src_from_blob_single($blob, $placeholder = 'product_mug_buynow1.jpg
     }
     return 'data:image/jpeg;base64,' . base64_encode($blob);
 }
-
-// prepare values
 $productName = htmlspecialchars($product['Product_Name'], ENT_QUOTES);
 $price = number_format((float) $product['Price'], 2, '.', '');
 $description = htmlspecialchars($product['Description'], ENT_QUOTES);
