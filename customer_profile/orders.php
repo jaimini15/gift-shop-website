@@ -14,22 +14,16 @@ $profileUser = mysqli_fetch_assoc(
     mysqli_query($connection, "SELECT First_Name FROM user_details WHERE User_Id='$uid'")
 );
 
-/* DELIVERY TEXT FUNCTION (+3 DAYS) */
+/* DELIVERY TEXT FUNCTION (+4 DAYS) */
 function getDeliveryText($orderDate, $deliveryStatus, $deliveryDate = null, $orderId=null) {
 
     $orderDateObj = new DateTime($orderDate);
-
-    // For Dec, Jan, Feb → fixed random 3/4/5 days
     $randomDays = 3 + ($orderId % 3);
 
     $orderMonth = $orderDateObj->format('m');
     $orderYear  = $orderDateObj->format('Y');
-
-    // Default estimated delivery = +4 days
     $estimated = clone $orderDateObj;
     $estimated->modify('+4 days');
-
-    // Special months
     if (($orderMonth == '12' && $orderYear == '2025') || $orderMonth == '01' || $orderMonth == '02') {
         $estimated = clone $orderDateObj;
         $estimated->modify("+$randomDays days");
@@ -39,13 +33,9 @@ function getDeliveryText($orderDate, $deliveryStatus, $deliveryDate = null, $ord
 
     /* DELIVERED */
     if ($deliveryStatus === 'Delivered') {
-
-        // Dec-Jan-Feb show estimated
         if (($orderMonth == '12' && $orderYear == '2025') || $orderMonth == '01' || $orderMonth == '02') {
             return "Delivered on " . $estimated->format('d M Y');
         }
-
-        // Normal months show real date
         if (!empty($deliveryDate)) {
             return "Delivered on " . date('d M Y', strtotime($deliveryDate));
         }
@@ -56,7 +46,7 @@ function getDeliveryText($orderDate, $deliveryStatus, $deliveryDate = null, $ord
         return "Arriving soon";
     }
 
-    /* NOT DELIVERED FLOW */
+    /* NOT DELIVERED TILL DATE */
 
     if ($today > $estimated) {
         return "Arriving soon";
@@ -69,8 +59,6 @@ function getDeliveryText($orderDate, $deliveryStatus, $deliveryDate = null, $ord
 
     return "Arriving on " . $estimated->format('d M Y');
 }
-
-
 
 /* FETCH ORDERS */
 $orders = mysqli_query(
@@ -92,12 +80,9 @@ $orders = mysqli_query(
         o.Order_Date DESC"
 );
 
-
-
 $activePage = "orders";
 include("account_layout.php");
 ?>
-
 <h2>My Orders</h2>
 
 <?php if (mysqli_num_rows($orders) == 0): ?>
@@ -136,8 +121,6 @@ $items = mysqli_query(
 ?>
 
 <div class="order-card">
-
-    <!-- TOP SUMMARY BAR -->
     <div class="order-summary">
 
         <div>
@@ -190,8 +173,6 @@ $items = mysqli_query(
 
         </div>
     <?php endwhile; ?>
-
-    <!-- ACTION -->
 <div class="order-actions">
     <a href="track_order.php?id=<?= $order['Order_Id'] ?>" class="track-btn">
         Track package
@@ -210,8 +191,8 @@ $items = mysqli_query(
 <?php endwhile; ?>
 <?php endif; ?>
 
-</div> <!-- account-content -->
-</div> <!-- account-wrapper -->
+</div> 
+</div> 
 <script>
 document.addEventListener("click", function (e) {
 
