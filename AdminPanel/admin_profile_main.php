@@ -124,8 +124,6 @@ if (!isset($_SESSION))
         </div>
 
         <div class="admin-grid">
-
-
             <!-- Profile -->
             <div class="admin-card" onclick="location.href='layout.php?view=profile'">
                 <div class="card-icon profile"><i class="fa-solid fa-user"></i></div>
