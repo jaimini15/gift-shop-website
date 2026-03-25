@@ -5,7 +5,6 @@ if (session_status() === PHP_SESSION_NONE) {
 
 include(__DIR__ . '/../../AdminPanel/db.php');
 
-/* ================= AUTH CHECK ================= */
 if (!isset($_SESSION['User_Id'])) {
     echo "<div class='alert alert-danger m-3'>Unauthorized access</div>";
     exit;
@@ -13,7 +12,6 @@ if (!isset($_SESSION['User_Id'])) {
 
 $deliveryBoyId = (int) $_SESSION['User_Id'];
 
-/* ========== FETCH COMPLETED DELIVERIES ========= */
 $orders = mysqli_query($connection, "
     SELECT DISTINCT
         o.Order_Id,
@@ -37,8 +35,6 @@ $orders = mysqli_query($connection, "
     ORDER BY d.Delivery_Date DESC
 ");
 ?>
-
-<!-- ================= PAGE CONTENT ================= -->
 
 <div class="container-fluid mt-4">
 
