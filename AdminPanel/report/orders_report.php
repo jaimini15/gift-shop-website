@@ -9,8 +9,6 @@ $where = "";
 $group = "";
 $label = "";
 
-/* ===== REPORT TYPE LOGIC ===== */
-
 if($type == "daily"){
 
 $where = "WHERE DATE(Order_Date) = CURDATE()";
@@ -43,20 +41,14 @@ $label = "MONTHNAME(Order_Date)";
 $order = "ORDER BY MIN(Order_Date)";
 
 }
-
-
-
-/* ===== CUSTOM DATE RANGE ===== */
+/*CUSTOM DATE */
 
 elseif($start && $end){
 
 $where = "WHERE DATE(Order_Date) BETWEEN '$start' AND '$end'";
 $group = "GROUP BY DATE(Order_Date)";
 $label = "DATE(Order_Date)";
-
 }
-
-/* ===== CHART QUERY ===== */
 
 $labels = [];
 $orders = [];
@@ -94,8 +86,6 @@ $totalRevenue += $row['revenue'];
 
 }
 
-/* ===== TABLE QUERY ===== */
-
 $tableWhere = "WHERE 1";
 
 if($type=="daily"){
@@ -131,7 +121,7 @@ $tableWhere
 ORDER BY o.Order_Date DESC
 ");
 
-/* ===== TOTAL REVENUE FIX ===== */
+/*TOTAL REVENUE FIX*/
 
 $totalQuery = mysqli_query($connection, "
 SELECT SUM(Total_Amount) as total
@@ -163,14 +153,11 @@ margin:0;
 color:#333;
 }
 
-/* MAIN CONTAINER */
 
 .container{
 width:94%;
 margin:15px auto;
 }
-
-/* TITLE */
 
 h1{
 color:#7e2626d5;
@@ -180,8 +167,6 @@ font-weight:600;
 border-left:5px solid #7e2626d5;
 padding-left:8px;
 }
-
-/* FILTER */
 
 .filter-row{
 display:flex;
@@ -229,8 +214,6 @@ button:hover{
 background:#5f1d1d;
 }
 
-/* EXPORT BUTTONS */
-
 .pdf-btn,
 .excel-btn{
 padding:6px 12px;
@@ -276,7 +259,7 @@ border-radius:6px;
 box-shadow:0 2px 6px rgba(0,0,0,0.06);
 margin-bottom:18px;
 border:2px solid #7e2626d5;
-max-width:800px;     /* limit width */
+max-width:800px;     
 margin-left:auto;
 margin-right:auto;
 }
@@ -511,8 +494,6 @@ legend:{
 display:true
 },
 
-/* BAR LABEL = REVENUE */
-
 datalabels:{
 color:'#000',
 anchor:'end',
@@ -530,7 +511,6 @@ return "₹"+revenue;
 }
 },
 
-/* HOVER TOOLTIP */
 
 tooltip:{
 callbacks:{
