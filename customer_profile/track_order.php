@@ -53,7 +53,7 @@ $status = $delivery['Delivery_Status'] ?? 'Ordered';
 $stepMap = [
     'Ordered' => 1,
     'Packed' => 2,
-    'Out for Delivery' => 3, // ✅ FIXED
+    'Out for Delivery' => 3, 
     'Delivered' => 4
 ];
 $currentStep = $stepMap[$status] ?? 1;
@@ -271,8 +271,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const currentStep = <?= $currentStep ?>;
 
     const stepPositions = [];
-
-    // Calculate circle center positions
     steps.forEach(step => {
         const circle = step.querySelector(".circle");
         const circleRect = circle.getBoundingClientRect();
