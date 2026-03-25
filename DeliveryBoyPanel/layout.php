@@ -3,8 +3,6 @@ ob_start();
 if (!isset($_SESSION)) {
     session_start();
 }
-
-/* VIEW ROUTING  */
 $view = $_GET['view'] ?? 'dashboard';
 
 $allowed = [
