@@ -26,7 +26,7 @@ if (!$data) {
     die("Delivery Boy not found");
 }
 
-/* ================= FETCH AREAS + ASSIGN STATUS ================= */
+/*  FETCH AREAS + ASSIGN STATUS  */
 $areas = mysqli_query($connection, "
     SELECT 
         ad.Area_Id,
@@ -42,7 +42,6 @@ $areas = mysqli_query($connection, "
         ON ad.Area_Id = dam.area_id
 ");
 
-/* ================= UPDATE ================= */
 if (isset($_POST['update'])) {
 
     $fname    = mysqli_real_escape_string($connection, $_POST['First_Name'] ?? '');
