@@ -1,13 +1,9 @@
 <?php
-/* ================= SESSION ================= */
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-
-/* ================= DB ================= */
 include(__DIR__ . '/../../AdminPanel/db.php');
 
-/* ================= AUTH ================= */
 if (!isset($_SESSION['User_Id'])) {
     echo "<div class='alert alert-danger m-3'>Unauthorized access</div>";
     exit;
@@ -15,7 +11,6 @@ if (!isset($_SESSION['User_Id'])) {
 
 $deliveryBoyId = (int) $_SESSION['User_Id'];
 
-/* ================= SUMMARY ================= */
 
 // Assigned Orders
 $assigned = mysqli_fetch_assoc(mysqli_query($connection, "
@@ -44,7 +39,7 @@ $today = mysqli_fetch_assoc(mysqli_query($connection, "
     AND DATE(d.Delivery_Date) = CURDATE()
 "))['total'] ?? 0;
 
-/* ================= RECENT ORDERS ================= */
+/* RECENT ORDERS */
 $recentOrders = mysqli_query($connection, "
     SELECT 
         o.Order_Id,
@@ -73,7 +68,6 @@ $recentOrders = mysqli_query($connection, "
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 
     <style>
-        /* ================= MAIN BOX ================= */
         .card-box {
             background: #fff;
             padding: 20px 25px;
@@ -81,8 +75,6 @@ $recentOrders = mysqli_query($connection, "
             box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
             width: 100%;
         }
-
-        /* ================= STAT CARDS ================= */
         .card {
             border: none;
             border-radius: 10px;
@@ -105,7 +97,7 @@ $recentOrders = mysqli_query($connection, "
             font-weight: bold;
         }
 
-        /* ================= TABLE ================= */
+        /* TABLE  */
         table {
             width: 100%;
             font-size: 13px;
@@ -137,8 +129,6 @@ $recentOrders = mysqli_query($connection, "
         .table tbody tr:hover {
             background: #f8f9fa;
         }
-
-        /* ================= STATUS BADGES ================= */
         .badge {
             font-size: 12px;
             padding: 6px 10px;
@@ -154,8 +144,6 @@ $recentOrders = mysqli_query($connection, "
     <h2 style="font-size:26px;font-weight:bold;margin-bottom:25px;">
         Dashboard Overview
     </h2>
-
-    <!-- ================= CARDS ================= -->
     <div class="row g-4">
 
         <div class="col-md-4">
@@ -181,7 +169,7 @@ $recentOrders = mysqli_query($connection, "
 
     </div>
 
-    <!-- ================= RECENT ORDERS ================= -->
+    <!--  RECENT ORDERS -->
     <div class="mt-5 card p-4">
 
         <h4 style="font-size:20px">Recent Orders</h4>
