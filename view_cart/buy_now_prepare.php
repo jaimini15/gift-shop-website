@@ -43,7 +43,7 @@ $price = $pdata['Price'];
 
 $total = $price + ($gift_wrap ? 39 : 0) + ($gift_card ? 50 : 0);
 
-// ✅ Create order with PENDING status
+// Create order with PENDING status
 mysqli_query($connection, "
     INSERT INTO `order` (User_Id, Total_Amount, Status)
     VALUES ('$user_id', '$total', 'PENDING')
@@ -51,7 +51,7 @@ mysqli_query($connection, "
 
 $order_id = mysqli_insert_id($connection);
 
-// ✅ Store buy now data in SESSION (important)
+// Store buy now data in SESSION 
 $_SESSION['BUY_NOW'] = [
     'order_id' => $order_id,
     'product_id' => $product_id,
@@ -63,7 +63,6 @@ $_SESSION['BUY_NOW'] = [
     'gift_msg' => $gift_msg
 ];
 
-// ✅ RETURN JSON (NO REDIRECT)
 echo json_encode([
     "success" => true,
     "order_id" => $order_id
