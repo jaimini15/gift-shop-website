@@ -81,7 +81,6 @@ if (isset($_POST['set_packed']) && $_POST['set_packed'] === 'Packed') {
 <div class="card-box">
 <h2 style="font-size:26px;font-weight:bold;margin-bottom:25px;">Order</h2>
 <?php
-// ================= FETCH NEW ORDERS =================
 $orders = mysqli_query($connection, "
     SELECT o.*, DATE(o.Order_Date) AS Order_Date_Only
     FROM `order` o
@@ -107,7 +106,7 @@ $lastDate = null;
     if ($lastDate !== $order['Order_Date_Only']) {
         echo '
         <div class="date-row">
-            📅 ' . date("d-m-Y", strtotime($order['Order_Date_Only'])) . '
+            &#x1F4C5; ' . date("d-m-Y", strtotime($order['Order_Date_Only'])) . '
         </div>';
         $lastDate = $order['Order_Date_Only'];
     }
@@ -200,7 +199,6 @@ if (!empty($item['Custom_Image'])) {
 
     $img = $item['Custom_Image'];
 
-    // If already contains uploads/, don't add again
     if (strpos($img, 'uploads/') === 0) {
         $path = "../" . $img;
     } else {
