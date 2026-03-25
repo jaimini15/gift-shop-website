@@ -27,7 +27,7 @@ foreach ($productIds as $productId) {
 
     /* Rating is REQUIRED */
     if (!isset($ratings[$productId])) {
-        continue; // skip if no rating selected
+        continue; 
     }
 
     $rating  = (int)$ratings[$productId];
