@@ -26,8 +26,6 @@ if (!$row) {
     exit();
 }
 
-/* ================= VALIDATIONS ================= */
-
 // Check current password
 if ($row['Password'] !== $current) {
     header("Location: change_password.php?error=1");
