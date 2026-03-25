@@ -3,7 +3,6 @@ if (!isset($_SESSION))
     session_start();
 include(__DIR__ . '/../db.php');
 
-/* ================= SUMMARY ================= */
 $totalUsers = mysqli_fetch_assoc(mysqli_query(
     $connection,
     "SELECT COUNT(*) AS total FROM user_details WHERE User_Role='CUSTOMER'"
@@ -19,7 +18,6 @@ $totalOrders = mysqli_fetch_assoc(mysqli_query(
     "SELECT COUNT(*) AS total FROM `order` WHERE DATE(Order_Date) = CURDATE()"
 ))['total'];
 
-/* ================= RECENT ORDERS ================= */
 $recentOrders = mysqli_query($connection, "
     SELECT o.Order_Id, o.Order_Date, o.Total_Amount,
            u.First_Name, u.Last_Name
@@ -48,7 +46,6 @@ $recentOrders = mysqli_query($connection, "
             width: 100%;
         }
 
-        /* dashboard stat cards */
         .card {
             border: none;
             border-radius: 10px;
@@ -60,7 +57,6 @@ $recentOrders = mysqli_query($connection, "
             transform: translateY(-3px);
         }
 
-        /* card headings */
         .card h6 {
             font-size: 14px;
             color: #666;
@@ -143,7 +139,7 @@ $recentOrders = mysqli_query($connection, "
             </div>
         </div>
 
-        <!-- ================= RECENT ORDERS ================= -->
+        <!--  RECENT ORDERS -->
         <div class="mt-5 card p-4">
             <h4 style="font-size:20px">Recent Order</h4>
 
