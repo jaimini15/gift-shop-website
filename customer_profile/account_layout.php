@@ -20,7 +20,7 @@ if (!isset($activePage)) {
     <!-- MAIN SITE CSS -->
     <link rel="stylesheet" href="../home page/style.css">
 
-    <!-- ACCOUNT PANEL CSS (IMPORTANT) -->
+    <!-- ACCOUNT PANEL -->
     <link rel="stylesheet" href="account.css">
 
     <!-- FONT AWESOME -->
@@ -30,11 +30,9 @@ if (!isset($activePage)) {
 <body>
 
     <?php include("../home page/navbar.php"); ?>
-
-    <!-- ================= ACCOUNT WRAPPER ================= -->
     <div class="account-wrapper">
 
-        <!-- ========== LEFT SIDEBAR ========== -->
+        <!--  LEFT SIDEBAR  -->
 <div class="account-sidebar">
 
     <?php if (!empty($profileUser['First_Name'])): ?>
@@ -68,5 +66,5 @@ if (!isset($activePage)) {
 
 </div>
 
-        <!-- ========== RIGHT CONTENT AREA ========== -->
+        <!-- RIGHT CONTENT -->
         <div class="account-content">
