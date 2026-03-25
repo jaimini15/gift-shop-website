@@ -113,7 +113,7 @@ while ($row = mysqli_fetch_assoc($feedbacks)) {
         <?php
         $rating = (int) $row['Rating'];
         for ($i = 1; $i <= 5; $i++) {
-            echo $i <= $rating ? '⭐' : '☆';
+            echo $i <= $rating ? '&#x2B50;' : '☆';
         }
         ?>
         (<?= $rating ?>/5)
