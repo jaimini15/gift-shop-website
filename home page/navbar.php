@@ -220,10 +220,7 @@ document.addEventListener("DOMContentLoaded", function () {
         a.classList.remove("active");
     });
 
-    // Match nlinks (Home, About, Contact)
     document.querySelectorAll("nav ul li a[href]").forEach(link => {
-
-        // Skip Shop
         if (link.getAttribute("href") === "#") return;
 
         const linkPath = new URL(link.href).pathname.replace(/\/$/, "");
