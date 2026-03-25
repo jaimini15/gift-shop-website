@@ -147,14 +147,10 @@ ob_end_flush();
 </head>
 
 <body>
-
-    <!-- ================= HEADER ================= -->
     <?php include("../home page/navbar.php"); ?>
-
-    <!-- ================= ACCOUNT LAYOUT ================= -->
     <div class="account-wrapper">
 
-        <!-- ===== LEFT PANEL ===== -->
+        <!-- LEFT PANEL-->
         <div class="account-sidebar">
 
             <div class="sidebar-user">
@@ -214,7 +210,7 @@ ob_end_flush();
             </a>
         </div>
 
-        <!-- ===== RIGHT PANEL ===== -->
+        <!-- RIGHT PANEL-->
         <div class="account-content">
             <?php include($page); ?>
         </div>
