@@ -3,8 +3,6 @@ if (!isset($_SESSION)) session_start();
 include(__DIR__ . '/../../AdminPanel/db.php');
 
 $msg = "";
-
-/* ================= FETCH AREAS ================= */
 $areas = mysqli_query($connection, "
     SELECT 
         ad.Area_Id,
@@ -16,7 +14,7 @@ $areas = mysqli_query($connection, "
         ON ad.Area_Id = dam.area_id
 ");
 
-/* ================= ADD DELIVERY BOY ================= */
+/* ADD DELIVERY BOY  */
 if (isset($_POST['add'])) {
 
     $first   = mysqli_real_escape_string($connection, $_POST['first_name']);
