@@ -4,7 +4,7 @@ if (!isset($_SESSION))
 
 include(__DIR__ . '/../db.php');
 
-/* ================= PRODUCT LIST ================= */
+/* PRODUCT LIST */
 
 $productListQuery = mysqli_query($connection,"
 SELECT Product_Id, Product_Name
@@ -22,11 +22,9 @@ $productOrders = [];
 $totalOrders = 0;
 $totalRevenue = 0;
 
-/* ================= REPORT LOGIC ================= */
-
 if($productFilter && $periodFilter){
 
-/* ===== DAILY ===== */
+/*  DAILY */
 if($periodFilter=="daily"){
 
 $query="
@@ -43,7 +41,7 @@ GROUP BY DATE(o.Order_Date)
 
 }
 
-/* ===== WEEKLY ===== */
+/* WEEKLY */
 elseif($periodFilter=="weekly"){
 
 $query="
@@ -62,7 +60,7 @@ ORDER BY day_no
 
 }
 
-/* ===== MONTHLY ===== */
+/*  MONTHLY  */
 elseif($periodFilter=="monthly"){
 
 $query="
@@ -80,7 +78,7 @@ GROUP BY DATE(o.Order_Date)
 
 }
 
-/* ===== YEARLY ===== */
+/* YEARLY*/
 else{
 
 $query="
@@ -98,11 +96,7 @@ ORDER BY month_no
 ";
 
 }
-
-/* RUN QUERY */
 $result = mysqli_query($connection,$query);
-
-/* PROCESS DATA */
 if($result && mysqli_num_rows($result)>0){
 
 if($periodFilter=="weekly"){
@@ -146,8 +140,6 @@ $totalRevenue += $row['revenue'];
 }
 
 }
-
-/* IF NO DATA */
 if(empty($productLabels)){
 
 $productLabels[]="No Orders Yet";
@@ -157,8 +149,6 @@ $productOrders[]=0;
 }
 
 }
-
-
 $productName = "";
 
 if($productFilter){
@@ -231,14 +221,10 @@ margin:0;
 color:#333;
 }
 
-/* CONTAINER */
-
 .container{
 width:94%;
 margin:15px auto;
 }
-
-/* TITLE */
 
 h1{
 color:#7e2626d5;
@@ -330,7 +316,7 @@ margin-right:auto;
 height:320px;
 }
 
-/* PDF  and excel*/
+/* PDF and EXCEL*/
 .pdf-btn,
 .excel-btn{
 padding:6px 12px;
@@ -348,8 +334,6 @@ background:#c0392b;
 .excel-btn{
 background:#27ae60;
 }
-/* EXPORT BUTTONS */
-
 .pdf-btn,
 .excel-btn{
 padding:6px 12px;
@@ -401,8 +385,6 @@ font-size:16px;
 text-align:left;
 padding:10px;
 }
-
-/* Back Button */
 /* TITLE ROW */
 
 .title-row{
