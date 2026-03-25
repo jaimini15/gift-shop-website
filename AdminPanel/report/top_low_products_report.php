@@ -7,7 +7,6 @@ include(__DIR__ . '/../db.php');
 $type = $_GET['type'] ?? '';
 $limit = $_GET['limit'] ?? '';
 
-/* ================= QUERY ================= */
 
 $query = "
 SELECT 
@@ -27,8 +26,6 @@ ON p.Category_Id = c.Category_Id
 GROUP BY p.Product_Id
 ";
 
-
-/* FILTER */
 
 if ($type == "top" && $limit) {
     $query .= " ORDER BY Total_Sold DESC LIMIT $limit";
@@ -62,14 +59,10 @@ while ($row = mysqli_fetch_assoc($result)) {
             margin: 0;
             color: #333;
         }
-
-        /* MAIN CONTAINER */
         .container {
             width: 94%;
             margin: 15px auto;
         }
-
-        /* TITLE */
         h1 {
             color: #7e2626d5;
             margin-bottom: 12px;
@@ -123,8 +116,6 @@ while ($row = mysqli_fetch_assoc($result)) {
         button:hover {
             background: #5f1d1d;
         }
-
-        /* EXPORT BUTTONS */
         .pdf-btn,
         .excel-btn {
             padding: 6px 12px;
@@ -354,7 +345,7 @@ while ($row = mysqli_fetch_assoc($result)) {
 
             }
 
-            /* LAST CATEGORY FOOTER */
+            /* LAST CATEGORY  */
 
             if ($currentCategory != "") {
                 ?>
