@@ -21,8 +21,6 @@ if ($orderId <= 0) {
     die("Invalid Order ID");
 }
 
-/* ================= FETCH USER ================= */
-
 $userRes = mysqli_query($connection,"
 SELECT 
 u.First_Name,
@@ -36,8 +34,6 @@ WHERE u.User_Id='$uid'
 ");
 
 $user = mysqli_fetch_assoc($userRes);
-
-/* ================= FETCH ORDER ================= */
 
 $orderRes = mysqli_query($connection,"
 SELECT 
@@ -55,7 +51,7 @@ if (!$order) {
     die("Order not found");
 }
 
-/* ================= PAYMENT METHOD ================= */
+/* PAYMENT METHOD */
 
 $payment = mysqli_fetch_assoc(mysqli_query($connection,"
 SELECT Payment_Method
@@ -63,7 +59,7 @@ FROM payment_details
 WHERE Order_Id='$orderId'
 "));
 
-/* ================= FETCH ITEMS ================= */
+/* FETCH ITEMS  */
 
 $itemRes = mysqli_query($connection,"
 SELECT 
@@ -96,7 +92,7 @@ $rows .= "
 
 $grandTotal = $order['Total_Amount'];
 
-/* ================= LOGO ================= */
+/* LOGO */
 
 $logoPath = __DIR__ . "/../home page/logo.svg";
 
@@ -104,8 +100,6 @@ if(file_exists($logoPath)){
 $logoData = base64_encode(file_get_contents($logoPath));
 $logoPath = 'data:image/png;base64,' . $logoData;
 }
-
-/* ================= HTML ================= */
 
 $html = "
 
@@ -120,9 +114,6 @@ font-family: DejaVu Sans, sans-serif;
 font-size:12px;
 color:#333;
 }
-
-/* HEADER */
-
 .header{
 border-bottom:2px solid #7e2626;
 padding-bottom:8px;
@@ -157,8 +148,6 @@ text-align:right;
 font-size:11px;
 margin-top:6px;
 }
-
-/* INFO SECTION */
 
 .section{
 margin-top:10px;
@@ -312,7 +301,7 @@ Thank you for shopping with GiftShop | Generated ".date("d M Y h:i A")."
 
 ";
 
-/* ================= PDF GENERATE ================= */
+/* PDF GENERATE  */
 
 $options = new Options();
 $options->set('isRemoteEnabled', true);
