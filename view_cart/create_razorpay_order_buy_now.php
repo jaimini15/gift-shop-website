@@ -1,9 +1,7 @@
 <?php
 session_start();
 header("Content-Type: application/json");
-
 include("../AdminPanel/db.php");
-
 
 /* Load Razorpay keys */
 $config = require __DIR__ . "/../config/razorpay.php";
