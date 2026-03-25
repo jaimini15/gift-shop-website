@@ -126,7 +126,7 @@ $orders = mysqli_query($connection, "
                             echo '
                     <tr class="date-row">
                         <td colspan="9">
-                            📅 ' . date("d-m-Y", strtotime($row['Order_Date'])) . '
+                            &#x1F4C5; ' . date("d-m-Y", strtotime($row['Order_Date'])) . '
                         </td>
                     </tr>';
                             $lastDate = $row['Order_Date'];
