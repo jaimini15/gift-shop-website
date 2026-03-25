@@ -7,14 +7,11 @@ use Dompdf\Dompdf;
 use Dompdf\Options;
 
 include("../db.php");
-
-/* ================= GET VALUES ================= */
-
 $productFilter = $_GET['product_id'] ?? '';
 $periodFilter  = $_GET['period'] ?? '';
 $chartImage    = $_POST['chart_image'] ?? '';
 
-/* ================= PRODUCT NAME ================= */
+/* PRODUCT NAME */
 
 $productName = "";
 
@@ -127,9 +124,6 @@ font-family: DejaVu Sans, sans-serif;
 font-size:12px;
 color:#333;
 }
-
-/* HEADER */
-
 .header{
 border-bottom:2px solid #7e2626;
 padding-bottom:8px;
