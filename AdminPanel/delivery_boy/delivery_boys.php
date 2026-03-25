@@ -34,7 +34,6 @@ $result = mysqli_query($connection, $query);
 
  body { background: #ffffff; font-family: Arial, sans-serif; }
 
-/* Card container */
 .card-box{
     background:#fff;
     padding:20px 25px;
