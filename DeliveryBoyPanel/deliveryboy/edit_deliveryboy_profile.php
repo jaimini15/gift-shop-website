@@ -3,10 +3,7 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-
 require_once __DIR__ . '/../../AdminPanel/db.php';
-
-/* ================= AUTH CHECK ================= */
 if (!isset($_SESSION['User_Id'])) {
     echo "<p style='color:red'>Unauthorized access</p>";
     exit;
@@ -15,8 +12,6 @@ if (!isset($_SESSION['User_Id'])) {
 $deliveryBoyId = (int) $_SESSION['User_Id'];
 $error = '';
 $success = false;
-
-/* ================= FETCH USER DATA ================= */
 $result = mysqli_query(
     $connection,
     "SELECT * FROM user_details WHERE User_Id = $deliveryBoyId LIMIT 1"
@@ -29,7 +24,7 @@ if (!$user) {
     exit;
 }
 
-/* ================= FORM SUBMIT ================= */
+/* FORM SUBMIT */
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $fname   = mysqli_real_escape_string($connection, $_POST['fname']);
@@ -43,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $new     = $_POST['new_password'] ?? '';
     $confirm = $_POST['confirm_password'] ?? '';
 
-    /* ===== PASSWORD UPDATE ===== */
+    /* PASSWORD UPDATE  */
     if ($current || $new || $confirm) {
 
         if ($current !== $user['Password']) {
@@ -60,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    /* ===== PROFILE UPDATE ===== */
+    /*  PROFILE UPDATE  */
     if (empty($error)) {
 
         mysqli_query(
@@ -84,7 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-/* ================= FETCH AREAS ================= */
+/* FETCH AREA*/
 $areas = mysqli_query(
     $connection,
     "SELECT Area_Id, Area_Name FROM area_details"
