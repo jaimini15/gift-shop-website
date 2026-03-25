@@ -88,8 +88,6 @@ $stmt->bind_param(
 $stmt->execute();
 
     }
-
-    /* Save session */
     $_SESSION['pending_order_id'] = $orderId;
 
     mysqli_commit($connection);
