@@ -1,12 +1,9 @@
 <?php
 include("../db.php");
 
-/* UTF-8 FIX */
 header("Content-Type: application/vnd.ms-excel; charset=UTF-8");
 header("Content-Disposition: attachment; filename=year_wise_revenue_report.xls");
 echo "\xEF\xBB\xBF";
-
-/* ===== QUERY ===== */
 
 $query = mysqli_query($connection,"
 SELECT 
@@ -22,7 +19,7 @@ ORDER BY YEAR(Order_Date)
 $totalOrders = 0;
 $totalRevenue = 0;
 
-/* ===== TABLE ===== */
+/*  TABLE  */
 
 echo "<table border='1' style='border-collapse:collapse;font-family:Segoe UI;'>";
 
