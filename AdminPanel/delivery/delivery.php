@@ -92,18 +92,18 @@ $lastDate = null;
 
 while ($row = mysqli_fetch_assoc($deliveries)) {
 
-    // Date grouping
+    
     if ($lastDate !== $row['Order_Date']) {
         echo '
         <tr class="date-row">
             <td colspan="9">
-                📅 ' . date("d-m-Y", strtotime($row['Order_Date'])) . '
+                &#x1F4C5; ' . date("d-m-Y", strtotime($row['Order_Date'])) . '
             </td>
         </tr>';
         $lastDate = $row['Order_Date'];
     }
 
-    // Status badge logic
+    // Status logic
     $status = $row['Delivery_Status'];
     $badge = '';
 
