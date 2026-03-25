@@ -1,12 +1,7 @@
 <?php
 if (!isset($_SESSION))
 session_start();
-
 include(__DIR__ . '/../db.php');
-
-/* ================= YEAR WISE REVENUE ================= */
-
-/* ================= YEAR WISE REVENUE ================= */
 
 $yearQuery = mysqli_query($connection,"
 SELECT 
@@ -61,15 +56,11 @@ width:94%;
 margin:15px auto;
 }
 
-/* TITLE */
-
 h1{
 color:#7e2626d5;
 border-left:5px solid #7e2626d5;
 padding-left:8px;
 }
-
-/* TITLE ROW */
 
 .title-row{
 display:flex;
@@ -294,7 +285,7 @@ plugins:{
 
 legend:{display:false},
 
-/* BAR LABEL = REVENUE */
+/* BAR LABEL */
 
 datalabels:{
 color:'#000',
