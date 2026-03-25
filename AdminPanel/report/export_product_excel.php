@@ -2,7 +2,7 @@
 include("../db.php");
 header("Content-Type: application/vnd.ms-excel; charset=UTF-8");
 header("Content-Disposition: attachment; filename=product_sales_report.xls");
-echo "\xEF\xBB\xBF"; // for ₹ symbol
+echo "\xEF\xBB\xBF"; 
 
 $productFilter = $_GET['product_id'] ?? '';
 $periodFilter  = $_GET['period'] ?? '';
