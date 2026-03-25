@@ -173,7 +173,7 @@ while ($row = mysqli_fetch_assoc($result)): ?>
 
     <td><?= htmlspecialchars($row['Status']) ?></td>
 
-    <!-- Created At in 2 lines -->
+    <!-- Created At -->
    <td>
     <?= !empty($row['Create_At'])
         ? date("d-m-Y", strtotime($row['Create_At'])) . "<br>" . date("H:i", strtotime($row['Create_At']))
