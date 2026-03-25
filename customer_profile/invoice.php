@@ -19,22 +19,16 @@ $profileUser = mysqli_fetch_assoc(
     ")
 );
 
-/* DELIVERY TEXT FUNCTION (+3 DAYS) */
+/* DELIVERY TEXT FUNCTION (+4 DAYS) */
 function getDeliveryText($orderDate, $deliveryStatus, $deliveryDate = null, $orderId=null) {
 
     $orderDateObj = new DateTime($orderDate);
-
-    // Random 3/4/5 days (same as orders.php)
     $randomDays = 3 + ($orderId % 3);
 
     $orderMonth = $orderDateObj->format('m');
     $orderYear  = $orderDateObj->format('Y');
-
-    // Default = +4 days
     $estimated = clone $orderDateObj;
     $estimated->modify('+4 days');
-
-    // Special months (Dec 2025, Jan, Feb)
     if (($orderMonth == '12' && $orderYear == '2025') || $orderMonth == '01' || $orderMonth == '02') {
         $estimated = clone $orderDateObj;
         $estimated->modify("+$randomDays days");
@@ -45,12 +39,9 @@ function getDeliveryText($orderDate, $deliveryStatus, $deliveryDate = null, $ord
     /* DELIVERED */
     if ($deliveryStatus === 'Delivered') {
 
-        // Special months → show estimated
         if (($orderMonth == '12' && $orderYear == '2025') || $orderMonth == '01' || $orderMonth == '02') {
             return "Delivered on " . $estimated->format('d M Y');
         }
-
-        // Normal → show actual date
         if (!empty($deliveryDate)) {
             return "Delivered on " . date('d M Y', strtotime($deliveryDate));
         }
@@ -212,14 +203,10 @@ font-weight:600;cursor:pointer;text-decoration:none;color:black;}
 Print
 </a>
 </div>
-
-<!-- ORDER META -->
 <div class="order-meta">
     <span>Order placed <?= date("d F Y", strtotime($order['Order_Date'])) ?></span>
     <span>Order # <?= $order['Order_Id'] ?></span>
 </div>
-
-<!-- INFO GRID -->
 <div class="info-grid">
     <div>
         <h4>Ship To</h4>
