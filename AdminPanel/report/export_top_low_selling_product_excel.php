@@ -1,7 +1,5 @@
 <?php
 include("../db.php");
-
-/* UTF-8 for ₹ or special characters */
 header("Content-Type: application/vnd.ms-excel; charset=UTF-8");
 header("Content-Disposition: attachment; filename=top_low_selling_products_report.xls");
 echo "\xEF\xBB\xBF";
@@ -11,7 +9,7 @@ $limit = $_GET['limit'] ?? '';
 
 $title = "Top / Least Selling Products Report";
 
-/* ================= QUERY ================= */
+/*  QUERY */
 
 $query = "
 SELECT 
@@ -53,7 +51,7 @@ $query .= " ORDER BY c.Category_Name, p.Product_Name";
 
 $result = mysqli_query($connection,$query);
 
-/* ================= TABLE ================= */
+/* TABLE */
 
 echo "<table border='1' style='border-collapse:collapse;font-family:Segoe UI;'>";
 
