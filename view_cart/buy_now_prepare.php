@@ -50,6 +50,7 @@ mysqli_query($connection, "
 ");
 
 $order_id = mysqli_insert_id($connection);
+$_SESSION['pending_order_id'] = $order_id;
 
 // Store buy now data in SESSION 
 $_SESSION['BUY_NOW'] = [
