@@ -1,5 +1,5 @@
 <?php
-// ================= START OUTPUT BUFFERING =================
+// start output
 ob_start();
 
 // Include database connection
