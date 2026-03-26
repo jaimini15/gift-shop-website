@@ -2,6 +2,7 @@
 session_start();
 include("../AdminPanel/db.php");
 
+
 if (!isset($_SESSION["User_Id"])) {
     header("Location: ../login/login.php");
     exit();
@@ -9,9 +10,16 @@ if (!isset($_SESSION["User_Id"])) {
 
 $uid = $_SESSION["User_Id"];
 
-$current = $_POST['current_password'];
-$new     = $_POST['new_password'];
-$confirm = $_POST['confirm_password'];
+$current = $_POST['current_password'] ?? '';
+$new     = $_POST['new_password'] ?? '';
+$confirm = $_POST['confirm_password'] ?? '';
+
+// NOW check empty
+if (empty($current) || empty($new) || empty($confirm)) {
+    header("Location: change_password.php?error=5");
+    exit();
+}
+
 
 // Fetch current password from DB
 $result = mysqli_query(
@@ -50,5 +58,6 @@ mysqli_query(
     $connection,
     "UPDATE user_details SET Password='$new' WHERE User_Id='$uid'"
 );
-header("Location: profile.php?password=success");
+header("Location: change_password.php?success=1");
+
 exit();
