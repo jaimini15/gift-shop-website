@@ -568,48 +568,65 @@ $imgSrc = img_src_from_blob_single($product['Product_Image'], 'product_mug_buyno
                             }
 
                             var options = {
-                                key: data.key,
-                                amount: data.amount,
-                                currency: "INR",
-                                name: "GiftShop Pvt Ltd",
-                                description: "Buy Now Payment",
-                                order_id: data.orderId,
+    key: data.key,
+    amount: data.amount,
+    currency: "INR",
+    name: "GiftShop Pvt Ltd",
+    description: "Buy Now Payment",
+    order_id: data.orderId,
 
-                                handler: function (response) {
+    handler: function (response) {
 
-                                    fetch("../view_cart/confirm_payment_buy_now.php", {
-                                        method: "POST",
-                                        headers: {
-                                            "Content-Type": "application/json"
-                                        },
-                                        body: JSON.stringify({
-                                            razorpay_payment_id: response
-                                                .razorpay_payment_id,
-                                            razorpay_order_id: response.razorpay_order_id,
-                                            razorpay_signature: response.razorpay_signature
-                                        })
-                                    })
-                                        .then(res => res.json())
-                                        .then(result => {
-                                            console.log("CONFIRM:", result);
+        fetch("../view_cart/confirm_payment_buy_now.php", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_signature: response.razorpay_signature
+            })
+        })
+        .then(res => res.json())
+        .then(result => {
+            if (result.success) {
+                window.location.href =
+                    "../view_cart/order_summary.php?order_id=" + result.order_id;
+            } else {
+                alert("Payment failed " + result.error);
+            }
+        });
+    },
 
-                                            if (result.success) {
-                                                window.location.href =
-                                                    "../view_cart/order_summary.php?order_id=" + result
-                                                        .order_id;
+    // ✅ ADD THIS BLOCK
+    modal: {
+        ondismiss: function () {
 
-                                            } else {
-                                                alert("Payment failed  " + result.error);
-                                            }
-                                        });
-                                         
-                                }
-                            };
+            console.log("User closed Razorpay popup");
 
-                            var rzp = new Razorpay(options);
-                            rzp.open();
-                        });
+            fetch("../view_cart/cancel_order.php", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({})
+            })
+            .then(res => res.json())
+            .then(data => {
+                console.log("Cancel response:", data);
+            });
+        }
+    },
+
+    theme: { color: "#7e2626d5" }
+};
+
+
+        var rzp = new Razorpay(options);
+            rzp.open();
                 });
+         });
         }
     </script>
 
