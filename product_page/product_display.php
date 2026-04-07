@@ -599,7 +599,7 @@ $imgSrc = img_src_from_blob_single($product['Product_Image'], 'product_mug_buyno
         });
     },
 
-    // ✅ ADD THIS BLOCK
+    // ADD THIS BLOCK
     modal: {
         ondismiss: function () {
 
@@ -618,20 +618,14 @@ $imgSrc = img_src_from_blob_single($product['Product_Image'], 'product_mug_buyno
             });
         }
     },
-
     theme: { color: "#7e2626d5" }
 };
-
-
         var rzp = new Razorpay(options);
             rzp.open();
                 });
          });
         }
     </script>
-
-
-
 </body>
 
 </html>
