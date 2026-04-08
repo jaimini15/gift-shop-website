@@ -87,7 +87,7 @@ $orders = mysqli_query($connection, "
     LEFT JOIN delivery_details d 
         ON d.Order_Id = o.Order_Id
     WHERE d.Delivery_Status IS NULL
-       OR d.Delivery_Status NOT IN ('Packed', 'Delivered')
+       OR d.Delivery_Status NOT IN ('Packed', 'Delivered', 'Out for Delivery')
     ORDER BY o.Order_Date DESC
 ");
 
