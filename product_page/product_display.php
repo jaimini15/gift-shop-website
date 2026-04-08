@@ -598,8 +598,6 @@ $imgSrc = img_src_from_blob_single($product['Product_Image'], 'product_mug_buyno
             }
         });
     },
-
-    // ADD THIS BLOCK
     modal: {
         ondismiss: function () {
 
